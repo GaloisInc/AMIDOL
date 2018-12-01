@@ -1,0 +1,20 @@
+digraph rewards {
+	node [shape=plaintext];
+	"Reward Structure" -> "Instant-of-Time";
+	"Reward Structure" -> "Interval-of-Time";
+	"Reward Structure" -> "Time-Averaged Interval-of-Time";
+	"Instant-of-Time" -> "t";
+	"Instant-of-Time" -> "limit as t goes to infinity";
+	a [label="[t,l]"];
+	b [label ="[t,l], limit as t goes to infinity"];
+	c [label="[t,l], limit as l goest to infinity"];
+	"Interval-of-Time" -> a;
+	"Interval-of-Time" -> b;
+	"Interval-of-Time" -> c;
+	d [label="[t,l]"];
+	e [label ="[t,l], limit as t goes to infinity"];
+	f [label="[t,l], limit as l goest to infinity"];
+	"Time-Averaged Interval-of-Time" -> d;
+	"Time-Averaged Interval-of-Time" -> e;
+	"Time-Averaged Interval-of-Time" -> f;
+}
