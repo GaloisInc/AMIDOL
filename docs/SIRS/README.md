@@ -80,3 +80,5 @@ plt.ylabel("Infected Individuals", fontsize=10)
 Resulting in the following fit:
 
 ![2007-2008 Flu Infection SIRS Model](images/2007-2008-SIRS.png)
+
+Ideally we don't just guess for the values of the parameters.  In particular we want to estimate `rho`, which is our *basic reproduction number*.  We can do this using stochastic optimization, and finding good fits for our data.
