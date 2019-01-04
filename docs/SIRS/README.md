@@ -29,13 +29,17 @@ Using the SIRS model, we can build an approximate representation of this system,
 ```python
 import pandas as pd
 from scipy.integrate import odeint
-N = int(popData[popData['Year'] == int(popYear)]['HHS 5']) #
+# N - total population of the region
+# I0 - initial infected -- we assume 1.
+# R0 - initial recovered -- we assume none.
+# S0 - initial susceptible -- S0 = N - I0 - R0
+N = 52000000#int(popData[popData['Year'] == int(popYear)]['HHS 5']) #
 I0 = 1
 R0 = 0
 S0 = N - R0 - I0
 
-gamma = 15
-rho = 1.0032
+gamma = 1/3
+rho = 1.24
 beta = rho*gamma
 
 def deriv(y, t, N, beta, gamma):
@@ -47,13 +51,30 @@ def deriv(y, t, N, beta, gamma):
 
 y0 = S0, I0, R0
 
-min = 40*7
-max = min + len(fluData)*7
-t = list(range(min, max))
+min = 40
+max = fluData['T'].max()
+t = list(range(min*7, max*7))
 w = [x/7 for x in t]
 
 ret = odeint(deriv, y0, t, args=(N, beta, gamma))
 S, I, R = ret.T
+
+incidence_predicted = -np.diff(S[0:len(S)-1:7])
+incidence_observed = fluData['B']
+fraction_confirmed = incidence_observed.sum()/incidence_predicted.sum()
+
+# Correct for the week of missed incidence
+plotT = fluData['T'] - 7
+
+plt.figure(figsize=(12,6))
+plt.plot(fluData['T'], fluData['B'], ls="--", lw=2.5, color=tableau20[0], alpha=0.3)
+plt.scatter(fluData['T'], fluData['B'], color=tableau20[0])
+plt.plot(plotT[2:], incidence_predicted*fraction_confirmed, color=tableau20[2])
+plt.text(40, 100, "CDC Data for Influenza B", fontsize=12, color=tableau20[0])
+plt.text(40, 150, "SIRS Model Result", fontsize=12, color=tableau20[2])
+plt.title(title, fontsize=12)
+plt.xlabel("Week of Flu Season", fontsize=10)
+plt.ylabel("Infected Individuals", fontsize=10)
 ```
 
 Resulting in the following fit:
