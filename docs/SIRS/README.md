@@ -23,3 +23,39 @@ For these models we will be working with the WHO/NREVSS (World Health Organizati
 Using data from a given region, and a given strain, we will estimate R0 for the epidemic curve.
 
 ![2007-2008 Flu Infections in Region 5](images/2007-2008-Flu.png)
+
+Using the SIRS model, we can build an approximate representation of this system, which we solve with the `odeint` package:
+
+```python
+import pandas as pd
+from scipy.integrate import odeint
+N = int(popData[popData['Year'] == int(popYear)]['HHS 5']) #
+I0 = 1
+R0 = 0
+S0 = N - R0 - I0
+
+gamma = 15
+rho = 1.0032
+beta = rho*gamma
+
+def deriv(y, t, N, beta, gamma):
+    S, I, R = y
+    dSdt = -beta * S * I / N
+    dIdt = beta * S * I / N - gamma * I
+    dRdt = gamma * I
+    return dSdt, dIdt, dRdt
+
+y0 = S0, I0, R0
+
+min = 40*7
+max = min + len(fluData)*7
+t = list(range(min, max))
+w = [x/7 for x in t]
+
+ret = odeint(deriv, y0, t, args=(N, beta, gamma))
+S, I, R = ret.T
+```
+
+Resulting in the following fit:
+
+![2007-2008 Flu Infection SIRS Model](images/2007-2008-SIRS.png)
