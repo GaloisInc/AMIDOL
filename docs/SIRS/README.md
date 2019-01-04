@@ -19,3 +19,7 @@ We have several main goals in this process:
 For these models we will be working with the WHO/NREVSS (World Health Organization/National Respiratory and Enteric Virus Surveillance System) data sets at the resolution of Department of Human and Health Services designated regions.
 
 ![Map of HHS Regions](images/regionsmap.jpg)
+
+Using data from a given region, and a given strain, we will estimate R0 for the epidemic curve.
+
+![2007-2008 Flu Infections in Region 5](images/2007-2008-Flu.png)
