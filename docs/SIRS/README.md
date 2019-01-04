@@ -8,6 +8,14 @@ Given a 100% effective vaccine, the proportion of the population that needs to b
 
 You can read more about the application of R0 to [H1N1](http://science.sciencemag.org/content/324/5934/1557) and [Ebola](http://currents.plos.org/outbreaks/article/obk-14-0036-early-epidemic-dynamics-of-the-west-african-2014-ebola-outbreak-estimates-derived-with-a-simple-two-parameter-model/).
 
+We have several main goals in this process:
+
+1. Fitting the models for the data in hindsight to perform goodness of fit estimates.
+2. Finding the *retrospective* R0 estimate over the entire epidemic curve. [Reference](https://www.researchgate.net/profile/James_Hyman/publication/233988169_chowell_2006_estimation_reproductive_number_spanish_flu_geneva/links/02bfe50dcbe6d4a6b3000000/chowell-2006-estimation-reproductive-number-spanish-flu-geneva.pdf).
+3. Finding the *real-time* R0 estimate while the epidemic is ongoing.
+
 ## The Data
+
+For these models we will be working with the WHO/NREVSS (World Health Organization/National Respiratory and Enteric Virus Surveillance System) data sets at the resolution of Department of Human and Health Services designated regions.
 
 ![Map of HHS Regions](images/regionsmap.jpg)
