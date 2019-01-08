@@ -12,3 +12,11 @@
 ## Why we need predicates
 Inhibitor arcs are necessary to give SPNs turing complete capabilities.  Input predicates are a generalized case of inhibitor arcs, that are easier and more compact to specify.
 * [Gianfranco Balbo "Introduction to Stochastic Petri Nets"](refs/GSPN-balbo.pdf)
+
+## Some notes on the IR
+* We should try and account for compositional modeling.
+* Allow the creation of submodels, and the composition of these models through
+  * State sharing
+  * Action synchronization
+
+This would allow the creation of usable sub-models, and the creation of complex models with multiple components separated for reasons of readability.
