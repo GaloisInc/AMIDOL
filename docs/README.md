@@ -8,3 +8,7 @@
 ## ODE Representation, CTMC <--> ODE
 * [Ward Whitt "CONTINUOUS-TIME MARKOV CHAINS"](refs/CTMCnotes120413.pdf)
 * [Fundamentals of Compartmental Kinetics](refs/Compartmental-Kinetics.pdf)
+
+## Why we need predicates
+Inhibitor arcs are necessary to give SPNs turing complete capabilities.  Input predicates are a generalized case of inhibitor arcs, that are easier and more compact to specify.
+* [Gianfranco Balbo "Introduction to Stochastic Petri Nets"](refs/GSPN-balbo.pdf)
