@@ -27,6 +27,8 @@ type alias Box =
     { id : Id
     , position : Vec2
     , clicked : Bool
+    , image : String
+    , label : String
     }
 
 
@@ -34,9 +36,9 @@ type alias Id =
     String
 
 
-makeBox : Id -> Vec2 -> Box
-makeBox id position =
-    Box id position False
+makeBox : Id -> Vec2 -> String -> String -> Box
+makeBox id position image label =
+    Box id position False image label
 
 
 dragBoxBy : Vec2 -> Box -> Box
@@ -64,7 +66,7 @@ emptyGroup =
 addBox : Vec2 -> BoxGroup -> BoxGroup
 addBox position ({ uid, idleBoxes } as group) =
     { group
-        | idleBoxes = makeBox (String.fromInt uid) position :: idleBoxes
+        | idleBoxes = makeBox (String.fromInt uid) position "infected.svg" "" :: idleBoxes
         , uid = uid + 1
     }
 
@@ -140,7 +142,7 @@ boxPositions =
         indexToPosition =
             toFloat >> (*) 60 >> (+) 10 >> Vector2.vec2 10
     in
-    List.range 0 10 |> List.map indexToPosition
+    List.range 0 3 |> List.map indexToPosition
 
 
 init : flags -> ( Model, Cmd Msg )
@@ -220,7 +222,7 @@ boxesView boxGroup =
 
 
 boxView : Box -> Svg Msg
-boxView { id, position, clicked } =
+boxView { id, position, clicked, image, label } =
     let
         color =
             if clicked then
@@ -229,8 +231,9 @@ boxView { id, position, clicked } =
             else
                 "lightblue"
     in
-    Svg.rect
-        [ num Attr.width <| getX boxSize
+    Svg.image
+        [ Attr.xlinkHref image
+        , num Attr.width <| getX boxSize
         , num Attr.height <| getY boxSize
         , num Attr.x (getX position)
         , num Attr.y (getY position)
