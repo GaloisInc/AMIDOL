@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  4 JAN 2019 16:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  10 JAN 2019 14:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -378,36 +378,36 @@ LaTeX Info: Redefining \nameref on input line 42.
 \@outlinefile=\write3
 \openout3 = `AMIDOL_MWS_2019.out'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 72.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 92.
  [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 72.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 92.
  (./AMIDOL_MWS_2019.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 72.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 72.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 92.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 92.
 Package rerunfilecheck Info: File `AMIDOL_MWS_2019.out' has not changed.
-(rerunfilecheck)             Checksum: F72CE5452BB1AB08E0C7543085A6B6B9;158.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 72.
+(rerunfilecheck)             Checksum: ADA3B1C05DB42B41529445B6143174C0;799.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 92.
  ) 
 Here is how much of TeX's memory you used:
- 6497 strings out of 492649
- 93764 string characters out of 6129622
- 195037 words of memory out of 5000000
- 10323 multiletter control sequences out of 15000+600000
- 8870 words of font info for 32 fonts, out of 8000000 for 9000
+ 6521 strings out of 492649
+ 94082 string characters out of 6129622
+ 196119 words of memory out of 5000000
+ 10337 multiletter control sequences out of 15000+600000
+ 9177 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 28i,4n,43p,332b,324s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 28i,4n,43p,331b,324s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></
 usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></us
 r/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/
 local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb>
-Output written on AMIDOL_MWS_2019.pdf (1 page, 72427 bytes).
+Output written on AMIDOL_MWS_2019.pdf (1 page, 81061 bytes).
 PDF statistics:
- 51 PDF objects out of 1000 (max. 8388607)
- 41 compressed objects within 1 object stream
- 6 named destinations out of 1000 (max. 500000)
- 25 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 94 PDF objects out of 1000 (max. 8388607)
+ 84 compressed objects within 1 object stream
+ 16 named destinations out of 1000 (max. 500000)
+ 105 words of extra memory for PDF output out of 10000 (max. 10000000)
 
