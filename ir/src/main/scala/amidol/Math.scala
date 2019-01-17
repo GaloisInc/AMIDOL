@@ -24,7 +24,7 @@ object Math {
 
     private lazy val atom: PackratParser[Expr] =
       ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
-      | raw"[a-zA-Z][a-zA-Z_0-9]".r   ^^ { v => Variable(Symbol(v))  }
+      | raw"[a-zA-Z]+".r              ^^ { v => Variable(Symbol(v))  }
       | "(" ~> expr <~ ")"
       | "-" ~> atom                   ^^ { e => Negate(e) }
       )
@@ -51,6 +51,9 @@ object Math {
       case _ => scala.util.Failure(new Exception("Parser failed in an unexpected way"))
     }
 
+    // Convenience implicits
+    implicit def symbol2Variable(sym: Symbol): Variable = Variable(sym)
+    implicit def double2Literal(double: Double): Literal = Literal(double)
   }
 
   implicit class ExprOps(expr: Expr) {
@@ -82,12 +85,12 @@ object Math {
            _: Literal => Int.MaxValue
     }
 
-    def eval(vals: Map[Symbol, Double]): Double = expr match {
+    def eval(vals: Map[Symbol, Double] = Map()): Double = expr match {
       case Plus(lhs, rhs) => lhs.eval(vals) + rhs.eval(vals)
       case Mult(lhs, rhs) => lhs.eval(vals) * rhs.eval(vals)
       case Negate(e) => -e.eval(vals)
       case Inverse(e) => 1.0 / e.eval(vals)
-      case Variable(s) => vals(s)
+      case Variable(s) => vals.getOrElse(s, throw new Exception(s"Unbound variable $s"))
       case Literal(d) => d
     }
 
