@@ -20,31 +20,32 @@ object Math {
 
   object Expr extends JavaTokenParsers with PackratParsers {
 
-    // Simple arithmetic grammar with a packrat parser
+    // Simple arithmetic grammar with a packrat parser (cuz it's fast and I like my left recursion)
+    lazy val parser: PackratParser[Expr] = {
+      lazy val atom: PackratParser[Expr] =
+        ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
+        | raw"[a-zA-Z]+".r              ^^ { v => Variable(Symbol(v))  }
+        | "(" ~> term <~ ")"
+        | "-" ~> atom                   ^^ { e => Negate(e) }
+        )
 
-    private lazy val atom: PackratParser[Expr] =
-      ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
-      | raw"[a-zA-Z]+".r              ^^ { v => Variable(Symbol(v))  }
-      | "(" ~> expr <~ ")"
-      | "-" ~> atom                   ^^ { e => Negate(e) }
-      )
+      lazy val factor: PackratParser[Expr] =
+        ( factor ~ "*" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l,         r ) }
+        | factor ~ "/" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l, Inverse(r)) }
+        | atom
+        )
 
-    private lazy val factor: PackratParser[Expr] =
-      ( factor ~ "*" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l,         r )  }
-      | factor ~ "/" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l, Inverse(r)) }
-      | atom
-      )
+      lazy val term: PackratParser[Expr] =
+        ( term ~ "+" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l,        r ) }
+        | term ~ "-" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l, Negate(r)) }
+        | factor
+        )
 
-    private lazy val term: PackratParser[Expr] =
-      ( term ~ "+" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l,        r ) }
-      | term ~ "-" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l, Negate(r)) }
-      | factor
-      )
-
-    private lazy val expr: PackratParser[Expr] = term
+      term
+    }
 
     // Parse an arithmetic expression from a string
-    def apply(input: String): Try[Expr] = parseAll(expr, input) match {
+    def apply(input: String): Try[Expr] = parseAll(parser, input) match {
       case Success(matched, _) => scala.util.Success(matched)
       case Failure(msg, in) => scala.util.Failure(new Exception(s"Failed at ${in.pos}: $msg\n\n${in.pos.longString}"))
       case Error(msg, in) => scala.util.Failure(new Exception(s"Errored at ${in.pos}: $msg\n\n${in.pos.longString}"))

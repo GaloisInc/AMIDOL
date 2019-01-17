@@ -30,6 +30,7 @@ class MathSpec extends FlatSpec with Matchers {
 
 
   "Expressions" should "evaluate correctly" in {
+    Expr("--1").get.eval()                                     shouldEqual 1
     Expr("1 + 2/5").get.eval()                                 shouldEqual 1.4 
     Expr("1*(8 + 9)/2 - 9").get.eval()                         shouldEqual (-0.5)
     Expr("1 - 2 - 3 + 4").get.eval()                           shouldEqual 0
