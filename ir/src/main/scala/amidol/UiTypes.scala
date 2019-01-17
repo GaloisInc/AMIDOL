@@ -1,3 +1,5 @@
+package amidol
+
 import spray.json._
 
 /// The full set of shapes and lines in the UI
