@@ -24,7 +24,7 @@ object Math {
     lazy val parser: PackratParser[Expr] = {
       lazy val atom: PackratParser[Expr] =
         ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
-        | raw"[a-zA-Z]+".r              ^^ { v => Variable(Symbol(v))  }
+        | raw"(?U)\p{L}+".r             ^^ { v => Variable(Symbol(v))  }
         | "(" ~> term <~ ")"
         | "-" ~> atom                   ^^ { e => Negate(e) }
         )
@@ -72,9 +72,19 @@ object Math {
         case Mult(l,r)          => wrap(l.prettyPrint(p-1) + " * " + r.prettyPrint(p-1))
         case Negate(x)          => wrap("-" + x.prettyPrint(p-1))
         case x: Inverse         => Mult(Literal(1), x).prettyPrint(precedence)
-        case Variable(s)        => s.toString
+        case Variable(s)        => s.name
         case Literal(d)         => d.toString
       }
+    }
+
+    def asVariable: Try[Variable] = expr match {
+      case v: Variable => scala.util.Success(v)
+      case e => scala.util.Failure(throw new Exception(s"Expression ${e.prettyPrint()} is not a variable"))
+    }
+
+    def asConstant: Try[Literal] = expr match {
+      case l: Literal => scala.util.Success(l)
+      case e => scala.util.Failure(throw new Exception(s"Expression ${e.prettyPrint()} is not a constant"))
     }
 
     def precedence: Int = expr match {

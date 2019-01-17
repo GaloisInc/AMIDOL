@@ -1,4 +1,4 @@
-package amidol
+package amidol.ui
 
 import spray.json._
 
@@ -41,3 +41,4 @@ case class Link(
 object Link extends DefaultJsonProtocol {
   implicit val linkFormat: JsonFormat[Link] = jsonFormat4(Link.apply)
 }
+
