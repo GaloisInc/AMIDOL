@@ -66,11 +66,11 @@ object Math {
       val p = expr.precedence
       def wrap(s: String): String = if (precedence > expr.precedence) { "(" + s + ")" } else { s }
       expr match {
-        case Plus(l,Negate(r))  => wrap(l.prettyPrint(p-1) + " - " + r.prettyPrint(p-1))
-        case Plus(l,r)          => wrap(l.prettyPrint(p-1) + " + " + r.prettyPrint(p-1))
-        case Mult(l,Inverse(r)) => wrap(l.prettyPrint(p-1) + " / " + r.prettyPrint(p-1))
-        case Mult(l,r)          => wrap(l.prettyPrint(p-1) + " * " + r.prettyPrint(p-1))
-        case Negate(x)          => wrap("-" + x.prettyPrint(p-1))
+        case Plus(l,Negate(r))  => wrap(l.prettyPrint(p) + " - " + r.prettyPrint(p+1))
+        case Plus(l,r)          => wrap(l.prettyPrint(p) + " + " + r.prettyPrint(p+1))
+        case Mult(l,Inverse(r)) => wrap(l.prettyPrint(p) + " / " + r.prettyPrint(p+1))
+        case Mult(l,r)          => wrap(l.prettyPrint(p) + " * " + r.prettyPrint(p+1))
+        case Negate(x)          => wrap("-" + x.prettyPrint(p))
         case x: Inverse         => Mult(Literal(1), x).prettyPrint(precedence)
         case Variable(s)        => s.name
         case Literal(d)         => d.toString

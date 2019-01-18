@@ -16,7 +16,7 @@ object convert {
   object UiRepresentable {
     type Out[A, U] = UiRepresentable[A] { type UiRepr = U }
   }
-
+  
   
   implicit object graphRepr extends UiRepresentable[amidol.Graph] {
     type UiRepr = ui.Graph
@@ -85,30 +85,3 @@ object convert {
   }
 
 }
-
-/*
-case class NodeId(id: Long) extends AnyVal
-case class EdgeId(id: Long) extends AnyVal
-
-/// Subject to a ton of change! No idea what the best way is to handle this...
-case class Graph(
-  nodes: Map[NodeId, Node],
-  edges: Map[EdgeId, Edge]
-)
-
-case class Node(
-  id: NodeId,
-  stateVariable: Variable,
-  
-  // Only for pruposes of recreating ui.Graph. TODO: should we remove?
-  view: String,
-  location: ui.Point
-)
-
-case Edge(
-  id: EdgeId,
-  source: NodeId, 
-  target: NodeId,
-  label: Expr
-)
- */

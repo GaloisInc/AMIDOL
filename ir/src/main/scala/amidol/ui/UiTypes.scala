@@ -1,15 +1,14 @@
 package amidol.ui
 
 import spray.json._
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 
 /// The full set of shapes and lines in the UI
 case class Graph(
   nodes: Seq[Node],
   links: Seq[Link]
 )
-object Graph extends DefaultJsonProtocol {
-  implicit val graphFormat: JsonFormat[Graph] = jsonFormat2(Graph.apply)
-}
+object Graph extends UiJsonSupport
 
 /// A single shape in the UI
 case class Node(
@@ -18,18 +17,14 @@ case class Node(
   label: String,
   location: Point
 )
-object Node extends DefaultJsonProtocol {
-  implicit val nodeFormat: JsonFormat[Node] = jsonFormat4(Node.apply)
-}
+object Node extends UiJsonSupport
 
 /// A location in the UI
 case class Point(
   x: Long,
   y: Long
 )
-object Point extends DefaultJsonProtocol {
-  implicit val pointFormat: JsonFormat[Point] = jsonFormat2(Point.apply)
-}
+object Point extends UiJsonSupport
 
 /// And edge between two nodes in the UI
 case class Link(
@@ -38,7 +33,12 @@ case class Link(
   target: Long,
   label: String
 )
-object Link extends DefaultJsonProtocol {
-  implicit val linkFormat: JsonFormat[Link] = jsonFormat4(Link.apply)
+object Link extends UiJsonSupport
+
+trait UiJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+  implicit val pointFormat = jsonFormat2(Point.apply)
+  implicit val linkFormat = jsonFormat4(Link.apply)
+  implicit val nodeFormat = jsonFormat4(Node.apply)
+  implicit val graphFormat = jsonFormat2(Graph.apply)
 }
 
