@@ -1,2 +1,4 @@
 .DS_Store
 *~
+ir/target
+ir/project/target
