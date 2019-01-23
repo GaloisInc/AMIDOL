@@ -24,7 +24,7 @@ main =
 
 
 type alias Id =
-    String
+    Int
 
 
 type alias FileName =
@@ -56,7 +56,7 @@ toggleClicked node =
 
 
 type alias NodeGroup =
-    { uid : Int
+    { uid : Id
     , movingNode : Maybe Node
     , idleNodes : List Node
     }
@@ -70,7 +70,7 @@ emptyGroup =
 addNode : ( Vec2, FileName ) -> NodeGroup -> NodeGroup
 addNode ( position, filename ) ({ uid, idleNodes } as group) =
     { group
-        | idleNodes = makeNode (String.fromInt uid) position ("img/" ++ filename) "" :: idleNodes
+        | idleNodes = makeNode uid position ("img/" ++ filename) "" :: idleNodes
         , uid = uid + 1
     }
 
@@ -135,8 +135,8 @@ type alias Model =
 type Msg
     = DragMsg (Draggable.Msg Id)
     | OnDragBy Vec2
-    | StartDragging String
-    | ToggleNodeClicked String
+    | StartDragging Id
+    | ToggleNodeClicked Id
     | StopDragging
 
 
