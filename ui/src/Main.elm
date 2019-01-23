@@ -23,15 +23,6 @@ main =
         }
 
 
-type alias Box =
-    { id : Id
-    , position : Vec2
-    , clicked : Bool
-    , image : String
-    , label : String
-    }
-
-
 type alias Id =
     String
 
@@ -40,94 +31,103 @@ type alias FileName =
     String
 
 
-makeBox : Id -> Vec2 -> String -> String -> Box
-makeBox id position image label =
-    Box id position False image label
-
-
-dragBoxBy : Vec2 -> Box -> Box
-dragBoxBy delta box =
-    { box | position = box.position |> Vector2.add delta }
-
-
-toggleClicked : Box -> Box
-toggleClicked box =
-    { box | clicked = not box.clicked }
-
-
-type alias BoxGroup =
-    { uid : Int
-    , movingBox : Maybe Box
-    , idleBoxes : List Box
+type alias Node =
+    { id : Id
+    , position : Vec2
+    , clicked : Bool
+    , image : FileName
+    , label : String
     }
 
 
-emptyGroup : BoxGroup
+makeNode : Id -> Vec2 -> String -> String -> Node
+makeNode id position image label =
+    Node id position False image label
+
+
+dragNodeBy : Vec2 -> Node -> Node
+dragNodeBy delta node =
+    { node | position = node.position |> Vector2.add delta }
+
+
+toggleClicked : Node -> Node
+toggleClicked node =
+    { node | clicked = not node.clicked }
+
+
+type alias NodeGroup =
+    { uid : Int
+    , movingNode : Maybe Node
+    , idleNodes : List Node
+    }
+
+
+emptyGroup : NodeGroup
 emptyGroup =
-    BoxGroup 0 Nothing []
+    NodeGroup 0 Nothing []
 
 
-addBox : ( Vec2, FileName ) -> BoxGroup -> BoxGroup
-addBox ( position, filename ) ({ uid, idleBoxes } as group) =
+addNode : ( Vec2, FileName ) -> NodeGroup -> NodeGroup
+addNode ( position, filename ) ({ uid, idleNodes } as group) =
     { group
-        | idleBoxes = makeBox (String.fromInt uid) position ("img/" ++ filename) "" :: idleBoxes
+        | idleNodes = makeNode (String.fromInt uid) position ("img/" ++ filename) "" :: idleNodes
         , uid = uid + 1
     }
 
 
-makeBoxGroup : List ( Vec2, FileName ) -> BoxGroup
-makeBoxGroup boxes =
-    boxes
-        |> List.foldl addBox emptyGroup
+makeNodeGroup : List ( Vec2, FileName ) -> NodeGroup
+makeNodeGroup nodes =
+    nodes
+        |> List.foldl addNode emptyGroup
 
 
-allBoxes : BoxGroup -> List Box
-allBoxes { movingBox, idleBoxes } =
-    movingBox
-        |> Maybe.map (\a -> a :: idleBoxes)
-        |> Maybe.withDefault idleBoxes
+allNodes : NodeGroup -> List Node
+allNodes { movingNode, idleNodes } =
+    movingNode
+        |> Maybe.map (\a -> a :: idleNodes)
+        |> Maybe.withDefault idleNodes
 
 
-startDragging : Id -> BoxGroup -> BoxGroup
-startDragging id ({ idleBoxes, movingBox } as group) =
+startDragging : Id -> NodeGroup -> NodeGroup
+startDragging id ({ idleNodes, movingNode } as group) =
     let
         ( targetAsList, others ) =
-            List.partition (.id >> (==) id) idleBoxes
+            List.partition (.id >> (==) id) idleNodes
     in
     { group
-        | idleBoxes = others
-        , movingBox = targetAsList |> List.head
+        | idleNodes = others
+        , movingNode = targetAsList |> List.head
     }
 
 
-stopDragging : BoxGroup -> BoxGroup
+stopDragging : NodeGroup -> NodeGroup
 stopDragging group =
     { group
-        | idleBoxes = allBoxes group
-        , movingBox = Nothing
+        | idleNodes = allNodes group
+        , movingNode = Nothing
     }
 
 
-dragActiveBy : Vec2 -> BoxGroup -> BoxGroup
+dragActiveBy : Vec2 -> NodeGroup -> NodeGroup
 dragActiveBy delta group =
-    { group | movingBox = group.movingBox |> Maybe.map (dragBoxBy delta) }
+    { group | movingNode = group.movingNode |> Maybe.map (dragNodeBy delta) }
 
 
-toggleBoxClicked : Id -> BoxGroup -> BoxGroup
-toggleBoxClicked id group =
+toggleNodeClicked : Id -> NodeGroup -> NodeGroup
+toggleNodeClicked id group =
     let
-        possiblyToggleBox box =
-            if box.id == id then
-                toggleClicked box
+        possiblyToggleNode node =
+            if node.id == id then
+                toggleClicked node
 
             else
-                box
+                node
     in
-    { group | idleBoxes = group.idleBoxes |> List.map possiblyToggleBox }
+    { group | idleNodes = group.idleNodes |> List.map possiblyToggleNode }
 
 
 type alias Model =
-    { boxGroup : BoxGroup
+    { nodeGroup : NodeGroup
     , drag : Draggable.State Id
     }
 
@@ -136,12 +136,12 @@ type Msg
     = DragMsg (Draggable.Msg Id)
     | OnDragBy Vec2
     | StartDragging String
-    | ToggleBoxClicked String
+    | ToggleNodeClicked String
     | StopDragging
 
 
-boxPositions : List ( Vec2, FileName )
-boxPositions =
+initialNodes : List ( Vec2, FileName )
+initialNodes =
     [ ( Vector2.vec2 10 10, "susceptible.svg" )
     , ( Vector2.vec2 10 70, "infected.svg" )
     , ( Vector2.vec2 10 130, "recovered.svg" )
@@ -150,7 +150,7 @@ boxPositions =
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
-    ( { boxGroup = makeBoxGroup boxPositions
+    ( { nodeGroup = makeNodeGroup initialNodes
       , drag = Draggable.init
       }
     , Cmd.none
@@ -162,24 +162,28 @@ dragConfig =
     Draggable.customConfig
         [ onDragBy (\( dx, dy ) -> Vector2.vec2 dx dy |> OnDragBy)
         , onDragStart StartDragging
-        , onClick ToggleBoxClicked
+        , onClick ToggleNodeClicked
         ]
 
 
+
+-- UPDATE
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ boxGroup } as model) =
+update msg ({ nodeGroup } as model) =
     case msg of
         OnDragBy delta ->
-            ( { model | boxGroup = boxGroup |> dragActiveBy delta }, Cmd.none )
+            ( { model | nodeGroup = nodeGroup |> dragActiveBy delta }, Cmd.none )
 
         StartDragging id ->
-            ( { model | boxGroup = boxGroup |> startDragging id }, Cmd.none )
+            ( { model | nodeGroup = nodeGroup |> startDragging id }, Cmd.none )
 
         StopDragging ->
-            ( { model | boxGroup = boxGroup |> stopDragging }, Cmd.none )
+            ( { model | nodeGroup = nodeGroup |> stopDragging }, Cmd.none )
 
-        ToggleBoxClicked id ->
-            ( { model | boxGroup = boxGroup |> toggleBoxClicked id }, Cmd.none )
+        ToggleNodeClicked id ->
+            ( { model | nodeGroup = nodeGroup |> toggleNodeClicked id }, Cmd.none )
 
         DragMsg dragMsg ->
             Draggable.update dragConfig dragMsg model
@@ -194,13 +198,13 @@ subscriptions { drag } =
 -- VIEW
 
 
-boxSize : Vec2
-boxSize =
+nodeSize : Vec2
+nodeSize =
     Vector2.vec2 50 50
 
 
 view : Model -> Html Msg
-view { boxGroup } =
+view { nodeGroup } =
     Html.div
         []
         [ Html.p
@@ -210,26 +214,26 @@ view { boxGroup } =
             [ Attr.style "height: 100vh; width: 100vw; position: fixed;"
             ]
             [ background
-            , boxesView boxGroup
+            , nodesView nodeGroup
             ]
         ]
 
 
-boxesView : BoxGroup -> Svg Msg
-boxesView boxGroup =
-    boxGroup
-        |> allBoxes
-        |> List.reverse
-        |> List.map boxView
+nodesView : NodeGroup -> Svg Msg
+nodesView nodeGroup =
+    nodeGroup
+        |> allNodes
+        --|> List.reverse
+        |> List.map nodeView
         |> Svg.node "g" []
 
 
-boxView : Box -> Svg Msg
-boxView { id, position, clicked, image, label } =
+nodeView : Node -> Svg Msg
+nodeView { id, position, clicked, image, label } =
     Svg.image
         [ Attr.xlinkHref image
-        , num Attr.width <| getX boxSize
-        , num Attr.height <| getY boxSize
+        , num Attr.width <| getX nodeSize
+        , num Attr.height <| getY nodeSize
         , num Attr.x (getX position)
         , num Attr.y (getY position)
         , Attr.cursor "move"
