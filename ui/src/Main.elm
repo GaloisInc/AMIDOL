@@ -40,9 +40,21 @@ type alias Node =
     }
 
 
-makeNode : Id -> Vec2 -> String -> String -> Node
-makeNode id position image label =
-    Node id position False image label
+type alias Link =
+    { source : Id
+    , target : Id
+    , label : String
+    }
+
+
+makeNode : Id -> ( Float, Float ) -> String -> String -> Node
+makeNode id ( x, y ) svgfile label =
+    { id = id
+    , position = Vector2.vec2 x y
+    , clicked = False
+    , image = "img/" ++ svgfile
+    , label = label
+    }
 
 
 dragNodeBy : Vec2 -> Node -> Node
@@ -60,25 +72,6 @@ type alias NodeGroup =
     , movingNode : Maybe Node
     , idleNodes : List Node
     }
-
-
-emptyGroup : NodeGroup
-emptyGroup =
-    NodeGroup 0 Nothing []
-
-
-addNode : ( Vec2, FileName ) -> NodeGroup -> NodeGroup
-addNode ( position, filename ) ({ uid, idleNodes } as group) =
-    { group
-        | idleNodes = makeNode uid position ("img/" ++ filename) "" :: idleNodes
-        , uid = uid + 1
-    }
-
-
-makeNodeGroup : List ( Vec2, FileName ) -> NodeGroup
-makeNodeGroup nodes =
-    nodes
-        |> List.foldl addNode emptyGroup
 
 
 allNodes : NodeGroup -> List Node
@@ -127,7 +120,8 @@ toggleNodeClicked id group =
 
 
 type alias Model =
-    { nodeGroup : NodeGroup
+    { nodes : NodeGroup
+    , links : List Link
     , drag : Draggable.State Id
     }
 
@@ -140,17 +134,27 @@ type Msg
     | StopDragging
 
 
-initialNodes : List ( Vec2, FileName )
+initialNodes : NodeGroup
 initialNodes =
-    [ ( Vector2.vec2 10 10, "susceptible.svg" )
-    , ( Vector2.vec2 10 70, "infected.svg" )
-    , ( Vector2.vec2 10 130, "recovered.svg" )
+    NodeGroup 0
+        Nothing
+        [ makeNode 1 ( 10, 80 ) "susceptible.svg" "S"
+        , makeNode 2 ( 110, 20 ) "infected.svg" "I"
+        , makeNode 3 ( 210, 80 ) "recovered.svg" "R"
+        ]
+
+
+initialLinks : List Link
+initialLinks =
+    [ Link 1 2 "S --> I"
+    , Link 2 3 "I --> R"
     ]
 
 
 init : flags -> ( Model, Cmd Msg )
 init _ =
-    ( { nodeGroup = makeNodeGroup initialNodes
+    ( { nodes = initialNodes
+      , links = initialLinks
       , drag = Draggable.init
       }
     , Cmd.none
@@ -171,19 +175,19 @@ dragConfig =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ nodeGroup } as model) =
+update msg ({ nodes } as model) =
     case msg of
         OnDragBy delta ->
-            ( { model | nodeGroup = nodeGroup |> dragActiveBy delta }, Cmd.none )
+            ( { model | nodes = nodes |> dragActiveBy delta }, Cmd.none )
 
         StartDragging id ->
-            ( { model | nodeGroup = nodeGroup |> startDragging id }, Cmd.none )
+            ( { model | nodes = nodes |> startDragging id }, Cmd.none )
 
         StopDragging ->
-            ( { model | nodeGroup = nodeGroup |> stopDragging }, Cmd.none )
+            ( { model | nodes = nodes |> stopDragging }, Cmd.none )
 
         ToggleNodeClicked id ->
-            ( { model | nodeGroup = nodeGroup |> toggleNodeClicked id }, Cmd.none )
+            ( { model | nodes = nodes |> toggleNodeClicked id }, Cmd.none )
 
         DragMsg dragMsg ->
             Draggable.update dragConfig dragMsg model
@@ -204,7 +208,7 @@ nodeSize =
 
 
 view : Model -> Html Msg
-view { nodeGroup } =
+view { nodes } =
     Html.div
         []
         [ Html.p
@@ -214,7 +218,7 @@ view { nodeGroup } =
             [ Attr.style "height: 100vh; width: 100vw; position: fixed;"
             ]
             [ background
-            , nodesView nodeGroup
+            , nodesView nodes
             ]
         ]
 
