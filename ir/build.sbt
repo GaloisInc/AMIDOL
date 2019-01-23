@@ -6,6 +6,13 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 lazy val root = (project in file("."))
   .settings(
     name := "amidol",
+    scalacOptions ++= Seq(
+      "-unchecked",
+      "-feature",
+      "-deprecation",
+      
+      "-language:implicitConversions"
+    ),
     libraryDependencies ++= Seq(
       scalaTest % Test,
 

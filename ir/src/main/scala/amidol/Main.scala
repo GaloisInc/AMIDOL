@@ -6,6 +6,7 @@ import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives
 import akka.stream.ActorMaterializer
+import amidol.backends._
 
 import scala.io.StdIn
 import scala.util._
@@ -15,7 +16,10 @@ import spray.json._
 
 object Main extends App with Directives with ui.UiJsonSupport {
 
-  // Mutable state
+  // Mutable app state
+  //
+  // TODO: eventually, think about thread safety here (what happens if someone changes the model
+  // while the backend is running?)
   object AppState {
     var currentModel: Graph = Graph(Map.empty, Map.empty) 
   }
@@ -40,28 +44,13 @@ object Main extends App with Directives with ui.UiJsonSupport {
           complete(ui.convert.graphRepr.toUi(AppState.currentModel))
         }
       } ~
-      path("integrateDemo") {
-        parameters(
-          'constants.as[Map[String,Double]],
-          'boundary.as[Map[String,Double]],
-          'initialTime.as[Double],
-          'finalTime.as[Double],
-          'stepSize.as[Double]
-        ) { (constants, boundary, initialTime, finalTime, stepSize) => 
-            val attempt: Try[JsValue] = for {
-              parsedConstants <- Try(constants.map { case (k,v) => Math.Expr(k).flatMap(_.asVariable).get -> v })
-              parsedBoundary  <- Try(boundary.map { case (k,v) => Math.Expr(k).flatMap(_.asVariable).get -> v })
-              timeSeries      <- backends.SciPy.integrateSystem(
-                AppState.currentModel,
-                parsedConstants.toMap,
-                parsedBoundary.toMap,
-                initialTime,
-                finalTime,
-                stepSize
-              )
-            } yield timeSeries
-
-            complete(attempt.getOrElse(JsNull): JsValue)
+      pathPrefix("backends") {
+        pathPrefix("scipy") {
+          path("integrate") {
+            parameters('inputs.as[SciPyIntegrate.Inputs]) { inputs =>
+              complete(SciPyIntegrate.routeComplete(AppState.currentModel, inputs))
+            }
+          }
         }
       }
     } ~
