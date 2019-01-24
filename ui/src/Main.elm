@@ -1,4 +1,4 @@
-module MultipleTargetsExample exposing (main)
+module Main exposing (main)
 
 import Browser
 import Draggable
@@ -27,6 +27,8 @@ type alias Box =
     { id : Id
     , position : Vec2
     , clicked : Bool
+    , image : String
+    , label : String
     }
 
 
@@ -34,9 +36,13 @@ type alias Id =
     String
 
 
-makeBox : Id -> Vec2 -> Box
-makeBox id position =
-    Box id position False
+type alias FileName =
+    String
+
+
+makeBox : Id -> Vec2 -> String -> String -> Box
+makeBox id position image label =
+    Box id position False image label
 
 
 dragBoxBy : Vec2 -> Box -> Box
@@ -61,17 +67,17 @@ emptyGroup =
     BoxGroup 0 Nothing []
 
 
-addBox : Vec2 -> BoxGroup -> BoxGroup
-addBox position ({ uid, idleBoxes } as group) =
+addBox : ( Vec2, FileName ) -> BoxGroup -> BoxGroup
+addBox ( position, filename ) ({ uid, idleBoxes } as group) =
     { group
-        | idleBoxes = makeBox (String.fromInt uid) position :: idleBoxes
+        | idleBoxes = makeBox (String.fromInt uid) position ("img/" ++ filename) "" :: idleBoxes
         , uid = uid + 1
     }
 
 
-makeBoxGroup : List Vec2 -> BoxGroup
-makeBoxGroup positions =
-    positions
+makeBoxGroup : List ( Vec2, FileName ) -> BoxGroup
+makeBoxGroup boxes =
+    boxes
         |> List.foldl addBox emptyGroup
 
 
@@ -134,13 +140,12 @@ type Msg
     | StopDragging
 
 
-boxPositions : List Vec2
+boxPositions : List ( Vec2, FileName )
 boxPositions =
-    let
-        indexToPosition =
-            toFloat >> (*) 60 >> (+) 10 >> Vector2.vec2 10
-    in
-    List.range 0 10 |> List.map indexToPosition
+    [ ( Vector2.vec2 10 10, "susceptible.svg" )
+    , ( Vector2.vec2 10 70, "infected.svg" )
+    , ( Vector2.vec2 10 130, "recovered.svg" )
+    ]
 
 
 init : flags -> ( Model, Cmd Msg )
@@ -200,7 +205,7 @@ view { boxGroup } =
         []
         [ Html.p
             [ Html.Attributes.style "padding-left" "8px" ]
-            [ Html.text "Drag any box around. Click it to toggle its color." ]
+            [ Html.text "Drag any icon around." ]
         , Svg.svg
             [ Attr.style "height: 100vh; width: 100vw; position: fixed;"
             ]
@@ -220,22 +225,13 @@ boxesView boxGroup =
 
 
 boxView : Box -> Svg Msg
-boxView { id, position, clicked } =
-    let
-        color =
-            if clicked then
-                "red"
-
-            else
-                "lightblue"
-    in
-    Svg.rect
-        [ num Attr.width <| getX boxSize
+boxView { id, position, clicked, image, label } =
+    Svg.image
+        [ Attr.xlinkHref image
+        , num Attr.width <| getX boxSize
         , num Attr.height <| getY boxSize
         , num Attr.x (getX position)
         , num Attr.y (getY position)
-        , Attr.fill color
-        , Attr.stroke "black"
         , Attr.cursor "move"
         , Draggable.mouseTrigger id DragMsg
         , onMouseUp StopDragging

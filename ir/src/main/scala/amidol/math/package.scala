@@ -4,7 +4,7 @@ import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 import scala.util._
 
-object Math {
+package object math {
 
   // TODO parametrize over number space
   // TODO debruijn index for variables 9so you know _what_ is closed over)
@@ -20,31 +20,32 @@ object Math {
 
   object Expr extends JavaTokenParsers with PackratParsers {
 
-    // Simple arithmetic grammar with a packrat parser
+    // Simple arithmetic grammar with a packrat parser (cuz it's fast and I like my left recursion)
+    lazy val parser: PackratParser[Expr] = {
+      lazy val atom: PackratParser[Expr] =
+        ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
+        | raw"(?U)\p{L}+".r             ^^ { v => Variable(Symbol(v))  }
+        | "(" ~> term <~ ")"
+        | "-" ~> atom                   ^^ { e => Negate(e) }
+        )
 
-    private lazy val atom: PackratParser[Expr] =
-      ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
-      | raw"[a-zA-Z]+".r              ^^ { v => Variable(Symbol(v))  }
-      | "(" ~> expr <~ ")"
-      | "-" ~> atom                   ^^ { e => Negate(e) }
-      )
+      lazy val factor: PackratParser[Expr] =
+        ( factor ~ "*" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l,         r ) }
+        | factor ~ "/" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l, Inverse(r)) }
+        | atom
+        )
 
-    private lazy val factor: PackratParser[Expr] =
-      ( factor ~ "*" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l,         r )  }
-      | factor ~ "/" ~ atom          ^^ { case (l ~ _ ~ r) => Mult(l, Inverse(r)) }
-      | atom
-      )
+      lazy val term: PackratParser[Expr] =
+        ( term ~ "+" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l,        r ) }
+        | term ~ "-" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l, Negate(r)) }
+        | factor
+        )
 
-    private lazy val term: PackratParser[Expr] =
-      ( term ~ "+" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l,        r ) }
-      | term ~ "-" ~ factor          ^^ { case (l ~ _ ~ r) => Plus(l, Negate(r)) }
-      | factor
-      )
-
-    private lazy val expr: PackratParser[Expr] = term
+      term
+    }
 
     // Parse an arithmetic expression from a string
-    def apply(input: String): Try[Expr] = parseAll(expr, input) match {
+    def apply(input: String): Try[Expr] = parseAll(parser, input) match {
       case Success(matched, _) => scala.util.Success(matched)
       case Failure(msg, in) => scala.util.Failure(new Exception(s"Failed at ${in.pos}: $msg\n\n${in.pos.longString}"))
       case Error(msg, in) => scala.util.Failure(new Exception(s"Errored at ${in.pos}: $msg\n\n${in.pos.longString}"))
@@ -65,15 +66,25 @@ object Math {
       val p = expr.precedence
       def wrap(s: String): String = if (precedence > expr.precedence) { "(" + s + ")" } else { s }
       expr match {
-        case Plus(l,Negate(r))  => wrap(l.prettyPrint(p-1) + " - " + r.prettyPrint(p-1))
-        case Plus(l,r)          => wrap(l.prettyPrint(p-1) + " + " + r.prettyPrint(p-1))
-        case Mult(l,Inverse(r)) => wrap(l.prettyPrint(p-1) + " / " + r.prettyPrint(p-1))
-        case Mult(l,r)          => wrap(l.prettyPrint(p-1) + " * " + r.prettyPrint(p-1))
-        case Negate(x)          => wrap("-" + x.prettyPrint(p-1))
+        case Plus(l,Negate(r))  => wrap(l.prettyPrint(p) + " - " + r.prettyPrint(p+1))
+        case Plus(l,r)          => wrap(l.prettyPrint(p) + " + " + r.prettyPrint(p+1))
+        case Mult(l,Inverse(r)) => wrap(l.prettyPrint(p) + " / " + r.prettyPrint(p+1))
+        case Mult(l,r)          => wrap(l.prettyPrint(p) + " * " + r.prettyPrint(p+1))
+        case Negate(x)          => wrap("-" + x.prettyPrint(p))
         case x: Inverse         => Mult(Literal(1), x).prettyPrint(precedence)
-        case Variable(s)        => s.toString
+        case Variable(s)        => s.name
         case Literal(d)         => d.toString
       }
+    }
+
+    def asVariable: Try[Variable] = expr match {
+      case v: Variable => scala.util.Success(v)
+      case e => scala.util.Failure(throw new Exception(s"Expression ${e.prettyPrint()} is not a variable"))
+    }
+
+    def asConstant: Try[Literal] = expr match {
+      case l: Literal => scala.util.Success(l)
+      case e => scala.util.Failure(throw new Exception(s"Expression ${e.prettyPrint()} is not a constant"))
     }
 
     def precedence: Int = expr match {
