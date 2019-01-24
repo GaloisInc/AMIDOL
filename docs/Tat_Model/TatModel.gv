@@ -1,0 +1,35 @@
+digraph Tat_model {
+	rankdir = LR;
+	size = "8,5"
+	node [shape = square] k_basal, k_export, k1_translate, k2_translate, k_bind, k_unbind, k_acetyl, k_deacetyl, k_transact, d_GFP, d_Tat, d_CYT, d_NUC;
+	node [shape = circle];
+	LTR -> k_basal;
+	k_basal -> LTR;
+	k_basal -> nRNA;
+	nRNA -> k_export;
+	k_export -> cRNA;
+	cRNA -> k1_translate;
+	k1_translate -> GFP;
+	k1_translate -> cRNA;
+	cRNA -> k2_translate;
+	k2_translate -> Tat;
+	k2_translate -> cRNA;
+	Tat -> k_bind;
+	k_bind -> pTEFb_d;
+	pTEFb_d -> k_unbind;
+	k_unbind -> Tat;
+	LTR -> k_acetyl;
+	pTEFb_d -> k_acetyl;
+	k_acetyl -> pTEFb_a;
+	pTEFb_a -> k_deacetyl;
+	k_deacetyl -> LTR;
+	k_deacetyl -> pTEFb_d;
+	pTEFb_a -> k_transact;
+	k_transact -> LTR;
+	k_transact -> nRNA;
+	k_transact -> Tat;
+	GFP -> d_GFP;
+	Tat -> d_Tat;
+	cRNA -> d_CYT;
+	nRNA -> d_NUC;
+}

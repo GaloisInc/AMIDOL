@@ -2,6 +2,8 @@
 
 ![Tat Model](images/Tat-Model.png)
 
+![Tat Model](images/Tat_Model.png)
+
 ## ODE Model
 ```
   d/dt (tat) = -dtt * tat
