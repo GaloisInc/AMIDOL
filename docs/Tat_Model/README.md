@@ -2,7 +2,7 @@
 
 ![Tat Model](images/Tat-Model.png)
 
-![Tat Model](images/Tat_Model.png)
+![Tat Model](images/TatModel.png)
 
 ## ODE Model
 ```
