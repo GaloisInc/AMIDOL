@@ -1,6 +1,6 @@
 package amidol
 
-import amidol.Math._
+import amidol.math._
 import org.scalatest._
 import scala.util._
 
