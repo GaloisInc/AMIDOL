@@ -33,5 +33,5 @@ Executed from this directory with the backend running (ie: `sbt run`):
 
     ```sh
     curl -H 'Accept: application/json' -X GET \
-      'http://localhost:8080/integrateDemo?constants=\{"N":52000000,"%CE%B3":0.333,"%CE%B2":0.413,"%CE%BC":0\}&boundary=\{"Susceptible":51999999,"Infectious":1,"Recovered":0\}&initialTime=40&finalTime=100&stepSize=1'
+      'http://localhost:8080/backends/scipy/integrate?inputs=\{"constants":\{"N":52000000,"%CE%B3":0.333,"%CE%B2":0.413,"%CE%BC":0\},"boundary":\{"Susceptible":51999999,"Infectious":1,"Recovered":0\},"initialTime":40,"finalTime":100,"stepSize":1\}'
     ```
