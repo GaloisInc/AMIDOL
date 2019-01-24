@@ -50,6 +50,11 @@ object Main extends App with Directives with ui.UiJsonSupport {
             parameters('inputs.as[SciPyIntegrate.Inputs]) { inputs =>
               complete(SciPyIntegrate.routeComplete(AppState.currentModel, inputs))
             }
+          } ~
+          path("cmtc-equilibrium") {
+            parameters('inputs.as[SciPyLinearSteadyState.Inputs]) { inputs =>
+              complete(SciPyLinearSteadyState.routeComplete(AppState.currentModel, inputs))
+            }
           }
         }
       }

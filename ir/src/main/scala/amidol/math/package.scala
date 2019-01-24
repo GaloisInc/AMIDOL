@@ -4,7 +4,7 @@ import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 import scala.util._
 
-object Math {
+package object math {
 
   // TODO parametrize over number space
   // TODO debruijn index for variables 9so you know _what_ is closed over)

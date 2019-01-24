@@ -68,4 +68,22 @@ package object backends {
     implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat5(Inputs.apply)  
     implicit val outputsFormat: RootJsonFormat[Outputs] = jsonFormat2(Outputs.apply)
   }
+
+  trait ContinuousSteadyState extends Backend with SprayJsonSupport with DefaultJsonProtocol {
+    val problemDescription = "Find equilibrium points in a model"
+
+    case class Inputs()
+
+    case class Equilibrium(
+      variables: Map[String, Double],
+      stable: Option[Boolean]
+    )
+    case class Outputs(
+      variables: Seq[Equilibrium]
+    )
+
+    implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat0(() => Inputs.apply())
+    implicit val equilibriumFormat: RootJsonFormat[Equilibrium] = jsonFormat2(Equilibrium.apply)
+    implicit val outputsFormat: RootJsonFormat[Outputs] = jsonFormat1(Outputs.apply)
+  }
 }

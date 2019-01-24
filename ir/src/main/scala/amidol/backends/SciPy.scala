@@ -22,8 +22,8 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
   def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
     for {
-      constants <- Try(inputs.constants.map { case (k,v) => Math.Expr(k).flatMap(_.asVariable).get -> v })
-      boundary  <- Try(inputs.boundary.map { case (k,v) => Math.Expr(k).flatMap(_.asVariable).get -> v })
+      constants <- Try(inputs.constants.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
+      boundary  <- Try(inputs.boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
     
       timeRange: Seq[Double] = Range.BigDecimal(
         start = inputs.initialTime,
@@ -33,12 +33,12 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
       // Set up the system of differential equations 
       stateVars: List[NodeId] = model.nodes.keys.toList
-      derivatives: Map[NodeId, Math.Expr] = {
-        var builder = Map.empty[NodeId, Math.Expr]
+      derivatives: Map[NodeId, math.Expr] = {
+        var builder = Map.empty[NodeId, math.Expr]
 
         for ((_, Edge(_, src, tgt, expr)) <- model.edges) {
-          builder += src -> Math.Plus(builder.getOrElse(src, 0.0), Math.Negate(expr))
-          builder += tgt -> Math.Plus(builder.getOrElse(tgt, 0.0),             expr )
+          builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
+          builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
         }
 
         builder
@@ -97,3 +97,17 @@ object SciPyIntegrate extends ContinuousInitialValue {
   }
 }
 
+object SciPyLinearSteadyState extends ContinuousSteadyState {
+
+  val name: String = "SciPyLinearSteadyState"
+  val backendDescription: String = "Generates SciPy code to solve for equilibrium " +
+                                   "points of a linear system"
+
+  // TODO: revisit this when we have discrete events
+  def applicable(model: Graph): Boolean = true
+
+  // TODO: do we want proper AST manipulation
+  type Python = String
+
+  def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = ???
+}

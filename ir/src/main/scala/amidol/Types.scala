@@ -1,6 +1,6 @@
 package amidol
 
-import amidol.Math._
+import amidol.math._
 
 import java.util.Date
 

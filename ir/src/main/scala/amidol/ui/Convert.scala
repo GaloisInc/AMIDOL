@@ -51,7 +51,7 @@ object convert {
     type UiRepr = ui.Node
 
     def fromUi(n: ui.Node): Try[amidol.Node] = for {
-        exp <- Math.Expr(n.label)
+        exp <- math.Expr(n.label)
         nId = NodeId(n.id)
         nStateVar <- exp.asVariable
         nView = n.view
@@ -70,7 +70,7 @@ object convert {
     type UiRepr = ui.Link
 
     def fromUi(e: ui.Link): Try[amidol.Edge] = for {
-        eLabel <- Math.Expr(e.label)
+        eLabel <- math.Expr(e.label)
         eId = EdgeId(e.id)
         eSource = NodeId(e.source)
         eTarget = NodeId(e.target)
