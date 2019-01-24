@@ -208,7 +208,7 @@ nodeSize =
 
 
 view : Model -> Html Msg
-view { nodes } =
+view { nodes, links } =
     Html.div
         []
         [ Html.p
@@ -219,6 +219,7 @@ view { nodes } =
             ]
             [ background
             , nodesView nodes
+            , linksView links nodes
             ]
         ]
 
@@ -227,24 +228,84 @@ nodesView : NodeGroup -> Svg Msg
 nodesView nodeGroup =
     nodeGroup
         |> allNodes
-        --|> List.reverse
         |> List.map nodeView
-        |> Svg.node "g" []
+        |> Svg.g []
 
 
 nodeView : Node -> Svg Msg
 nodeView { id, position, clicked, image, label } =
     Svg.image
         [ Attr.xlinkHref image
-        , num Attr.width <| getX nodeSize
-        , num Attr.height <| getY nodeSize
-        , num Attr.x (getX position)
-        , num Attr.y (getY position)
+        , Attr.width <| String.fromFloat <| getX nodeSize
+        , Attr.height <| String.fromFloat <| getY nodeSize
+        , Attr.x <| String.fromFloat <| getX position
+        , Attr.y <| String.fromFloat <| getY position
         , Attr.cursor "move"
         , Draggable.mouseTrigger id DragMsg
         , onMouseUp StopDragging
         ]
         []
+
+
+linksView : List Link -> NodeGroup -> Svg Msg
+linksView links nodes =
+    let
+        nodeList =
+            allNodes nodes
+
+        svgNodeList =
+            List.map (linkView nodeList) links
+
+        defs =
+            Svg.defs []
+                [ Svg.marker
+                    [ Attr.id "arrowhead"
+                    , Attr.viewBox "0 0 10 10"
+                    , Attr.refX "1"
+                    , Attr.refY "5"
+                    , Attr.markerUnits "strokeWidth"
+                    , Attr.markerWidth "5"
+                    , Attr.markerHeight "5"
+                    , Attr.orient "auto"
+                    ]
+                    [ Svg.path
+                        [ Attr.d "M 0 0 L 10 5 L 0 10 z"
+                        , Attr.fill "red"
+                        ]
+                        []
+                    ]
+                ]
+    in
+    Svg.g [] (defs :: svgNodeList)
+
+
+linkView : List Node -> Link -> Svg Msg
+linkView nodeList { source, target, label } =
+    case
+        ( List.filter (\node -> node.id == source) nodeList
+        , List.filter (\node -> node.id == target) nodeList
+        )
+    of
+        ( [ src ], [ tgt ] ) ->
+            let
+                center node =
+                    Vector2.add node.position <|
+                        Vector2.scale 0.5 nodeSize
+            in
+            Svg.line
+                [ Attr.x1 <| String.fromFloat <| getX <| center src
+                , Attr.y1 <| String.fromFloat <| getY <| center src
+                , Attr.x2 <| String.fromFloat <| getX <| center tgt
+                , Attr.y2 <| String.fromFloat <| getY <| center tgt
+                , Attr.stroke "red"
+                , Attr.strokeWidth "3"
+                , Attr.markerEnd "url(#arrowhead)"
+                ]
+                []
+
+        _ ->
+            -- the link ends don't match a unique node id
+            Svg.g [] []
 
 
 background : Svg msg
@@ -257,8 +318,3 @@ background =
         , Attr.fill "#eee"
         ]
         []
-
-
-num : (String -> Svg.Attribute msg) -> Float -> Svg.Attribute msg
-num attr value =
-    attr (String.fromFloat value)
