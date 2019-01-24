@@ -11,6 +11,9 @@ Note the use of multiple "Tat" symbols in the diagram -- sometimes scientists dr
 ## Source
 
 (https://www.sciencedirect.com/science/article/pii/S0092867405005490)
+
+(https://ac.els-cdn.com/S0092867405005490/1-s2.0-S0092867405005490-main.pdf?_tid=c55fa1d8-bdfd-4550-ab1b-a23918ae7d70&acdnat=1548289484_020bc6fe4fd2bd95e102ceba311b7414)
+
 (https://ars.els-cdn.com/content/image/1-s2.0-S0092867405005490-mmc1.pdf)
 
 ## ODE Model
