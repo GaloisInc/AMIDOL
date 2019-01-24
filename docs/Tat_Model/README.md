@@ -1,8 +1,17 @@
 # Documentation for the Tat/HIV Model
 
+## Semi-formal and Formal Visualization of System
+
+Note the use of multiple "Tat" symbols in the diagram -- sometimes scientists draw the same symbol multiple places as an "alias" for the same underlying state variable.
+
 ![Tat Model](images/Tat-Model.png)
 
 ![Tat Model](images/TatModel.png)
+
+## Source
+
+(https://www.sciencedirect.com/science/article/pii/S0092867405005490)
+(https://ars.els-cdn.com/content/image/1-s2.0-S0092867405005490-mmc1.pdf)
 
 ## ODE Model
 ```
