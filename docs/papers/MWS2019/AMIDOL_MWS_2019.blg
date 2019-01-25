@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: AMIDOL_MWS_2019.aux
+The style file: plain.bst
+Database file #1: AMIDOL-MWS.bib
+You've used 3 entries,
+            2118 wiz_defined-function locations,
+            515 strings with 4788 characters,
+and the built_in function-call counts, 1024 in all, are:
+= -- 88
+> -- 83
+< -- 0
++ -- 33
+- -- 30
+* -- 73
+:= -- 196
+add.period$ -- 10
+call.type$ -- 3
+change.case$ -- 23
+chr.to.int$ -- 0
+cite$ -- 3
+duplicate$ -- 27
+empty$ -- 57
+format.name$ -- 30
+if$ -- 195
+int.to.chr$ -- 0
+int.to.str$ -- 3
+missing$ -- 2
+newline$ -- 19
+num.names$ -- 6
+pop$ -- 27
+preamble$ -- 1
+purify$ -- 20
+quote$ -- 0
+skip$ -- 21
+stack$ -- 0
+substring$ -- 15
+swap$ -- 3
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 12
+warning$ -- 0
+while$ -- 6
+width$ -- 4
+write$ -- 34

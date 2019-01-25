@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[parfill]{parskip}
 \usepackage{graphicx}
+\usepackage{wrapfig}
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
 \bibliographystyle{plain}
 \usepackage{amsmath}
@@ -48,6 +49,14 @@ Please keep your abstract short, fifteen lines or less.  Remember that the MWS c
 
 \section{Introduction}
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\includegraphics[width=0.48\textwidth]{figs/Diagram_of_meiosis.pdf}
+\caption{Example of a semi-formal diagram of Meoisis.\protect\footnotemark}
+\label{Fig:Meiosis}
+\end{wrapfigure}
+
+\footnotetext{CC-BY-SA 3.0 Marek Kultys, July 2, 2008.}
+
 \paragraph{Significance}
 
 \section{Related Work}
@@ -66,6 +75,12 @@ Please keep your abstract short, fifteen lines or less.  Remember that the MWS c
 
 \subsection{SIRS Model}
 
+H1N1 $R_0$ importance \cite{fraser2009pandemic}.
+
+Ebola $R_0$ importance \cite{fisman2014early}
+
+CDC Data \cite{cdc2019fluview}
+
 \subsection{Vital Dynamics}
 
 \section{Conclusions}
@@ -82,12 +97,7 @@ MWS seeks to build a community and share resources, so feel free to have a secti
 
 
 %\newcommand*{\doi}[1]{\href{http://dx.doi.org/#1}{doi: #1}}
-\begin{thebibliography}{9}
-
-\bibitem{lobel1979}Arnold Lobel.  Days with Frog and Toad. 1979.
-
-
-\end{thebibliography}
+\bibliography{AMIDOL-MWS}
 
 
 

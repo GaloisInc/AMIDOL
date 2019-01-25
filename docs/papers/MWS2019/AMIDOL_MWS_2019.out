@@ -1,13 +1,14 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
 \BOOKMARK [1][-]{section.2}{Related Work}{}% 2
-\BOOKMARK [1][-]{section.3}{Generating Formal Meaning from Informal Diagrams}{}% 3
-\BOOKMARK [2][-]{subsection.3.1}{Visual Domain Specific Languages}{section.3}% 4
-\BOOKMARK [2][-]{subsection.3.2}{Intermediate Representation}{section.3}% 5
-\BOOKMARK [2][-]{subsection.3.3}{Inference Engine}{section.3}% 6
-\BOOKMARK [1][-]{section.4}{Compartmental Model for Epidemiology}{}% 7
-\BOOKMARK [2][-]{subsection.4.1}{SIRS Model}{section.4}% 8
-\BOOKMARK [2][-]{subsection.4.2}{Vital Dynamics}{section.4}% 9
-\BOOKMARK [1][-]{section.5}{Conclusions}{}% 10
-\BOOKMARK [1][-]{section.6}{Future Work}{}% 11
-\BOOKMARK [1][-]{section.7}{Acknowledgments}{}% 12
-\BOOKMARK [1][-]{section.8}{Resources, web sites, etc.}{}% 13
+\BOOKMARK [2][-]{subsection.2.1}{Generating Formal Meaning from Informal Diagrams}{section.2}% 3
+\BOOKMARK [1][-]{section.3}{AMIDOL}{}% 4
+\BOOKMARK [2][-]{subsection.3.1}{Visual Domain Specific Languages}{section.3}% 5
+\BOOKMARK [2][-]{subsection.3.2}{Intermediate Representation}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.3}{Inference Engine}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{Compartmental Model for Epidemiology}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{SIRS Model}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{Vital Dynamics}{section.4}% 10
+\BOOKMARK [1][-]{section.5}{Conclusions}{}% 11
+\BOOKMARK [1][-]{section.6}{Future Work}{}% 12
+\BOOKMARK [1][-]{section.7}{Acknowledgments}{}% 13
+\BOOKMARK [1][-]{section.8}{Resources, web sites, etc.}{}% 14
