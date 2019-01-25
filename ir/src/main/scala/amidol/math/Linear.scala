@@ -3,11 +3,12 @@ package amidol.math
 import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 import scala.util._
+import scala.collection.mutable.WrappedArray
 
 // Dense representation of linear system
 case class LinearSystem(
-  variables: Array[Variable],      // dimension: N
-  coefficients: Array[Array[Expr]] // dimensions: N x N
+  variables: WrappedArray[Variable],      // dimension: N
+  coefficients: WrappedArray[Array[Expr]] // dimensions: N x N
 )
 
 object Linear {

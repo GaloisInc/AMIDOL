@@ -109,5 +109,60 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
   // TODO: do we want proper AST manipulation
   type Python = String
 
-  def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = ???
+  def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
+
+    // Extract the system
+    val eqns: Map[math.Variable, math.Expr] = {
+      var builder: Map[NodeId, math.Expr] = model.nodes.keys.map(_ -> (0: math.Expr)).toMap
+
+      for ((_, Edge(_, src, tgt, expr)) <- model.edges) {
+        builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
+        builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
+      }
+
+      builder
+        .map { case (nId, exp) => model.nodes(nId).stateVariable -> exp }
+        .toMap
+    }
+
+    for {
+      math.LinearSystem(variables, coeffs) <- Try(math.Linear.fromEquations(eqns).get)
+      n = variables.length   
+
+      // Python code
+      pythonCode: Python = s"""
+         |from numpy.linalg import solve
+         |import json
+         |import numpy as np
+         |
+         |# This is so that we can call "json.dumps" on Numpy arrays
+         |class NumpyEncoder(json.JSONEncoder):
+         |    def default(self, obj):
+         |        if isinstance(obj, np.ndarray):
+         |            return obj.tolist()
+         |        return json.JSONEncoder.default(self, obj)
+         |
+         |# Solve the matrix equation Ax = x using (A - I)x = 0
+         |A = np.array(${coeffs.map(_.mkString("[",",","]")).mkString("[",",","]")})
+         |I = np.identity($n)
+         |zero = np.zeros($n)
+         |x = solve(A - I, zero)
+         |
+         |print(json.dumps(x, cls=NumpyEncoder))
+         |""".stripMargin
+
+      // Run the code
+      outputArr <- {
+        Files.write(Paths.get("tmp_script.py"), pythonCode.getBytes)
+        println("Running `python3 tmp_script.py`...")
+        Try("python3 tmp_script.py".!!) // blocks until script returns
+      }
+
+      // Parse the output back out
+      arr <- Try(outputArr.parseJson.convertTo[Seq[Double]])
+    } yield Outputs(Seq(Equilibrium(
+      variables = (variables zip arr).map(vd => vd._1.prettyPrint() -> vd._2).toMap,
+      stable = None
+    )))
+  }
 }

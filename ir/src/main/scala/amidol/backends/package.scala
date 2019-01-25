@@ -79,7 +79,7 @@ package object backends {
       stable: Option[Boolean]
     )
     case class Outputs(
-      variables: Seq[Equilibrium]
+      equilibriums: Seq[Equilibrium]
     )
 
     implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat0(() => Inputs.apply())
