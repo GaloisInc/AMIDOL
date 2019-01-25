@@ -1,7 +1,7 @@
 digraph Tat_model {
 	rankdir = LR;
 	size = "8,5"
-	node [shape = square] k_basal, k_export, k1_translate, k2_translate, k_bind, k_unbind, k_acetyl, k_deacetyl, k_transact, d_GFP, d_Tat, d_CYT, d_NUC;
+	node [shape = diamond] k_basal, k_export, k1_translate, k2_translate, k_bind, k_unbind, k_acetyl, k_deacetyl, k_transact, d_GFP, d_Tat, d_CYT, d_NUC;
 	node [shape = circle];
 	LTR -> k_basal;
 	k_basal -> LTR;
