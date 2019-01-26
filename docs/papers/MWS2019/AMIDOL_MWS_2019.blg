@@ -3,44 +3,48 @@ Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
 The top-level auxiliary file: AMIDOL_MWS_2019.aux
 The style file: plain.bst
 Database file #1: AMIDOL-MWS.bib
-You've used 3 entries,
+Warning--empty journal in freire1990technique
+Warning--empty journal in movaghar1985performability
+Warning--empty journal in sanders1988construction
+You've used 20 entries,
             2118 wiz_defined-function locations,
-            515 strings with 4788 characters,
-and the built_in function-call counts, 1024 in all, are:
-= -- 88
-> -- 83
-< -- 0
-+ -- 33
-- -- 30
-* -- 73
-:= -- 196
-add.period$ -- 10
-call.type$ -- 3
-change.case$ -- 23
+            620 strings with 7540 characters,
+and the built_in function-call counts, 6560 in all, are:
+= -- 660
+> -- 281
+< -- 5
++ -- 115
+- -- 92
+* -- 425
+:= -- 1088
+add.period$ -- 65
+call.type$ -- 20
+change.case$ -- 103
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 27
-empty$ -- 57
-format.name$ -- 30
-if$ -- 195
+cite$ -- 23
+duplicate$ -- 262
+empty$ -- 523
+format.name$ -- 92
+if$ -- 1381
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 2
-newline$ -- 19
-num.names$ -- 6
-pop$ -- 27
+int.to.str$ -- 20
+missing$ -- 21
+newline$ -- 104
+num.names$ -- 40
+pop$ -- 118
 preamble$ -- 1
-purify$ -- 20
+purify$ -- 85
 quote$ -- 0
-skip$ -- 21
+skip$ -- 188
 stack$ -- 0
-substring$ -- 15
-swap$ -- 3
-text.length$ -- 0
+substring$ -- 400
+swap$ -- 57
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 12
-warning$ -- 0
-while$ -- 6
-width$ -- 4
-write$ -- 34
+type$ -- 76
+warning$ -- 3
+while$ -- 67
+width$ -- 22
+write$ -- 218
+(There were 3 warnings)

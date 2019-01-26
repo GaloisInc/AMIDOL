@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  25 JAN 2019 16:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  26 JAN 2019 13:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -423,17 +423,12 @@ File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
 <use figs/HIV-Tat-figure.pdf>
 Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 61.
 (pdftex.def)             Requested size: 225.4804pt x 161.4201pt.
-<figs/system-architecture-quad.pdf, id=62, 755.8583pt x 375.12807pt>
+<figs/system-architecture-quad.pdf, id=68, 755.8583pt x 375.12807pt>
 File: figs/system-architecture-quad.pdf Graphic file (type pdf)
 <use figs/system-architecture-quad.pdf>
 Package pdftex.def Info: figs/system-architecture-quad.pdf  used on input line 
-79.
+100.
 (pdftex.def)             Requested size: 469.75502pt x 233.13794pt.
-<figs/table.pdf, id=63, 724.7075pt x 416.55624pt>
-File: figs/table.pdf Graphic file (type pdf)
-<use figs/table.pdf>
-Package pdftex.def Info: figs/table.pdf  used on input line 96.
-(pdftex.def)             Requested size: 469.75502pt x 270.01468pt.
  [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
@@ -451,28 +446,34 @@ ple pdfs with page group included in a single page
 
 pdfTeX warning: pdflatex (file ./figs/system-architecture-quad.pdf): PDF inclus
 ion: multiple pdfs with page group included in a single page
->] (./AMIDOL_MWS_2019.bbl
-Underfull \hbox (badness 2293) in paragraph at lines 4--9
+>]
+<figs/table.pdf, id=212, 724.7075pt x 416.55624pt>
+File: figs/table.pdf Graphic file (type pdf)
+<use figs/table.pdf>
+Package pdftex.def Info: figs/table.pdf  used on input line 129.
+(pdftex.def)             Requested size: 469.75502pt x 270.01468pt.
+ [3 <./figs/table.pdf>] (./AMIDOL_MWS_2019.bbl
+Underfull \hbox (badness 1755) in paragraph at lines 16--21
 []\OT1/cmr/m/n/10.95 CDC.  Na-tional, re-gional, and state level out-pa-tient i
 ll-ness and vi-ral surveil-lance.
  []
 
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 131.
- [3 <./figs/table.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 131.
+[4])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 164.
+ [5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 164.
  (./AMIDOL_MWS_2019.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 131.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 131.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 164.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 164.
 Package rerunfilecheck Info: File `AMIDOL_MWS_2019.out' has not changed.
 (rerunfilecheck)             Checksum: 260675C2033FC73136E89AD1A4F83D28;855.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 131.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 164.
  ) 
 Here is how much of TeX's memory you used:
- 7707 strings out of 492649
- 115659 string characters out of 6129622
- 218343 words of memory out of 5000000
- 11495 multiletter control sequences out of 15000+600000
+ 7743 strings out of 492649
+ 116464 string characters out of 6129622
+ 219065 words of memory out of 5000000
+ 11512 multiletter control sequences out of 15000+600000
  10363 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,10n,43p,331b,448s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -484,10 +485,10 @@ sr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
 /local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/l
 ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/loca
 l/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on AMIDOL_MWS_2019.pdf (3 pages, 510404 bytes).
+Output written on AMIDOL_MWS_2019.pdf (5 pages, 526645 bytes).
 PDF statistics:
- 264 PDF objects out of 1000 (max. 8388607)
- 188 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
+ 313 PDF objects out of 1000 (max. 8388607)
+ 234 compressed objects within 3 object streams
+ 43 named destinations out of 1000 (max. 500000)
  133 words of extra memory for PDF output out of 10000 (max. 10000000)
 

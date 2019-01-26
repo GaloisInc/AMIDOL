@@ -11,6 +11,7 @@ $(PDF): $(SRC).tex $(BDB)
 	$(TEX) $(SRC).tex
 	$(BIB) $(SRC)
 	$(TEX) $(SRC).tex
+	$(TEX) $(SRC).tex
 
 clean:
 	rm $(PDF) $(SRC).aux $(SRC).bbl $(SRC).blg $(SRC).log $(SRC).out
