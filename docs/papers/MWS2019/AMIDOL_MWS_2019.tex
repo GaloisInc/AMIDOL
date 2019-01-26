@@ -1,6 +1,8 @@
 \documentclass[11pt]{article}
 \usepackage[parfill]{parskip}
 \usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
 \bibliographystyle{plain}
 \usepackage{amsmath}
@@ -9,10 +11,10 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 %%% Please add the author's last names
-\lhead{Borlaug, Hodgkin and Shannon}
+\lhead{Davis, Theriault, Orhai, Westbrook, and Wright}
 \rhead{Modeling the World's Systems, 2019}
 %%% Please use \cfoot{} to remove page numbers
-\cfoot{No page numbers! See latex source.}
+\cfoot{ }
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&
@@ -48,23 +50,96 @@ Please keep your abstract short, fifteen lines or less.  Remember that the MWS c
 
 \section{Introduction}
 
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figs/Diagram_of_meiosis.pdf}
+    \caption{Example of a semi-formal diagram of Meoisis. CC-BY-SA 3.0 Marek Kultys, July 2, 2008.}
+    \label{Fig:Meiosis}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figs/HIV-Tat-figure.pdf}
+    \caption{Example of a semi-formal diagram of the molecular model of the Tat transactivation circuit.}
+    \label{Fig:HIV-Tat}
+  \end{subfigure}
+  \caption{Examples of semi-formal diagrams drawn by domain experts to represent operational semantics and complex
+  system models.}
+  \label{Fig:Semi-formal}
+\end{figure}
+
+"We need to focus more
+on how information is managed in living
+systems and how this brings about higherlevel biological phenomena. There should be
+a concerted programme to investigate this,
+which will require both the development of
+the appropriate languages to describe information processing in biological systems and
+the generation of more effective methods to
+translate biochemical descriptions into the
+functioning of the logic circuits that underpin
+biological phenomena." \cite{nurse2008life}
+
+Abstract machines of systems biology \cite{cardelli2005abstract}
+
 \paragraph{Significance}
 
 \section{Related Work}
+
+Gene gate modeling in the stochastic pi-calculus \cite{blossey2008compositionality}
+
+State charts \cite{harel1987statecharts}
+
+Pi-calculus \cite{sangiorgi2003pi}
+
+Petri-net modeling of biological networks \cite{chaouiya2007petri}
 
 \subsection{Generating Formal Meaning from Informal Diagrams}
 
 \section{AMIDOL}
 
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/system-architecture-quad.pdf}
+  \caption{AMIDOL Architecture}
+\end{figure}
+
 \subsection{Visual Domain Specific Languages}
+
+Composition \cite{sanders1992dependability,sanders1988construction}
 
 \subsection{Intermediate Representation}
 
+Markov models \cite{howard2012dynamic}
+
+Petri-nets with inhibitor arcs \cite{chiola1993generalized}
+
+Stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic}
+
+\paragraph{State and reward variables}
+
+Reward structures \cite{qureshi1996algorithms,deavours1999efficient,ciardo1996well,sanders1991reduced}
+
+Instant of time... \cite{freire1990technique}
+
+\paragraph{Events}
+
+\paragraph{Input and output predicates}
+
 \subsection{Inference Engine}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/table.pdf}
+  \caption{}
+  \label{Fig:InferenceClasses}
+\end{figure}
 
 \section{Compartmental Model for Epidemiology}
 
 \subsection{SIRS Model}
+
+H1N1 $R_0$ importance \cite{fraser2009pandemic}.
+
+Ebola $R_0$ importance \cite{fisman2014early}
+
+CDC Data \cite{cdc2019fluview}
 
 \subsection{Vital Dynamics}
 
@@ -82,12 +157,7 @@ MWS seeks to build a community and share resources, so feel free to have a secti
 
 
 %\newcommand*{\doi}[1]{\href{http://dx.doi.org/#1}{doi: #1}}
-\begin{thebibliography}{9}
-
-\bibitem{lobel1979}Arnold Lobel.  Days with Frog and Toad. 1979.
-
-
-\end{thebibliography}
+\bibliography{AMIDOL-MWS}
 
 
 
