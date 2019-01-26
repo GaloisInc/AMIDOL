@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  26 JAN 2019 13:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  26 JAN 2019 13:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -301,6 +301,8 @@ Package: titlesec 2016/03/21 v2.10.2 Sectioning titles
 \titlewidthlast=\dimen138
 \titlewidthfirst=\dimen139
 )
+\mybox=\box30
+
 (/usr/local/texlive/2018/texmf-dist/tex/latex/preprint/authblk.sty
 Package: authblk 2001/02/27 1.3 (PWD)
 \affilsep=\skip58
@@ -312,26 +314,26 @@ Package: authblk 2001/02/27 1.3 (PWD)
 (./AMIDOL_MWS_2019.aux)
 \openout1 = `AMIDOL_MWS_2019.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
 
 (/usr/local/texlive/2018/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count120
 \scratchdimen=\dimen140
-\scratchbox=\box30
+\scratchbox=\box31
 \nofMPsegments=\count121
 \nofMParguments=\count122
 \everyMPshowfont=\toks23
@@ -395,8 +397,8 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\AtBeginShipoutBox=\box31
-Package hyperref Info: Link coloring OFF on input line 44.
+\AtBeginShipoutBox=\box32
+Package hyperref Info: Link coloring OFF on input line 53.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 
@@ -405,9 +407,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count126
 )
-LaTeX Info: Redefining \ref on input line 44.
-LaTeX Info: Redefining \pageref on input line 44.
-LaTeX Info: Redefining \nameref on input line 44.
+LaTeX Info: Redefining \ref on input line 53.
+LaTeX Info: Redefining \pageref on input line 53.
+LaTeX Info: Redefining \nameref on input line 53.
 
 (./AMIDOL_MWS_2019.out) (./AMIDOL_MWS_2019.out)
 \@outlinefile=\write3
@@ -416,18 +418,18 @@ LaTeX Info: Redefining \nameref on input line 44.
 <figs/Diagram_of_meiosis.pdf, id=60, 472.56221pt x 307.16408pt>
 File: figs/Diagram_of_meiosis.pdf Graphic file (type pdf)
 <use figs/Diagram_of_meiosis.pdf>
-Package pdftex.def Info: figs/Diagram_of_meiosis.pdf  used on input line 56.
+Package pdftex.def Info: figs/Diagram_of_meiosis.pdf  used on input line 65.
 (pdftex.def)             Requested size: 225.4804pt x 146.5653pt.
 <figs/HIV-Tat-figure.pdf, id=61, 478.6884pt x 342.67935pt>
 File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
 <use figs/HIV-Tat-figure.pdf>
-Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 61.
+Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 70.
 (pdftex.def)             Requested size: 225.4804pt x 161.4201pt.
 <figs/system-architecture-quad.pdf, id=68, 755.8583pt x 375.12807pt>
 File: figs/system-architecture-quad.pdf Graphic file (type pdf)
 <use figs/system-architecture-quad.pdf>
 Package pdftex.def Info: figs/system-architecture-quad.pdf  used on input line 
-100.
+111.
 (pdftex.def)             Requested size: 469.75502pt x 233.13794pt.
  [1
 
@@ -450,7 +452,7 @@ ion: multiple pdfs with page group included in a single page
 <figs/table.pdf, id=212, 724.7075pt x 416.55624pt>
 File: figs/table.pdf Graphic file (type pdf)
 <use figs/table.pdf>
-Package pdftex.def Info: figs/table.pdf  used on input line 129.
+Package pdftex.def Info: figs/table.pdf  used on input line 140.
 (pdftex.def)             Requested size: 469.75502pt x 270.01468pt.
  [3 <./figs/table.pdf>] (./AMIDOL_MWS_2019.bbl
 Underfull \hbox (badness 1755) in paragraph at lines 16--21
@@ -459,21 +461,21 @@ ll-ness and vi-ral surveil-lance.
  []
 
 [4])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 164.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 175.
  [5]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 164.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 175.
  (./AMIDOL_MWS_2019.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 164.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 164.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 175.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 175.
 Package rerunfilecheck Info: File `AMIDOL_MWS_2019.out' has not changed.
 (rerunfilecheck)             Checksum: 260675C2033FC73136E89AD1A4F83D28;855.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 164.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 175.
  ) 
 Here is how much of TeX's memory you used:
- 7743 strings out of 492649
- 116464 string characters out of 6129622
- 219065 words of memory out of 5000000
- 11512 multiletter control sequences out of 15000+600000
+ 7747 strings out of 492649
+ 116490 string characters out of 6129622
+ 219132 words of memory out of 5000000
+ 11516 multiletter control sequences out of 15000+600000
  10363 words of font info for 37 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,10n,43p,331b,448s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -485,7 +487,7 @@ sr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
 /local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/l
 ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/loca
 l/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on AMIDOL_MWS_2019.pdf (5 pages, 526645 bytes).
+Output written on AMIDOL_MWS_2019.pdf (5 pages, 526725 bytes).
 PDF statistics:
  313 PDF objects out of 1000 (max. 8388607)
  234 compressed objects within 3 object streams

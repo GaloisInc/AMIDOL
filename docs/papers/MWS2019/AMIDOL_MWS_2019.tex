@@ -24,6 +24,15 @@
 \titlespacing{\subsubsection}{0pt}{\parskip}{- .5\parskip}
 \newcommand{\closeup}{\setlength{\itemsep}{-4pt}}
 
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip2em
+  \hbox{}\nobreak\hfil(#1)%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}}
+  {\signed{\usebox\mybox}\end{quote}}
+
 \date{\vspace{-5ex}}
 % Use this to get rid of the date
 
@@ -67,6 +76,7 @@ Please keep your abstract short, fifteen lines or less.  Remember that the MWS c
   \label{Fig:Semi-formal}
 \end{figure}
 
+\begin{aquote}{\cite{nurse2008life} Paul Nurse (2008)}
 "We need to focus more
 on how information is managed in living
 systems and how this brings about higherlevel biological phenomena. There should be
@@ -76,7 +86,8 @@ the appropriate languages to describe information processing in biological syste
 the generation of more effective methods to
 translate biochemical descriptions into the
 functioning of the logic circuits that underpin
-biological phenomena." \cite{nurse2008life}
+biological phenomena."
+\end{aquote}
 
 Abstract machines of systems biology \cite{cardelli2005abstract}
 
