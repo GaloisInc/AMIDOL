@@ -5,6 +5,7 @@ import Draggable
 import Draggable.Events exposing (onClick, onDragBy, onDragStart)
 import Html exposing (Html)
 import Html.Attributes
+import Html.Events
 import Math.Vector2 as Vector2 exposing (Vec2, getX, getY)
 import Svg exposing (Svg)
 import Svg.Attributes as Attr
@@ -41,7 +42,8 @@ type alias Node =
 
 
 type alias Link =
-    { source : Id
+    { id : Id
+    , source : Id
     , target : Id
     , label : String
     }
@@ -60,11 +62,6 @@ makeNode id ( x, y ) svgfile label =
 dragNodeBy : Vec2 -> Node -> Node
 dragNodeBy delta node =
     { node | position = node.position |> Vector2.add delta }
-
-
-toggleClicked : Node -> Node
-toggleClicked node =
-    { node | clicked = not node.clicked }
 
 
 type alias NodeGroup =
@@ -111,12 +108,37 @@ toggleNodeClicked id group =
     let
         possiblyToggleNode node =
             if node.id == id then
-                toggleClicked node
+                { node | clicked = not node.clicked }
 
             else
                 node
     in
     { group | idleNodes = group.idleNodes |> List.map possiblyToggleNode }
+
+
+changeNodeLabel : Id -> String -> NodeGroup -> NodeGroup
+changeNodeLabel id newLabel group =
+    let
+        possiblyChangeLabel node =
+            if node.id == id then
+                { node | label = newLabel }
+
+            else
+                node
+    in
+    { group | idleNodes = group.idleNodes |> List.map possiblyChangeLabel }
+
+
+changeLinkLabel : Id -> String -> List Link -> List Link
+changeLinkLabel id newLabel =
+    List.map
+        (\link ->
+            if link.id == id then
+                { link | label = newLabel }
+
+            else
+                link
+        )
 
 
 type alias Model =
@@ -132,6 +154,8 @@ type Msg
     | StartDragging Id
     | ToggleNodeClicked Id
     | StopDragging
+    | ChangeNodeLabel Id String
+    | ChangeLinkLabel Id String
 
 
 initialNodes : NodeGroup
@@ -146,8 +170,8 @@ initialNodes =
 
 initialLinks : List Link
 initialLinks =
-    [ Link 1 2 "S --> I"
-    , Link 2 3 "I --> R"
+    [ Link 1 1 2 "S --> I"
+    , Link 2 2 3 "I --> R"
     ]
 
 
@@ -175,7 +199,7 @@ dragConfig =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ nodes } as model) =
+update msg ({ nodes, links } as model) =
     case msg of
         OnDragBy delta ->
             ( { model | nodes = nodes |> dragActiveBy delta }, Cmd.none )
@@ -191,6 +215,12 @@ update msg ({ nodes } as model) =
 
         DragMsg dragMsg ->
             Draggable.update dragConfig dragMsg model
+
+        ChangeNodeLabel id newLabel ->
+            ( { model | nodes = nodes |> changeNodeLabel id newLabel }, Cmd.none )
+
+        ChangeLinkLabel id newLabel ->
+            ( { model | links = links |> changeLinkLabel id newLabel }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -213,10 +243,9 @@ view { nodes, links } =
         []
         [ Html.p
             [ Html.Attributes.style "padding-left" "8px" ]
-            [ Html.text "Drag any icon around." ]
+            [ Html.text "Drag nodes around, click labels to edit" ]
         , Svg.svg
-            [ Attr.style "height: 100vh; width: 100vw; position: fixed;"
-            ]
+            [ Attr.style "height: 100vh; width: 100vw; position: fixed;" ]
             [ background
             , nodesView nodes
             , linksView links nodes
@@ -234,17 +263,40 @@ nodesView nodeGroup =
 
 nodeView : Node -> Svg Msg
 nodeView { id, position, clicked, image, label } =
-    Svg.image
-        [ Attr.xlinkHref image
-        , Attr.width <| String.fromFloat <| getX nodeSize
-        , Attr.height <| String.fromFloat <| getY nodeSize
-        , Attr.x <| String.fromFloat <| getX position
-        , Attr.y <| String.fromFloat <| getY position
-        , Attr.cursor "move"
-        , Draggable.mouseTrigger id DragMsg
-        , onMouseUp StopDragging
-        ]
+    -- Svg.image
+    Svg.g
         []
+        [ Svg.circle
+            [ Attr.r "20"
+            , Attr.fill "lightgray"
+            , Attr.stroke "black"
+            , Attr.strokeWidth "2"
+
+            -- [ Attr.xlinkHref image
+            -- , Attr.width <| String.fromFloat <| getX nodeSize
+            -- , Attr.height <| String.fromFloat <| getY nodeSize
+            , Attr.cx <| String.fromFloat <| getX position -- .x
+            , Attr.cy <| String.fromFloat <| getY position -- .y
+            , Attr.cursor "move"
+            , Draggable.mouseTrigger id DragMsg
+            , onMouseUp StopDragging
+            ]
+            []
+        , Svg.foreignObject
+            [ Attr.x <| String.fromFloat <| getX position
+            , Attr.y <| String.fromFloat <| getY position
+            , Attr.width "40"
+            , Attr.height "25"
+            ]
+            [ Html.input
+                [ Html.Attributes.type_ "text"
+                , Html.Attributes.placeholder "???"
+                , Html.Attributes.value label
+                , Html.Events.onInput <| ChangeNodeLabel id
+                ]
+                []
+            ]
+        ]
 
 
 linksView : List Link -> NodeGroup -> Svg Msg
@@ -280,7 +332,7 @@ linksView links nodes =
 
 
 linkView : List Node -> Link -> Svg Msg
-linkView nodeList { source, target, label } =
+linkView nodeList { id, source, target, label } =
     case
         ( List.filter (\node -> node.id == source) nodeList
         , List.filter (\node -> node.id == target) nodeList
@@ -289,22 +341,44 @@ linkView nodeList { source, target, label } =
         ( [ src ], [ tgt ] ) ->
             let
                 center node =
-                    Vector2.add node.position <|
-                        Vector2.scale 0.5 nodeSize
+                    node.position
+
+                -- Vector2.add node.position <|
+                --     Vector2.scale 0.5 nodeSize
+                midpoint =
+                    Vector2.scale 0.5 <|
+                        Vector2.add src.position tgt.position
             in
-            Svg.line
-                [ Attr.x1 <| String.fromFloat <| getX <| center src
-                , Attr.y1 <| String.fromFloat <| getY <| center src
-                , Attr.x2 <| String.fromFloat <| getX <| center tgt
-                , Attr.y2 <| String.fromFloat <| getY <| center tgt
-                , Attr.stroke "red"
-                , Attr.strokeWidth "3"
-                , Attr.markerEnd "url(#arrowhead)"
-                ]
+            Svg.g
                 []
+                [ Svg.line
+                    [ Attr.x1 <| String.fromFloat <| getX <| center src
+                    , Attr.y1 <| String.fromFloat <| getY <| center src
+                    , Attr.x2 <| String.fromFloat <| getX <| center tgt
+                    , Attr.y2 <| String.fromFloat <| getY <| center tgt
+                    , Attr.stroke "red"
+                    , Attr.strokeWidth "3"
+                    , Attr.markerEnd "url(#arrowhead)"
+                    ]
+                    []
+                , Svg.foreignObject
+                    [ Attr.x <| String.fromFloat <| getX midpoint
+                    , Attr.y <| String.fromFloat <| getY midpoint
+                    , Attr.width "80"
+                    , Attr.height "25"
+                    ]
+                    [ Html.input
+                        [ Html.Attributes.type_ "text"
+                        , Html.Attributes.placeholder "???"
+                        , Html.Attributes.value label
+                        , Html.Events.onInput <| ChangeLinkLabel id
+                        ]
+                        []
+                    ]
+                ]
 
         _ ->
-            -- the link ends don't match a unique node id
+            -- link ends don't match node ids, so show nothing
             Svg.g [] []
 
 
