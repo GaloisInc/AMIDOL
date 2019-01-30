@@ -1,0 +1,211 @@
+\documentclass[11pt]{article}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\bibliographystyle{plain}
+\usepackage{amsmath}
+\usepackage{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%%% Please add the author's last names
+\lhead{Galois TA2 AMIDOL}
+\rhead{ASKE Milestone 2}
+%%% Please use \cfoot{} to remove page numbers
+\cfoot{ }
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&
+\usepackage{titlesec}
+\titlespacing{\section}{0pt}{\parskip}{-.5\parskip}
+\titlespacing{\subsection}{0pt}{\parskip}{- .5\parskip}
+\titlespacing{\subsubsection}{0pt}{\parskip}{- .5\parskip}
+\newcommand{\closeup}{\setlength{\itemsep}{-4pt}}
+
+\newcommand{\amidol}{\textsc{AMIDOL}}
+
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip2em
+  \hbox{}\nobreak\hfil(#1)%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}}
+  {\signed{\usebox\mybox}\end{quote}}
+
+\date{\vspace{-5ex}}
+% Use this to get rid of the date
+
+\usepackage{authblk}
+\author[1]{Eric Davis}
+\author[1]{Alec Theriault}
+\author[1]{Max Orhai}
+\author[1]{Eddy Westbrook}
+\author[1]{Ryan Wright}
+\affil[1]{Galois, Inc}
+
+%\setcounter{page}{0}
+
+
+
+\title{ASKE Milestone 2 for AMIDOL}
+
+\begin{document}
+\maketitle
+\vspace{10pt}
+
+\section{Introduction}
+
+Complex system analysis currently requires teams of domain experts, data scientists, mathematicians, and software engineers to support the entire life cycle of model-based inference.  The models that result are often bespoke, lack generalizability, are not performable, and make it difficult to synthesize actionable knowledge and policies from their raw outputs.  In this report we describe the current prototype system for AMIDOL: the Agile Metamodel Interface using Domain-specific Ontological Languages, a project that aims to reduce the overhead associated with the model life cycle and enables domain experts and scientists to more easily build, maintain, and reason over models in robust and highly performable ways, and to respond rapidly to emerging crises in an agile and impactful way.  We discuss the current design principles of the AMIDOL prototype, its capabilities, plans for development, and formal aspects of the system.
+
+AMIDOL is designed to support models in a number of scientific, physical, social, and hybrid domains by allowing domain experts to construct meta-models in a novel way, using visual domain specific ontological languages (VDSOLs).  These VDSOLs utilize an underlying intermediate abstract representation to give formal meaning to the intuitive process diagrams scientists and domain experts normally create.  AMIDOL's abstract representations are executable, allowing AMIDOL's inference engine to execute prognostic queries on reward models and communicate results to domain experts. AMIDOL binds results to the original ontologies providing more explainability when compared to conventional methods.
+
+AMIDOL addresses the problem of machine-assisted inference with two high-level goals:
+
+\begin{enumerate}
+\item improving the ability of domain experts to build and maintain models and
+\item improving the explainability and agility of the results of machine-inference.
+\end{enumerate}
+
+Our techniques for achieving these goals incorporate abstract functional representations, intermediate languages, and semantic knowledge representation and binding in graph structures into traditional machine learning and model solution techniques.
+
+\section{VDSOL Definition}
+\subsection{Basic Language Properties}
+\paragraph{Nouns}:
+
+\paragraph{Verbs}:
+
+\subsection{Composability of Atomic Models}
+
+\subsection{UI/UX Design}
+
+\subsection{JSON Export Language}
+
+\section{Abstract Intermediate Representation}
+
+\subsection{Language Properties}
+\paragraph{State variables}:
+
+\paragraph{Events}:
+
+\paragraph{Input predicates}:
+
+\paragraph{Output predicates}:
+
+\paragraph{Representation}:
+
+\section{Inference Engine}
+\paragraph{ODE Solver}:
+
+\paragraph{Numerical Solution}:
+
+\paragraph{Discrete Event Simulation}:
+
+\section{Reward Variables and Reward Models}
+\subsection{Rate Reward Variables}
+
+\subsection{Impulse Reward Variables}
+
+\subsection{Temporal Characteristics of Reward Variables}
+
+\subsection{Translation of Reward Variables to IR}
+
+\subsection{Expressions on Reward Variables}
+
+\section{Design of Experiments and Results Database}
+\subsection{Results Database}
+
+\subsection{Prognostic Queries}
+
+\subsection{Model Comparison}
+
+\subsection{Design of Experiments}
+
+\subsection{Conterfactural Exploration, Planning, Crisis Response}
+
+\subsection{Correctness and Uncertainty}
+
+\subsection{Communication of Results}
+
+\section{Domain Models}
+
+We are currently testing AMIDOL using several domain models whose primary domain is epidemiology.  We have selected a range of models to test different scenarios, use cases, and assumptions to aid in the prototype design of AMIDOL.
+
+\subsection{SIS/SIRS}
+
+The SIS/SIRS model is one of the simplest models we have deployed for testing with AMIDOL, with the advantage that the model itself is relatively simple, but utlizes real data, and can be used to answer important epidemiological questions.  The primary objective of the SIS/SIRS model is to identify the \emph{basic reproduction number} associated with an infection, also known as $R_0$, or \emph{r nought}.  $R_0$ was first used in 1952 when studying malaria and is a measure of the potential for an infection to spread through a population.  If $R_0 < 1$, then the infection will die out in the long run.  If $R_0 > 1$, then the infection will spread.  The higher the value of $R_0$, the more difficult it is to control an epidemic.
+
+Given a 100\% effective vaccine, the proportion of the population that needs to be vaccinated is $1 - 1/R_0$, meaning that $R_0$ can be used to plan disease response.  This assumes a homogenous population, and contains many other simplifying assumptions and does not generalize to more complex numbers.  We have several main goals for SIS/SIRS models:
+
+\begin{enumerate}
+\item Fitting the models for the data in hindsight to perform goodness of fit estimates.
+\item Finding the \emph{retrospective} $R_0$ estimate over the entire epidemic curve.
+\item Finding the \emph{real-time} $R_0$ estimate while the epidemic is ongoing.
+\end{enumerate}
+
+\paragraph{Data}: For these models we will be working with the WHO/NREVSS (World Health Organization/National Respiratory and Enteric Virus Surveillance System) data sets at the resolution of Department of Human and Health Services designated regions.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/regionsmap.pdf}
+\caption{Department of Human and Health Services designated regions.}
+\label{Fig:Regions}
+\end{figure}
+
+Using data from a given region, and a given strain, we will estimate R0 for the epidemic curve as shown in Figure \ref{Fig:R0}
+
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/2007-2008-SIRS.pdf}
+\caption{2007 - 2008 Flu Season}
+\label{Fig:R0}
+\end{figure}
+
+\subsection{Artificial Chemistry}
+
+\subsection{Viral Infection Model}
+
+\begin{figure}
+\begin{subfigure}[b]{\textwidth}
+\includegraphics[width=\textwidth]{figs/HIV-Tat-figure.pdf}
+\caption{Semi-formal diagram of the molecular model of the Tat transactivation circuit.}
+\label{Fig:HIV-Tat}
+\end{subfigure}
+\begin{subfigure}[b]{\textwidth}
+\includegraphics[width=\textwidth]{figs/TatModel.pdf}
+\caption{Simple noun (circle) and verb (square) representation of Tat model without ambiguity and aliasing.}
+\label{Fig:HIV-Tat-VDSOL}
+\end{subfigure}
+\end{figure}
+
+Note the use of multiple "Tat" symbols in Figure \ref{Fig:HIV-Tat}. Sometimes scientists draw the same symbol multiple places as an "alias" for the same underlying state variable.
+
+\begin{eqnarray}
+LTR \overset{k_{basal}}{\rightarrow} LTR + nRNA\\
+nRNA \overset{k_{export}}{\rightarrow} cRNA\\
+  cRNA \overset{k1_{translate}}{\rightarrow} GFP + cRNA\\
+  cRNA \overset{k2_{translate}}{\rightarrow} Tat + cRNA\\
+  Tat \overset{k_{bind}/k_{unbind}}{\leftrightarrow} pTEFb_d\\
+  LTR + pTEFb_d \overset{k_{acetyl}/k_{deacetly}}{\leftrightarrow} pTEFb_a\\
+  pTEFb_a \overset{k_{transact}}{\leftrightarrow} LTR + nRNA + Tat\\
+  GFP \overset{d_{GFP}}{\rightarrow} \emptyset\\
+  Tat \overset{d_{Tat}}{\rightarrow} \emptyset\\
+  cRNA \overset{d_{CYT}}{\rightarrow} \emptyset\\
+  nRNA \overset{d_{NUC}}{\rightarrow} \emptyset
+\end{eqnarray}
+
+\subsection{H5N1 Model}
+
+\subsection{H3N2 Model}
+
+\section{User Stories}
+
+\section{Code Repositories and Current Builds}
+
+\section{Roadmap for Future Development}
+
+\bibliography{AMIDOL-MWS}
+
+
+
+\end{document}

@@ -1,0 +1,32 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{VDSOL Definition}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Basic Language Properties}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Composability of Atomic Models}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{UI/UX Design}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{JSON Export Language}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{Abstract Intermediate Representation}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Language Properties}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{Inference Engine}{}% 9
+\BOOKMARK [1][-]{section.5}{Reward Variables and Reward Models}{}% 10
+\BOOKMARK [2][-]{subsection.5.1}{Rate Reward Variables}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.2}{Impulse Reward Variables}{section.5}% 12
+\BOOKMARK [2][-]{subsection.5.3}{Temporal Characteristics of Reward Variables}{section.5}% 13
+\BOOKMARK [2][-]{subsection.5.4}{Translation of Reward Variables to IR}{section.5}% 14
+\BOOKMARK [2][-]{subsection.5.5}{Expressions on Reward Variables}{section.5}% 15
+\BOOKMARK [1][-]{section.6}{Design of Experiments and Results Database}{}% 16
+\BOOKMARK [2][-]{subsection.6.1}{Results Database}{section.6}% 17
+\BOOKMARK [2][-]{subsection.6.2}{Prognostic Queries}{section.6}% 18
+\BOOKMARK [2][-]{subsection.6.3}{Model Comparison}{section.6}% 19
+\BOOKMARK [2][-]{subsection.6.4}{Design of Experiments}{section.6}% 20
+\BOOKMARK [2][-]{subsection.6.5}{Conterfactural Exploration, Planning, Crisis Response}{section.6}% 21
+\BOOKMARK [2][-]{subsection.6.6}{Correctness and Uncertainty}{section.6}% 22
+\BOOKMARK [2][-]{subsection.6.7}{Communication of Results}{section.6}% 23
+\BOOKMARK [1][-]{section.7}{Domain Models}{}% 24
+\BOOKMARK [2][-]{subsection.7.1}{SIS/SIRS}{section.7}% 25
+\BOOKMARK [2][-]{subsection.7.2}{Artificial Chemistry}{section.7}% 26
+\BOOKMARK [2][-]{subsection.7.3}{Viral Infection Model}{section.7}% 27
+\BOOKMARK [2][-]{subsection.7.4}{H5N1 Model}{section.7}% 28
+\BOOKMARK [2][-]{subsection.7.5}{H3N2 Model}{section.7}% 29
+\BOOKMARK [1][-]{section.8}{User Stories}{}% 30
+\BOOKMARK [1][-]{section.9}{Code Repositories and Current Builds}{}% 31
+\BOOKMARK [1][-]{section.10}{Roadmap for Future Development}{}% 32

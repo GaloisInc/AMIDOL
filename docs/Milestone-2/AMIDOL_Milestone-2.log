@@ -2,8 +2,8 @@ This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**AMIDOL_MWS_2019.tex
-(./AMIDOL_MWS_2019.tex
+**AMIDOL_Milestone-2.tex
+(./AMIDOL_Milestone-2.tex
 LaTeX2e <2018-04-01> patch level 2
 Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/article.cls
@@ -311,8 +311,8 @@ Package: authblk 2001/02/27 1.3 (PWD)
 \c@authors=\count118
 \c@affil=\count119
 )
-(./AMIDOL_MWS_2019.aux)
-\openout1 = `AMIDOL_MWS_2019.aux'.
+(./AMIDOL_Milestone-2.aux)
+\openout1 = `AMIDOL_Milestone-2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
 LaTeX Font Info:    ... okay on input line 55.
@@ -411,20 +411,10 @@ LaTeX Info: Redefining \ref on input line 55.
 LaTeX Info: Redefining \pageref on input line 55.
 LaTeX Info: Redefining \nameref on input line 55.
 
-(./AMIDOL_MWS_2019.out) (./AMIDOL_MWS_2019.out)
+(./AMIDOL_Milestone-2.out) (./AMIDOL_Milestone-2.out)
 \@outlinefile=\write3
-\openout3 = `AMIDOL_MWS_2019.out'.
+\openout3 = `AMIDOL_Milestone-2.out'.
 
-<figs/Diagram_of_meiosis.pdf, id=60, 472.56221pt x 307.16408pt>
-File: figs/Diagram_of_meiosis.pdf Graphic file (type pdf)
-<use figs/Diagram_of_meiosis.pdf>
-Package pdftex.def Info: figs/Diagram_of_meiosis.pdf  used on input line 71.
-(pdftex.def)             Requested size: 225.4804pt x 146.5653pt.
-<figs/HIV-Tat-figure.pdf, id=61, 478.6884pt x 342.67935pt>
-File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
-<use figs/HIV-Tat-figure.pdf>
-Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 76.
-(pdftex.def)             Requested size: 225.4804pt x 161.4201pt.
  [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
@@ -434,62 +424,67 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[2 <./figs/Diagram_of_meiosis.pdf> <./figs/HIV-Tat-figure.pdf
+[2]
+<figs/regionsmap.pdf, id=149, 706.64pt x 486.81876pt>
+File: figs/regionsmap.pdf Graphic file (type pdf)
+<use figs/regionsmap.pdf>
+Package pdftex.def Info: figs/regionsmap.pdf  used on input line 151.
+(pdftex.def)             Requested size: 469.75502pt x 323.6264pt.
+ [3] [4 <./figs/regionsmap.pdf>]
+<figs/2007-2008-SIRS.pdf, id=173, 729.92903pt x 388.55966pt>
+File: figs/2007-2008-SIRS.pdf Graphic file (type pdf)
+<use figs/2007-2008-SIRS.pdf>
+Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 159.
+(pdftex.def)             Requested size: 469.75502pt x 250.0647pt.
+<figs/HIV-Tat-figure.pdf, id=174, 478.6884pt x 342.67935pt>
+File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
+<use figs/HIV-Tat-figure.pdf>
+Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 170.
+(pdftex.def)             Requested size: 469.75502pt x 336.30452pt.
+<figs/TatModel.pdf, id=175, 650.43pt x 191.71625pt>
+File: figs/TatModel.pdf Graphic file (type pdf)
+<use figs/TatModel.pdf>
+Package pdftex.def Info: figs/TatModel.pdf  used on input line 175.
+(pdftex.def)             Requested size: 469.75502pt x 138.4656pt.
+ (./AMIDOL_Milestone-2.bbl
 
-pdfTeX warning: pdflatex (file ./figs/HIV-Tat-figure.pdf): PDF inclusion: multi
-ple pdfs with page group included in a single page
->]
-<figs/system-architecture-quad.pdf, id=186, 755.8583pt x 375.12807pt>
-File: figs/system-architecture-quad.pdf Graphic file (type pdf)
-<use figs/system-architecture-quad.pdf>
-Package pdftex.def Info: figs/system-architecture-quad.pdf  used on input line 
-122.
-(pdftex.def)             Requested size: 469.75502pt x 233.13794pt.
-<figs/table.pdf, id=198, 724.7075pt x 416.55624pt>
-File: figs/table.pdf Graphic file (type pdf)
-<use figs/table.pdf>
-Package pdftex.def Info: figs/table.pdf  used on input line 151.
-(pdftex.def)             Requested size: 469.75502pt x 270.01468pt.
- [3 <./figs/system-architecture-quad.pdf>] (./AMIDOL_MWS_2019.bbl [4 <./figs/ta
-ble.pdf>]
-Underfull \hbox (badness 1755) in paragraph at lines 16--21
-[]\OT1/cmr/m/n/10.95 CDC.  Na-tional, re-gional, and state level out-pa-tient i
-ll-ness and vi-ral surveil-lance.
- []
+LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
-[5])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 186.
- [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 186.
- (./AMIDOL_MWS_2019.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 186.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 186.
-Package rerunfilecheck Info: File `AMIDOL_MWS_2019.out' has not changed.
-(rerunfilecheck)             Checksum: 260675C2033FC73136E89AD1A4F83D28;855.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 186.
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 211.
+ [5 <./figs/2007-2008-SIRS.pdf>] [6 <./figs/HIV-Tat-figure.pdf> <./figs/TatMode
+l.pdf>] [7]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 211.
+ (./AMIDOL_Milestone-2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 211.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 211.
+Package rerunfilecheck Info: File `AMIDOL_Milestone-2.out' has not changed.
+(rerunfilecheck)             Checksum: D0F82B2DE4BF47A7D4E59E9C156DDC58;2206.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 211.
  ) 
 Here is how much of TeX's memory you used:
- 7754 strings out of 492649
- 116570 string characters out of 6129622
- 220143 words of memory out of 5000000
- 11520 multiletter control sequences out of 15000+600000
- 10965 words of font info for 39 fonts, out of 8000000 for 9000
+ 7751 strings out of 492649
+ 116110 string characters out of 6129622
+ 219162 words of memory out of 5000000
+ 11513 multiletter control sequences out of 15000+600000
+ 10055 words of font info for 36 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,11n,43p,1498b,446s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,11n,43p,963b,436s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
-</usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
-sr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
-/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/l
-ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/loca
-l/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local
-/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on AMIDOL_MWS_2019.pdf (6 pages, 554848 bytes).
+/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></u
+sr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
+/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/l
+ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loc
+al/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local
+/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/te
+xlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/tex
+live/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on AMIDOL_Milestone-2.pdf (7 pages, 757828 bytes).
 PDF statistics:
- 337 PDF objects out of 1000 (max. 8388607)
- 252 compressed objects within 3 object streams
- 45 named destinations out of 1000 (max. 500000)
- 133 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 300 PDF objects out of 1000 (max. 8388607)
+ 253 compressed objects within 3 object streams
+ 49 named destinations out of 1000 (max. 500000)
+ 277 words of extra memory for PDF output out of 10000 (max. 10000000)
 
