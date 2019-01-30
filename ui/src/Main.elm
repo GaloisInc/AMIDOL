@@ -71,6 +71,23 @@ type alias NodeGroup =
     }
 
 
+addNode : NodeGroup -> NodeGroup
+addNode ({ idleNodes } as group) =
+    let
+        newId =
+            case List.maximum <| List.map (\{ id } -> id) idleNodes of
+                Just n ->
+                    1 + n
+
+                Nothing ->
+                    0
+
+        addFreshNode nodes =
+            makeNode newId ( 30, 30 ) "" "" :: nodes
+    in
+    { group | idleNodes = addFreshNode idleNodes }
+
+
 allNodes : NodeGroup -> List Node
 allNodes { movingNode, idleNodes } =
     movingNode
@@ -156,6 +173,7 @@ type Msg
     | StopDragging
     | ChangeNodeLabel Id String
     | ChangeLinkLabel Id String
+    | AddNode
 
 
 initialNodes : NodeGroup
@@ -222,6 +240,9 @@ update msg ({ nodes, links } as model) =
         ChangeLinkLabel id newLabel ->
             ( { model | links = links |> changeLinkLabel id newLabel }, Cmd.none )
 
+        AddNode ->
+            ( { model | nodes = nodes |> addNode }, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions { drag } =
@@ -240,10 +261,16 @@ nodeSize =
 view : Model -> Html Msg
 view { nodes, links } =
     Html.div
-        []
+        [ Html.Attributes.style "padding-left" "8px" ]
         [ Html.p
-            [ Html.Attributes.style "padding-left" "8px" ]
+            []
             [ Html.text "Drag nodes around, click labels to edit" ]
+        , Html.p
+            []
+            [ Html.button
+                [ Html.Events.onClick AddNode ]
+                [ Html.text "Add node" ]
+            ]
         , Svg.svg
             [ Attr.style "height: 100vh; width: 100vw; position: fixed;" ]
             [ background
