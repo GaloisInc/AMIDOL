@@ -72,10 +72,17 @@ AMIDOL addresses the problem of machine-assisted inference with two high-level g
 Our techniques for achieving these goals incorporate abstract functional representations, intermediate languages, and semantic knowledge representation and binding in graph structures into traditional machine learning and model solution techniques.
 
 \section{VDSOL Definition}
-\subsection{Basic Language Properties}
-\paragraph{Nouns}:
 
-\paragraph{Verbs}:
+AMIDOL is designed to support the definition of ontological languages which describe systems as formal objects.  Objects for a given domain are organized into \emph{toolkits} consisting of \textbf{nouns} and \textbf{verbs}.  Nouns define elements which make up the state space of a system, and verbs define transitions in the state space.  VDSOLs enable domain experts to build models of complex systems which are easier to maintain, validate, and verify, and avoid common pitfalls of monolithic and hand-coded implementations.  To provide visual context for modelers, AMIDOL supports the use of arbitrary scalable vector graphics (SVGs) to represent nouns and verbs, and features a canvas to draw nouns and verbs with labeled arcs connecting them to provide context.
+
+The goal of AMIDOL's VDSOLs is to enable domain experts to define their models using an interface and visual language similar to the semi-formal diagrams they use today, but with the advantage that AMIDOLs VDSOLs have formal, executable, meaning.  VDSOLs provide a performable, reusable, system for scientists to use when attempting to derive insights relating to the complex systems they represent.
+
+VDSOLs in AMIDOL are constructed using a graphical user interface implemented using asynchronous javascript and XML to build a responsive interface to define models of complex systems, reward models used to explore and understand complex system behavior, and to interact with the results of solvers implemented in the Machine-Assisted Inference Engine.
+
+\subsection{Basic Language Properties}
+\paragraph{Nouns}: Nouns in AMIDOL represent portions of the model associated with its state space.  The AMIDOL IR translates noun elements into state variables and constants.  Nouns are represented by custom SVGs, and can be connected to verbs which act upon them.  Users can set the label associated with a noun, which impacts the naming of state variables associated with the noun.
+
+\paragraph{Verbs}: Verbs in AMIDOL represent activities or events which can occur in a model, and which act upon nouns changing the state of the system.  Verbs are associated with a few mandatory and optional properties which impact their translation into the intermediate representation.  All verbs have a mandatory rate which defines the rate at which the associated event occurs.  This rate can be dependent on nouns in the model.  Verbs have an optional enabling condition which can be dependent on nouns in the model.  The enabling condition defines that state variable bounds during which the associated event is enabled, and can be specified as an algebraic expression over state variables associated with nouns in a model.  Verbs also have an optional output function which defines which nouns are impacted when the associated event fires.
 
 \subsection{Composability of Atomic Models}
 

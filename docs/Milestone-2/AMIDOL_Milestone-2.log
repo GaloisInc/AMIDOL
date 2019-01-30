@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  30 JAN 2019 08:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  30 JAN 2019 09:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -424,48 +424,47 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[2]
-<figs/regionsmap.pdf, id=149, 706.64pt x 486.81876pt>
+[2] [3]
+<figs/regionsmap.pdf, id=157, 706.64pt x 486.81876pt>
 File: figs/regionsmap.pdf Graphic file (type pdf)
 <use figs/regionsmap.pdf>
-Package pdftex.def Info: figs/regionsmap.pdf  used on input line 151.
+Package pdftex.def Info: figs/regionsmap.pdf  used on input line 158.
 (pdftex.def)             Requested size: 469.75502pt x 323.6264pt.
- [3] [4 <./figs/regionsmap.pdf>]
-<figs/2007-2008-SIRS.pdf, id=173, 729.92903pt x 388.55966pt>
+<figs/2007-2008-SIRS.pdf, id=159, 729.92903pt x 388.55966pt>
 File: figs/2007-2008-SIRS.pdf Graphic file (type pdf)
 <use figs/2007-2008-SIRS.pdf>
-Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 159.
+Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 166.
 (pdftex.def)             Requested size: 469.75502pt x 250.0647pt.
-<figs/HIV-Tat-figure.pdf, id=174, 478.6884pt x 342.67935pt>
+<figs/HIV-Tat-figure.pdf, id=160, 478.6884pt x 342.67935pt>
 File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
 <use figs/HIV-Tat-figure.pdf>
-Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 170.
+Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 177.
 (pdftex.def)             Requested size: 469.75502pt x 336.30452pt.
-<figs/TatModel.pdf, id=175, 650.43pt x 191.71625pt>
+<figs/TatModel.pdf, id=161, 650.43pt x 191.71625pt>
 File: figs/TatModel.pdf Graphic file (type pdf)
 <use figs/TatModel.pdf>
-Package pdftex.def Info: figs/TatModel.pdf  used on input line 175.
+Package pdftex.def Info: figs/TatModel.pdf  used on input line 182.
 (pdftex.def)             Requested size: 469.75502pt x 138.4656pt.
- (./AMIDOL_Milestone-2.bbl
+ [4 <./figs/regionsmap.pdf>] (./AMIDOL_Milestone-2.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 211.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 218.
  [5 <./figs/2007-2008-SIRS.pdf>] [6 <./figs/HIV-Tat-figure.pdf> <./figs/TatMode
 l.pdf>] [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 211.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 218.
  (./AMIDOL_Milestone-2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 211.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 211.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 218.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 218.
 Package rerunfilecheck Info: File `AMIDOL_Milestone-2.out' has not changed.
 (rerunfilecheck)             Checksum: D0F82B2DE4BF47A7D4E59E9C156DDC58;2206.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 211.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 218.
  ) 
 Here is how much of TeX's memory you used:
  7751 strings out of 492649
  116110 string characters out of 6129622
- 219162 words of memory out of 5000000
+ 220162 words of memory out of 5000000
  11513 multiletter control sequences out of 15000+600000
  10055 words of font info for 36 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -481,7 +480,7 @@ al/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local
 /texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/te
 xlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/tex
 live/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on AMIDOL_Milestone-2.pdf (7 pages, 757828 bytes).
+Output written on AMIDOL_Milestone-2.pdf (7 pages, 760686 bytes).
 PDF statistics:
  300 PDF objects out of 1000 (max. 8388607)
  253 compressed objects within 3 object streams
