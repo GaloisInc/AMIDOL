@@ -87,22 +87,17 @@ VDSOLs in \amidol{} are constructed using a graphical user interface implemented
 
 \subsection{Composability of Atomic Models}
 
-\cite{sanders1992dependability,sanders1988construction}
+\amidol{} is being designed to support the composition of individual models to enable model reuse, compositional methods for solution, to enhance backend support for performance optimizations that require symmetry detection, and to allow domain scientists to experiment by swapping out components of a model which may represent complex hypotheses about individual elements.  Model composition in \amidol{} is being designed to support two primary mechanisms: \emph{state-sharing} \cite{sanders1992dependability,sanders1988construction} and \emph{event-synchronization} \cite{lampka2002symbolic}.
 
-\subsection{UI/UX Design}
+State-sharing allows model composition by defining an interface for a model in the form of a set of state variables, which are then "shared" with another model.  Shared state-variables in two composed models have the same marking, or value, and are effected by events in both models.  Event-synchronization functions in an analogous way, allowing two events to be paired, such that the input predicate and output predicate of the new shared event is the union of the predicates of the events being shared.
 
-\subsection{JSON Export Language}
+\amidol{} is planned to support both replicate and join operations defined over Petri-nets and stochastic activity networks. \cite{sanders1995ultrasan}  In addition to replicate and join operations, \amidol{} will support a novel model composition relation allowing users to specify sub-models as nouns and verbs which can be connected to existing components using Abstract Base Models, based on class inheritance patterns \cite{bruce2002foundations}, which allows users to specify abstract models with undefined states and events.
 
 \section{Abstract Intermediate Representation}
 
 The Abstract Intermediate Representation (IR) for \amidol{} is meant to be a universal way to specify models, regardless of their domain, and provides a Turing-complete way to specify models performably, while avoiding domain specific considerations.
 
-Markov models \cite{howard2012dynamic}
-
-Petri-nets with inhibitor arcs \cite{chiola1993generalized}
-
-Stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic}
-
+The intermediate representation employed by \amidol{} has its roots in Markov models \cite{howard2012dynamic}, Generalized Stochastic Petri-nets with inhibitor arcs \cite{chiola1993generalized} which have been shown to be Turing complete, and stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic} which are extensions of Petri-nets that allow more compact model specification.  \amidol{} currently extends these concepts primarily by creating ways to link to the original ontology of nouns and verbs, and by allowing embedded reward structures to be linked to a graph-based results database which stores the outcomes of experiments and can be used for the construction of arbitrary measures on the underlying model to support inference needs.
 
 \subsection{Language Properties}
 
@@ -118,15 +113,13 @@ Formally, the IR is a 5-tuple, $(S, E, L, \Phi, \Lambda, \Delta)$ where:
 
 Informally the IR represents models defined in a given VDSOL using an formalism based on Generalized Stochastic Petri-nets with inhibitor arcs (which have the result of making Petri-nets Turing complete).  Instead of inhibtor arcs, we utilize the more intuitive and performable method of allowing events to have input predicates ($Phi$) which can be evaluated to determine if an event is enabled, and output predicates which define the side effects of event firing.
 
-\paragraph{State variables}:
+\paragraph{State variables}: intuitively, state-variables make up the current state of the model, and measure the configuration and capabilities of all modeled components.  While state variables are defined as taking on values in $\mathbb{N}$, this does not restrict them from representing real numbers to arbitrary precision in modern computer hardware.  In practice, they are implemented as integers, and floating point numbers by the \amidol{} source code.
 
-\paragraph{Events}:
+\paragraph{Events}: events, when fired, change the state of a model by altering the value of state variables.  Events in \amidol{} are associated with input predicates, output predicates, and a rate function which returns the next firing time of a given event.  The rate function is an expression over random variable distributions.
 
-\paragraph{Input predicates}:
+\paragraph{Input predicates}: an input predicate is associated with an event, and a potentially empty set of state variables.  Input predicates are functions of the marking of their set of variables which map the markings of those variables onto the set $\{1, 0\}$.  For those markings in which the input predicate evaluates to $1$, the event is considered enabled and will fire as normal.  For those markings in which the input predicate evaluates to $0$, the event is considered disabled and cannot fire until subsequently enabled.
 
-\paragraph{Output predicates}:
-
-\paragraph{Representation}:
+\paragraph{Output predicates}: an output predicate is associated with an event, and a potentially empty set of state variables.  Output predicates map a set of state variables, and their marking, to a new marking for the same state variables and define the side effects of event firing on the state of the model.
 
 \section{Inference Engine}
 \paragraph{ODE Solver}:
@@ -172,12 +165,21 @@ Time-averaged interval of time variables quantify accumulated reward over some i
 
 \[\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}\]
 
-\subsection{Translation of Reward Variables to IR}
+Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.
 
 \subsection{Expressions on Reward Variables}
 
+While individual reward variables form the basis for model evaluation, \amidol{} will support expressions defined over reward variables using basic arithmetic operations allowing reward variables to be composed via normal mathematical expressions.
+
 \section{Design of Experiments and Results Database}
-\subsection{Results Database}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/table.pdf}
+  \caption{}
+  \label{Fig:InferenceClasses}
+\end{figure}
+
+\amidol{} aims to support a number of complex queries and prognostics, as shown in Figure \ref{Fig:InferenceClasses}.  To support a rich interface, we will make use of a Design of Experiments \cite{montgomery2017design} interface coupled with a results database.  Design of Experiments in \amidol{} borrows from concepts of Plackett-Burman designs, and factorial designs using individual reward variables and parameterizations defined over a given model as atomic components of expressions, resulting in new results.  Computations for given atomic components are stored in the results database to avoid unneeded reevaluation, and to allow future experiments to build on past results.
 
 \subsection{Prognostic Queries}
 
@@ -293,6 +295,8 @@ Integration concepts:
 - one server, potentially multiple client implementations
 - persistent server, ephemeral clients
 - resource-heavy servers (cluster?), lightweight clients
+
+Currently, the user interface implements a visual editor for directed graphs having labeled vertices and edges, which represent the nouns and verbs of a VDSOL. We are in the process of designing a set of user interactions with these graph models, including save / load, model composition, and various forms of simulation analysis and questioning. The UI will also show the answers to users' queries in appropriate visual forms, such as multivariate time-series plots.
 
 \subsection{Backend Architecture for IR and Inference Engine}
 

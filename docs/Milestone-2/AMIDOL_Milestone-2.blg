@@ -6,45 +6,45 @@ Database file #1: AMIDOL-MWS.bib
 Warning--empty journal in freire1990technique
 Warning--empty journal in movaghar1985performability
 Warning--empty journal in sanders1988construction
-You've used 14 entries,
+You've used 17 entries,
             2118 wiz_defined-function locations,
-            579 strings with 6720 characters,
-and the built_in function-call counts, 4689 in all, are:
-= -- 466
-> -- 222
-< -- 4
-+ -- 90
-- -- 74
-* -- 302
-:= -- 784
-add.period$ -- 46
-call.type$ -- 14
-change.case$ -- 77
+            598 strings with 7145 characters,
+and the built_in function-call counts, 5705 in all, are:
+= -- 565
+> -- 265
+< -- 5
++ -- 108
+- -- 88
+* -- 366
+:= -- 946
+add.period$ -- 55
+call.type$ -- 17
+change.case$ -- 92
 chr.to.int$ -- 0
-cite$ -- 17
-duplicate$ -- 182
-empty$ -- 358
-format.name$ -- 74
-if$ -- 982
+cite$ -- 20
+duplicate$ -- 226
+empty$ -- 444
+format.name$ -- 88
+if$ -- 1200
 int.to.chr$ -- 0
-int.to.str$ -- 14
-missing$ -- 14
-newline$ -- 74
-num.names$ -- 28
-pop$ -- 92
+int.to.str$ -- 17
+missing$ -- 18
+newline$ -- 89
+num.names$ -- 34
+pop$ -- 113
 preamble$ -- 1
-purify$ -- 64
+purify$ -- 77
 quote$ -- 0
-skip$ -- 135
+skip$ -- 166
 stack$ -- 0
-substring$ -- 259
-swap$ -- 42
-text.length$ -- 4
+substring$ -- 321
+swap$ -- 53
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 54
+type$ -- 64
 warning$ -- 3
-while$ -- 45
-width$ -- 16
-write$ -- 152
+while$ -- 56
+width$ -- 19
+write$ -- 184
 (There were 3 warnings)

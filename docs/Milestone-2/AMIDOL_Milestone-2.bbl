@@ -1,5 +1,10 @@
 \begin{thebibliography}{10}
 
+\bibitem{bruce2002foundations}
+Kim~B Bruce.
+\newblock {\em Foundations of object-oriented languages: types and semantics}.
+\newblock MIT press, 2002.
+
 \bibitem{cdc2019fluview}
 CDC.
 \newblock National, regional, and state level outpatient illness and viral
@@ -49,6 +54,11 @@ Ronald~A Howard.
 \newblock {\em Dynamic probabilistic systems: Markov models}, volume~1.
 \newblock Courier Corporation, 2012.
 
+\bibitem{lampka2002symbolic}
+Kai Lampka and Markus Siegle.
+\newblock Symbolic composition within the m{\"o}bius framework.
+\newblock In {\em Proc. of the 2nd MMB Workshop}, pages 63--74, 2002.
+
 \bibitem{movaghar1985performability}
 Ali Movaghar.
 \newblock Performability modeling with stochastic activity networks.
@@ -79,6 +89,11 @@ William~H Sanders and John~F Meyer.
 \newblock Stochastic activity networks: Formal definitions and concepts.
 \newblock In {\em School organized by the European Educational Forum}, pages
   315--343. Springer, 2000.
+
+\bibitem{sanders1995ultrasan}
+William~H. Sanders, W~Douglas Obal~II, Muhammad~A. Qureshi, and FK~Widjanarko.
+\newblock The ultrasan modeling environment.
+\newblock {\em Performance Evaluation}, 24(1-2):89--115, 1995.
 
 \bibitem{sanders1988construction}
 William~Harry Sanders.

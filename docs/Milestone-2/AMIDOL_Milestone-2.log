@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  31 JAN 2019 16:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  31 JAN 2019 18:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -441,86 +441,92 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  This may cause the page layout to be inconsistent, however.
 
 [2]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 111.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 106.
 
  (/usr/local/texlive/2018/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 111.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 106.
  [3] [4]
-[5]
-<figs/regionsmap.pdf, id=211, 706.64pt x 486.81876pt>
+<figs/table.pdf, id=188, 724.7075pt x 416.55624pt>
+File: figs/table.pdf Graphic file (type pdf)
+<use figs/table.pdf>
+Package pdftex.def Info: figs/table.pdf  used on input line 177.
+(pdftex.def)             Requested size: 469.75502pt x 270.01468pt.
+
+[5] [6 <./figs/table.pdf>]
+<figs/regionsmap.pdf, id=238, 706.64pt x 486.81876pt>
 File: figs/regionsmap.pdf Graphic file (type pdf)
 <use figs/regionsmap.pdf>
-Package pdftex.def Info: figs/regionsmap.pdf  used on input line 219.
+Package pdftex.def Info: figs/regionsmap.pdf  used on input line 221.
 (pdftex.def)             Requested size: 469.75502pt x 323.6264pt.
-<figs/2007-2008-SIRS.pdf, id=213, 729.92903pt x 388.55966pt>
+<figs/2007-2008-SIRS.pdf, id=240, 729.92903pt x 388.55966pt>
 File: figs/2007-2008-SIRS.pdf Graphic file (type pdf)
 <use figs/2007-2008-SIRS.pdf>
-Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 227.
+Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 229.
 (pdftex.def)             Requested size: 469.75502pt x 250.0647pt.
-<figs/HIV-Tat-figure.pdf, id=214, 478.6884pt x 342.67935pt>
+<figs/HIV-Tat-figure.pdf, id=241, 478.6884pt x 342.67935pt>
 File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
 <use figs/HIV-Tat-figure.pdf>
-Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 238.
+Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 240.
 (pdftex.def)             Requested size: 469.75502pt x 336.30452pt.
-<figs/TatModel.pdf, id=215, 650.43pt x 191.71625pt>
+<figs/TatModel.pdf, id=242, 650.43pt x 191.71625pt>
 File: figs/TatModel.pdf Graphic file (type pdf)
 <use figs/TatModel.pdf>
-Package pdftex.def Info: figs/TatModel.pdf  used on input line 243.
+Package pdftex.def Info: figs/TatModel.pdf  used on input line 245.
 (pdftex.def)             Requested size: 469.75502pt x 138.4656pt.
- [6 <./figs/regionsmap.pdf>] [7 <./figs/2007-2008-SIRS.pdf>] [8 <./figs/HIV-Tat
--figure.pdf> <./figs/TatModel.pdf>] [9]
-<figs/Editor.png, id=301, 977.6525pt x 678.535pt>
+ [7 <./figs/regionsmap.pdf>] [8 <./figs/2007-2008-SIRS.pdf>] [9 <./figs/HIV-Tat
+-figure.pdf> <./figs/TatModel.pdf>] [10]
+<figs/Editor.png, id=330, 977.6525pt x 678.535pt>
 File: figs/Editor.png Graphic file (type png)
 <use figs/Editor.png>
-Package pdftex.def Info: figs/Editor.png  used on input line 310.
+Package pdftex.def Info: figs/Editor.png  used on input line 314.
 (pdftex.def)             Requested size: 469.75502pt x 326.03476pt.
-<figs/LoadModel-crop.pdf, id=303, 524.96124pt x 739.76375pt>
+<figs/LoadModel-crop.pdf, id=332, 524.96124pt x 739.76375pt>
 File: figs/LoadModel-crop.pdf Graphic file (type pdf)
 <use figs/LoadModel-crop.pdf>
-Package pdftex.def Info: figs/LoadModel-crop.pdf  used on input line 316.
+Package pdftex.def Info: figs/LoadModel-crop.pdf  used on input line 320.
 (pdftex.def)             Requested size: 469.75502pt x 661.9885pt.
 
 
-LaTeX Warning: Float too large for page by 35.15848pt on input line 319.
+LaTeX Warning: Float too large for page by 35.15848pt on input line 323.
 
-<figs/QueryIntegrateBackend-crop.pdf, id=304, 524.96124pt x 293.095pt>
+<figs/QueryIntegrateBackend-crop.pdf, id=333, 524.96124pt x 293.095pt>
 File: figs/QueryIntegrateBackend-crop.pdf Graphic file (type pdf)
 <use figs/QueryIntegrateBackend-crop.pdf>
 Package pdftex.def Info: figs/QueryIntegrateBackend-crop.pdf  used on input lin
-e 322.
+e 326.
 (pdftex.def)             Requested size: 469.75502pt x 262.28036pt.
-<figs/QueryResult.png, id=305, 462.528pt x 346.896pt>
+<figs/QueryResult.png, id=334, 462.528pt x 346.896pt>
 File: figs/QueryResult.png Graphic file (type png)
 <use figs/QueryResult.png>
-Package pdftex.def Info: figs/QueryResult.png  used on input line 328.
+Package pdftex.def Info: figs/QueryResult.png  used on input line 332.
 (pdftex.def)             Requested size: 469.75502pt x 352.33655pt.
 (./AMIDOL_Milestone-2.bbl
-Underfull \hbox (badness 1755) in paragraph at lines 4--9
+Underfull \hbox (badness 1755) in paragraph at lines 9--14
 []\OT1/cmr/m/n/10.95 CDC.  Na-tional, re-gional, and state level out-pa-tient i
 ll-ness and vi-ral surveil-lance.
  []
 
-[10 <./figs/Editor.png>] [11 <./figs/LoadModel-crop.pdf>] [12 <./figs/QueryInte
-grateBackend-crop.pdf>] [13 <./figs/QueryResult.png>])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 339.
- [14]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 339.
+[11] [12 <./figs/Editor.png>] [13 <./figs/LoadModel-crop.pdf>] [14 <./figs/Quer
+yIntegrateBackend-crop.pdf>] [15 <./figs/QueryResult.png>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 343.
+ [16]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 343.
 
 (./AMIDOL_Milestone-2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 339.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 339.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 343.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 343.
 Package rerunfilecheck Info: File `AMIDOL_Milestone-2.out' has not changed.
-(rerunfilecheck)             Checksum: 7A396E721A33C94098A60643A1899083;2455.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 339.
+(rerunfilecheck)             Checksum: C75E55C5B5D620B4F04EF3F652B0FC49;2170.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 343.
  ) 
 Here is how much of TeX's memory you used:
- 7918 strings out of 492649
- 119113 string characters out of 6129622
- 221310 words of memory out of 5000000
- 11629 multiletter control sequences out of 15000+600000
+ 7925 strings out of 492649
+ 119291 string characters out of 6129622
+ 221467 words of memory out of 5000000
+ 11634 multiletter control sequences out of 15000+600000
  12300 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,11n,43p,988b,436s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -539,10 +545,10 @@ live/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
 ive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texliv
 e/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive
 /2018/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on AMIDOL_Milestone-2.pdf (14 pages, 972835 bytes).
+Output written on AMIDOL_Milestone-2.pdf (16 pages, 1136670 bytes).
 PDF statistics:
- 474 PDF objects out of 1000 (max. 8388607)
- 393 compressed objects within 4 object streams
- 77 named destinations out of 1000 (max. 500000)
- 321 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 508 PDF objects out of 1000 (max. 8388607)
+ 402 compressed objects within 5 object streams
+ 79 named destinations out of 1000 (max. 500000)
+ 294 words of extra memory for PDF output out of 10000 (max. 10000000)
 
