@@ -6,7 +6,7 @@ drawing/manipulating semi-formal models, issuing queries, loading data.
 
 The main system (a Scala project contained in the `ir` directory) compiles
 questions that users may have about models they've created into code artifacts
-targetting different simulation/solver backends. Over time, we expect this
+targeting different simulation/solver backends. Over time, we expect this
 system to also manipulate and compose datasets (from real-world observations
 as well as from the output of other simulations).
 
