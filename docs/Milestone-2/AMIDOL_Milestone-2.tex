@@ -87,6 +87,8 @@ VDSOLs in \amidol{} are constructed using a graphical user interface implemented
 
 \subsection{Composability of Atomic Models}
 
+\cite{sanders1992dependability,sanders1988construction}
+
 \subsection{UI/UX Design}
 
 \subsection{JSON Export Language}
@@ -94,6 +96,13 @@ VDSOLs in \amidol{} are constructed using a graphical user interface implemented
 \section{Abstract Intermediate Representation}
 
 The Abstract Intermediate Representation (IR) for \amidol{} is meant to be a universal way to specify models, regardless of their domain, and provides a Turing-complete way to specify models performably, while avoiding domain specific considerations.
+
+Markov models \cite{howard2012dynamic}
+
+Petri-nets with inhibitor arcs \cite{chiola1993generalized}
+
+Stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic}
+
 
 \subsection{Language Properties}
 
@@ -130,6 +139,8 @@ Informally the IR represents models defined in a given VDSOL using an formalism 
 
 The \amidol{} intermediate representation allows for the specification of reward variables or structures over a given model, and the composition of these structures with a model to produce composed models which can then be solved by the inference engine.  Given a model $M = (S, E, L, \Phi, \Lambda, \Delta)$ we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards).
 
+\cite{qureshi1996algorithms,deavours1999efficient,ciardo1996well,sanders1991reduced}
+
 \subsection{Rate Reward Variables}
 
 A rate reward is formally defined as a function $\mathcal{R}: P(S, \mathbb{N}) \rightarrow \mathbb{R}$ where $q \in P(S, \mathbb{N})$ is the reward accumulated when for each $(s,n) \in q$ the marking of the state variable $s$ is $n$.  Informally a rate reward variable $x$ accumulates a defined reward whenever a subset of the state variables take on prescribed values.
@@ -144,7 +155,7 @@ Both rate and impulse reward variables measure the behavior of a model $M$ with 
 
 \[ \theta_t = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{I}^{\nu}_t + \sum_{e \in E} \mathcal{I}(e) \cdot I_t^e\]
 
-Intuitively a rate reward declared as an instant-of-time variable can be used to measure the value of a state variable precisely at time $t$, and an impulse reward declared as an instant-of-time variable can be used to measure whether a given event fired at precisely time $t$.  While the latter is not a particularly useful measure (as the probability of an event with a firing time drawn from a continuous distribution at time $t$ is $0$) it is defined for closure reasons, and for cases with discrete distributions and discrete time steps.
+Intuitively a rate reward declared as an instant-of-time variable \cite{freire1990technique} can be used to measure the value of a state variable precisely at time $t$, and an impulse reward declared as an instant-of-time variable can be used to measure whether a given event fired at precisely time $t$.  While the latter is not a particularly useful measure (as the probability of an event with a firing time drawn from a continuous distribution at time $t$ is $0$) it is defined for closure reasons, and for cases with discrete distributions and discrete time steps.
 
 An interval-of-time variable intuitively accumulates reward over some fixed interval of time $[t, t+1]$.  Given such a variable $\theta_{[t, t+1]}$ we formally define interval-of-time variables as:
 
@@ -185,6 +196,12 @@ Time-averaged interval of time variables quantify accumulated reward over some i
 We are currently testing \amidol{} using several domain models whose primary domain is epidemiology.  We have selected a range of models to test different scenarios, use cases, and assumptions to aid in the prototype design of \amidol{}.
 
 \subsection{SIS/SIRS}
+
+H1N1 $R_0$ importance \cite{fraser2009pandemic}.
+
+Ebola $R_0$ importance \cite{fisman2014early}
+
+CDC Data \cite{cdc2019fluview}
 
 The SIS/SIRS model is one of the simplest models we have deployed for testing with \amidol{}, with the advantage that the model itself is relatively simple, but utlizes real data, and can be used to answer important epidemiological questions.  The primary objective of the SIS/SIRS model is to identify the \emph{basic reproduction number} associated with an infection, also known as $R_0$, or \emph{r nought}.  $R_0$ was first used in 1952 when studying malaria and is a measure of the potential for an infection to spread through a population.  If $R_0 < 1$, then the infection will die out in the long run.  If $R_0 > 1$, then the infection will spread.  The higher the value of $R_0$, the more difficult it is to control an epidemic.
 
@@ -252,6 +269,42 @@ nRNA \overset{k_{export}}{\rightarrow} cRNA\\
 \section{User Stories}
 
 \section{Code Repositories and Current Builds}
+
+The UI (an Elm project contained in the `ui` directory) is a series of
+HTML pages through which users will interact with the system. That includes
+drawing/manipulating semi-formal models, issuing queries, loading data.
+
+The main system (a Scala project contained in the `ir` directory) compiles
+questions that users may have about models they've created into code artifacts
+targeting different simulation/solver backends. Over time, we expect this
+system to also manipulate and compose datasets (from real-world observations
+as well as from the output of other simulations).
+
+
+\subsection{Front-End Architecture for VDSOLs}
+
+Amidol's user interface is a small collection of web pages which communicate with the Scala back-end using JSON over HTTP.  This client/server approach leverages standard browser technologies like HTML5, CSS, and SVG graphics for rapid development of rich interactions tailored for the specific needs of scientific modeling. It also decouples the concerns of visual presentation and manipulation from the underlying representations of model semantics.
+
+The Javascript code which implements the user interface is compiled from Elm, a strongly typed functional language designed specifically for front-end web development. Elm's runtime system is similar to that of popular Javascript frameworks like React, but the language provides some distinct advantages in terms of correctness, performance, and ease of refactoring. In addition to the capabilities provided by the Elm package ecosystem, Elm applications can interoperate directly with Javascript, allowing Amidol to make use of the best available web-based data visualization libraries.
+
+Integration concepts:
+- API schema and versioning
+- supports collaboration between multiple users
+- one server, potentially multiple client implementations
+- persistent server, ephemeral clients
+- resource-heavy servers (cluster?), lightweight clients
+
+\subsection{Backend Architecture for IR and Inference Engine}
+
+The backend component interfaces with the UI via a local web server. The idea here is that every time the user interacts with the UI either to modify or to ask questions of the model, that information also gets relayed to the backend via a set of web endpoints. When the backend receives new information about the model from the UI, it parses this into some internal representation. This includes such tasks as parsing equations from user-inputted strings and checking that state variables being referred to actually exist. Questions asked of the model follow a slightly longer path: after being parsed out and validated, the backend figures out how to transform the IR and the question into executable code, executes this code, and returns the result back out to the user.
+
+Within the backend, the IR is stored in a graph format resembling what the user constructed in the UI. By maintaining some degree of similarity, we hope to make it simpler to translate results obtained in the backend back out into something end users can easily understand. Questions asked about models are translated into code artifacts targeting existing solver and simulation programs. We wish to avoid doing actual simulations within the system, instead focusing on intelligently compiling queries into programs that external solvers can run. In order to do this sort of thing, we still do need to implement a minimum amount of symbolic algebra (ex: detecting when a continuous rate  model is linear). For the time being, we’ve been targeting Python’s SciPy module as a backend to answer basic simulation questions such as: the the initial value problem for general systems as well as for continuous-time Markov chains.
+
+The backend is written in Scala, leveraging a set of libraries built on top of the Akka actor system for the web server, JSON processing, asynchronous computation, and eventually for the graph in which the IR and data will be stored. The advantages to using Scala include: deployable anywhere the JVM runs, large set of available libraries, and a functional outlook which lends itself well to compiler problems.
+
+\subsection{Integrating AMIDOL}
+
+I think it's worth saying somewhere that the JSON API which defines client/server interaction is the only channel by which tangible VDSOL models and computational AFI communicate. In other words, the UI doesn't hold any persistent model state which is not represented in the API; it is precisely a view or translation of the AFI/IR. This property is what enables the list of integration concepts. In a word, it's a RESTful architecture.
 
 \begin{figure}
 \includegraphics[width=\textwidth]{figs/Editor.png}

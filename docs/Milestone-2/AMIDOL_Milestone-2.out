@@ -29,4 +29,7 @@
 \BOOKMARK [2][-]{subsection.7.5}{H3N2 Model}{section.7}% 29
 \BOOKMARK [1][-]{section.8}{User Stories}{}% 30
 \BOOKMARK [1][-]{section.9}{Code Repositories and Current Builds}{}% 31
-\BOOKMARK [1][-]{section.10}{Roadmap for Future Development}{}% 32
+\BOOKMARK [2][-]{subsection.9.1}{Front-End Architecture for VDSOLs}{section.9}% 32
+\BOOKMARK [2][-]{subsection.9.2}{Backend Architecture for IR and Inference Engine}{section.9}% 33
+\BOOKMARK [2][-]{subsection.9.3}{Integrating AMIDOL}{section.9}% 34
+\BOOKMARK [1][-]{section.10}{Roadmap for Future Development}{}% 35
