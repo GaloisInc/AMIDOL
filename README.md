@@ -23,20 +23,18 @@ You'll need to:
     then the `scipy` and `matplotlib` packages (by doing
     `pip3 install scipy matplotlib`) for the SciPy backends to the `ir`
 
-Once you have done all of this, build with: 
+Once you have done all of this, build and run the system with: 
 
 ```sh
 $ git clone https://github.com/GaloisInc/AMIDOL.git && cd AMIDOl
-AMIDOL$ (cd ui; elm make src/Main.elm)    # builds ui/index.html
-AMIDOL$ (cd ir; sbt compile)              # builds the main system
+AMIDOL$ source run.sh
 ```
 
-To run the system and open a webserver on <http://localhost:8080/>:
+This opens a back-end web server on http://localhost:8080/ .
+See [`ir/README.md`](ir/README.md) for examples of requests that the server can handle.
 
-```sh
-AMIDOL$ (cd ir; sbt run)                  # builds and runs the main system
-```
-
+It also compiles the Elm front-end, which can be accessed directly from your filesystem
+by opening ui/index.html in a web browser.
 
 [0]: https://guide.elm-lang.org/install.html
 [1]: https://www.scala-sbt.org/download.html
