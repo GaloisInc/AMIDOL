@@ -71,16 +71,21 @@ type alias NodeGroup =
     }
 
 
+freshId : List { r | id : Id } -> Id
+freshId records =
+    case List.maximum <| List.map (\{ id } -> id) records of
+        Just n ->
+            1 + n
+
+        Nothing ->
+            0
+
+
 addNode : NodeGroup -> NodeGroup
 addNode ({ idleNodes } as group) =
     let
         newId =
-            case List.maximum <| List.map (\{ id } -> id) idleNodes of
-                Just n ->
-                    1 + n
-
-                Nothing ->
-                    0
+            freshId idleNodes
 
         addFreshNode nodes =
             makeNode newId ( 30, 30 ) "" "" :: nodes
@@ -120,17 +125,28 @@ dragActiveBy delta group =
     { group | movingNode = group.movingNode |> Maybe.map (dragNodeBy delta) }
 
 
-toggleNodeClicked : Id -> NodeGroup -> NodeGroup
-toggleNodeClicked id group =
+nodeClicked : Id -> NodeGroup -> List Link -> ( NodeGroup, List Link )
+nodeClicked id ({ idleNodes } as group) links =
     let
-        possiblyToggleNode node =
-            if node.id == id then
-                { node | clicked = not node.clicked }
+        alreadyClickedNodes =
+            List.filter (\node -> node.clicked) idleNodes
 
-            else
-                node
+        freshLinkId =
+            freshId links
+
+        ( newNodes, newLinks ) =
+            case alreadyClickedNodes of
+                [ lastClickedNode ] ->
+                    ( List.map (\node -> { node | clicked = False }) idleNodes
+                    , Link freshLinkId lastClickedNode.id id "" :: links
+                    )
+
+                _ ->
+                    ( List.map (\node -> { node | clicked = node.id == id }) idleNodes
+                    , links
+                    )
     in
-    { group | idleNodes = group.idleNodes |> List.map possiblyToggleNode }
+    ( { group | idleNodes = newNodes }, newLinks )
 
 
 changeNodeLabel : Id -> String -> NodeGroup -> NodeGroup
@@ -169,7 +185,7 @@ type Msg
     = DragMsg (Draggable.Msg Id)
     | OnDragBy Vec2
     | StartDragging Id
-    | ToggleNodeClicked Id
+    | NodeClicked Id
     | StopDragging
     | ChangeNodeLabel Id String
     | ChangeLinkLabel Id String
@@ -178,19 +194,12 @@ type Msg
 
 initialNodes : NodeGroup
 initialNodes =
-    NodeGroup 0
-        Nothing
-        [ makeNode 1 ( 10, 80 ) "susceptible.svg" "S"
-        , makeNode 2 ( 110, 20 ) "infected.svg" "I"
-        , makeNode 3 ( 210, 80 ) "recovered.svg" "R"
-        ]
+    NodeGroup 0 Nothing []
 
 
 initialLinks : List Link
 initialLinks =
-    [ Link 1 1 2 "S --> I"
-    , Link 2 2 3 "I --> R"
-    ]
+    []
 
 
 init : flags -> ( Model, Cmd Msg )
@@ -208,7 +217,7 @@ dragConfig =
     Draggable.customConfig
         [ onDragBy (\( dx, dy ) -> Vector2.vec2 dx dy |> OnDragBy)
         , onDragStart StartDragging
-        , onClick ToggleNodeClicked
+        , onClick NodeClicked
         ]
 
 
@@ -228,8 +237,12 @@ update msg ({ nodes, links } as model) =
         StopDragging ->
             ( { model | nodes = nodes |> stopDragging }, Cmd.none )
 
-        ToggleNodeClicked id ->
-            ( { model | nodes = nodes |> toggleNodeClicked id }, Cmd.none )
+        NodeClicked id ->
+            let
+                ( newNodes, newLinks ) =
+                    nodeClicked id nodes links
+            in
+            ( { model | nodes = newNodes, links = newLinks }, Cmd.none )
 
         DragMsg dragMsg ->
             Draggable.update dragConfig dragMsg model
@@ -262,9 +275,8 @@ view : Model -> Html Msg
 view { nodes, links } =
     Html.div
         [ Html.Attributes.style "padding-left" "8px" ]
-        [ Html.p
-            []
-            [ Html.text "Drag nodes around, click labels to edit" ]
+        [ Html.p [] [ Html.text "Drag nodes around, click labels to edit." ]
+        , Html.p [] [ Html.text "Click one node and then another to add a new link." ]
         , Html.p
             []
             [ Html.button
@@ -295,7 +307,12 @@ nodeView { id, position, clicked, image, label } =
         []
         [ Svg.circle
             [ Attr.r "20"
-            , Attr.fill "lightgray"
+            , Attr.fill <|
+                if clicked then
+                    "lightblue"
+
+                else
+                    "lightgray"
             , Attr.stroke "black"
             , Attr.strokeWidth "2"
 
