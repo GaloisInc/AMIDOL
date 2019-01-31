@@ -49,12 +49,24 @@ object SciPyIntegrate extends ContinuousInitialValue {
       derivativesStr = derivatives.toList.map(ie => s"d${model.nodes(ie._1).stateVariable.prettyPrint()}_ = ${ie._2.prettyPrint()}") 
       initialCondStr = stateVars.map(i => boundary(model.nodes(i).stateVariable))
       constantsStr   = constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
+      writeImageFile = inputs.savePlot
 
       // Python code
+      plottingCode: Python = if (inputs.savePlot.isEmpty) "" else s"""
+         |# How to plot
+         |plt.title("SciPyIntegrate solution to continuous IVP", fontsize=12)
+         |plt.xlabel("Time", fontsize=10)
+         |plt.plot(timeRange_, np.transpose(output))
+         |plt.legend(${stateVarsStr.map(v => '"' + v + '"').mkString("[", ", ", "]")})
+         |plt.savefig('${inputs.savePlot.get}')
+         |
+         |""".stripMargin
+
       pythonCode: Python = s"""
          |from scipy.integrate import odeint
          |import json
          |import numpy as np
+         |import matplotlib.pyplot as plt
          |
          |# This is so that we can call "json.dumps" on Numpy arrays
          |class NumpyEncoder(json.JSONEncoder):
@@ -75,8 +87,10 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |# Boundary conditions and setup
          |timeRange_ = ${timeRange.mkString("[ ",", "," ]")}
          |y0_ = ${initialCondStr.mkString(", ")}
-         |
          |output = odeint(deriv_, y0_, timeRange_).T
+         |
+         |$plottingCode
+         |
          |print(json.dumps(output, cls=NumpyEncoder))
          |""".stripMargin
 

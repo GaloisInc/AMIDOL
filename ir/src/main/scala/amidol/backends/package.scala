@@ -49,15 +49,16 @@ package object backends {
   }
 
 
-  trait ContinuousInitialValue extends Backend with SprayJsonSupport with DefaultJsonProtocol {
+  trait ContinuousInitialValue extends Backend with SprayJsonSupport with DefaultJsonProtocol with NullOptions {
     val problemDescription = "Continuous initial value problem"
     
     case class Inputs(
       constants: Map[String, Double],
       boundary:  Map[String, Double],
       initialTime: Double,
-      finalTime:  Double,
-      stepSize:   Double
+      finalTime: Double,
+      stepSize: Double,
+      savePlot: Option[String] // saves an image version of the plot at this path
     )
   
     case class Outputs(
@@ -65,7 +66,7 @@ package object backends {
       times: Seq[Double]
     )
     
-    implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat5(Inputs.apply)  
+    implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat6(Inputs.apply)
     implicit val outputsFormat: RootJsonFormat[Outputs] = jsonFormat2(Outputs.apply)
   }
 
