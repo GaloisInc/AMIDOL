@@ -111,7 +111,7 @@ Formally, the IR is a 5-tuple, $(S, E, L, \Phi, \Lambda, \Delta)$ where:
 \item $\Delta: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow N_0 \times N_1 \times \ldots \times N_{n-1}$ is the state variable transition function specification.
 \end{itemize}
 
-Informally the IR represents models defined in a given VDSOL using an formalism based on Generalized Stochastic Petri-nets with inhibitor arcs (which have the result of making Petri-nets Turing complete).  Instead of inhibtor arcs, we utilize the more intuitive and performable method of allowing events to have input predicates ($Phi$) which can be evaluated to determine if an event is enabled, and output predicates which define the side effects of event firing.
+Informally the IR represents models defined in a given VDSOL using an formalism based on Generalized Stochastic Petri-nets with inhibitor arcs (which have the result of making Petri-nets Turing complete).  Instead of inhibitor arcs, we utilize the more intuitive and performable method of allowing events to have input predicates ($Phi$) which can be evaluated to determine if an event is enabled, and output predicates which define the side effects of event firing.
 
 \paragraph{State variables}: intuitively, state-variables make up the current state of the model, and measure the configuration and capabilities of all modeled components.  While state variables are defined as taking on values in $\mathbb{N}$, this does not restrict them from representing real numbers to arbitrary precision in modern computer hardware.  In practice, they are implemented as integers, and floating point numbers by the \amidol{} source code.
 
@@ -184,7 +184,7 @@ The Design of Experiments interface will allow users to load data from external 
 
 Models can be compared in our planned Design of Experiments interface by identifying reward variables, or expressions on reward variables, in two models which should be compared and analyzed to explore alternatives, perform conditional forecasting, counterfactual analysis, and comparative impact.  Different strategies, configurations, or possible outcomes can be explored through examining different ways to parameterize a given model, or even differences in models with structural changes.  Debugging experiments will be enabled through the connections to the VDSOL ontology.  For instance, the interface will allow users to see the direct dependence of reward variables to noun's and verbs in the original ontology, better enabling researchers to understand the knowledge-based semantic dependencies normally hidden by traditional modeling techniques.
 
-Sensitivity, uncertainty, and correctness measures can easily be constructed in the planned Design of Experiments interface.  Because we allow for factorial and Plackett-Burman experiment design users can automatically perform one-factor-at-a-time \cite{bailis2005mortality,murphy2004quantification} sensativity and uncertainty estimates.  The initial prototype will also feature screening sampling-based methods \cite{morris1991factorial} which have been shown to be computationally efficient and are further enabled by our VDSOL ontologies, as they help identify sources of uncertainty and error in the structure of the model.  Correctness is enabled by loading external data from multiple time series or sources, and asking the interface to perform cross validation on the input.  \amidol{} will automatically support k-fold cross validation on time series, allowing automatic partitioning of data sets.
+Sensitivity, uncertainty, and correctness measures can easily be constructed in the planned Design of Experiments interface.  Because we allow for factorial and Plackett-Burman experiment design users can automatically perform one-factor-at-a-time \cite{bailis2005mortality,murphy2004quantification} sensitivity and uncertainty estimates.  The initial prototype will also feature screening sampling-based methods \cite{morris1991factorial} which have been shown to be computationally efficient and are further enabled by our VDSOL ontologies, as they help identify sources of uncertainty and error in the structure of the model.  Correctness is enabled by loading external data from multiple time series or sources, and asking the interface to perform cross validation on the input.  \amidol{} will automatically support k-fold cross validation on time series, allowing automatic partitioning of data sets.
 
 \section{Domain Models}
 
@@ -192,7 +192,7 @@ We are currently testing \amidol{} using several domain models whose primary dom
 
 \subsection{SIS/SIRS}
 
-The SIS/SIRS model is one of the simplest models we have deployed for testing with \amidol{}, with the advantage that the model itself is relatively simple, but utlizes real data, and can be used to answer important epidemiological questions.  The primary objective of the SIS/SIRS model is to identify the \emph{basic reproduction number} associated with an infection, also known as $R_0$, or \emph{r nought}.  $R_0$ was first used in 1952 when studying malaria and is a measure of the potential for an infection to spread through a population.  If $R_0 < 1$, then the infection will die out in the long run.  If $R_0 > 1$, then the infection will spread.  The higher the value of $R_0$, the more difficult it is to control an epidemic.
+The SIS/SIRS model is one of the simplest models we have deployed for testing with \amidol{}, with the advantage that the model itself is relatively simple, but utilizes real data, and can be used to answer important epidemiological questions.  The primary objective of the SIS/SIRS model is to identify the \emph{basic reproduction number} associated with an infection, also known as $R_0$, or \emph{r nought}.  $R_0$ was first used in 1952 when studying malaria and is a measure of the potential for an infection to spread through a population.  If $R_0 < 1$, then the infection will die out in the long run.  If $R_0 > 1$, then the infection will spread.  The higher the value of $R_0$, the more difficult it is to control an epidemic.
 
 The importance of estimating $R_0$ has been well established for many historical epidemics, including H1N1 \cite{fraser2009pandemic} and Ebola \cite{fisman2014early}.  This model also lends itself to testing \amidol{}'s Design of Experiments module via the plentiful CDC Data \cite{cdc2019fluview} which is well modeled by SIRS.
 
@@ -222,7 +222,7 @@ Using data from a given region, and a given strain, we estimate R0 for the epide
 
 \subsection{Artificial Chemistry and Intracellular Viral Infection}
 
-We have also introduced two simple models of artificial chemistry, and viral infection first introduced by \cite{srivastava2002stochastic,haseltine2002approximate} to test different VDSOLs with similar solution techniques.  While simple, models such as the crystalization model:
+We have also introduced two simple models of artificial chemistry, and viral infection first introduced by \cite{srivastava2002stochastic,haseltine2002approximate} to test different VDSOLs with similar solution techniques.  While simple, models such as the crystallization model:
 
 \begin{eqnarray}
   2A \overset{e_1}{\rightarrow} B\\
@@ -237,7 +237,7 @@ Allow us to test features of the UI for \amidol{} in a different domain, and the
 \label{Fig:ViralRep}
 \end{figure}
 
-Figure \ref{Fig:ViralRep} shows a more complex version of the crystalization model with catalysts, which models viral replication using a chemical kinetic model.
+Figure \ref{Fig:ViralRep} shows a more complex version of the crystallization model with catalysts, which models viral replication using a chemical kinetic model.
 
 \begin{eqnarray}
 \mathrm{nucleotides} \overset{e_1}{\rightarrow} \mathrm{genome}\\
@@ -370,3 +370,15 @@ The JSON API which defines client/server interaction is the only channel by whic
 
 
 \end{document}
+
+%  LocalWords:  textbf Composability lampka2002symbolic mathbb ldots
+%  LocalWords:  sanders1992dependability,sanders1988construction cdot
+%  LocalWords:  sanders1995ultrasan rightarrow infty mathcal cdot t,t
+%  LocalWords:  qureshi1996algorithms,deavours1999efficient,ciardo1996well
+%  LocalWords:  freire1990technique t,t includegraphics textwidth
+%  LocalWords:  Plackett-Burman Fluview cdc2019fluview eqnarray
+%  LocalWords:  bailis2005mortality,murphy2004quantification mathrm
+%  LocalWords:  morris1991factorial fraser2009pandemic mathrm texttt
+%  LocalWords:  fisman2014early aminoacids weinberger2005stochastic
+%  LocalWords:  srivastava2002stochastic,haseltine2002approximate
+%  LocalWords:  deacetly emptyset cytometry k_deacetyl texttt
