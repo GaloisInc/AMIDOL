@@ -6,6 +6,8 @@ import Draggable.Events exposing (onClick, onDragBy, onDragStart)
 import Html exposing (Html)
 import Html.Attributes
 import Html.Events
+import Http
+import Json.Encode as Encode
 import Math.Vector2 as Vector2 exposing (Vec2, getX, getY)
 import Svg exposing (Svg)
 import Svg.Attributes as Attr
@@ -190,6 +192,49 @@ type Msg
     | ChangeNodeLabel Id String
     | ChangeLinkLabel Id String
     | AddNode
+    | SendJson
+    | JsonReceived (Result Http.Error String)
+
+
+encode : Model -> Encode.Value
+encode model =
+    let
+        encNode node =
+            Encode.object
+                [ ( "id", Encode.int node.id )
+                , ( "location"
+                  , Encode.object
+                        [ ( "x", Encode.float <| getX node.position )
+                        , ( "y", Encode.float <| getY node.position )
+                        ]
+                  )
+                , ( "view", Encode.string node.image )
+                , ( "label", Encode.string node.label )
+                ]
+
+        encLink link =
+            Encode.object
+                [ ( "id", Encode.int link.id )
+                , ( "source", Encode.int link.source )
+                , ( "target", Encode.int link.target )
+                , ( "label", Encode.string link.label )
+                ]
+    in
+    Encode.object
+        [ ( "nodes", Encode.list encNode <| allNodes model.nodes )
+        , ( "links", Encode.list encLink model.links )
+        ]
+
+
+sendJson : Model -> Cmd Msg
+sendJson model =
+    Http.post
+        { url = "http://localhost:8080/appstate/model"
+        , body =
+            Http.stringBody "application/json" <|
+                Encode.encode 2 (encode model)
+        , expect = Http.expectString JsonReceived
+        }
 
 
 initialNodes : NodeGroup
@@ -256,6 +301,12 @@ update msg ({ nodes, links } as model) =
         AddNode ->
             ( { model | nodes = nodes |> addNode }, Cmd.none )
 
+        SendJson ->
+            ( model, sendJson model )
+
+        JsonReceived _ ->
+            ( model, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions { drag } =
@@ -282,6 +333,9 @@ view { nodes, links } =
             [ Html.button
                 [ Html.Events.onClick AddNode ]
                 [ Html.text "Add node" ]
+            , Html.button
+                [ Html.Events.onClick SendJson ]
+                [ Html.text "Send to server" ]
             ]
         , Svg.svg
             [ Attr.style "height: 100vh; width: 100vw; position: fixed;" ]

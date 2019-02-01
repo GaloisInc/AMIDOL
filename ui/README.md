@@ -47,8 +47,8 @@ node ::= {
     "view": String,    # file reference, e.g. "picture.svg"
     "label": String,   # shown in the UI
     "location": {
-        "x": Integer,
-        "y": Integer
+        "x": Float,
+        "y": Float
     },
     ...  # additional style or semantic properties
 }
