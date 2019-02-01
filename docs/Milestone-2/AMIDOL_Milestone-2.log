@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  1 FEB 2019 12:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  1 FEB 2019 12:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -484,11 +484,11 @@ File: figs/TatModel.pdf Graphic file (type pdf)
 Package pdftex.def Info: figs/TatModel.pdf  used on input line 265.
 (pdftex.def)             Requested size: 469.75502pt x 138.4656pt.
  [10] [11 <./figs/HIV-Tat-figure.pdf> <./figs/TatModel.pdf>]
-<figs/Editor.png, id=317, 977.6525pt x 678.535pt>
-File: figs/Editor.png Graphic file (type png)
-<use figs/Editor.png>
-Package pdftex.def Info: figs/Editor.png  used on input line 318.
-(pdftex.def)             Requested size: 469.75502pt x 326.03476pt.
+<figs/Editor2.png, id=317, 963.6pt x 985.6825pt>
+File: figs/Editor2.png Graphic file (type png)
+<use figs/Editor2.png>
+Package pdftex.def Info: figs/Editor2.png  used on input line 318.
+(pdftex.def)             Requested size: 469.75502pt x 480.52205pt.
 <figs/LoadModel-crop.pdf, id=319, 524.96124pt x 739.76375pt>
 File: figs/LoadModel-crop.pdf Graphic file (type pdf)
 <use figs/LoadModel-crop.pdf>
@@ -498,7 +498,7 @@ Package pdftex.def Info: figs/LoadModel-crop.pdf  used on input line 341.
 
 LaTeX Warning: Float too large for page by 48.75848pt on input line 344.
 
-[12] [13 <./figs/Editor.png>]
+[12] [13 <./figs/Editor2.png>]
 <figs/QueryIntegrateBackend-crop.pdf, id=332, 524.96124pt x 293.095pt>
 File: figs/QueryIntegrateBackend-crop.pdf Graphic file (type pdf)
 <use figs/QueryIntegrateBackend-crop.pdf>
@@ -530,7 +530,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 372.
  ) 
 Here is how much of TeX's memory you used:
  7932 strings out of 492649
- 119601 string characters out of 6129622
+ 119606 string characters out of 6129622
  223424 words of memory out of 5000000
  11636 multiletter control sequences out of 15000+600000
  12468 words of font info for 47 fonts, out of 8000000 for 9000
@@ -553,7 +553,7 @@ e/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
 018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
 18/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/201
 8/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on AMIDOL_Milestone-2.pdf (18 pages, 1179740 bytes).
+Output written on AMIDOL_Milestone-2.pdf (18 pages, 1191798 bytes).
 PDF statistics:
  506 PDF objects out of 1000 (max. 8388607)
  396 compressed objects within 4 object streams
