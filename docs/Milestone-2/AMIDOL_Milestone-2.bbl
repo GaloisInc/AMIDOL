@@ -1,5 +1,11 @@
 \begin{thebibliography}{10}
 
+\bibitem{bailis2005mortality}
+Robert Bailis, Majid Ezzati, and Daniel~M Kammen.
+\newblock Mortality and greenhouse gas impacts of biomass and petroleum energy
+  futures in africa.
+\newblock {\em Science}, 308(5718):98--103, 2005.
+
 \bibitem{bruce2002foundations}
 Kim~B Bruce.
 \newblock {\em Foundations of object-oriented languages: types and semantics}.
@@ -49,6 +55,12 @@ Roberto Freire.
 \newblock A technique for simulating composed san-based reward models.
 \newblock 1990.
 
+\bibitem{haseltine2002approximate}
+Eric~L Haseltine and James~B Rawlings.
+\newblock Approximate simulation of coupled fast and slow reactions for
+  stochastic chemical kinetics.
+\newblock {\em The Journal of chemical physics}, 117(15):6959--6969, 2002.
+
 \bibitem{howard2012dynamic}
 Ronald~A Howard.
 \newblock {\em Dynamic probabilistic systems: Markov models}, volume~1.
@@ -59,10 +71,27 @@ Kai Lampka and Markus Siegle.
 \newblock Symbolic composition within the m{\"o}bius framework.
 \newblock In {\em Proc. of the 2nd MMB Workshop}, pages 63--74, 2002.
 
+\bibitem{montgomery2017design}
+Douglas~C Montgomery.
+\newblock {\em Design and analysis of experiments}.
+\newblock John wiley \& sons, 2017.
+
+\bibitem{morris1991factorial}
+Max~D Morris.
+\newblock Factorial sampling plans for preliminary computational experiments.
+\newblock {\em Technometrics}, 33(2):161--174, 1991.
+
 \bibitem{movaghar1985performability}
 Ali Movaghar.
 \newblock Performability modeling with stochastic activity networks.
 \newblock 1985.
+
+\bibitem{murphy2004quantification}
+James~M Murphy, David~MH Sexton, David~N Barnett, Gareth~S Jones, Mark~J Webb,
+  Matthew Collins, and David~A Stainforth.
+\newblock Quantification of modelling uncertainties in a large ensemble of
+  climate change simulations.
+\newblock {\em Nature}, 430(7001):768, 2004.
 
 \bibitem{qureshi1996algorithms}
 Muhammad~A Qureshi, William~H Sanders, Aad~PA Van~Moorsel, and Reinhard German.
@@ -100,5 +129,18 @@ William~Harry Sanders.
 \newblock Construction and solution of performability models based on
   stochastic activity networks.
 \newblock 1988.
+
+\bibitem{srivastava2002stochastic}
+Ranjan Srivastava, L~You, J~Summers, and J~Yin.
+\newblock Stochastic vs. deterministic modeling of intracellular viral
+  kinetics.
+\newblock {\em Journal of theoretical biology}, 218(3):309--321, 2002.
+
+\bibitem{weinberger2005stochastic}
+Leor~S Weinberger, John~C Burnett, Jared~E Toettcher, Adam~P Arkin, and David~V
+  Schaffer.
+\newblock Stochastic gene expression in a lentiviral positive-feedback loop:
+  Hiv-1 tat fluctuations drive phenotypic diversity.
+\newblock {\em Cell}, 122(2):169--182, 2005.
 
 \end{thebibliography}

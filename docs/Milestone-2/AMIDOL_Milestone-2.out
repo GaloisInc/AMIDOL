@@ -4,28 +4,18 @@
 \BOOKMARK [2][-]{subsection.2.2}{Composability of Atomic Models}{section.2}% 4
 \BOOKMARK [1][-]{section.3}{Abstract Intermediate Representation}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{Language Properties}{section.3}% 6
-\BOOKMARK [1][-]{section.4}{Inference Engine}{}% 7
-\BOOKMARK [1][-]{section.5}{Reward Variables and Reward Models}{}% 8
-\BOOKMARK [2][-]{subsection.5.1}{Rate Reward Variables}{section.5}% 9
-\BOOKMARK [2][-]{subsection.5.2}{Impulse Reward Variables}{section.5}% 10
-\BOOKMARK [2][-]{subsection.5.3}{Temporal Characteristics of Reward Variables}{section.5}% 11
-\BOOKMARK [2][-]{subsection.5.4}{Expressions on Reward Variables}{section.5}% 12
-\BOOKMARK [1][-]{section.6}{Design of Experiments and Results Database}{}% 13
-\BOOKMARK [2][-]{subsection.6.1}{Prognostic Queries}{section.6}% 14
-\BOOKMARK [2][-]{subsection.6.2}{Model Comparison}{section.6}% 15
-\BOOKMARK [2][-]{subsection.6.3}{Design of Experiments}{section.6}% 16
-\BOOKMARK [2][-]{subsection.6.4}{Conterfactural Exploration, Planning, Crisis Response}{section.6}% 17
-\BOOKMARK [2][-]{subsection.6.5}{Correctness and Uncertainty}{section.6}% 18
-\BOOKMARK [2][-]{subsection.6.6}{Communication of Results}{section.6}% 19
-\BOOKMARK [1][-]{section.7}{Domain Models}{}% 20
-\BOOKMARK [2][-]{subsection.7.1}{SIS/SIRS}{section.7}% 21
-\BOOKMARK [2][-]{subsection.7.2}{Artificial Chemistry}{section.7}% 22
-\BOOKMARK [2][-]{subsection.7.3}{Viral Infection Model}{section.7}% 23
-\BOOKMARK [2][-]{subsection.7.4}{H5N1 Model}{section.7}% 24
-\BOOKMARK [2][-]{subsection.7.5}{H3N2 Model}{section.7}% 25
-\BOOKMARK [1][-]{section.8}{User Stories}{}% 26
-\BOOKMARK [1][-]{section.9}{Code Repositories and Current Builds}{}% 27
-\BOOKMARK [2][-]{subsection.9.1}{Front-End Architecture for VDSOLs}{section.9}% 28
-\BOOKMARK [2][-]{subsection.9.2}{Backend Architecture for IR and Inference Engine}{section.9}% 29
-\BOOKMARK [2][-]{subsection.9.3}{Integrating AMIDOL}{section.9}% 30
-\BOOKMARK [1][-]{section.10}{Roadmap for Future Development}{}% 31
+\BOOKMARK [1][-]{section.4}{Reward Variables, Reward Models, and Inference}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Rate Reward Variables}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Impulse Reward Variables}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.3}{Temporal Characteristics of Reward Variables}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.4}{Expressions on Reward Variables}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.5}{Inference Engine}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{Design of Experiments and Results Database}{}% 13
+\BOOKMARK [1][-]{section.6}{Domain Models}{}% 14
+\BOOKMARK [2][-]{subsection.6.1}{SIS/SIRS}{section.6}% 15
+\BOOKMARK [2][-]{subsection.6.2}{Artificial Chemistry and Intracellular Viral Infection}{section.6}% 16
+\BOOKMARK [2][-]{subsection.6.3}{HIV Transactivation Model}{section.6}% 17
+\BOOKMARK [1][-]{section.7}{Code Repositories and Current Builds}{}% 18
+\BOOKMARK [2][-]{subsection.7.1}{Front-End Architecture for VDSOLs}{section.7}% 19
+\BOOKMARK [2][-]{subsection.7.2}{Backend Architecture for IR and Inference Engine}{section.7}% 20
+\BOOKMARK [2][-]{subsection.7.3}{Integrating AMIDOL}{section.7}% 21
