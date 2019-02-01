@@ -91,7 +91,7 @@ VDSOLs in \amidol{} are constructed using a graphical user interface implemented
 
 State-sharing allows model composition by defining an interface for a model in the form of a set of state variables, which are then "shared" with another model.  Shared state-variables in two composed models have the same marking, or value, and are effected by events in both models.  Event-synchronization functions in an analogous way, allowing two events to be paired, such that the input predicate and output predicate of the new shared event is the union of the predicates of the events being shared.
 
-\amidol{} is planned to support both replicate and join operations defined over Petri-nets and stochastic activity networks. \cite{sanders1995ultrasan}  In addition to replicate and join operations, \amidol{} will support a novel model composition relation allowing users to specify sub-models as nouns and verbs which can be connected to existing components using Abstract Base Models, based on class inheritance patterns \cite{bruce2002foundations}, which allows users to specify abstract models with undefined states and events.
+\amidol{} will support replicate and join operations previously defined over Petri-nets and stochastic activity networks, but extended to the \amidol{} IR. \cite{sanders1995ultrasan}  In addition to replicate and join operations, \amidol{} will support a novel model composition relation allowing users to specify sub-models as nouns and verbs which can be connected to existing components using Abstract Base Models, based on class inheritance patterns \cite{bruce2002foundations}, which allows users to specify abstract models with undefined states and events.
 
 \section{Abstract Intermediate Representation}
 
@@ -105,7 +105,7 @@ Formally, the IR is a 5-tuple, $(S, E, L, \Phi, \Lambda, \Delta)$ where:
 \begin{itemize}
 \item $S$ is a finite set of state variables $\{s_0, s_1, \ldots, s_{n-1}\}$ that take on values in $\mathbb{N}$.
 \item $E$ is a finite set of events $\{e_0, e_1, \ldots, e_{m-1}\}$ that may occur in the model.
-\item $L: S|E \rightarrow \mathbb{N}$ is the event and state variable labeling function that maps elements of $S and E$ into the original ontology.
+\item $L: S|E \rightarrow \mathbb{N}$ is the event and state variable labeling function that maps elements of $S$ and $E$ into the original ontology.
 \item $\Phi: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow \{0, 1\}$ is the event enabling predicate.
 \item $\Lambda: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow (0, \infty)$ is the transition rate specification.
 \item $\Delta: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow N_0 \times N_1 \times \ldots \times N_{n-1}$ is the state variable transition function specification.
