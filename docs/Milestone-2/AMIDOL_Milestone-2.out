@@ -1,0 +1,21 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{VDSOL Definition}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Basic Language Properties}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Composability of Atomic Models}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Abstract Intermediate Representation}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Language Properties}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{Reward Variables, Reward Models, and Inference}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Rate Reward Variables}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Impulse Reward Variables}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.3}{Temporal Characteristics of Reward Variables}{section.4}% 10
+\BOOKMARK [2][-]{subsection.4.4}{Expressions on Reward Variables}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.5}{Inference Engine}{section.4}% 12
+\BOOKMARK [1][-]{section.5}{Design of Experiments and Results Database}{}% 13
+\BOOKMARK [1][-]{section.6}{Domain Models}{}% 14
+\BOOKMARK [2][-]{subsection.6.1}{SIS/SIRS}{section.6}% 15
+\BOOKMARK [2][-]{subsection.6.2}{Artificial Chemistry and Intracellular Viral Infection}{section.6}% 16
+\BOOKMARK [2][-]{subsection.6.3}{HIV Transactivation Model}{section.6}% 17
+\BOOKMARK [1][-]{section.7}{Code Repositories and Current Builds}{}% 18
+\BOOKMARK [2][-]{subsection.7.1}{Front-End Architecture for VDSOLs}{section.7}% 19
+\BOOKMARK [2][-]{subsection.7.2}{Backend Architecture for IR and Inference Engine}{section.7}% 20
+\BOOKMARK [2][-]{subsection.7.3}{Integrating AMIDOL}{section.7}% 21

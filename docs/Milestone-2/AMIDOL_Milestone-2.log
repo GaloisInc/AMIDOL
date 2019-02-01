@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  31 JAN 2019 18:16
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  1 FEB 2019 12:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**AMIDOL_MWS_2019.tex
-(./AMIDOL_MWS_2019.tex
+**AMIDOL_Milestone-2.tex
+(./AMIDOL_Milestone-2.tex
 LaTeX2e <2018-04-01> patch level 2
 Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/article.cls
@@ -165,6 +165,13 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 LaTeX Info: Redefining \[ on input line 2817.
 LaTeX Info: Redefining \] on input line 2818.
 )
+(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)
 (/usr/local/texlive/2018/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2018/02/06 v6.86b Hypertext links for LaTeX
 
@@ -311,23 +318,23 @@ Package: authblk 2001/02/27 1.3 (PWD)
 \c@authors=\count118
 \c@affil=\count119
 )
-(./AMIDOL_MWS_2019.aux)
-\openout1 = `AMIDOL_MWS_2019.aux'.
+(./AMIDOL_Milestone-2.aux)
+\openout1 = `AMIDOL_Milestone-2.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 56.
+LaTeX Font Info:    ... okay on input line 56.
 
 (/usr/local/texlive/2018/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -398,7 +405,7 @@ Package caption Info: End \AtBeginDocument code.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \AtBeginShipoutBox=\box32
-Package hyperref Info: Link coloring OFF on input line 55.
+Package hyperref Info: Link coloring OFF on input line 56.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 
@@ -407,25 +414,24 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count126
 )
-LaTeX Info: Redefining \ref on input line 55.
-LaTeX Info: Redefining \pageref on input line 55.
-LaTeX Info: Redefining \nameref on input line 55.
+LaTeX Info: Redefining \ref on input line 56.
+LaTeX Info: Redefining \pageref on input line 56.
+LaTeX Info: Redefining \nameref on input line 56.
 
-(./AMIDOL_MWS_2019.out) (./AMIDOL_MWS_2019.out)
+(./AMIDOL_Milestone-2.out) (./AMIDOL_Milestone-2.out)
 \@outlinefile=\write3
-\openout3 = `AMIDOL_MWS_2019.out'.
+\openout3 = `AMIDOL_Milestone-2.out'.
 
-<figs/Diagram_of_meiosis.pdf, id=60, 472.56221pt x 307.16408pt>
-File: figs/Diagram_of_meiosis.pdf Graphic file (type pdf)
-<use figs/Diagram_of_meiosis.pdf>
-Package pdftex.def Info: figs/Diagram_of_meiosis.pdf  used on input line 71.
-(pdftex.def)             Requested size: 225.4804pt x 146.5653pt.
-<figs/HIV-Tat-figure.pdf, id=61, 478.6884pt x 342.67935pt>
-File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
-<use figs/HIV-Tat-figure.pdf>
-Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 76.
-(pdftex.def)             Requested size: 225.4804pt x 161.4201pt.
- [1
+LaTeX Font Info:    Try loading font information for U+msa on input line 57.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 57.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) [1
 
 {/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
@@ -434,62 +440,123 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[2 <./figs/Diagram_of_meiosis.pdf> <./figs/HIV-Tat-figure.pdf
+[2]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 106.
 
-pdfTeX warning: pdflatex (file ./figs/HIV-Tat-figure.pdf): PDF inclusion: multi
-ple pdfs with page group included in a single page
->]
-<figs/system-architecture-quad.pdf, id=186, 755.8583pt x 375.12807pt>
-File: figs/system-architecture-quad.pdf Graphic file (type pdf)
-<use figs/system-architecture-quad.pdf>
-Package pdftex.def Info: figs/system-architecture-quad.pdf  used on input line 
-122.
-(pdftex.def)             Requested size: 469.75502pt x 233.13794pt.
-<figs/table.pdf, id=198, 724.7075pt x 416.55624pt>
+ (/usr/local/texlive/2018/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 106.
+ [3] [4]
+<figs/table.pdf, id=148, 724.7075pt x 416.55624pt>
 File: figs/table.pdf Graphic file (type pdf)
 <use figs/table.pdf>
-Package pdftex.def Info: figs/table.pdf  used on input line 151.
+Package pdftex.def Info: figs/table.pdf  used on input line 176.
 (pdftex.def)             Requested size: 469.75502pt x 270.01468pt.
- [3 <./figs/system-architecture-quad.pdf>] (./AMIDOL_MWS_2019.bbl [4 <./figs/ta
-ble.pdf>]
-Underfull \hbox (badness 1755) in paragraph at lines 16--21
+
+[5] [6 <./figs/table.pdf>]
+<figs/regionsmap.pdf, id=202, 706.64pt x 486.81876pt>
+File: figs/regionsmap.pdf Graphic file (type pdf)
+<use figs/regionsmap.pdf>
+Package pdftex.def Info: figs/regionsmap.pdf  used on input line 210.
+(pdftex.def)             Requested size: 469.75502pt x 323.6264pt.
+<figs/2007-2008-SIRS.pdf, id=204, 729.92903pt x 388.55966pt>
+File: figs/2007-2008-SIRS.pdf Graphic file (type pdf)
+<use figs/2007-2008-SIRS.pdf>
+Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 218.
+(pdftex.def)             Requested size: 469.75502pt x 250.0647pt.
+ [7] [8 <./figs/regionsmap.pdf> <./figs/2007-2008-SIRS.pdf>]
+<figs/ViralRep-Crop.png, id=240, 426.59375pt x 225.84375pt>
+File: figs/ViralRep-Crop.png Graphic file (type png)
+<use figs/ViralRep-Crop.png>
+Package pdftex.def Info: figs/ViralRep-Crop.png  used on input line 235.
+(pdftex.def)             Requested size: 469.75502pt x 248.70801pt.
+ [9 <./figs/ViralRep-Crop.png>]
+<figs/HIV-Tat-figure.pdf, id=253, 478.6884pt x 342.67935pt>
+File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
+<use figs/HIV-Tat-figure.pdf>
+Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 260.
+(pdftex.def)             Requested size: 469.75502pt x 336.30452pt.
+<figs/TatModel.pdf, id=254, 650.43pt x 191.71625pt>
+File: figs/TatModel.pdf Graphic file (type pdf)
+<use figs/TatModel.pdf>
+Package pdftex.def Info: figs/TatModel.pdf  used on input line 265.
+(pdftex.def)             Requested size: 469.75502pt x 138.4656pt.
+ [10] [11 <./figs/HIV-Tat-figure.pdf> <./figs/TatModel.pdf>]
+<figs/Editor2.png, id=317, 963.6pt x 985.6825pt>
+File: figs/Editor2.png Graphic file (type png)
+<use figs/Editor2.png>
+Package pdftex.def Info: figs/Editor2.png  used on input line 318.
+(pdftex.def)             Requested size: 469.75502pt x 480.52205pt.
+<figs/LoadModel-crop.pdf, id=319, 524.96124pt x 739.76375pt>
+File: figs/LoadModel-crop.pdf Graphic file (type pdf)
+<use figs/LoadModel-crop.pdf>
+Package pdftex.def Info: figs/LoadModel-crop.pdf  used on input line 341.
+(pdftex.def)             Requested size: 469.75502pt x 661.9885pt.
+
+
+LaTeX Warning: Float too large for page by 48.75848pt on input line 344.
+
+[12] [13 <./figs/Editor2.png>]
+<figs/QueryIntegrateBackend-crop.pdf, id=332, 524.96124pt x 293.095pt>
+File: figs/QueryIntegrateBackend-crop.pdf Graphic file (type pdf)
+<use figs/QueryIntegrateBackend-crop.pdf>
+Package pdftex.def Info: figs/QueryIntegrateBackend-crop.pdf  used on input lin
+e 347.
+(pdftex.def)             Requested size: 469.75502pt x 262.28036pt.
+<figs/QueryResult.png, id=333, 462.528pt x 346.896pt>
+File: figs/QueryResult.png Graphic file (type png)
+<use figs/QueryResult.png>
+Package pdftex.def Info: figs/QueryResult.png  used on input line 361.
+(pdftex.def)             Requested size: 469.75502pt x 352.33655pt.
+ (./AMIDOL_Milestone-2.bbl
+Underfull \hbox (badness 1755) in paragraph at lines 15--20
 []\OT1/cmr/m/n/10.95 CDC.  Na-tional, re-gional, and state level out-pa-tient i
 ll-ness and vi-ral surveil-lance.
  []
 
-[5])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 186.
- [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 186.
- (./AMIDOL_MWS_2019.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 186.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 186.
-Package rerunfilecheck Info: File `AMIDOL_MWS_2019.out' has not changed.
-(rerunfilecheck)             Checksum: 260675C2033FC73136E89AD1A4F83D28;855.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 186.
+[14] [15 <./figs/LoadModel-crop.pdf>] [16 <./figs/QueryIntegrateBackend-crop.pd
+f>] [17 <./figs/QueryResult.png>])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 372.
+ [18]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 372.
+ (./AMIDOL_Milestone-2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 372.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 372.
+Package rerunfilecheck Info: File `AMIDOL_Milestone-2.out' has not changed.
+(rerunfilecheck)             Checksum: 00EE7A3D0EDCA74BB7897359FFF628EC;1540.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 372.
  ) 
 Here is how much of TeX's memory you used:
- 7754 strings out of 492649
- 116570 string characters out of 6129622
- 220143 words of memory out of 5000000
- 11520 multiletter control sequences out of 15000+600000
- 10965 words of font info for 39 fonts, out of 8000000 for 9000
+ 7932 strings out of 492649
+ 119606 string characters out of 6129622
+ 223424 words of memory out of 5000000
+ 11636 multiletter control sequences out of 15000+600000
+ 12468 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,11n,43p,1498b,446s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,11n,43p,1059b,432s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
-</usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></u
-sr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
-/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/l
-ocal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/loca
-l/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local
-/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on AMIDOL_MWS_2019.pdf (6 pages, 554848 bytes).
+</usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+/usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
+usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
+r/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
+local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/lo
+cal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loca
+l/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/
+texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/tex
+live/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texliv
+e/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
+/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2
+018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
+18/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/201
+8/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on AMIDOL_Milestone-2.pdf (18 pages, 1191798 bytes).
 PDF statistics:
- 337 PDF objects out of 1000 (max. 8388607)
- 252 compressed objects within 3 object streams
- 45 named destinations out of 1000 (max. 500000)
- 133 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 506 PDF objects out of 1000 (max. 8388607)
+ 396 compressed objects within 4 object streams
+ 82 named destinations out of 1000 (max. 500000)
+ 219 words of extra memory for PDF output out of 10000 (max. 10000000)
 

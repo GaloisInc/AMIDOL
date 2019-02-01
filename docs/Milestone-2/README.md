@@ -1,4 +1,4 @@
-# Milestone #2
+# Milestone 2
 
 * Interim Report
   * PDF mailed to aske@darpa.mil
