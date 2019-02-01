@@ -111,13 +111,37 @@ associated event fires.
 Composability of Atomic Models
 ------------------------------
 
-[@sanders1992dependability; @sanders1988construction]
+[<span style="font-variant:small-caps;">AMIDOL</span>]{} is being
+designed to support the composition of individual models to enable model
+reuse, compositional methods for solution, to enhance backend support
+for performance optimizations that require symmetry detection, and to
+allow domain scientists to experiment by swapping out components of a
+model which may represent complex hypotheses about individual elements.
+Model composition in [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} is being designed to
+support two primary mechanisms: *state-sharing*
+[@sanders1992dependability; @sanders1988construction] and
+*event-synchronization* [@lampka2002symbolic].
 
-UI/UX Design
-------------
+State-sharing allows model composition by defining an interface for a
+model in the form of a set of state variables, which are then “shared”
+with another model. Shared state-variables in two composed models have
+the same marking, or value, and are effected by events in both models.
+Event-synchronization functions in an analogous way, allowing two events
+to be paired, such that the input predicate and output predicate of the
+new shared event is the union of the predicates of the events being
+shared.
 
-JSON Export Language
---------------------
+[<span style="font-variant:small-caps;">AMIDOL</span>]{} is planned to
+support both replicate and join operations defined over Petri-nets and
+stochastic activity networks. [@sanders1995ultrasan] In addition to
+replicate and join operations, [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} will support a novel
+model composition relation allowing users to specify sub-models as nouns
+and verbs which can be connected to existing components using Abstract
+Base Models, based on class inheritance patterns
+[@bruce2002foundations], which allows users to specify abstract models
+with undefined states and events.
 
 Abstract Intermediate Representation
 ====================================
@@ -128,12 +152,19 @@ universal way to specify models, regardless of their domain, and
 provides a Turing-complete way to specify models performably, while
 avoiding domain specific considerations.
 
-Markov models [@howard2012dynamic]
-
-Petri-nets with inhibitor arcs [@chiola1993generalized]
-
-Stochastic activity networks
-[@movaghar1985performability; @sanders2000stochastic]
+The intermediate representation employed by [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} has its roots in
+Markov models [@howard2012dynamic], Generalized Stochastic Petri-nets
+with inhibitor arcs [@chiola1993generalized] which have been shown to be
+Turing complete, and stochastic activity networks
+[@movaghar1985performability; @sanders2000stochastic] which are
+extensions of Petri-nets that allow more compact model specification.
+[<span style="font-variant:small-caps;">AMIDOL</span>]{} currently
+extends these concepts primarily by creating ways to link to the
+original ontology of nouns and verbs, and by allowing embedded reward
+structures to be linked to a graph-based results database which stores
+the outcomes of experiments and can be used for the construction of
+arbitrary measures on the underlying model to support inference needs.
 
 Language Properties
 -------------------
@@ -162,48 +193,51 @@ Formally, the IR is a 5-tuple, $(S, E, L, \Phi, \Lambda, \Delta)$ where:
 Informally the IR represents models defined in a given VDSOL using an
 formalism based on Generalized Stochastic Petri-nets with inhibitor arcs
 (which have the result of making Petri-nets Turing complete). Instead of
-inhibtor arcs, we utilize the more intuitive and performable method of
+inhibitor arcs, we utilize the more intuitive and performable method of
 allowing events to have input predicates ($Phi$) which can be evaluated
 to determine if an event is enabled, and output predicates which define
 the side effects of event firing.
 
 #### State variables
 
-:
+: intuitively, state-variables make up the current state of the model,
+and measure the configuration and capabilities of all modeled
+components. While state variables are defined as taking on values in
+$\mathbb{N}$, this does not restrict them from representing real numbers
+to arbitrary precision in modern computer hardware. In practice, they
+are implemented as integers, and floating point numbers by the [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} source code.
 
 #### Events
 
-:
+: events, when fired, change the state of a model by altering the value
+of state variables. Events in [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} are associated with
+input predicates, output predicates, and a rate function which returns
+the next firing time of a given event. The rate function is an
+expression over random variable distributions.
 
 #### Input predicates
 
-:
+: an input predicate is associated with an event, and a potentially
+empty set of state variables. Input predicates are functions of the
+marking of their set of variables which map the markings of those
+variables onto the set $\{1, 0\}$. For those markings in which the input
+predicate evaluates to $1$, the event is considered enabled and will
+fire as normal. For those markings in which the input predicate
+evaluates to $0$, the event is considered disabled and cannot fire until
+subsequently enabled.
 
 #### Output predicates
 
-:
+: an output predicate is associated with an event, and a potentially
+empty set of state variables. Output predicates map a set of state
+variables, and their marking, to a new marking for the same state
+variables and define the side effects of event firing on the state of
+the model.
 
-#### Representation
-
-:
-
-Inference Engine
-================
-
-#### ODE Solver
-
-:
-
-#### Numerical Solution
-
-:
-
-#### Discrete Event Simulation
-
-:
-
-Reward Variables and Reward Models
-==================================
+Reward Variables, Reward Models, and Inference
+==============================================
 
 The [<span style="font-variant:small-caps;">AMIDOL</span>]{}
 intermediate representation allows for the specification of reward
@@ -277,35 +311,95 @@ defined formally as:
 
 $$\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}$$
 
-Translation of Reward Variables to IR
--------------------------------------
+Steady state reward variables are realized by testing for initial
+transients, and calculating an instant of time variable after a model
+has reached a stable steady state with high confidence.
 
 Expressions on Reward Variables
 -------------------------------
 
+While individual reward variables form the basis for model evaluation,
+[<span style="font-variant:small-caps;">AMIDOL</span>]{} will support
+expressions defined over reward variables using basic arithmetic
+operations allowing reward variables to be composed via normal
+mathematical expressions.
+
+Inference Engine
+----------------
+
+The current prototype of [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} is being designed to
+support solution of ordinary differential equations, discrete event
+simulation, and numerical solution. These inference techniques are build
+targets chosen by the intermediate representation based on the
+requirements of the reward variables being computed, and the limitations
+and requirements of the models being solved. A model, for instance,
+which has general event distributions, cannot be solved by successive
+matrix multiplication.
+
+Multiple solvers can be run on the same model to compute different
+reward variables where appropriate, with the results being fed into a
+results database.
+
 Design of Experiments and Results Database
 ==========================================
 
-Results Database
-----------------
+![[]{data-label="Fig:InferenceClasses"}](figs/table.pdf){width="\textwidth"}
 
-Prognostic Queries
-------------------
+[<span style="font-variant:small-caps;">AMIDOL</span>]{} aims to support
+a number of complex queries and prognostics, as shown in Figure
+\[Fig:InferenceClasses\]. To support a rich interface, we will make use
+of a Design of Experiments [@montgomery2017design] interface coupled
+with a results database. Design of Experiments in [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} borrows from concepts
+of Plackett-Burman designs, and factorial designs using individual
+reward variables and parameterizations defined over a given model as
+atomic components of expressions, resulting in new results. Computations
+for given atomic components are stored in the results database to avoid
+unneeded reevaluation, and to allow future experiments to build on past
+results.
 
-Model Comparison
-----------------
+The Design of Experiments interface will allow users to load data from
+external sources, and associate this data with expectations for state
+variables in the model. In our early tests we have achieved this by
+using data from the CDC’s Fluview [@cdc2019fluview] data sets as series
+of instant-of-time observations. [<span
+style="font-variant:small-caps;">AMIDOL</span>]{}’s interface allows
+users to use regression to estimate the conditional expectation of
+dependent variables, given independent variables with fixed values from
+the data, allowing prediction, parameter estimation, and later risk
+assessment for a given regression through analysis of the distribution
+of possible realizations for state variables in a given model.
 
-Design of Experiments
----------------------
+Models can be compared in our planned Design of Experiments interface by
+identifying reward variables, or expressions on reward variables, in two
+models which should be compared and analyzed to explore alternatives,
+perform conditional forecasting, counterfactual analysis, and
+comparative impact. Different strategies, configurations, or possible
+outcomes can be explored through examining different ways to
+parameterize a given model, or even differences in models with
+structural changes. Debugging experiments will be enabled through the
+connections to the VDSOL ontology. For instance, the interface will
+allow users to see the direct dependence of reward variables to noun’s
+and verbs in the original ontology, better enabling researchers to
+understand the knowledge-based semantic dependencies normally hidden by
+traditional modeling techniques.
 
-Conterfactural Exploration, Planning, Crisis Response
------------------------------------------------------
-
-Correctness and Uncertainty
----------------------------
-
-Communication of Results
-------------------------
+Sensitivity, uncertainty, and correctness measures can easily be
+constructed in the planned Design of Experiments interface. Because we
+allow for factorial and Plackett-Burman experiment design users can
+automatically perform one-factor-at-a-time
+[@bailis2005mortality; @murphy2004quantification] sensitivity and
+uncertainty estimates. The initial prototype will also feature screening
+sampling-based methods [@morris1991factorial] which have been shown to
+be computationally efficient and are further enabled by our VDSOL
+ontologies, as they help identify sources of uncertainty and error in
+the structure of the model. Correctness is enabled by loading external
+data from multiple time series or sources, and asking the interface to
+perform cross validation on the input. [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} will automatically
+support k-fold cross validation on time series, allowing automatic
+partitioning of data sets.
 
 Domain Models
 =============
@@ -320,16 +414,10 @@ style="font-variant:small-caps;">AMIDOL</span>]{}.
 SIS/SIRS
 --------
 
-H1N1 $R_0$ importance [@fraser2009pandemic].
-
-Ebola $R_0$ importance [@fisman2014early]
-
-CDC Data [@cdc2019fluview]
-
 The SIS/SIRS model is one of the simplest models we have deployed for
 testing with [<span style="font-variant:small-caps;">AMIDOL</span>]{},
 with the advantage that the model itself is relatively simple, but
-utlizes real data, and can be used to answer important epidemiological
+utilizes real data, and can be used to answer important epidemiological
 questions. The primary objective of the SIS/SIRS model is to identify
 the *basic reproduction number* associated with an infection, also known
 as $R_0$, or *r nought*. $R_0$ was first used in 1952 when studying
@@ -337,6 +425,13 @@ malaria and is a measure of the potential for an infection to spread
 through a population. If $R_0 < 1$, then the infection will die out in
 the long run. If $R_0 > 1$, then the infection will spread. The higher
 the value of $R_0$, the more difficult it is to control an epidemic.
+
+The importance of estimating $R_0$ has been well established for many
+historical epidemics, including H1N1 [@fraser2009pandemic] and Ebola
+[@fisman2014early]. This model also lends itself to testing [<span
+style="font-variant:small-caps;">AMIDOL</span>]{}’s Design of
+Experiments module via the plentiful CDC Data [@cdc2019fluview] which is
+well modeled by SIRS.
 
 Given a 100% effective vaccine, the proportion of the population that
 needs to be vaccinated is $1 - 1/R_0$, meaning that $R_0$ can be used to
@@ -355,7 +450,7 @@ more complex numbers. We have several main goals for SIS/SIRS models:
 
 #### Data
 
-: For these models we will be working with the WHO/NREVSS (World Health
+: For these models we have worked with the WHO/NREVSS (World Health
 Organization/National Respiratory and Enteric Virus Surveillance System)
 data sets at the resolution of Department of Human and Health Services
 designated regions.
@@ -363,17 +458,59 @@ designated regions.
 ![Department of Human and Health Services designated
 regions.[]{data-label="Fig:Regions"}](figs/regionsmap.pdf){width="\textwidth"}
 
-Using data from a given region, and a given strain, we will estimate R0
-for the epidemic curve as shown in Figure \[Fig:R0\]
+Using data from a given region, and a given strain, we estimate R0 for
+the epidemic curve as shown in Figure \[Fig:R0\]
 
 ![2007 - 2008 Flu
 Season[]{data-label="Fig:R0"}](figs/2007-2008-SIRS.pdf){width="\textwidth"}
 
-Artificial Chemistry
---------------------
+Artificial Chemistry and Intracellular Viral Infection
+------------------------------------------------------
 
-Viral Infection Model
----------------------
+We have also introduced two simple models of artificial chemistry, and
+viral infection first introduced by
+[@srivastava2002stochastic; @haseltine2002approximate] to test different
+VDSOLs with similar solution techniques. While simple, models such as
+the crystallization model:
+
+$$\begin{aligned}
+  2A \overset{e_1}{\rightarrow} B\\
+  A + C \overset{e_2}{\rightarrow} D\end{aligned}$$
+
+Allow us to test features of the UI for [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} in a different domain,
+and the ability of our predicates to handle non-conservation of value in
+state variables, along with enabling conditions due to the presence of
+non-renewable reactions.
+
+![Model of viral replication cycle with catalytic
+reactions[]{data-label="Fig:ViralRep"}](figs/ViralRep-Crop.png){width="\textwidth"}
+
+Figure \[Fig:ViralRep\] shows a more complex version of the
+crystallization model with catalysts, which models viral replication
+using a chemical kinetic model.
+
+$$\begin{aligned}
+\mathrm{nucleotides} \overset{e_1}{\rightarrow} \mathrm{genome}\\
+\mathrm{nucleotides} + \mathrm{genome} \overset{e_2}{\rightarrow} \mathrm{template}\\
+\mathrm{nucleotides} + \mathrm{aminoacids} \overset{e_3}{\rightarrow} \mathrm{struct}\\
+\mathrm{template} \overset{e_4}{\rightarrow} \mathrm{degraded}\\
+\mathrm{struct} \overset{e_5}{\rightarrow} \mathrm{secreted}\\
+\mathrm{struct} \overset{e_5}{\rightarrow} \mathrm{degraded}\\
+\mathrm{genome} + \mathrm{struct} \overset{e_6}{\rightarrow} \mathrm{virus}\\\end{aligned}$$
+
+This model also features competing events, allowing us to further test
+our backend’s capability for dealing with cases of multiple enabled
+events.
+
+HIV Transactivation Model
+-------------------------
+
+We also employ the HIV Transactivation model presented in
+[@weinberger2005stochastic] as a more complex model of an epidemic
+process, with the added challenge of handling a system which is stiff,
+and thus difficult to solve efficiently. The base model is shown in
+Figures \[Fig:HIV-Tat\] and \[Fig:HIV-Tat-VDSOL\]
 
 ![Simple noun (circle) and verb (square) representation of Tat model
 without ambiguity and
@@ -385,7 +522,16 @@ aliasing.[]{data-label="Fig:HIV-Tat-VDSOL"}](figs/TatModel.pdf){width="\textwidt
 
 Note the use of multiple “Tat” symbols in Figure \[Fig:HIV-Tat\].
 Sometimes scientists draw the same symbol multiple places as an “alias”
-for the same underlying state variable.
+for the same underlying state variable, which has added the requirement
+to [<span style="font-variant:small-caps;">AMIDOL</span>]{} of
+supporting entity resolution. Our goal with [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} is not to
+fundamentally restrict a domain scientist when drawing diagrams, but
+rather to assist them in their natural process, and allow them to use
+the same conventions they are already familiar with, and which exist in
+their field.
+
+The equations governing this model are given by:
 
 $$\begin{aligned}
 LTR \overset{k_{basal}}{\rightarrow} LTR + nRNA\\
@@ -400,40 +546,65 @@ nRNA \overset{k_{export}}{\rightarrow} cRNA\\
   cRNA \overset{d_{CYT}}{\rightarrow} \emptyset\\
   nRNA \overset{d_{NUC}}{\rightarrow} \emptyset\end{aligned}$$
 
-H5N1 Model
-----------
+Using real data generated with flow cytometry, this model can be
+parameterized as follows:
 
-H3N2 Model
-----------
+$$\begin{aligned}
+k_basal &=& 10^{-8} (transcripts/s)\\
+  k_export &=& 0.00072 (1/s)\\
+  k1_translate &=& 0.5 (1/s)\\
+  k2_translate &=& 0.005 (1/s)\\
+  k_bind &=& 10^{-4} (1/(mol * s))\\
+  k_unbind &=& 10^{-2} (1/s)\\
+  k_acetyl &=& 10^{-3} (1/(mol * s))\\
+  k_deacetyl &=& 0.9 (1/s)\\
+  k_transact &=& 0.1 (1/s)\end{aligned}$$
 
-User Stories
-============
+As can be seen, the rates differ by many orders of magnitude, a
+situation that causes the model to be classified as stiff, and thus
+difficult to solve by many ODE techniques. We are using this model to
+test the Design of Experiments capability of [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} to automatically
+select appropriate solution techniques for a user, avoiding numerical
+instability and the use of inefficient algorithms which otherwise could
+be pitfalls for traditional modeling methods.
 
 Code Repositories and Current Builds
 ====================================
 
-The UI (an Elm project contained in the ‘ui‘ directory) is a series of
-HTML pages through which users will interact with the system. That
-includes drawing/manipulating semi-formal models, issuing queries,
-loading data.
+The current build of [<span
+style="font-variant:small-caps;">AMIDOL</span>]{} is available in our
+repository under the `ir` and `ui` directories. Both of which have
+instructions on building and executing the current system. Models can be
+designed in the current VDSOL editor, an Elm project contained in the
+‘ui‘ directory, which is implemented as a series of web applications
+produced by the Elm compiler as HTML, CSS, and Javascript. Current
+capabilities include drawing/manipulating semi-formal models, issuing
+queries, and loading data.
 
-The main system (a Scala project contained in the ‘ir‘ directory)
-compiles questions that users may have about models they’ve created into
-code artifacts targeting different simulation/solver backends. Over
-time, we expect this system to also manipulate and compose datasets
-(from real-world observations as well as from the output of other
-simulations).
+The intermediate representation is implemented as a Scala project
+contained in the ‘ir‘ directory. It compiles queries issued by users for
+a particular model they’ve created into code artifacts targeting
+different solver backends. Over time, we expect this system to also
+manipulate and compose datasets (from real-world observations as well as
+from the output of other simulations), and utilize the results database.
 
 Front-End Architecture for VDSOLs
 ---------------------------------
 
-Amidol’s user interface is a small collection of web pages which
-communicate with the Scala back-end using JSON over HTTP. This
-client/server approach leverages standard browser technologies like
-HTML5, CSS, and SVG graphics for rapid development of rich interactions
-tailored for the specific needs of scientific modeling. It also
-decouples the concerns of visual presentation and manipulation from the
-underlying representations of model semantics.
+![Current Front-End featuring a generic VDSOL. The front-end enables the
+embedding of custom SVGs for nouns and verbs, allowing eventual
+specialization of produced figures, better matching current domain
+conventions.[]{data-label="Fig:Editor"}](figs/Editor.png){width="\textwidth"}
+
+[<span style="font-variant:small-caps;">AMIDOL</span>]{}’s user
+interface is a small collection of web pages which communicate with the
+Scala back-end using JSON over HTTP. This client/server approach
+leverages standard browser technologies like HTML5, CSS, and SVG
+graphics for rapid development of rich interactions tailored for the
+specific needs of scientific modeling. It also decouples the concerns of
+visual presentation and manipulation from the underlying representations
+of model semantics.
 
 The Javascript code which implements the user interface is compiled from
 Elm, a strongly typed functional language designed specifically for
@@ -442,43 +613,68 @@ popular Javascript frameworks like React, but the language provides some
 distinct advantages in terms of correctness, performance, and ease of
 refactoring. In addition to the capabilities provided by the Elm package
 ecosystem, Elm applications can interoperate directly with Javascript,
-allowing Amidol to make use of the best available web-based data
-visualization libraries.
+allowing [<span style="font-variant:small-caps;">AMIDOL</span>]{}to make
+use of the best available web-based data visualization libraries.
 
-Integration concepts: - API schema and versioning - supports
-collaboration between multiple users - one server, potentially multiple
-client implementations - persistent server, ephemeral clients -
-resource-heavy servers (cluster?), lightweight clients
+Integration concepts:
+
+-   API schema and versioning
+
+-   supports collaboration between multiple users
+
+-   one server, potentially multiple client implementations
+
+-   persistent server, ephemeral clients
+
+-   resource-heavy clusters, lightweight clients
+
+Currently, the user interface implements a visual editor for directed
+graphs having labeled vertices and edges, which represent the nouns and
+verbs of a VDSOL. We are in the process of designing a set of user
+interactions with these graph models, including save / load, model
+composition, and various forms of simulation analysis and query
+generation. The UI will also show the responses to users’ queries in
+appropriate visual forms, such as multivariate time-series plots.
 
 Backend Architecture for IR and Inference Engine
 ------------------------------------------------
 
+![Example of the AFI/IR loading a model produced in the VDSOL, and
+parsing it into the intermediate
+representation.[]{data-label="Fig:LoadModel"}](figs/LoadModel-crop.pdf){width="\textwidth"}
+
+![Example of the AFI/IR running a query on a translated model using
+SciPy as the backend target to produce time series
+estimates.[]{data-label="Fig:Query"}](figs/QueryIntegrateBackend-crop.pdf){width="\textwidth"}
+
 The backend component interfaces with the UI via a local web server. The
 idea here is that every time the user interacts with the UI either to
-modify or to ask questions of the model, that information also gets
-relayed to the backend via a set of web endpoints. When the backend
-receives new information about the model from the UI, it parses this
-into some internal representation. This includes such tasks as parsing
-equations from user-inputted strings and checking that state variables
-being referred to actually exist. Questions asked of the model follow a
+modify or to query the model, that information also gets relayed to the
+backend via a set of web endpoints. When the backend receives new
+information about the model from the UI, it parses this into some
+internal representation. This includes such tasks as parsing equations
+from user-inputted strings and checking that state variables being
+referred to actually exist. Queries submitted about a model follow a
 slightly longer path: after being parsed out and validated, the backend
-figures out how to transform the IR and the question into executable
-code, executes this code, and returns the result back out to the user.
+figures out how to transform the IR and the query into executable code
+using reward variables, executes this code, and returns the result back
+out to the user and eventual results database.
 
 Within the backend, the IR is stored in a graph format resembling what
 the user constructed in the UI. By maintaining some degree of
 similarity, we hope to make it simpler to translate results obtained in
 the backend back out into something end users can easily understand.
-Questions asked about models are translated into code artifacts
-targeting existing solver and simulation programs. We wish to avoid
-doing actual simulations within the system, instead focusing on
-intelligently compiling queries into programs that external solvers can
-run. In order to do this sort of thing, we still do need to implement a
-minimum amount of symbolic algebra (ex: detecting when a continuous rate
-model is linear). For the time being, we’ve been targeting Python’s
-SciPy module as a backend to answer basic simulation questions such as:
-the the initial value problem for general systems as well as for
-continuous-time Markov chains.
+Queries about models are translated into code artifacts targeting
+existing solver and simulation programs. We wish to avoid doing actual
+simulations within the system, instead focusing on intelligently
+compiling queries into programs that external solvers can run allowing
+code reuse, and allowing the backend to generate targets for existing,
+high performance, solver engines. In order to do this we still need to
+implement a minimum amount of symbolic algebra (e.g. detecting when a
+continuous rate model is linear). For the time being, we’ve been
+targeting Python’s SciPy module as a backend to answer basic simulation
+questions such as: the the initial value problem for general systems as
+well as for continuous-time Markov chains.
 
 The backend is written in Scala, leveraging a set of libraries built on
 top of the Akka actor system for the web server, JSON processing,
@@ -490,21 +686,13 @@ a functional outlook which lends itself well to compiler problems.
 Integrating AMIDOL
 ------------------
 
-I think it’s worth saying somewhere that the JSON API which defines
-client/server interaction is the only channel by which tangible VDSOL
-models and computational AFI communicate. In other words, the UI doesn’t
-hold any persistent model state which is not represented in the API; it
-is precisely a view or translation of the AFI/IR. This property is what
-enables the list of integration concepts. In a word, it’s a RESTful
-architecture.
+![Query Results returned from the AFI/IR backend to the VDSOL frontend
+displaying values over a defined set of instant-of-time rate reward
+variables.[]{data-label="Fig:QueryResult"}](figs/QueryResult.png){width="\textwidth"}
 
-![[]{data-label="Fig:Editor"}](figs/Editor.png){width="\textwidth"}
-
-![[]{data-label="Fig:LoadModel"}](figs/LoadModel-crop.pdf){width="\textwidth"}
-
-![[]{data-label="Fig:Query"}](figs/QueryIntegrateBackend-crop.pdf){width="\textwidth"}
-
-![[]{data-label="Fig:QueryResult"}](figs/QueryResult.png){width="\textwidth"}
-
-Roadmap for Future Development
-==============================
+The JSON API which defines client/server interaction is the only channel
+by which tangible VDSOL models and the computational AFI/IR communicate.
+The UI itself doesn’t hold any persistent model state which is not
+represented in a given VDSOL; it is precisely a view or translation of
+the AFI/IR. This property is what enables the list of integration
+concepts, and restful architecture.
