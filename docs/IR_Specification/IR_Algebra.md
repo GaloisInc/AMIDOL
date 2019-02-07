@@ -34,11 +34,13 @@ The state variable transition function maps events, and markings to new markings
 { Model: {
   statevariables: [{
     id: "string",
+    label: "string"
     type: "sv_type",
     initial_value: "expression"
   }]
   events: [{
     id: "string",
+    label: "string",
     rate: "expression",
     input_predicate: {
       enabling_condition: "expression"
@@ -54,15 +56,15 @@ The state variable transition function maps events, and markings to new markings
 ```json
 { Model:
   statevariables: [{
-    (id: "S", type: "int", initial_value: "10"),
-    (id: "I", type: "int", initial_value: "0"),
-    (id: "R", type: "int", initial_value: "0")
+    (id: "S", label: "susceptible_M0", type: "int", initial_value: "10"),
+    (id: "I", label: "infected_M0", type: "int", initial_value: "0"),
+    (id: "R", label: "recovered_M0", type: "int", initial_value: "0")
     }]
   events: [{
-    (id: "infection", rate: "beta",
+    (id: "infection", label: "infection_M0", rate: "beta",
       input_predicate: {enabling_condition: "S > 0"},
       output_predicate: {transition_function: ["S = S - _rate_*S*I/(S+I+R)", "I = I + _rate_*S*I/(S+I+R)"]},
-    id: "recovery", rate: "gamma",
+    id: "recovery", label: "recovery_M0", rate: "gamma",
       input_predicate: {enabling_condition: "I > 0"},
       output_predicate: {transition_function: ["I = I - _rate_*I", "R = R + _rate_*I"]}  
     )
