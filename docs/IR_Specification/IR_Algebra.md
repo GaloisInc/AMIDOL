@@ -19,3 +19,33 @@ Intuitively, N(0) x N(1) x ... x N(n-1) represents the *marking* of a model in t
 ```
 
 The transition rate specification maps each event, and a marking to a rate, a positive real value which initially represents the exponential rate at which the function fires.  This assumes the model is Markovian **we will relax this assumption in the future**.
+
+The state variable transition function maps events, and markings to new markings.  It is more compactly represented as a mapping of events and a tuple of expressions which define a set of markings, to a tuple of expressions which indicate how to update the marking.
+
+```
+  Delta: e(1) = (s0 = s0 - 1, s1 = s1 + 1) # When e(1) fires, decrement s0, increment s1.
+  Delta: e(2) x (s0 > 1) = (s0 = s0 + 1)   # When e(2) fires, if s0 > 1, increment s0
+  Delta: e(2) x (s0 <= 1) = (s1 = s1 + 1)  #        else, increment s1
+```
+
+## Example AIR Schema
+
+```json
+{ Model: {
+  statevariables: [{
+    id: "sv_id",
+    type: "sv_type",
+    initial_value: "initial_value"
+  }]
+  events: [{
+    id: "event_id",
+    rate: "event_rate",
+    input_predicate: {
+      enabling_condition: "expression"
+    }
+    output_predicate: {
+      transition_function: ["expression", "expression", ...]
+    }
+  }]
+ }}
+```
