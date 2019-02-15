@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  15 FEB 2019 14:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  15 FEB 2019 14:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -422,16 +422,6 @@ LaTeX Info: Redefining \nameref on input line 56.
 \@outlinefile=\write3
 \openout3 = `AMIDOL_MWS_2019.out'.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 57.
-
-(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 57.
-
-(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
 <figs/Diagram_of_meiosis.pdf, id=40, 472.56221pt x 307.16408pt>
 File: figs/Diagram_of_meiosis.pdf Graphic file (type pdf)
 <use figs/Diagram_of_meiosis.pdf>
@@ -456,13 +446,23 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 pdfTeX warning: pdflatex (file ./figs/HIV-Tat-figure.pdf): PDF inclusion: multi
 ple pdfs with page group included in a single page
 >]
-<figs/system-architecture-quad.pdf, id=157, 755.8583pt x 375.12807pt>
+<figs/system-architecture-quad.pdf, id=156, 755.8583pt x 375.12807pt>
 File: figs/system-architecture-quad.pdf Graphic file (type pdf)
 <use figs/system-architecture-quad.pdf>
 Package pdftex.def Info: figs/system-architecture-quad.pdf  used on input line 
 103.
 (pdftex.def)             Requested size: 469.75502pt x 233.13794pt.
  [3 <./figs/system-architecture-quad.pdf>]
+LaTeX Font Info:    Try loading font information for U+msa on input line 126.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 126.
+
+(/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 128.
 
 
@@ -502,11 +502,11 @@ LaTeX Warning: There were undefined references.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 185.
  ) 
 Here is how much of TeX's memory you used:
- 7829 strings out of 492649
- 117698 string characters out of 6129622
+ 7823 strings out of 492649
+ 117623 string characters out of 6129622
  221507 words of memory out of 5000000
- 11586 multiletter control sequences out of 15000+600000
- 12608 words of font info for 47 fonts, out of 8000000 for 9000
+ 11581 multiletter control sequences out of 15000+600000
+ 11361 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,10n,43p,1638b,446s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
@@ -525,7 +525,7 @@ e/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
 /2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2
 018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
 18/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on AMIDOL_MWS_2019.pdf (7 pages, 451374 bytes).
+Output written on AMIDOL_MWS_2019.pdf (7 pages, 451310 bytes).
 PDF statistics:
  309 PDF objects out of 1000 (max. 8388607)
  239 compressed objects within 3 object streams
