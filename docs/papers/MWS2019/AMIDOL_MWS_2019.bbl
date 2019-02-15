@@ -61,6 +61,11 @@ Ronald~A Howard.
 \newblock {\em Dynamic probabilistic systems: Markov models}, volume~1.
 \newblock Courier Corporation, 2012.
 
+\bibitem{lampka2002symbolic}
+Kai Lampka and Markus Siegle.
+\newblock Symbolic composition within the m{\"o}bius framework.
+\newblock In {\em Proc. of the 2nd MMB Workshop}, pages 63--74, 2002.
+
 \bibitem{movaghar1985performability}
 Ali Movaghar.
 \newblock Performability modeling with stochastic activity networks.

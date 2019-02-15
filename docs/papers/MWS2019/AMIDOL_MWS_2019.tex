@@ -83,7 +83,7 @@ The construction of computational models is an important practice for scientists
   \label{Fig:Semi-formal}
 \end{figure}
 
-Current modeling formalisms are often specified in formal languages which seem arcane and unnatural to domain experts, but have unambiguous formal meaning with defined execution semantics.  By contrast domain experts have naturally developed visual semi-formal ways of describing the systems they study, such as those illustrated in Figure \ref{Fig:Semi-formal}, but which lack semantic meaning, executability, and are often ambiguous.  In Luca Cardelli's paper on the abstract machines of systems biology \cite{cardelli2005abstract} he notes that these semi-formal diagrams come close to capturing operational semantics of process algebras, a concept he expanded on when deriving a formal calculus of membrane interactions \cite{cardelli2004brane}.  Similarly, a need for formal languages which describe biological systems similar to those used in physics or chemistry was highlighted in Nurse's 2008 paper \cite{nurse2008life}:
+Current modeling formalisms are often specified in formal languages which seem arcane and unnatural to domain experts, but have unambiguous formal meaning with defined execution semantics.  By contrast domain experts have naturally developed visual semi-formal ways of describing the systems they study, such as those illustrated in Figure \ref{Fig:Semi-formal}, but which lack semantic meaning, executability, and are often ambiguous.  In Luca Cardelli's paper on the abstract machines of systems biology \cite{cardelli2005abstract} he notes that these semi-formal diagrams come close to capturing the operational semantics of process algebras, a concept he expanded on when deriving a formal calculus of membrane interactions \cite{cardelli2004brane}.  Similarly, a need for formal languages which describe biological systems similar to those used in physics or chemistry was highlighted in Paul Nurse's 2008 paper \cite{nurse2008life}:
 
 \begin{aquote}{Paul Nurse (2008)}
 "There should be
@@ -95,7 +95,7 @@ biological phenomena."
 \end{aquote}
 
 \paragraph{Significance}
-\amidol seeks to provide a framework for the development of languages which formally describe biological systems, and complex systems from other domains, using an abstract intermediate representation which serves as a universal modeling representation.  This framework provides several significant advancements on the state of the art which seeks to improve the usability, maintainability, reusability, and performability of scientific models.  First, \amidol{} will provide compilers that translate from many Visual Domain Specific Ontological Languages (VDSOLs) into the abstract intermediate representation allowing VDSOLs to be specified for new domains and extended easily, and models written in VDSOLs to be transformed into a universal representation that preserves metadata about the original ontology.  Second, \amidol{} will provide transformations on models in its abstract intermediate representation to optimize the execution of these models, compose models to build more powerful and complex representations, and to overlay reward structures on these models to specify metrics of interest and experiments to perform with \amidol{}'s inference engine.  Finally, \amidol{} provides compilers that translate models in the abstract intermediate representation into solver targets for the inference engine, checking constraints of composed reward structures, to solve for measures of interest.  \amidol allows these results to be communicated back to the user through the saved metadata, to relate raw statistical and machine learning output to the original ontology to improve explainability.
+\amidol{} seeks to provide a framework for the development of languages which formally describe biological systems and complex systems from other domains using an abstract intermediate representation which serves as a universal modeling language.  This framework provides several significant advancements on the state of the art which seek to improve the usability, maintainability, reusability, and performability of scientific models.  First, \amidol{} will provide compilers that translate from many Visual Domain Specific Ontological Languages (VDSOLs) into its abstract intermediate representation allowing VDSOLs to be specified for new domains and extended easily, and models written in VDSOLs to be transformed into a universal representation that preserves metadata about the original ontology.  Second, \amidol{} will provide transformations on models in its abstract intermediate representation to optimize the execution of these models, compose models to build more powerful and complex representations, and to overlay reward structures on these models to specify metrics of interest and experiments to perform with \amidol{}'s inference engine.  Finally, \amidol{} provides compilers that translate models in the abstract intermediate representation into solver targets for the inference engine, checking constraints of composed reward structures, to solve for measures of interest.  \amidol{} allows these results to be communicated back to the user through the saved metadata, to relate raw statistical and machine learning output to the original ontology to improve explainability.
 
 \section{AMIDOL}
 
@@ -105,13 +105,11 @@ biological phenomena."
   \label{Fig:Architecture}
 \end{figure}
 
-Figure \ref{Fig:Architecture} outlines the architecture, and usage pattern for \amidol{}.  \amidol{} presents a number of VDSOLs to the user,
+Figure \ref{Fig:Architecture} outlines the architecture, and usage pattern for \amidol{}.  \amidol{}'s front end allows the user to define their model in one of a number of predefined VDSOLs in the form of directed graphs connecting nouns and verbs together.  Each noun or verb has an underlying representation in the abstract intermediate representation into which it is translated by \amidol{}.  These representations are then composed together with state sharing, and then composed with reward models which define metrics of interest.  The resulting composed model can be further transformed in the abstract intermediate representation for performability, efficiency, or similar reasons.  After transformations of this sort are complete, \amidol{} translates the model into a back end solver, and associates these results with a node in a graph database for experimental results.  These results are communicated back to the domain expert using the original ontology to provide better explainability.
 
 \subsection{Visual Domain Specific Languages}
 
 \amidol{} is designed to support the definition of ontological languages which describe systems as formal objects.  Objects for a given domain are organized into \emph{toolkits} consisting of \textbf{nouns} and \textbf{verbs}.  Nouns define elements which make up the state space of a system, and verbs define transitions in the state space.  VDSOLs enable domain experts to build models of complex systems which are easier to maintain, validate, and verify, and avoid common pitfalls of monolithic and hand-coded implementations.  To provide visual context for modelers, \amidol{} supports the use of arbitrary scalable vector graphics (SVGs) to represent nouns and verbs, and features a canvas to draw nouns and verbs with labeled arcs connecting them to provide context.
-
-The goal of \amidol{}'s VDSOLs is to enable domain experts to define their models using an interface and visual language similar to the semi-formal diagrams they use today, but with the advantage that \amidol{}s VDSOLs have formal, executable, meaning.  VDSOLs provide a performable, reusable, system for scientists to use when attempting to derive insights relating to the complex systems they represent.
 
 VDSOLs in \amidol{} are constructed using a graphical user interface implemented using asynchronous javascript and XML to build a responsive interface to define models of complex systems, reward models used to explore and understand complex system behavior, and to interact with the results of solvers implemented in the Machine-Assisted Inference Engine.
 
@@ -119,15 +117,11 @@ VDSOLs in \amidol{} are constructed using a graphical user interface implemented
 
 \amidol{} is being designed to support the composition of individual models to enable model reuse, compositional methods for solution, to enhance backend support for performance optimizations that require symmetry detection, and to allow domain scientists to experiment by swapping out components of a model which may represent complex hypotheses about individual elements.  Model composition in \amidol{} is being designed to support two primary mechanisms: \emph{state-sharing} \cite{sanders1992dependability,sanders1988construction} and \emph{event-synchronization} \cite{lampka2002symbolic}.
 
-State-sharing allows model composition by defining an interface for a model in the form of a set of state variables, which are then "shared" with another model.  Shared state-variables in two composed models have the same marking, or value, and are effected by events in both models.  Event-synchronization functions in an analogous way, allowing two events to be paired, such that the input predicate and output predicate of the new shared event is the union of the predicates of the events being shared.
-
 \subsection{Intermediate Representation}
 
 The Abstract Intermediate Representation (IR) for \amidol{} is meant to be a universal way to specify models, regardless of their domain, and provides a Turing-complete way to specify models performably, while avoiding domain specific considerations.
 
-The intermediate representation employed by \amidol{} has its roots in Markov models \cite{howard2012dynamic}, Generalized Stochastic Petri-nets with inhibitor arcs \cite{chiola1993generalized} which have been shown to be Turing complete, and stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic} which are extensions of Petri-nets that allow more compact model specification.  \amidol{} currently extends these concepts primarily by creating ways to link to the original ontology of nouns and verbs, and by allowing embedded reward structures to be linked to a graph-based results database which stores the outcomes of experiments and can be used for the construction of arbitrary measures on the underlying model to support inference needs.
-
-\subsection{Language Properties}
+The IR employed by \amidol{} has its roots in Markov models \cite{howard2012dynamic}, Generalized Stochastic Petri-nets with inhibitor arcs \cite{chiola1993generalized} which have been shown to be Turing complete, and stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic} which are extensions of Petri-nets that allow more compact model specification.  \amidol{} currently extends these concepts by creating ways to link to the original ontology of nouns and verbs, and by allowing embedded reward structures to be linked to a graph-based results database which stores the outcomes of experiments and can be used for the construction of arbitrary measures on the underlying model to support inference needs.
 
 Formally, the IR is a 5-tuple, $(S, E, L, \Phi, \Lambda, \Delta)$ where:
 \begin{itemize}
@@ -139,31 +133,18 @@ Formally, the IR is a 5-tuple, $(S, E, L, \Phi, \Lambda, \Delta)$ where:
 \item $\Delta: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow N_0 \times N_1 \times \ldots \times N_{n-1}$ is the state variable transition function specification.
 \end{itemize}
 
-Informally the IR represents models defined in a given VDSOL using an formalism based on Generalized Stochastic Petri-nets with inhibitor arcs (which have the result of making Petri-nets Turing complete).  Instead of inhibitor arcs, we utilize the more intuitive and performable method of allowing events to have input predicates ($Phi$) which can be evaluated to determine if an event is enabled, and output predicates which define the side effects of event firing.
+Informally the IR represents models defined in a given VDSOL using an formalism based on Generalized Stochastic Petri-nets with inhibitor arcs.  Instead of inhibitor arcs, we utilize the more intuitive and performable method of allowing events to have input predicates ($\Phi$) which can be evaluated to determine if an event is enabled, and output predicates which define the side effects of event firing.
 
-\paragraph{State variables}: intuitively, state-variables make up the current state of the model, and measure the configuration and capabilities of all modeled components.  While state variables are defined as taking on values in $\mathbb{N}$, this does not restrict them from representing real numbers to arbitrary precision in modern computer hardware.  In practice, they are implemented as integers, and floating point numbers by the \amidol{} source code.
+Intuitively, \textbf{state-variables} make up the current state of the model, and measure the configuration and capabilities of all modeled components.  While state variables are defined as taking on values in $\mathbb{N}$, this does not restrict them from representing real numbers to arbitrary precision in modern computer hardware.  In practice, they are implemented as integers, and floating point numbers by the \amidol{} source code.
 
-\paragraph{Events}: events, when fired, change the state of a model by altering the value of state variables.  Events in \amidol{} are associated with input predicates, output predicates, and a rate function which returns the next firing time of a given event.  The rate function is an expression over random variable distributions.
+\textbf{Events}, when fired, change the state of a model by altering the value of state variables.  Events in \amidol{} are associated with input predicates, output predicates, and a rate function which returns the next firing time of a given event.  The rate function is an expression over random variable distributions.
 
-\paragraph{Input predicates}: an input predicate is associated with an event, and a potentially empty set of state variables.  Input predicates are functions of the marking of their set of variables which map the markings of those variables onto the set $\{1, 0\}$.  For those markings in which the input predicate evaluates to $1$, the event is considered enabled and will fire as normal.  For those markings in which the input predicate evaluates to $0$, the event is considered disabled and cannot fire until subsequently enabled.
-
-\paragraph{Output predicates}: an output predicate is associated with an event, and a potentially empty set of state variables.  Output predicates map a set of state variables, and their marking, to a new marking for the same state variables and define the side effects of event firing on the state of the model.
+An \textbf{input predicate} is associated with an event, and a potentially empty set of state variables.  Input predicates are functions of the marking of their set of variables which map the markings of those variables onto the set $\{1, 0\}$.  For those markings in which the input predicate evaluates to $1$, the event is considered enabled and will fire as normal.  For those markings in which the input predicate evaluates to $0$, the event is considered disabled and cannot fire until subsequently enabled.  An \textbf{output predicate} is associated with an event, and a potentially empty set of state variables.  Output predicates map a set of state variables, and their marking, to a new marking for the same state variables and define the side effects of event firing on the state of the model.
 
 \section{Reward Variables, Reward Models, and Inference}
 
-The \amidol{} intermediate representation allows for the specification of reward variables or structures over a given model, and the composition of these structures with a model to produce composed models which can then be solved by the inference engine.  Given a model $M = (S, E, L, \Phi, \Lambda, \Delta)$ we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards).
-
-\cite{qureshi1996algorithms,deavours1999efficient,ciardo1996well,sanders1991reduced}
-
-\subsection{Rate Reward Variables}
-
-A rate reward is formally defined as a function $\mathcal{R}: P(S, \mathbb{N}) \rightarrow \mathbb{R}$ where $q \in P(S, \mathbb{N})$ is the reward accumulated when for each $(s,n) \in q$ the marking of the state variable $s$ is $n$.  Informally a rate reward variable $x$ accumulates a defined reward whenever a subset of the state variables take on prescribed values.
-
-\subsection{Impulse Reward Variables}
-
-An impulse reward is formally defined as a function $\mathcal{I}: E \rightarrow \mathbb{R}$ where $e \in E, \mathcal(I)_e$ is the reward for the completion of $e$.  Informally an impulse reward variable $x$ accumulates a defined reward whenever the event $e$ fires.
-
-\subsection{Temporal Characteristics of Reward Variables}
+The \amidol{} intermediate representation allows for the specification of reward variables or structures over a given model, and the composition of these structures with a model to produce composed models which can then be solved by the inference engine.  We define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards). \cite{qureshi1996algorithms,deavours1999efficient,ciardo1996well,sanders1991reduced}
+A rate reward is formally defined as a function $\mathcal{R}: P(S, \mathbb{N}) \rightarrow \mathbb{R}$ where $q \in P(S, \mathbb{N})$ is the reward accumulated when for each $(s,n) \in q$ the marking of the state variable $s$ is $n$.  Informally a rate reward variable $x$ accumulates a defined reward whenever a subset of the state variables take on prescribed values. An impulse reward is formally defined as a function $\mathcal{I}: E \rightarrow \mathbb{R}$ where $e \in E, \mathcal(I)_e$ is the reward for the completion of $e$.  Informally an impulse reward variable $x$ accumulates a defined reward whenever the event $e$ fires.
 
 Both rate and impulse reward variables measure the behavior of a model $M$ with respect to time.  As such, a reward variable $\theta$ is declared as either an instant-of-time variable, an interval-of-time variable, a time-averaged interval-of-time variable, or a steady state variable.  An instant of time variable $\Theta_t$ is defined as:
 
@@ -175,38 +156,17 @@ An interval-of-time variable intuitively accumulates reward over some fixed inte
 
 \[\theta_{[t,t+1]} = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{J}^{\nu}_{[t, t+1]} + \sum_{e \in E} \mathcal{I}(e)N^e_{[t,t+1]}\]
 
-where
+where $J^{\nu}_{[t,t+1]}$ is a random variable which represents the total time the model spent in a marking such that for each $(s, n) \in \nu$, the state variable $s$ has a value of $n$ during the period $[t, t+1]$. $I^e_{t\rightarrow\infty}$ is a random variable which represents the number of times an event $e$ has fired during the period $[t, t+1]$.
 
-\begin{itemize}
-\item $J^{\nu}_{[t,t+1]}$ is a random variable which represents the total time the model spent in a marking such that for each $(s, n) \in \nu$, the state variable $s$ has a value of $n$ during the period $[t, t+1]$.
-\item $I^e_{t\rightarrow\infty}$ is a random variable which represents the number of times an event $e$ has fired during the period $[t, t+1]$.
-\end{itemize}
-
-Time-averaged interval of time variables quantify accumulated reward over some interval of time.  Such a variable $\theta'_{[t,t+1]}$ is defined formally as:
-
-\[\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}\]
+Time-averaged interval of time variables quantify accumulated reward over some interval of time.  Such a variable $\theta'_{[t,t+1]}$ is defined formally as $\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}$.
 
 Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.
 
-\section{Compartmental Model for Epidemiology}
-
-The SIS/SIRS model is one of the simplest models we have deployed for testing with \amidol{}, with the advantage that the model itself is relatively simple, but utilizes real data, and can be used to answer important epidemiological questions.  The primary objective of the SIS/SIRS model is to identify the \emph{basic reproduction number} associated with an infection, also known as $R_0$, or \emph{r nought}.  $R_0$ was first used in 1952 when studying malaria and is a measure of the potential for an infection to spread through a population.  If $R_0 < 1$, then the infection will die out in the long run.  If $R_0 > 1$, then the infection will spread.  The higher the value of $R_0$, the more difficult it is to control an epidemic.
-
-The importance of estimating $R_0$ has been well established for many historical epidemics, including H1N1 \cite{fraser2009pandemic} and Ebola \cite{fisman2014early}.  This model also lends itself to testing \amidol{}'s Design of Experiments module via the plentiful CDC Data \cite{cdc2019fluview} which is well modeled by SIRS.
-
-Given a 100\% effective vaccine, the proportion of the population that needs to be vaccinated is $1 - 1/R_0$, meaning that $R_0$ can be used to plan disease response.  This assumes a homogenous population, and contains many other simplifying assumptions and does not generalize to more complex numbers.  We have several main goals for SIS/SIRS models:
-
-\begin{enumerate}
-\item Fitting the models for the data in hindsight to perform goodness of fit estimates.
-\item Finding the \emph{retrospective} $R_0$ estimate over the entire epidemic curve.
-\item Finding the \emph{real-time} $R_0$ estimate while the epidemic is ongoing.
-\end{enumerate}
-
-\paragraph{Data}: For these models we have worked with the WHO/NREVSS (World Health Organization/National Respiratory and Enteric Virus Surveillance System) data sets at the resolution of Department of Human and Health Services designated regions.
-
 \section{Conclusions}
 
-\section{Future Work}
+We are currently testing \amidol{} using the SIS/SIRS compartmental model of epidemiology.  While simple, the SIS/SIRS model utilizes real data from the CDC, and has a strong set of predictive capabilities.  The primary objective of the SIS/SIRS model is to identify the \emph{basic reproduction number} associated with an infection, also known as $R_0$. The importance of estimating $R_0$ has been well established for many historical epidemics, including H1N1 \cite{fraser2009pandemic} and Ebola \cite{fisman2014early}.  This model also lends itself to testing \amidol{}'s Design of Experiments module via the plentiful CDC Data \cite{cdc2019fluview} which is well modeled by SIRS.
+
+Our initial tests with \amidol{} suggest that the framework can reduce the reliance of domain experts on bespoke and custom code.  By providing a intermediate representation which is Turing complete, and expressive enough to allow the IR to be transformed to improve performance or tractability, such as when solving stiff systems of ODEs \cite{enright1975comparing} we hope to enable domain experts to leverage the work of software engineers and mathematicians in a repeatable, and reusable way.  By providing a common language for the expression of models and reward structures we hope to improve model maintainability, and to improve the ability of domain experts to share their results, and leverage models created by others in their domain, or even in adjacent domains.  The end goal of \amidol{} is to create a community around this new framework similar to that of LLVM \cite{lattner2004llvm} with an open API for writing transformers for the IR, and repositories of VDSOLs and models, enabling more repeatable science utilizing machine-assisted inference.
 
 \section{Acknowledgments}
 

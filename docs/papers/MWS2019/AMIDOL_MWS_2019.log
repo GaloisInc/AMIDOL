@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  14 FEB 2019 23:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  15 FEB 2019 14:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -432,12 +432,12 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 57.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<figs/Diagram_of_meiosis.pdf, id=64, 472.56221pt x 307.16408pt>
+<figs/Diagram_of_meiosis.pdf, id=40, 472.56221pt x 307.16408pt>
 File: figs/Diagram_of_meiosis.pdf Graphic file (type pdf)
 <use figs/Diagram_of_meiosis.pdf>
 Package pdftex.def Info: figs/Diagram_of_meiosis.pdf  used on input line 72.
 (pdftex.def)             Requested size: 225.4804pt x 146.5653pt.
-<figs/HIV-Tat-figure.pdf, id=65, 478.6884pt x 342.67935pt>
+<figs/HIV-Tat-figure.pdf, id=41, 478.6884pt x 342.67935pt>
 File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
 <use figs/HIV-Tat-figure.pdf>
 Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 77.
@@ -456,74 +456,79 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 pdfTeX warning: pdflatex (file ./figs/HIV-Tat-figure.pdf): PDF inclusion: multi
 ple pdfs with page group included in a single page
 >]
-<figs/system-architecture-quad.pdf, id=182, 755.8583pt x 375.12807pt>
+<figs/system-architecture-quad.pdf, id=157, 755.8583pt x 375.12807pt>
 File: figs/system-architecture-quad.pdf Graphic file (type pdf)
 <use figs/system-architecture-quad.pdf>
 Package pdftex.def Info: figs/system-architecture-quad.pdf  used on input line 
 103.
 (pdftex.def)             Requested size: 469.75502pt x 233.13794pt.
-
-
-LaTeX Warning: Citation `lampka2002symbolic' on page 3 undefined on input line 
-120.
-
-[3 <./figs/system-architecture-quad.pdf>]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 134.
+ [3 <./figs/system-architecture-quad.pdf>]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 128.
 
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 134.
- [4] [5] [6]
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 128.
+ [4] [5]
+
+LaTeX Warning: Citation `enright1975comparing' on page 6 undefined on input lin
+e 169.
+
+
+LaTeX Warning: Citation `lattner2004llvm' on page 6 undefined on input line 169
+.
+
 (./AMIDOL_MWS_2019.bbl
 Underfull \hbox (badness 1755) in paragraph at lines 16--21
 []\OT1/cmr/m/n/10.95 CDC.  Na-tional, re-gional, and state level out-pa-tient i
 ll-ness and vi-ral surveil-lance.
  []
 
-[7])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 225.
- [8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 225.
+[6])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 185.
+ [7]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 185.
  (./AMIDOL_MWS_2019.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 225.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 225.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 185.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 185.
 Package rerunfilecheck Info: File `AMIDOL_MWS_2019.out' has not changed.
-(rerunfilecheck)             Checksum: C5CB4ED6D077D319D8F6BA5FF065FBCA;989.
+(rerunfilecheck)             Checksum: E8ACC280EBFF7CD9E079636A44E13433;562.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 225.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 185.
  ) 
 Here is how much of TeX's memory you used:
- 7842 strings out of 492649
- 117831 string characters out of 6129622
- 221466 words of memory out of 5000000
- 11590 multiletter control sequences out of 15000+600000
+ 7829 strings out of 492649
+ 117698 string characters out of 6129622
+ 221507 words of memory out of 5000000
+ 11586 multiletter control sequences out of 15000+600000
  12608 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,10n,43p,1643b,446s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,10n,43p,1638b,446s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
 /usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
-usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></us
-r/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
-local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/lo
-cal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/loca
-l/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/t
-exlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
-xlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texl
-ive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texli
-ve/2018/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on AMIDOL_MWS_2019.pdf (8 pages, 440369 bytes).
+usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></us
+r/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/
+local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/lo
+cal/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loca
+l/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/
+texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/tex
+live/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texliv
+e/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
+/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2
+018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
+18/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on AMIDOL_MWS_2019.pdf (7 pages, 451374 bytes).
 PDF statistics:
- 331 PDF objects out of 1000 (max. 8388607)
- 262 compressed objects within 3 object streams
- 46 named destinations out of 1000 (max. 500000)
- 136 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 309 PDF objects out of 1000 (max. 8388607)
+ 239 compressed objects within 3 object streams
+ 37 named destinations out of 1000 (max. 500000)
+ 88 words of extra memory for PDF output out of 10000 (max. 10000000)
 
