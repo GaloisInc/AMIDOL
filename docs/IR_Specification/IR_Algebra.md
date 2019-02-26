@@ -9,7 +9,7 @@
 * Lambda: E x N(0) x N(1) x ... x N(n-1) -> R+ is the transition rate specification.
 * Delta: E x N(0) x N(1) x ... x N(n-1) -> N(0) x N(1) x ... x N(n-1) is the state variable transition function specification.
 
-Informally the IR represents models defined in a given VDSOL using an formalism based on Generalized Stochastic Petri-nets with inhibitor arcs (which have the result of making Petri-nets Turing complete). Instead of inhibitor arcs, we utilize the more intuitive and performable method of allowing events to have input predicates (Phi) which can be evaluated to determine if an event is enabled, and output predicates which define the side effects of eventfiring.
+Informally the IR represents models defined in a given VDSOL using an formalism based on Generalized Stochastic Petri-nets with inhibitor arcs (which have the result of making Petri-nets Turing complete). Instead of inhibitor arcs, we utilize the more intuitive and performable method of allowing events to have input predicates (Phi) which can be evaluated to determine if an event is enabled, and output predicates which define the side effects of event firing.
 
 Intuitively, N(0) x N(1) x ... x N(n-1) represents the *marking* of a model in the AIR.  It is the set of values the state variables take on in any given model state.  We typically do not represent the entire marking when giving the enabling conditions, transition rate, or state variable transition function, and instead only indicate the cases for which the event is enabled, i.e. define the conditions under which Phi(e(i)) == TRUE, providing expressions for those variables whose values impact evaluation, and omitting don't-cares.
 
