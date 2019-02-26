@@ -91,7 +91,7 @@ The state variable transition function maps events, and markings to new markings
     (id: "average_s", state: "S", temporaltype: timeaveragedintervaloftime,   samplingpoints: [{40}, {50}])
     }]
   impulserewards: [{
-    (id: "infections", event: "infection", temporaltype: intervaloftime,
+    (id: "total_infections", event: "infection", temporaltype: intervaloftime,
     samplingpoints: [{40}, {50}])
     }]
 }
