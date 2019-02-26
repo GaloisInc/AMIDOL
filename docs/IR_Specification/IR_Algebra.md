@@ -32,6 +32,7 @@ The state variable transition function maps events, and markings to new markings
 
 ```json
 { Model: {
+  id: "string",
   statevariables: [{
     id: "string",
     label: "string"
