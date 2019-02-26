@@ -79,11 +79,10 @@ The state variable transition function maps events, and markings to new markings
   events: [{
     (id: "infection", label: "infection_M0", rate: "beta",
       input_predicate: {enabling_condition: "S > 0"},
-      output_predicate: {transition_function: ["S = S - _rate_*S*I/(S+I+R)", "I = I + _rate_*S*I/(S+I+R)"]},
-    id: "recovery", label: "recovery_M0", rate: "gamma",
+      output_predicate: {transition_function: ["S = S - _rate_*S*I/(S+I+R)", "I = I + _rate_*S*I/(S+I+R)"]}),
+    (id: "recovery", label: "recovery_M0", rate: "gamma",
       input_predicate: {enabling_condition: "I > 0"},
-      output_predicate: {transition_function: ["I = I - _rate_*I", "R = R + _rate_*I"]}  
-    )
+      output_predicate: {transition_function: ["I = I - _rate_*I", "R = R + _rate_*I"]})
     }]
   raterewards: [{
     (id: "s_40", state: "S", temporaltype: instantoftime, samplingpoints: [{40}]),
