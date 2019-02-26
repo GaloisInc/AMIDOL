@@ -49,6 +49,22 @@ The state variable transition function maps events, and markings to new markings
       transition_function: ["lvalue = expression", "lvalue = expression", ...]
     }
   }]
+  raterewards: [{
+    id: "string",
+    variable: "string",
+    temporaltype: instantoftime|intervaloftime|timeaveragedintervaloftime|steadystate,
+    samplingpoints: [{
+      time: "float"
+      }]    
+  }]
+  impulserewards: [{
+    id: "string",
+    event: "string",
+    temporaltype: instantoftime|intervaloftime|timeaveragedintervaloftime|steadystate,
+    samplingpoints: [{
+      time: "float"
+      }]    
+  }]
  }}
 ```
 
@@ -68,6 +84,16 @@ The state variable transition function maps events, and markings to new markings
       input_predicate: {enabling_condition: "I > 0"},
       output_predicate: {transition_function: ["I = I - _rate_*I", "R = R + _rate_*I"]}  
     )
+    }]
+  raterewards: [{
+    (id: "s_40", state: "S", temporaltype: instantoftime, samplingpoints: [{40}]),
+    (id: "s_45", state: "S", temporaltype: instantoftime, samplingpoints: [{45}]),
+    (id: "s_50", state: "S", temporaltype: instantoftime, samplingpoints: [{50}]),
+    (id: "average_s", state: "S", temporaltype: timeaveragedintervaloftime,   samplingpoints: [{40}, {50}])
+    }]
+  impulserewards: [{
+    (id: "infections", event: "infection", temporaltype: intervaloftime,
+    samplingpoints: [{40}, {50}])
     }]
 }
 ```
