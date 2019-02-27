@@ -66,6 +66,10 @@ The state variable transition function maps events, and markings to new markings
       time: "float"
       }]    
   }]
+  composedrewards: [{
+    id: "string",
+    expression: "expression"
+  }]
  }}
 ```
 
