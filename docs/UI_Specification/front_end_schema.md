@@ -1,4 +1,16 @@
 # AMIDOL Front End
+## UI/UX Workflow and Specification
+
+Organizational Hierarchy:
+* Project
+  * Models
+  * Composed Models
+  * Reward Models
+  * Design of Experiments
+  * Solver
+
+Basic user workflow begins by **loading** a project.  
+
 ## Formal Definition and Terminology
 
 ## Example Front End Schema
@@ -7,26 +19,20 @@
 { Noun: {
     id: "string",
     model: "filename",
-    icon: "filename.svg"
-    inputvariables: [{
-      variable: "id"
-      }]
-    outputvariables: [{
-      variable: "id"
-      }]
+    icon: "filename.svg",
+    inputvariables: ["string"],
+    outputvariables: ["string"],
+    parameters: [{id: "string", val: "expression"}]
   }
 }
 
 { Verb: {
   id: "string",
   model: "filename",
-  icon: "filename.svg"
-  inputvariables: [{
-    variable: "id"
-    }]
-  outputvariables: [{
-    variable: "id"
-    }]
+  icon: "filename.svg",
+  inputvariables: ["string"],
+  outputvariables: ["string"]
+  parameters: [{id: "string", val: "expression"}]
   }
 }
 ```
