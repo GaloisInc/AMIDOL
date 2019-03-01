@@ -14,6 +14,18 @@
             width: 100%;
             overflow: hidden;
         }
+        #palette img {
+        	margin: 5px;
+        	padding: 5px;
+        	height: 50px;
+        	border: 5px solid white;
+        }
+        #palette img.selected {
+        	border-color: lightblue;
+        }
+        #palette img.right {
+        	float: right;
+        }
     </style>
 
 <script type="text/javascript">
@@ -23,8 +35,46 @@
 	var journal = {
 		past : [],
 		future : [],
-	
-		applyEvent : function(event) {
+
+		logHistory : function() {
+			console.log(
+				JSON.stringify(
+					[ _.map(journal.past, function(x){return x.type}), 
+					  _.map(journal.future, function(x){return x.type}) ]
+				)
+			)
+		},
+
+
+	    // `apply`, `undo`, and `redo` manage the journal _and_ trigger effects
+	    apply: function(event) {
+	    	this.applyEventEffects(event)
+	    	this.past.push(event)
+	    },
+
+	    undo : function() {
+            if (this.past.length > 0) {
+                var journal_event = this.past.pop()
+                this.future.unshift(journal_event)
+                this.applyEventEffects(this.invertEvent(journal_event))
+            }
+            UI.updateButtonStates()
+        },
+
+        redo : function() {
+            if (this.future.length > 0) {
+                var journal_event = this.future.shift()
+                this.past.push(journal_event)
+                this.applyEventEffects(journal_event)
+            }
+            UI.updateButtonStates()
+        },
+
+
+
+		// Purpose: cause UI side effects... and nothing else.
+		applyEventEffects : function(event) {
+			// event = { type: <<"add", "subtract">>, nodes: […], edges: […] }
 	        switch (event.type) {
 	            case "add":
 	                node_data_set.add(event.nodes)
@@ -38,11 +88,11 @@
 	                break
 	            default:
 	                break
-	            }
-	        },
+            }
+        },
 
 		invertEvent : function(initial_event) {
-	        var event = copy(initial_event)
+	        var event = _.clone(initial_event)  // make a copy, return a new object
 	        switch (event.type) {
 	            case "add":
 	                event.type = "subtract"
@@ -53,37 +103,23 @@
 	            default:
 	                return event
 	        }
-	    },
-
-	    undoUpdateNetwork : function() {
-            var journal_event
-            if (journal.length > 0) {
-                journal_event = journal.pop()
-                future.unshift(journal_event)
-                applyEvent(invertJournalEvent(journal_event))
-            }
-            UI.updateButtonStates()
-        },
-
-
-        redoUpdateNetwork : function() {
-            var journal_event
-            if (future.length > 0) {
-                journal_event = future.shift()
-                updateNetwork(journal_event)
-            }
-            UI.updateButtonStates()
-            redoUpdateNetwork()             
-        }
+	    }
     }
 
 
 	var UI = {
-		updateButtonStates: function() {
+		updateButtonStates : function() {
 			console.log("TODO")
+			journal.logHistory()
 		},
 
-		drawNetwork(data) {
+		selectPaletteNode : function(elem) {
+			$("#palette img").removeClass("selected")
+			$(elem).addClass("selected")
+		},
+
+		drawNetwork : function() {
+			var data = { "nodes" : [], "edges" : [] }
 			var options = {
                 physics: false,
                 nodes: {
@@ -97,13 +133,15 @@
                 manipulation: {
                     initiallyActive: true,
                     addNode: function(node, callback){
-                    	node.image = "images/virus.png"
+                    	node.image = $("#palette img.selected").attr("src") // "images/virus.png"
                     	node.label = prompt("Name your new node:")
-                    	callback(node)
+                    	journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
+                    	// callback(node)
                     },
                     addEdge: function(edge, callback){
                     	edge.label = prompt("Edge label:")
-                    	callback(edge)
+                    	journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
+                    	// callback(edge)
                     },
                     editNode: function(node, callback) {
                     	alert(JSON.stringify(node))
@@ -136,7 +174,6 @@
 			console.log(context.event)
 			context.event.preventDefault()
 		}
-
 	}
 
 
@@ -152,6 +189,8 @@
 
 
     $(function(){
+        UI.drawNetwork()
+
     	var sample_nodes = [
     		{id: 1, label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
     		{id: 2, label: "Infected", title: "*cough*  *cough*", image: "images/sick.jpg", x: -0, y: 0}, 
@@ -162,10 +201,19 @@
     		{id: "b", from: 2, to: 3, label: "gets better"}
 		]
 
-        UI.drawNetwork( { "nodes" : sample_nodes, "edges" : sample_edges } )
+
+        journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
     })
 </script>
 </head>
 <body>
+	<div id="palette">
+		<img src="images/person.png" onclick="UI.selectPaletteNode(this)" />
+		<img src="images/sick.jpg" onclick="UI.selectPaletteNode(this)" />
+		<img src="images/happy.png" onclick="UI.selectPaletteNode(this)" />
+		<img class="selected" src="images/virus.png" onclick="UI.selectPaletteNode(this)" />
+		<img class="right" src="images/redo.png" onclick="journal.redo()">
+		<img class="right" src="images/undo.png" onclick="journal.undo()">
+	</div>
 	<div id="graph"></div>
 </body>
