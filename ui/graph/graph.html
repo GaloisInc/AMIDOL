@@ -1,0 +1,171 @@
+<!doctype html>
+<meta charset="utf-8">
+<head>
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="vis-4.21.0.min.js"></script>
+    <script type="text/javascript" src="underscore-1.9.1.min.js"></script>
+    <link rel="stylesheet" href="vis-4.21.0.min.css" type="text/css" />
+
+    <style type="text/css">
+        html, body, #graph {
+            padding: 0px;
+            margin: 0px;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+    </style>
+
+<script type="text/javascript">
+
+	var node_data_set, edge_data_set, network;
+
+	var journal = {
+		past : [],
+		future : [],
+	
+		applyEvent : function(event) {
+	        switch (event.type) {
+	            case "add":
+	                node_data_set.add(event.nodes)
+	                edge_data_set.add(event.edges)
+	                break
+	            case "subtract":
+	                var node_ids_to_remove = _.pluck(event.nodes, "id")
+	                var edge_ids_to_remove = _.pluck(event.edges, "id")
+	                node_data_set.remove(node_ids_to_remove)
+	                edge_data_set.remove(edge_ids_to_remove)
+	                break
+	            default:
+	                break
+	            }
+	        },
+
+		invertEvent : function(initial_event) {
+	        var event = copy(initial_event)
+	        switch (event.type) {
+	            case "add":
+	                event.type = "subtract"
+	                return event
+	            case "subtract":
+	                event.type = "add"
+	                return event
+	            default:
+	                return event
+	        }
+	    },
+
+	    undoUpdateNetwork : function() {
+            var journal_event
+            if (journal.length > 0) {
+                journal_event = journal.pop()
+                future.unshift(journal_event)
+                applyEvent(invertJournalEvent(journal_event))
+            }
+            UI.updateButtonStates()
+        },
+
+
+        redoUpdateNetwork : function() {
+            var journal_event
+            if (future.length > 0) {
+                journal_event = future.shift()
+                updateNetwork(journal_event)
+            }
+            UI.updateButtonStates()
+            redoUpdateNetwork()             
+        }
+    }
+
+
+	var UI = {
+		updateButtonStates: function() {
+			console.log("TODO")
+		},
+
+		drawNetwork(data) {
+			var options = {
+                physics: false,
+                nodes: {
+                	shape: "image"
+                },
+                edges: {
+                    smooth: false,
+                    color: { color: "black" },
+                    arrows: "to"
+                },
+                manipulation: {
+                    initiallyActive: true,
+                    addNode: function(node, callback){
+                    	node.image = "images/virus.png"
+                    	node.label = prompt("Name your new node:")
+                    	callback(node)
+                    },
+                    addEdge: function(edge, callback){
+                    	edge.label = prompt("Edge label:")
+                    	callback(edge)
+                    },
+                    editNode: function(node, callback) {
+                    	alert(JSON.stringify(node))
+                    	callback(node)
+                    }
+                },
+                interaction: {
+
+                }
+            }
+
+            node_data_set = new vis.DataSet(data.nodes)
+            edge_data_set = new vis.DataSet(data.edges)
+
+			var container = document.getElementById('graph')
+            var network_data = { "nodes" : node_data_set, "edges" : edge_data_set}
+            network = new vis.Network(container, network_data, options)
+
+            network.on("oncontext", UI.networkRightClick)
+            network.on("doubleClick", function(){})
+            network.on("oncontext", function(){})
+            network.on("deselectNode", function(){})
+            network.on("hold", function(){})
+            network.on("dragEnd", function(){})
+            network.on("dragStart", function(){})
+            // $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
+		},
+
+		networkRightClick : function(context) {
+			console.log(context.event)
+			context.event.preventDefault()
+		}
+
+	}
+
+
+    var ELM = {
+    	getData : function(){
+    		return {
+    			"nodes" : node_data_set.getDataSet()._data,
+    			"edges" : edge_data_set.getDataSet()._data
+    		}
+    	}
+    }
+
+
+
+    $(function(){
+    	var sample_nodes = [
+    		{id: 1, label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
+    		{id: 2, label: "Infected", title: "*cough*  *cough*", image: "images/sick.jpg", x: -0, y: 0}, 
+    		{id: 3, label: "Recovered", title: "I'm better!", image: "images/happy.png", x: 250, y: 0}
+		]
+    	var sample_edges = [
+    		{id: "a", from: 1, to: 2, label: "gets sick"},
+    		{id: "b", from: 2, to: 3, label: "gets better"}
+		]
+
+        UI.drawNetwork( { "nodes" : sample_nodes, "edges" : sample_edges } )
+    })
+</script>
+</head>
+<body>
+	<div id="graph"></div>
+</body>
