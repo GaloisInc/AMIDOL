@@ -2,31 +2,31 @@
 <meta charset="utf-8">
 <head>
 	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="vis-4.21.0.min.js"></script>
-    <script type="text/javascript" src="underscore-1.9.1.min.js"></script>
-    <link rel="stylesheet" href="vis-4.21.0.min.css" type="text/css" />
+	<script type="text/javascript" src="vis-4.21.0.min.js"></script>
+	<script type="text/javascript" src="underscore-1.9.1.min.js"></script>
+	<link rel="stylesheet" href="vis-4.21.0.min.css" type="text/css" />
 
-    <style type="text/css">
-        html, body, #graph {
-            padding: 0px;
-            margin: 0px;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-        #palette img {
-        	margin: 5px;
-        	padding: 5px;
-        	height: 50px;
-        	border: 5px solid white;
-        }
-        #palette img.selected {
-        	border-color: lightblue;
-        }
-        #palette img.right {
-        	float: right;
-        }
-    </style>
+	<style type="text/css">
+		html, body, #graph {
+			padding: 0px;
+			margin: 0px;
+			height: 100%;
+			width: 100%;
+			overflow: hidden;
+		}
+		#palette img {
+			margin: 5px;
+			padding: 5px;
+			height: 50px;
+			border: 5px solid white;
+		}
+		#palette img.selected {
+			border-color: lightblue;
+		}
+		#palette img.right {
+			float: right;
+		}
+	</style>
 
 <script type="text/javascript">
 
@@ -36,75 +36,75 @@
 		past : [],
 		future : [],
 
-		logHistory : function() {
-			console.log(
-				JSON.stringify(
-					[ _.map(journal.past, function(x){return x.type}), 
-					  _.map(journal.future, function(x){return x.type}) ]
-				)
-			)
+		// `apply`, `undo`, and `redo` manage the journal _and_ trigger effects
+		apply: function(event) {
+			this.applyEventEffects(event)
+			this.past.push(event)
 		},
 
+		undo : function() {
+			if (this.past.length > 0) {
+				var journal_event = this.past.pop()
+				this.future.unshift(journal_event)
+				this.applyEventEffects(this.invertEvent(journal_event))
+			}
+			UI.updateButtonStates()
+		},
 
-	    // `apply`, `undo`, and `redo` manage the journal _and_ trigger effects
-	    apply: function(event) {
-	    	this.applyEventEffects(event)
-	    	this.past.push(event)
-	    },
-
-	    undo : function() {
-            if (this.past.length > 0) {
-                var journal_event = this.past.pop()
-                this.future.unshift(journal_event)
-                this.applyEventEffects(this.invertEvent(journal_event))
-            }
-            UI.updateButtonStates()
-        },
-
-        redo : function() {
-            if (this.future.length > 0) {
-                var journal_event = this.future.shift()
-                this.past.push(journal_event)
-                this.applyEventEffects(journal_event)
-            }
-            UI.updateButtonStates()
-        },
+		redo : function() {
+			if (this.future.length > 0) {
+				var journal_event = this.future.shift()
+				this.past.push(journal_event)
+				this.applyEventEffects(journal_event)
+			}
+			UI.updateButtonStates()
+		},
 
 
 
 		// Purpose: cause UI side effects... and nothing else.
 		applyEventEffects : function(event) {
 			// event = { type: <<"add", "subtract">>, nodes: […], edges: […] }
-	        switch (event.type) {
-	            case "add":
-	                node_data_set.add(event.nodes)
-	                edge_data_set.add(event.edges)
-	                break
-	            case "subtract":
-	                var node_ids_to_remove = _.pluck(event.nodes, "id")
-	                var edge_ids_to_remove = _.pluck(event.edges, "id")
-	                node_data_set.remove(node_ids_to_remove)
-	                edge_data_set.remove(edge_ids_to_remove)
-	                break
-	            default:
-	                break
-            }
-        },
+			console.log(event)
+			switch (event.type) {
+				case "add":
+					node_data_set.add(event.nodes)
+					edge_data_set.add(event.edges)
+					break
+				case "subtract":
+					var node_ids_to_remove = _.pluck(event.nodes, "id")
+					var edge_ids_to_remove = _.pluck(event.edges, "id")
+					node_data_set.remove(node_ids_to_remove)
+					edge_data_set.remove(edge_ids_to_remove)
+					break
+				default:
+					break
+			}
+		},
 
 		invertEvent : function(initial_event) {
-	        var event = _.clone(initial_event)  // make a copy, return a new object
-	        switch (event.type) {
-	            case "add":
-	                event.type = "subtract"
-	                return event
-	            case "subtract":
-	                event.type = "add"
-	                return event
-	            default:
-	                return event
-	        }
-	    }
-    }
+			var event = _.clone(initial_event)  // make a copy, return a new object
+			switch (event.type) {
+				case "add":
+					event.type = "subtract"
+					return event
+				case "subtract":
+					event.type = "add"
+					return event
+				default:
+					return event
+			}
+		},
+
+		logHistory : function() {
+			console.log(
+				JSON.stringify(
+					[ _.map(journal.past, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}),
+					  _.map(journal.future, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}) ]
+				)
+			)
+		}
+	}
 
 
 	var UI = {
@@ -121,53 +121,66 @@
 		drawNetwork : function() {
 			var data = { "nodes" : [], "edges" : [] }
 			var options = {
-                physics: false,
-                nodes: {
-                	shape: "image"
-                },
-                edges: {
-                    smooth: false,
-                    color: { color: "black" },
-                    arrows: "to"
-                },
-                manipulation: {
-                    initiallyActive: true,
-                    addNode: function(node, callback){
-                    	node.image = $("#palette img.selected").attr("src") // "images/virus.png"
-                    	node.label = prompt("Name your new node:")
-                    	journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
-                    	// callback(node)
-                    },
-                    addEdge: function(edge, callback){
-                    	edge.label = prompt("Edge label:")
-                    	journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
-                    	// callback(edge)
-                    },
-                    editNode: function(node, callback) {
-                    	alert(JSON.stringify(node))
-                    	callback(node)
-                    }
-                },
-                interaction: {
+				physics: false,
+				nodes: {
+					shape: "image"
+				},
+				edges: {
+					smooth: false,
+					color: { color: "black" },
+					arrows: "to"
+				},
+				manipulation: {
+					initiallyActive: true,
+					addNode: function(node, callback){
+						node.image = $("#palette img.selected").attr("src") // "images/virus.png"
+						node.label = prompt("Name your new node:")
+						journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
+						// callback(node)
+					},
+					addEdge: function(edge, callback){
+						edge.label = prompt("Edge label:")
+						journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
+						// callback(edge)
+					},
+					editNode: function(node, callback) {
+						alert(JSON.stringify(node))
+						// callback(node)
+					},
+					deleteNode: function(dataIds, callback) {
+						var delete_nodes = node_data_set.get(dataIds.nodes)
+						var delete_edges = edge_data_set.get(dataIds.edges)
+						var event = { "type": "subtract", "nodes": delete_nodes, "edges": delete_edges }
+						console.log("delete event: " + JSON.stringify(event))
+						journal.apply( event )
+					},
+					deleteEdge: function(dataIds, callback) {
+						var delete_nodes = node_data_set.get(dataIds.nodes)
+						var delete_edges = edge_data_set.get(dataIds.edges)
+						var event = { "type": "subtract", "nodes": delete_nodes, "edges": delete_edges }
+						journal.apply( event )
+					}
+				},
+				interaction: {
 
-                }
-            }
+				}
+			}
 
-            node_data_set = new vis.DataSet(data.nodes)
-            edge_data_set = new vis.DataSet(data.edges)
+			node_data_set = new vis.DataSet(data.nodes)
+			edge_data_set = new vis.DataSet(data.edges)
 
 			var container = document.getElementById('graph')
-            var network_data = { "nodes" : node_data_set, "edges" : edge_data_set}
-            network = new vis.Network(container, network_data, options)
+			var network_data = { "nodes" : node_data_set, "edges" : edge_data_set}
+			network = new vis.Network(container, network_data, options)
 
-            network.on("oncontext", UI.networkRightClick)
-            network.on("doubleClick", function(){})
-            network.on("oncontext", function(){})
-            network.on("deselectNode", function(){})
-            network.on("hold", function(){})
-            network.on("dragEnd", function(){})
-            network.on("dragStart", function(){})
-            // $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
+			network.on("oncontext", UI.networkRightClick)
+			network.on("doubleClick", function(){})
+			network.on("oncontext", function(){})
+			network.on("deselectNode", function(){})
+			network.on("hold", function(){})
+			network.on("dragEnd", function(){})
+			network.on("dragStart", function(){})
+			// $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
 		},
 
 		networkRightClick : function(context) {
@@ -177,33 +190,32 @@
 	}
 
 
-    var ELM = {
-    	getData : function(){
-    		return {
-    			"nodes" : node_data_set.getDataSet()._data,
-    			"edges" : edge_data_set.getDataSet()._data
-    		}
-    	}
-    }
+	var ELM = {
+		getData : function(){
+			return {
+				"nodes" : node_data_set.getDataSet()._data,
+				"edges" : edge_data_set.getDataSet()._data
+			}
+		}
+	}
 
 
 
-    $(function(){
-        UI.drawNetwork()
+	$(function(){
+		UI.drawNetwork()
 
-    	var sample_nodes = [
-    		{id: 1, label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
-    		{id: 2, label: "Infected", title: "*cough*  *cough*", image: "images/sick.jpg", x: -0, y: 0}, 
-    		{id: 3, label: "Recovered", title: "I'm better!", image: "images/happy.png", x: 250, y: 0}
+		var sample_nodes = [
+			{id: 1, label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
+			{id: 2, label: "Infected", title: "*cough*  *cough*", image: "images/sick.jpg", x: -0, y: 0}, 
+			{id: 3, label: "Recovered", title: "I'm better!", image: "images/happy.png", x: 250, y: 0}
 		]
-    	var sample_edges = [
-    		{id: "a", from: 1, to: 2, label: "gets sick"},
-    		{id: "b", from: 2, to: 3, label: "gets better"}
+		var sample_edges = [
+			{id: "a", from: 1, to: 2, label: "gets sick"},
+			{id: "b", from: 2, to: 3, label: "gets better"}
 		]
 
-
-        journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
-    })
+		journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
+	})
 </script>
 </head>
 <body>
