@@ -25,7 +25,12 @@
 		}
 		#palette img.right {
 			float: right;
+			height: 25px;
 		}
+		#palette img.disabled {
+			opacity: 0.25;
+		}
+
 	</style>
 
 <script type="text/javascript">
@@ -36,10 +41,11 @@
 		past : [],
 		future : [],
 
-		// `apply`, `undo`, and `redo` manage the journal _and_ trigger effects
+		// `apply`, `undo`, and `redo` manage the journals _and_ trigger effects through applyEventEffects
 		apply: function(event) {
-			this.applyEventEffects(event)
 			this.past.push(event)
+			this.future = []
+			this.applyEventEffects(event)
 		},
 
 		undo : function() {
@@ -48,7 +54,6 @@
 				this.future.unshift(journal_event)
 				this.applyEventEffects(this.invertEvent(journal_event))
 			}
-			UI.updateButtonStates()
 		},
 
 		redo : function() {
@@ -57,15 +62,14 @@
 				this.past.push(journal_event)
 				this.applyEventEffects(journal_event)
 			}
-			UI.updateButtonStates()
 		},
 
 
 
-		// Purpose: cause UI side effects... and nothing else.
+		// Purpose: cause UI side effects... and nothing else. 
+		// Always call last, after setting the relevant shared states.
 		applyEventEffects : function(event) {
 			// event = { type: <<"add", "subtract">>, nodes: […], edges: […] }
-			console.log(event)
 			switch (event.type) {
 				case "add":
 					node_data_set.add(event.nodes)
@@ -77,9 +81,15 @@
 					node_data_set.remove(node_ids_to_remove)
 					edge_data_set.remove(edge_ids_to_remove)
 					break
+				case "move":
+					_.mapObject(event.to, function(pos, nodeId){
+						network.moveNode(nodeId, pos.x, pos.y)
+					})
+					break
 				default:
 					break
 			}
+			UI.updateButtonStates()
 		},
 
 		invertEvent : function(initial_event) {
@@ -90,6 +100,11 @@
 					return event
 				case "subtract":
 					event.type = "add"
+					return event
+				case "move":
+					var from = event.from
+					event.from = event.to
+					event.to = from
 					return event
 				default:
 					return event
@@ -109,8 +124,16 @@
 
 	var UI = {
 		updateButtonStates : function() {
-			console.log("TODO")
-			journal.logHistory()
+			if (_.isEmpty(journal.past)) {
+				$("#undo_button").addClass("disabled")
+			} else {
+				$("#undo_button").removeClass("disabled")
+			}
+			if (_.isEmpty(journal.future)) {
+				$("#redo_button").addClass("disabled")
+			} else {
+				$("#redo_button").removeClass("disabled")
+			}
 		},
 
 		selectPaletteNode : function(elem) {
@@ -133,36 +156,35 @@
 				manipulation: {
 					initiallyActive: true,
 					addNode: function(node, callback){
-						node.image = $("#palette img.selected").attr("src") // "images/virus.png"
 						node.label = prompt("Name your new node:")
-						journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
-						// callback(node)
+						if (node.label != null) {
+							node.image = $("#palette img.selected").attr("src")
+							journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
+						}
 					},
 					addEdge: function(edge, callback){
 						edge.label = prompt("Edge label:")
-						journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
-						// callback(edge)
+						if (edge.label != null) {
+							journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
+						}
 					},
 					editNode: function(node, callback) {
 						alert(JSON.stringify(node))
-						// callback(node)
 					},
 					deleteNode: function(dataIds, callback) {
-						var delete_nodes = node_data_set.get(dataIds.nodes)
-						var delete_edges = edge_data_set.get(dataIds.edges)
-						var event = { "type": "subtract", "nodes": delete_nodes, "edges": delete_edges }
-						console.log("delete event: " + JSON.stringify(event))
-						journal.apply( event )
+						journal.apply( { 
+							"type": "subtract", 
+							"nodes": node_data_set.get(dataIds.nodes), 
+							"edges": edge_data_set.get(dataIds.edges)
+						} )
 					},
 					deleteEdge: function(dataIds, callback) {
-						var delete_nodes = node_data_set.get(dataIds.nodes)
-						var delete_edges = edge_data_set.get(dataIds.edges)
-						var event = { "type": "subtract", "nodes": delete_nodes, "edges": delete_edges }
-						journal.apply( event )
+						journal.apply( { 
+							"type": "subtract", 
+							"nodes": node_data_set.get(dataIds.nodes), 
+							"edges": edge_data_set.get(dataIds.edges) 
+						} )
 					}
-				},
-				interaction: {
-
 				}
 			}
 
@@ -178,15 +200,29 @@
 			network.on("oncontext", function(){})
 			network.on("deselectNode", function(){})
 			network.on("hold", function(){})
-			network.on("dragEnd", function(){})
-			network.on("dragStart", function(){})
+			network.on("dragStart", function(e){
+				var selectedNodes = network.getSelectedNodes()
+				if ( ! _.isEmpty(selectedNodes)) {
+					UI.movingNodes = network.getPositions(selectedNodes)
+				}
+			})
+			network.on("dragEnd", function(e){
+				if (UI.movingNodes != null) {
+					var from = UI.movingNodes
+					var to = network.getPositions(_.keys(UI.movingNodes))
+					UI.movingNodes = null
+					journal.past.push({ "type" : "move", "from": from, "to": to })
+				}
+			})
 			// $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
 		},
 
 		networkRightClick : function(context) {
 			console.log(context.event)
 			context.event.preventDefault()
-		}
+		},
+
+		movingNodes : null // or:  { nodeId1: {x: xValue, y: yValue}, … }
 	}
 
 
@@ -203,6 +239,7 @@
 
 	$(function(){
 		UI.drawNetwork()
+		UI.updateButtonStates()
 
 		var sample_nodes = [
 			{id: 1, label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
@@ -224,8 +261,8 @@
 		<img src="images/sick.jpg" onclick="UI.selectPaletteNode(this)" />
 		<img src="images/happy.png" onclick="UI.selectPaletteNode(this)" />
 		<img class="selected" src="images/virus.png" onclick="UI.selectPaletteNode(this)" />
-		<img class="right" src="images/redo.png" onclick="journal.redo()">
-		<img class="right" src="images/undo.png" onclick="journal.undo()">
+		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()">
+		<img id="undo_button" class="right" src="images/undo.png" onclick="journal.undo()">
 	</div>
 	<div id="graph"></div>
 </body>
