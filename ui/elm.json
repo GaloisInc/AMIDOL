@@ -13,6 +13,7 @@
             "elm/json": "1.1.2",
             "elm/svg": "1.0.1",
             "elm-explorations/linear-algebra": "1.0.3",
+            "mdgriffith/elm-ui": "1.1.0",
             "zaboco/elm-draggable": "4.0.1"
         },
         "indirect": {
