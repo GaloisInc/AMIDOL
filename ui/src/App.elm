@@ -1,6 +1,8 @@
 port module App exposing (init, main)
 
 import Browser
+import Debug
+import Dict
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -21,9 +23,6 @@ main =
         }
 
 
-port requestGraphData : () -> Cmd msg
-
-
 port graphData : (String -> msg) -> Sub msg
 
 
@@ -32,12 +31,24 @@ port graphData : (String -> msg) -> Sub msg
 
 
 type alias Model =
-    String
+    { title : String
+    , graph : String
+    , vars : Dict.Dict String String
+    }
 
 
 init : flags -> ( Model, Cmd Msg )
 init flags =
-    ( "", Cmd.none )
+    ( { title = "SIR"
+      , graph = "" -- TODO: get from flags
+      , vars =
+            Dict.fromList
+                [ ( "beta", "42" )
+                , ( "gamma", "99" )
+                ]
+      }
+    , Cmd.none
+    )
 
 
 
@@ -45,18 +56,30 @@ init flags =
 
 
 type Msg
-    = ButtonClicked
-    | GraphData Model
+    = GraphData String
+    | ChangeTitle String
+    | AddVar String
+    | DeleteVar String
+    | ChangeVar String String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ButtonClicked ->
-            ( model, requestGraphData () )
-
         GraphData data ->
-            ( data, Cmd.none )
+            ( Debug.log "GraphData" { model | graph = data }, Cmd.none )
+
+        ChangeTitle newTitle ->
+            ( { model | title = newTitle }, Cmd.none )
+
+        AddVar key ->
+            ( { model | vars = Dict.insert key "" model.vars }, Cmd.none )
+
+        DeleteVar key ->
+            ( { model | vars = Dict.remove key model.vars }, Cmd.none )
+
+        ChangeVar key value ->
+            ( { model | vars = Dict.insert key value model.vars }, Cmd.none )
 
 
 
@@ -72,32 +95,50 @@ subscriptions model =
 -- VIEW
 
 
-header : String -> Element msg
+header : String -> Element Msg
 header title =
     row
         [ width fill
         , paddingXY 20 5
-        , Border.widthEach { bottom = 1, top = 0, left = 0, right = 0 }
+        , Border.widthEach { bottom = 2, top = 0, left = 0, right = 0 }
         , Border.color <| rgb255 200 200 200
         ]
-        [ el [ centerX ] <| text title ]
+        [ Input.text [ centerX, width <| px 250 ]
+            { label =
+                Input.labelLeft
+                    [ Font.color <| rgb255 160 160 160
+                    , centerY
+                    ]
+                <|
+                    text "Model:"
+            , onChange = ChangeTitle
+            , placeholder = Nothing
+            , text = title
+            }
+        ]
 
 
-sidebar : List String -> Element msg
+sidebar : Dict.Dict String String -> Element Msg
 sidebar variables =
     let
-        varEl var =
-            el [ paddingXY 15 5, width fill ] <| text var
+        varEl ( key, value ) =
+            Input.text [ paddingXY 15 5, width fill ]
+                { label = Input.labelLeft [ centerY ] <| text <| key ++ ":"
+                , onChange = ChangeVar key
+                , placeholder = Nothing
+                , text = value
+                }
     in
     column
         [ height fill
         , width <| fillPortion 1
         , paddingXY 0 10
-        , Border.widthEach { bottom = 0, top = 0, left = 1, right = 0 }
+        , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
         , Border.color <| rgb255 200 200 200
         ]
     <|
-        List.map varEl variables
+        List.map varEl <|
+            Dict.toList variables
 
 
 exposedDiv : String -> List (Attribute msg) -> List (Html msg) -> Element msg
@@ -159,7 +200,7 @@ view : Model -> Html Msg
 view model =
     layout [ height fill ] <|
         column [ height fill, width fill ]
-            [ header "Model Name"
+            [ header model.title
             , row [ height fill, width fill ]
-                [ graphPanel, sidebar [ "var 1", "var 2", "var 3" ] ]
+                [ graphPanel, sidebar model.vars ]
             ]

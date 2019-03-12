@@ -54,6 +54,7 @@ var journal = {
                 break
         }
         UI.updateButtonStates()
+        ELM.sendData()
     },
 
     invertEvent : function(initial_event) {
@@ -176,6 +177,7 @@ var UI = {
                 var to = network.getPositions(_.keys(UI.movingNodes))
                 UI.movingNodes = null
                 journal.past.push({ "type" : "move", "from": from, "to": to })
+                ELM.sendData()
             }
         })
         // $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
@@ -191,11 +193,12 @@ var UI = {
 
 
 var ELM = {
-    getData : function(){
-        return {
+    sendData : function(){
+        app.ports.graphData.send(JSON.stringify({
             "nodes" : node_data_set.getDataSet()._data,
             "edges" : edge_data_set.getDataSet()._data
-        }
+        }));
+        // }, null, 2));
     }
 }
 
