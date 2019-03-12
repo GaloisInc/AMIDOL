@@ -10367,6 +10367,31 @@ var author$project$App$graphPanel = function () {
 				elm$html$Html$img,
 				_List_fromArray(
 					[
+						elm$html$Html$Attributes$id('redo_button'),
+						elm$html$Html$Attributes$class('undo-redo'),
+						elm$html$Html$Attributes$src('images/redo.png')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$img,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$id('undo_button'),
+						elm$html$Html$Attributes$class('undo-redo'),
+						elm$html$Html$Attributes$src('images/undo.png')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('spacer')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$img,
+				_List_fromArray(
+					[
 						elm$html$Html$Attributes$src('images/person.png'),
 						elm$html$Html$Attributes$class('palette-img')
 					]),
@@ -10393,24 +10418,6 @@ var author$project$App$graphPanel = function () {
 					[
 						elm$html$Html$Attributes$src('images/virus.png'),
 						elm$html$Html$Attributes$class('palette-img')
-					]),
-				_List_Nil),
-				A2(
-				elm$html$Html$img,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$id('redo_button'),
-						elm$html$Html$Attributes$class('right'),
-						elm$html$Html$Attributes$src('images/redo.png')
-					]),
-				_List_Nil),
-				A2(
-				elm$html$Html$img,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$id('undo_button'),
-						elm$html$Html$Attributes$class('right'),
-						elm$html$Html$Attributes$src('images/undo.png')
 					]),
 				_List_Nil)
 			]));

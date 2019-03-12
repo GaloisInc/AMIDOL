@@ -112,6 +112,21 @@ graphPanel =
             exposedDiv "palette"
                 []
                 [ img
+                    [ HtmlAttr.id "redo_button"
+                    , HtmlAttr.class "undo-redo"
+                    , HtmlAttr.src "images/redo.png"
+                    ]
+                    []
+                , img
+                    [ HtmlAttr.id "undo_button"
+                    , HtmlAttr.class "undo-redo"
+                    , HtmlAttr.src "images/undo.png"
+                    ]
+                    []
+                , div
+                    [ HtmlAttr.class "spacer" ]
+                    []
+                , img
                     [ HtmlAttr.src "images/person.png"
                     , HtmlAttr.class "palette-img"
                     ]
@@ -129,18 +144,6 @@ graphPanel =
                 , img
                     [ HtmlAttr.src "images/virus.png"
                     , HtmlAttr.class "palette-img"
-                    ]
-                    []
-                , img
-                    [ HtmlAttr.id "redo_button"
-                    , HtmlAttr.class "right"
-                    , HtmlAttr.src "images/redo.png"
-                    ]
-                    []
-                , img
-                    [ HtmlAttr.id "undo_button"
-                    , HtmlAttr.class "right"
-                    , HtmlAttr.src "images/undo.png"
                     ]
                     []
                 ]
