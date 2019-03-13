@@ -33,7 +33,7 @@
 }}
 ```
 
-Call `A`'s state variable `X`: `A.X`, and `B`'s state variable `Y`: `B.Y`.
+Call `A`'s state variable `X`: `A_X`, and `B`'s state variable `Y`: `B_Y`.
 
 Given a noun:
 
@@ -48,7 +48,12 @@ Given a noun:
 }}
 ```
 
-Force the user to set the "id" of the noun to a unique identifier when they create an instance of "Noun".  If the user places two such nouns with identifiers "Q" and "R", then we can refer to their state variables as `Q.A.X` and `R.A.X`.
+Force the user to set the "id" of the noun to a unique identifier when they create an instance of "Noun".  If the user places two such nouns with identifiers "Q" and "R", then we can refer to their state variables as `Q_A_X` and `R_A_X`.
 
-* **Question**: Since each noun has a single model associated with it, should we allow `Q.X` to be used instead of `Q.A.X`?
-* My current thought on this is "no" for the purpose of simplicity of the initial prototype.
+* **Question**: Since each noun has a single model associated with it, should we allow `Q_X` to be used instead of `Q_A_X`?
+  * My current thought on this is "no" for the purpose of simplicity of the initial prototype.
+* **Proposal**: For composition of `Q` and `R` the composed model is named `QcR`.
+
+## Composition Rules
+* How do we choose what value to take for a state variable?
+  * **Proposal**: Take advantage of our composition rules of nouns and verbs.  Noun's take precedence over verbs.
