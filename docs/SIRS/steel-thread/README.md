@@ -34,7 +34,6 @@ We have some ugly variable names now, but they should work fine for our purposes
 
 Create the PySCeS model file for the final model, as in [ScinfectcIccurecR.psc](BackendSteps/ScinfectcIccurecR.psc).
 
-* **TODO**: Test PySCeS model file - should work, but on plane so I haven't run it.
 * **TODO**: Reward variable definition and composing
   * RV composition is easy, just union before the final step of variable renaming (step 5 above).
   * **TODO**: Translating reward variables to PySCeS.
