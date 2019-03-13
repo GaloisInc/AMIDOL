@@ -1,9 +1,12 @@
 # Identified Challenges
 
-## Constants
-* Needed to add constants to AIR model definitions.  This is required so we can give rates in terms of state variables/constants defined in other models, such as "total population".
-* **Todo**: the UI/UX needs to support constant definition.  As currently defined, constants can be defined in a model as either an expression or "extern" to indicate they will be defined externally.
+## Constants and Symbols
+* Needed to add constants and symbols to AIR model definitions.  This is required so we can give rates in terms of state variables/constants defined in other models, and define symbolic values such as "total population" that refer to an expression over current state variables.
+* **Todo**: the UI/UX needs to support constant and symbol definition.  As currently defined, constants and symbols can be defined in a model as either an expression or "extern" to indicate they will be defined externally.
   * Do we need to have "extern"?  We should settle on a common method for overriding definitions in a model.  This should be part of our language definition.
+  * Current method involves exposing constants and symbols under "parameters" for nouns and verbs.  This is consistent with our method for state variable values.
+  * Constants have their values assigned by evaluating their expression before the start of solution, i.e. based on initial values.
+  * Symbols have their values assigned during execution in terms of current values of state variables.
 
 ## Naming conventions
 * We need a way to procedurally name ids within a model, as composition leads to collisions.

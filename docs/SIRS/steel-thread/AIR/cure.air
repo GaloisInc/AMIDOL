@@ -4,7 +4,8 @@
  		    {"id": "R", "label": "R", "type": "float", "initial_value": "0"}],
  "events": [{"id": "cure", "label": "cure", "rate": "gamma*I",
  	     "input_predicate": "", "output_predicate": ""}],
- "contants": [{"id": "gamma", "value": "extern"}],
+ "constants": [{"id": "gamma", "value": "extern"}],
+ "symbols": [],
  "raterewards": [],
  "impulserewards": [],
  "composedrewards": []

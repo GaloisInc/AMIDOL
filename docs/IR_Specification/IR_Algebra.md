@@ -54,6 +54,10 @@ The state variable transition function maps events, and markings to new markings
     "id": "string",
     "value": "extern"|"expression"
   }],
+  "symbols": [{
+    "id": "string",
+    "value": "extern"|"expression"
+  }],
   "raterewards": [{
     "id": "string",
     "variable": "string",

@@ -2,7 +2,8 @@
  "id": "",
  "statevariables": [],
  "events": [],
- "contants": [],
+ "constants": [],
+ "symbols": [],
  "raterewards": [],
  "impulserewards": [],
  "composedrewards": []

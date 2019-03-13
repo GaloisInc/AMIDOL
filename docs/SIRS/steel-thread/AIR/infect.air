@@ -4,7 +4,8 @@
  		    {"id": "I", "label": "I", "type": "float", "initial_value": "0"}],
  "events": [{"id": "infect", "label": "infect", "rate": "beta*S*I/(total_pop)",
  	     "input_predicate": "", "output_predicate": ""}],
- "constants": [{"id": "total_pop", "value": "extern"}, {"id": "beta", "value": "extern"}],
+ "constants": [{"id": "beta", "value": "extern"}],
+ "symbols": [{"id": "total_pop", "value": "extern"}],
  "raterewards": [],
  "impulserewards": [],
  "composedrewards": []
