@@ -23,4 +23,5 @@ We assume the user builds a model using the nouns and verbs defined in the `VDSO
   * `I` to `cure`
   * `cure` to `R`
 
-  
+* The backend should take this information and compose the resulting models in the following steps:
+  * [Step 0](BackendSteps/step0.json): Generate instance models for all nouns and verbs.
