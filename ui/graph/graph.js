@@ -215,12 +215,12 @@ $(function(){
 
     var sample_nodes = [
         {id: 1, label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
-        {id: 2, label: "Infected", title: "*cough*  *cough*", image: "images/sick.jpg", x: -0, y: 0}, 
-        {id: 3, label: "Recovered", title: "I'm better!", image: "images/happy.png", x: 250, y: 0}
+        {id: 2, label: "Infected", image: "images/sick.jpg", x: 0, y: 150}, 
+        {id: 3, label: "Recovered", image: "images/happy.png", x: 250, y: 0}
     ]
     var sample_edges = [
-        {id: "a", from: 1, to: 2, label: "gets sick"},
-        {id: "b", from: 2, to: 3, label: "gets better"}
+        {id: "a", from: 1, to: 2, label: "beta * Susceptible * Infected / N"},
+        {id: "b", from: 2, to: 3, label: "gamma * Infected"}
     ]
 
     journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )

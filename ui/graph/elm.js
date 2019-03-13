@@ -4951,12 +4951,14 @@ var author$project$App$init = function (flags) {
 	return _Utils_Tuple2(
 		{
 			graph: '',
+			newVar: '',
 			title: 'SIR',
 			vars: elm$core$Dict$fromList(
 				_List_fromArray(
 					[
-						_Utils_Tuple2('beta', '42'),
-						_Utils_Tuple2('gamma', '99')
+						_Utils_Tuple2('beta', '3.1415'),
+						_Utils_Tuple2('gamma', '42'),
+						_Utils_Tuple2('N', '9000')
 					]))
 		},
 		elm$core$Platform$Cmd$none);
@@ -5358,6 +5360,7 @@ var author$project$App$update = F2(
 					_Utils_update(
 						model,
 						{
+							newVar: '',
 							vars: A3(elm$core$Dict$insert, key, '', model.vars)
 						}),
 					elm$core$Platform$Cmd$none);
@@ -5370,7 +5373,7 @@ var author$project$App$update = F2(
 							vars: A2(elm$core$Dict$remove, key, model.vars)
 						}),
 					elm$core$Platform$Cmd$none);
-			default:
+			case 'ChangeVar':
 				var key = msg.a;
 				var value = msg.b;
 				return _Utils_Tuple2(
@@ -5379,6 +5382,13 @@ var author$project$App$update = F2(
 						{
 							vars: A3(elm$core$Dict$insert, key, value, model.vars)
 						}),
+					elm$core$Platform$Cmd$none);
+			default:
+				var newVarName = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{newVar: newVarName}),
 					elm$core$Platform$Cmd$none);
 		}
 	});
@@ -10830,14 +10840,6 @@ var author$project$App$graphPanel = function () {
 						elm$html$Html$Attributes$src('images/happy.png'),
 						elm$html$Html$Attributes$class('palette-img')
 					]),
-				_List_Nil),
-				A2(
-				elm$html$Html$img,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$src('images/virus.png'),
-						elm$html$Html$Attributes$class('palette-img')
-					]),
 				_List_Nil)
 			]));
 	return A2(
@@ -11858,50 +11860,288 @@ var author$project$App$header = function (title) {
 				})
 			]));
 };
+var author$project$App$AddVar = function (a) {
+	return {$: 'AddVar', a: a};
+};
+var author$project$App$ChangeNewVar = function (a) {
+	return {$: 'ChangeNewVar', a: a};
+};
 var author$project$App$ChangeVar = F2(
 	function (a, b) {
 		return {$: 'ChangeVar', a: a, b: b};
 	});
-var author$project$App$sidebar = function (variables) {
-	var varEl = function (_n0) {
-		var key = _n0.a;
-		var value = _n0.b;
+var author$project$App$DeleteVar = function (a) {
+	return {$: 'DeleteVar', a: a};
+};
+var mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
+var mdgriffith$elm_ui$Element$alignRight = mdgriffith$elm_ui$Internal$Model$AlignX(mdgriffith$elm_ui$Internal$Model$Right);
+var mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
+var mdgriffith$elm_ui$Element$none = mdgriffith$elm_ui$Internal$Model$Empty;
+var mdgriffith$elm_ui$Element$padding = function (x) {
+	return A2(
+		mdgriffith$elm_ui$Internal$Model$StyleClass,
+		mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + elm$core$String$fromInt(x),
+			x,
+			x,
+			x,
+			x));
+};
+var mdgriffith$elm_ui$Internal$Flag$fontSize = mdgriffith$elm_ui$Internal$Flag$flag(4);
+var mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
+	return {$: 'FontSize', a: a};
+};
+var mdgriffith$elm_ui$Element$Font$size = function (i) {
+	return A2(
+		mdgriffith$elm_ui$Internal$Model$StyleClass,
+		mdgriffith$elm_ui$Internal$Flag$fontSize,
+		mdgriffith$elm_ui$Internal$Model$FontSize(i));
+};
+var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
+var elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		elm$core$String$fromInt(n));
+};
+var mdgriffith$elm_ui$Element$pointer = A2(mdgriffith$elm_ui$Internal$Model$Class, mdgriffith$elm_ui$Internal$Flag$cursor, mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
 		return A2(
-			mdgriffith$elm_ui$Element$Input$text,
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
+var mdgriffith$elm_ui$Element$Events$onClick = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Attr, elm$html$Html$Events$onClick);
+var mdgriffith$elm_ui$Element$Input$enter = 'Enter';
+var elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
+var elm$json$Json$Decode$andThen = _Json_andThen;
+var elm$json$Json$Decode$fail = _Json_fail;
+var mdgriffith$elm_ui$Element$Input$onKey = F2(
+	function (desiredCode, msg) {
+		var decode = function (code) {
+			return _Utils_eq(code, desiredCode) ? elm$json$Json$Decode$succeed(msg) : elm$json$Json$Decode$fail('Not the enter key');
+		};
+		var isKey = A2(
+			elm$json$Json$Decode$andThen,
+			decode,
+			A2(elm$json$Json$Decode$field, 'key', elm$json$Json$Decode$string));
+		return mdgriffith$elm_ui$Internal$Model$Attr(
+			A2(
+				elm$html$Html$Events$preventDefaultOn,
+				'keyup',
+				A2(
+					elm$json$Json$Decode$map,
+					function (fired) {
+						return _Utils_Tuple2(fired, true);
+					},
+					isKey)));
+	});
+var mdgriffith$elm_ui$Element$Input$onEnter = function (msg) {
+	return A2(mdgriffith$elm_ui$Element$Input$onKey, mdgriffith$elm_ui$Element$Input$enter, msg);
+};
+var mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
+var mdgriffith$elm_ui$Element$Input$button = F2(
+	function (attrs, _n0) {
+		var onPress = _n0.onPress;
+		var label = _n0.label;
+		return A4(
+			mdgriffith$elm_ui$Internal$Model$element,
+			mdgriffith$elm_ui$Internal$Model$asEl,
+			mdgriffith$elm_ui$Internal$Model$div,
+			A2(
+				elm$core$List$cons,
+				mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$shrink),
+				A2(
+					elm$core$List$cons,
+					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$shrink),
+					A2(
+						elm$core$List$cons,
+						mdgriffith$elm_ui$Internal$Model$htmlClass(mdgriffith$elm_ui$Internal$Style$classes.contentCenterX + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.contentCenterY + (' ' + (mdgriffith$elm_ui$Internal$Style$classes.seButton + (' ' + mdgriffith$elm_ui$Internal$Style$classes.noTextSelection)))))),
+						A2(
+							elm$core$List$cons,
+							mdgriffith$elm_ui$Element$pointer,
+							A2(
+								elm$core$List$cons,
+								mdgriffith$elm_ui$Element$Input$focusDefault(attrs),
+								A2(
+									elm$core$List$cons,
+									mdgriffith$elm_ui$Internal$Model$Describe(mdgriffith$elm_ui$Internal$Model$Button),
+									A2(
+										elm$core$List$cons,
+										mdgriffith$elm_ui$Internal$Model$Attr(
+											elm$html$Html$Attributes$tabindex(0)),
+										function () {
+											if (onPress.$ === 'Nothing') {
+												return A2(
+													elm$core$List$cons,
+													mdgriffith$elm_ui$Internal$Model$Attr(
+														elm$html$Html$Attributes$disabled(true)),
+													attrs);
+											} else {
+												var msg = onPress.a;
+												return A2(
+													elm$core$List$cons,
+													mdgriffith$elm_ui$Element$Events$onClick(msg),
+													A2(
+														elm$core$List$cons,
+														mdgriffith$elm_ui$Element$Input$onEnter(msg),
+														attrs));
+											}
+										}()))))))),
+			mdgriffith$elm_ui$Internal$Model$Unkeyed(
+				_List_fromArray(
+					[label])));
+	});
+var mdgriffith$elm_ui$Element$Input$OnRight = {$: 'OnRight'};
+var mdgriffith$elm_ui$Element$Input$labelRight = mdgriffith$elm_ui$Element$Input$Label(mdgriffith$elm_ui$Element$Input$OnRight);
+var author$project$App$sidebar = F2(
+	function (variables, newVar) {
+		var varEl = function (_n0) {
+			var key = _n0.a;
+			var value = _n0.b;
+			return A2(
+				mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$spacing(10),
+						mdgriffith$elm_ui$Element$padding(10),
+						mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						mdgriffith$elm_ui$Element$Input$text,
+						_List_fromArray(
+							[
+								mdgriffith$elm_ui$Element$alignRight,
+								mdgriffith$elm_ui$Element$width(
+								mdgriffith$elm_ui$Element$px(100))
+							]),
+						{
+							label: A2(
+								mdgriffith$elm_ui$Element$Input$labelLeft,
+								_List_fromArray(
+									[mdgriffith$elm_ui$Element$centerY]),
+								mdgriffith$elm_ui$Element$text(key + ' =')),
+							onChange: author$project$App$ChangeVar(key),
+							placeholder: elm$core$Maybe$Nothing,
+							text: value
+						}),
+						A2(
+						mdgriffith$elm_ui$Element$Input$button,
+						_List_Nil,
+						{
+							label: A2(
+								mdgriffith$elm_ui$Element$el,
+								_List_fromArray(
+									[
+										mdgriffith$elm_ui$Element$Font$color(
+										A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160))
+									]),
+								mdgriffith$elm_ui$Element$text('⨯')),
+							onPress: elm$core$Maybe$Just(
+								author$project$App$DeleteVar(key))
+						})
+					]));
+		};
+		var title = A2(
+			mdgriffith$elm_ui$Element$el,
 			_List_fromArray(
 				[
-					A2(mdgriffith$elm_ui$Element$paddingXY, 15, 5),
+					mdgriffith$elm_ui$Element$centerX,
+					A2(mdgriffith$elm_ui$Element$paddingXY, 0, 20),
+					mdgriffith$elm_ui$Element$Font$color(
+					A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160))
+				]),
+			mdgriffith$elm_ui$Element$text('Variables'));
+		var adder = A2(
+			mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					mdgriffith$elm_ui$Element$spacing(20),
+					mdgriffith$elm_ui$Element$padding(20),
 					mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
 				]),
-			{
-				label: A2(
-					mdgriffith$elm_ui$Element$Input$labelLeft,
+			_List_fromArray(
+				[
+					A2(
+					mdgriffith$elm_ui$Element$Input$text,
 					_List_fromArray(
-						[mdgriffith$elm_ui$Element$centerY]),
-					mdgriffith$elm_ui$Element$text(key + ':')),
-				onChange: author$project$App$ChangeVar(key),
-				placeholder: elm$core$Maybe$Nothing,
-				text: value
-			});
-	};
-	return A2(
-		mdgriffith$elm_ui$Element$column,
-		_List_fromArray(
-			[
-				mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill),
-				mdgriffith$elm_ui$Element$width(
-				mdgriffith$elm_ui$Element$fillPortion(1)),
-				A2(mdgriffith$elm_ui$Element$paddingXY, 0, 10),
-				mdgriffith$elm_ui$Element$Border$widthEach(
-				{bottom: 0, left: 2, right: 0, top: 0}),
-				mdgriffith$elm_ui$Element$Border$color(
-				A3(mdgriffith$elm_ui$Element$rgb255, 200, 200, 200))
-			]),
-		A2(
-			elm$core$List$map,
-			varEl,
-			elm$core$Dict$toList(variables)));
-};
+						[
+							mdgriffith$elm_ui$Element$alignRight,
+							mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
+						]),
+					{
+						label: A2(mdgriffith$elm_ui$Element$Input$labelRight, _List_Nil, mdgriffith$elm_ui$Element$none),
+						onChange: author$project$App$ChangeNewVar,
+						placeholder: elm$core$Maybe$Nothing,
+						text: newVar
+					}),
+					A2(
+					mdgriffith$elm_ui$Element$Input$button,
+					_List_fromArray(
+						[
+							mdgriffith$elm_ui$Element$width(
+							mdgriffith$elm_ui$Element$px(100))
+						]),
+					{
+						label: A2(
+							mdgriffith$elm_ui$Element$el,
+							_List_fromArray(
+								[
+									mdgriffith$elm_ui$Element$Font$color(
+									A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160)),
+									mdgriffith$elm_ui$Element$Font$size(30)
+								]),
+							mdgriffith$elm_ui$Element$text('+')),
+						onPress: (newVar === '') ? elm$core$Maybe$Nothing : elm$core$Maybe$Just(
+							author$project$App$AddVar(newVar))
+					})
+				]));
+		return A2(
+			mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill),
+					mdgriffith$elm_ui$Element$width(
+					mdgriffith$elm_ui$Element$fillPortion(1)),
+					mdgriffith$elm_ui$Element$Border$widthEach(
+					{bottom: 0, left: 2, right: 0, top: 0}),
+					mdgriffith$elm_ui$Element$Border$color(
+					A3(mdgriffith$elm_ui$Element$rgb255, 200, 200, 200))
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[title]),
+				_Utils_ap(
+					A2(
+						elm$core$List$map,
+						varEl,
+						elm$core$Dict$toList(variables)),
+					_List_fromArray(
+						[adder]))));
+	});
 var mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 'OnlyDynamic', a: a, b: b};
@@ -12047,14 +12287,10 @@ var mdgriffith$elm_ui$Internal$Model$renderRoot = F3(
 						[child]))));
 	});
 var mdgriffith$elm_ui$Internal$Flag$fontFamily = mdgriffith$elm_ui$Internal$Flag$flag(5);
-var mdgriffith$elm_ui$Internal$Flag$fontSize = mdgriffith$elm_ui$Internal$Flag$flag(4);
 var mdgriffith$elm_ui$Internal$Model$FontFamily = F2(
 	function (a, b) {
 		return {$: 'FontFamily', a: a, b: b};
 	});
-var mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
-	return {$: 'FontSize', a: a};
-};
 var mdgriffith$elm_ui$Internal$Model$SansSerif = {$: 'SansSerif'};
 var mdgriffith$elm_ui$Internal$Model$Typeface = function (a) {
 	return {$: 'Typeface', a: a};
@@ -12185,7 +12421,7 @@ var author$project$App$view = function (model) {
 					_List_fromArray(
 						[
 							author$project$App$graphPanel,
-							author$project$App$sidebar(model.vars)
+							A2(author$project$App$sidebar, model.vars, model.newVar)
 						]))
 				])));
 };

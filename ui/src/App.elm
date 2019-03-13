@@ -34,6 +34,7 @@ type alias Model =
     { title : String
     , graph : String
     , vars : Dict.Dict String String
+    , newVar : String
     }
 
 
@@ -43,9 +44,11 @@ init flags =
       , graph = "" -- TODO: get from flags
       , vars =
             Dict.fromList
-                [ ( "beta", "42" )
-                , ( "gamma", "99" )
+                [ ( "beta", "3.1415" )
+                , ( "gamma", "42" )
+                , ( "N", "9000" )
                 ]
+      , newVar = ""
       }
     , Cmd.none
     )
@@ -61,6 +64,7 @@ type Msg
     | AddVar String
     | DeleteVar String
     | ChangeVar String String
+    | ChangeNewVar String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -73,13 +77,16 @@ update msg model =
             ( { model | title = newTitle }, Cmd.none )
 
         AddVar key ->
-            ( { model | vars = Dict.insert key "" model.vars }, Cmd.none )
+            ( { model | vars = Dict.insert key "" model.vars, newVar = "" }, Cmd.none )
 
         DeleteVar key ->
             ( { model | vars = Dict.remove key model.vars }, Cmd.none )
 
         ChangeVar key value ->
             ( { model | vars = Dict.insert key value model.vars }, Cmd.none )
+
+        ChangeNewVar newVarName ->
+            ( { model | newVar = newVarName }, Cmd.none )
 
 
 
@@ -118,27 +125,76 @@ header title =
         ]
 
 
-sidebar : Dict.Dict String String -> Element Msg
-sidebar variables =
+sidebar : Dict.Dict String String -> String -> Element Msg
+sidebar variables newVar =
     let
         varEl ( key, value ) =
-            Input.text [ paddingXY 15 5, width fill ]
-                { label = Input.labelLeft [ centerY ] <| text <| key ++ ":"
-                , onChange = ChangeVar key
-                , placeholder = Nothing
-                , text = value
-                }
+            row
+                [ spacing 10, padding 10, width fill ]
+                [ Input.text
+                    [ alignRight, width <| px 100 ]
+                    { label = Input.labelLeft [ centerY ] <| text <| key ++ " ="
+                    , onChange = ChangeVar key
+                    , placeholder = Nothing
+                    , text = value
+                    }
+                , Input.button
+                    []
+                    -- paddingEach { top = 0, right = 10, bottom = 0, left = 0 } ]
+                    { onPress = Just (DeleteVar key)
+                    , label = el [ Font.color <| rgb255 160 160 160 ] <| text "⨯"
+                    }
+                ]
+
+        title =
+            el
+                [ centerX
+                , paddingXY 0 20
+                , Font.color <| rgb255 160 160 160
+                ]
+            <|
+                text "Variables:"
+
+        adder =
+            row
+                [ spacing 20, padding 20, width fill ]
+                [ Input.text
+                    [ alignRight, width fill ]
+                    { label = Input.labelRight [] <| none
+                    , onChange = ChangeNewVar
+                    , placeholder = Nothing
+                    , text = newVar
+                    }
+                , Input.button
+                    [ width <| px 100 ]
+                    { onPress =
+                        if newVar == "" then
+                            Nothing
+
+                        else
+                            Just (AddVar newVar)
+                    , label =
+                        el
+                            [ Font.color <| rgb255 160 160 160
+                            , Font.size 30
+                            ]
+                        <|
+                            text "+"
+                    }
+                ]
     in
     column
         [ height fill
         , width <| fillPortion 1
-        , paddingXY 0 10
+
+        -- , spacingXY 0 10
         , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
         , Border.color <| rgb255 200 200 200
         ]
     <|
-        List.map varEl <|
-            Dict.toList variables
+        [ title ]
+            ++ (List.map varEl <| Dict.toList variables)
+            ++ [ adder ]
 
 
 exposedDiv : String -> List (Attribute msg) -> List (Html msg) -> Element msg
@@ -182,11 +238,6 @@ graphPanel =
                     , HtmlAttr.class "palette-img"
                     ]
                     []
-                , img
-                    [ HtmlAttr.src "images/virus.png"
-                    , HtmlAttr.class "palette-img"
-                    ]
-                    []
                 ]
     in
     el [ height fill, width <| fillPortion 4 ] <|
@@ -202,5 +253,5 @@ view model =
         column [ height fill, width fill ]
             [ header model.title
             , row [ height fill, width fill ]
-                [ graphPanel, sidebar model.vars ]
+                [ graphPanel, sidebar model.vars model.newVar ]
             ]
