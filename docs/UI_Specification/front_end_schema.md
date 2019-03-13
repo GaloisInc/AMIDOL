@@ -31,7 +31,7 @@ Basic user workflow begins by **loading** a project.
   "model": "filename",
   "icon": "filename.svg",
   "inputvariables": ["string"],
-  "outputvariables": ["string"]
+  "outputvariables": ["string"],
   "parameters": [{"id": "string", "val": "expression"}]
   }
 }

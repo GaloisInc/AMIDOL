@@ -1,0 +1,10 @@
+{"model": {
+ "id": "",
+ "statevariables": [{"id": "S", "label": "S", "type": "float", "initial_value": "0"},
+ 		    {"id": "I", "label": "I", "type": "float", "initial_value": "0"}],
+ "events": [{"id": "infect", "label": "infect", "rate": "",
+ 	     "input_predicate": "", "output_predicate": ""}],
+ "raterewards": [],
+ "impulserewards": [],
+ "composedrewards": []
+}}
