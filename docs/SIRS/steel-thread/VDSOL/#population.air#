@@ -1,9 +1,0 @@
-{"model": {
- "id": "population",
- "statevariables": [{"id": "P", "label": "P", "type": "float", "initial_value": "0"}],
- "events": [],
- 
- "raterewards": [],
- "impulserewards": [],
- "composedrewards": []
-}}
