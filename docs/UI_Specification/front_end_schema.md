@@ -16,23 +16,23 @@ Basic user workflow begins by **loading** a project.
 ## Example Front End Schema
 
 ```json
-{ Noun: {
-    id: "string",
-    model: "filename",
-    icon: "filename.svg",
-    inputvariables: ["string"],
-    outputvariables: ["string"],
-    parameters: [{id: "string", val: "expression"}]
+{ "noun": {
+    "id": "string",
+    "model": "filename",
+    "icon": "filename.svg",
+    "inputvariables": ["string"],
+    "outputvariables": ["string"],
+    "parameters": [{"id": "string", "val": "expression"}]
   }
 }
 
-{ Verb: {
-  id: "string",
-  model: "filename",
-  icon: "filename.svg",
-  inputvariables: ["string"],
-  outputvariables: ["string"]
-  parameters: [{id: "string", val: "expression"}]
+{ "verb": {
+  "id": "string",
+  "model": "filename",
+  "icon": "filename.svg",
+  "inputvariables": ["string"],
+  "outputvariables": ["string"]
+  "parameters": [{"id": "string", "val": "expression"}]
   }
 }
 ```
@@ -40,16 +40,16 @@ Basic user workflow begins by **loading** a project.
 ## Model composition schema
 
 ```json
-{ ComposedModel: {
-  id: "string",
-  Model0: {
-    id: "string"
-    sharedVariables: [{
-      id: "string"
+{ "composedmodel": {
+  "id": "string",
+  "model0": {
+    "id": "string"
+    "sharedvariables": [{
+      "id": "string"
       }]
     }
-  Model1: {
-    id: "string"
+  "model1": {
+    "id": "string"
     sharedVariables: [{
       id: "string"
       }]
