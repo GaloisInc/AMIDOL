@@ -35,7 +35,7 @@ The state variable transition function maps events, and markings to new markings
   "id": "string",
   "statevariables": [{
     "id": "string",
-    "label": "string"
+    "label": "string",
     "type": "sv_type",
     "initial_value": "expression"
   }],
@@ -44,10 +44,10 @@ The state variable transition function maps events, and markings to new markings
     "label": "string",
     "rate": "expression",
     "input_predicate": {
-      enabling_condition: "expression"
+      "enabling_condition": "expression"
     },
     "output_predicate": {
-      transition_function: ["lvalue = expression", "lvalue = expression", ...]
+      "transition_function": ["lvalue = expression", "lvalue = expression", ...]
     }
   }],
   "constants": [{
@@ -69,7 +69,7 @@ The state variable transition function maps events, and markings to new markings
     "samplingpoints": [{
       "time": "float"
       }]    
-  }]
+  }],
   "composedrewards": [{
     "id": "string",
     "expression": "expression"
