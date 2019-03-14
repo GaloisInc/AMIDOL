@@ -13,7 +13,7 @@ We assume the user builds a model using the nouns and verbs defined in the `VDSO
     * They set `R_P` to `0`
   * `infect.verb` which they name `infect`
     * They set `infect_beta` to `1/3 * 1.24`
-    * They set `infect_total_pop` to `S.P + I.P + R.P`
+    * They set `infect_total_pop` to `S_P + I_P + R_P`
   * `cure.verb` which they name `cure`
     * They set `cure_gamma` to `1/3`
 
