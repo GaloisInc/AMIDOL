@@ -60,3 +60,7 @@ Force the user to set the "id" of the noun to a unique identifier when they crea
 ## Composition Rules
 * How do we choose what value to take for a state variable?
   * **Proposal**: Take advantage of our composition rules of nouns and verbs.  Noun's take precedence over verbs.
+
+## Renaming Rules
+* We need to keep track of all names an id has had in the system to resolve such names in the final composed model.  In the steel thread example, the state variables:
+  * `I_P`, `infect_I`, `cure_I`, `Scinfect_I`, `Scinfect_IcI_P`, and `ScinfectcI_Scinfect_IcI_Pccure_I` all refer to the same variable.
