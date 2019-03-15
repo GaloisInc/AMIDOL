@@ -54,7 +54,7 @@ var journal = {
                 break
         }
         UI.updateButtonStates()
-        ELM.sendData()
+        ElmPorts.sendData()
     },
 
     invertEvent : function(initial_event) {
@@ -118,6 +118,9 @@ var UI = {
                 color: { color: "black" },
                 arrows: "to"
             },
+            interaction : {
+                selectConnectedEdges: false
+            },
             manipulation: {
                 initiallyActive: true,
                 addNode: function(node, callback){
@@ -133,9 +136,9 @@ var UI = {
                         journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
                     }
                 },
-                editNode: function(node, callback) {
-                    alert(JSON.stringify(node))
-                },
+                // editNode: function(node, callback) {
+                //     alert(JSON.stringify(node))
+                // },
                 deleteNode: function(dataIds, callback) {
                     journal.apply( { 
                         "type": "subtract", 
@@ -163,7 +166,18 @@ var UI = {
         network.on("oncontext", UI.networkRightClick)
         network.on("doubleClick", function(){})
         network.on("oncontext", function(){})
-        network.on("deselectNode", function(){})
+        network.on("selectNode", function(x){
+            ElmPorts.selectNode(node_data_set.get([x.nodes[0]])[0])
+        })
+        network.on("deselectNode", function(x){
+            ElmPorts.selectNone()
+        })
+        network.on("selectEdge", function(x){
+            ElmPorts.selectEdge(edge_data_set.get([x.edges[0]])[0])
+        })
+        network.on("deselectEdge", function(x){
+            ElmPorts.selectNone()
+        })
         network.on("hold", function(){})
         network.on("dragStart", function(e){
             var selectedNodes = network.getSelectedNodes()
@@ -177,7 +191,7 @@ var UI = {
                 var to = network.getPositions(_.keys(UI.movingNodes))
                 UI.movingNodes = null
                 journal.past.push({ "type" : "move", "from": from, "to": to })
-                ELM.sendData()
+                ElmPorts.sendData()
             }
         })
         // $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
@@ -192,13 +206,25 @@ var UI = {
 }
 
 
-var ELM = {
+var ElmPorts = {
     sendData : function(){
         app.ports.graphData.send(JSON.stringify({
             "nodes" : node_data_set.getDataSet()._data,
             "edges" : edge_data_set.getDataSet()._data
         }));
         // }, null, 2));
+    },
+
+    selectNode : function(node){
+        app.ports.selectNode.send(node)
+    },
+
+    selectEdge : function(edge){
+        app.ports.selectEdge.send(edge)
+    },
+
+    selectNone : function(){
+        app.ports.selectNone.send(null)
     }
 }
 
@@ -214,13 +240,13 @@ $(function(){
     UI.updateButtonStates()
 
     var sample_nodes = [
-        {id: 1, label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
-        {id: 2, label: "Infected", image: "images/sick.jpg", x: 0, y: 150}, 
-        {id: 3, label: "Recovered", image: "images/happy.png", x: 250, y: 0}
+        {id: "1", label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
+        {id: "2", label: "Infected", image: "images/sick.jpg", x: 0, y: 150}, 
+        {id: "3", label: "Recovered", image: "images/happy.png", x: 250, y: 0}
     ]
     var sample_edges = [
-        {id: "a", from: 1, to: 2, label: "beta * Susceptible * Infected / N"},
-        {id: "b", from: 2, to: 3, label: "gamma * Infected"}
+        {id: "a", from: "1", to: "2", label: "sickens"},
+        {id: "b", from: "2", to: "3", label: "recovers"}
     ]
 
     journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )

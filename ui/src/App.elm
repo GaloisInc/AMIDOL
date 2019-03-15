@@ -11,6 +11,8 @@ import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html, div, img)
 import Html.Attributes as HtmlAttr exposing (class, id, src)
+import Json.Decode exposing (decodeValue, field)
+import Json.Encode
 
 
 main : Program () Model Msg
@@ -26,6 +28,15 @@ main =
 port graphData : (String -> msg) -> Sub msg
 
 
+port selectNode : (Json.Decode.Value -> msg) -> Sub msg
+
+
+port selectEdge : (Json.Decode.Value -> msg) -> Sub msg
+
+
+port selectNone : (() -> msg) -> Sub msg
+
+
 
 -- MODEL
 
@@ -33,15 +44,38 @@ port graphData : (String -> msg) -> Sub msg
 type alias Model =
     { title : String
     , graph : String
+    , selected : Selected
     , vars : Dict.Dict String String
     , newVar : String
     }
 
 
+type Selected
+    = Node GraphElem
+    | Edge GraphElem
+    | NoneSelected
+
+
+type alias GraphElem =
+    { id : String
+    , label : String
+    , image : Maybe String
+    }
+
+
+decodeGraphElem : Json.Decode.Decoder GraphElem
+decodeGraphElem =
+    Json.Decode.map3 GraphElem
+        (field "id" Json.Decode.string)
+        (field "label" Json.Decode.string)
+        (Json.Decode.maybe <| field "image" Json.Decode.string)
+
+
 init : flags -> ( Model, Cmd Msg )
 init flags =
     ( { title = "SIR"
-      , graph = "" -- TODO: get from flags
+      , graph = "" -- populated via GraphData when graph.js loads
+      , selected = NoneSelected
       , vars =
             Dict.fromList
                 [ ( "beta", "3.1415" )
@@ -60,6 +94,9 @@ init flags =
 
 type Msg
     = GraphData String
+    | SelectNode Json.Decode.Value
+    | SelectEdge Json.Decode.Value
+    | SelectNone ()
     | ChangeTitle String
     | AddVar String
     | DeleteVar String
@@ -67,11 +104,30 @@ type Msg
     | ChangeNewVar String
 
 
+selectGraphElem : (GraphElem -> Selected) -> Json.Decode.Value -> Selected
+selectGraphElem elem val =
+    case decodeValue decodeGraphElem val of
+        Ok decodedVal ->
+            elem decodedVal
+
+        Err err ->
+            NoneSelected
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GraphData data ->
-            ( Debug.log "GraphData" { model | graph = data }, Cmd.none )
+            ( { model | graph = data }, Cmd.none )
+
+        SelectNode obj ->
+            ( { model | selected = selectGraphElem Node obj }, Cmd.none )
+
+        SelectEdge obj ->
+            ( { model | selected = selectGraphElem Edge obj }, Cmd.none )
+
+        SelectNone () ->
+            ( { model | selected = NoneSelected }, Cmd.none )
 
         ChangeTitle newTitle ->
             ( { model | title = newTitle }, Cmd.none )
@@ -95,7 +151,12 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    graphData GraphData
+    Sub.batch
+        [ graphData GraphData
+        , selectNode SelectNode
+        , selectEdge SelectEdge
+        , selectNone SelectNone
+        ]
 
 
 
@@ -207,7 +268,7 @@ graphPanel =
     let
         palette =
             exposedDiv "palette"
-                []
+                [ width fill ]
                 [ img
                     [ HtmlAttr.id "redo_button"
                     , HtmlAttr.class "undo-redo"
@@ -241,9 +302,9 @@ graphPanel =
                 ]
     in
     el [ height fill, width <| fillPortion 4 ] <|
-        column [ height fill, width fill ]
+        column [ height fill, width fill, padding 20 ]
             [ palette
-            , exposedDiv "graph" [ height <| px 600 ] []
+            , exposedDiv "graph" [ width fill, height <| px 600 ] []
             ]
 
 

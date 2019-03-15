@@ -4347,6 +4347,7 @@ function _Browser_load(url)
 		}
 	}));
 }
+var author$project$App$NoneSelected = {$: 'NoneSelected'};
 var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
 var elm$core$Dict$Black = {$: 'Black'};
@@ -4952,6 +4953,7 @@ var author$project$App$init = function (flags) {
 		{
 			graph: '',
 			newVar: '',
+			selected: author$project$App$NoneSelected,
 			title: 'SIR',
 			vars: elm$core$Dict$fromList(
 				_List_fromArray(
@@ -4966,12 +4968,77 @@ var author$project$App$init = function (flags) {
 var author$project$App$GraphData = function (a) {
 	return {$: 'GraphData', a: a};
 };
+var author$project$App$SelectEdge = function (a) {
+	return {$: 'SelectEdge', a: a};
+};
+var author$project$App$SelectNode = function (a) {
+	return {$: 'SelectNode', a: a};
+};
+var author$project$App$SelectNone = function (a) {
+	return {$: 'SelectNone', a: a};
+};
 var elm$json$Json$Decode$string = _Json_decodeString;
 var author$project$App$graphData = _Platform_incomingPort('graphData', elm$json$Json$Decode$string);
+var elm$json$Json$Decode$value = _Json_decodeValue;
+var author$project$App$selectEdge = _Platform_incomingPort('selectEdge', elm$json$Json$Decode$value);
+var author$project$App$selectNode = _Platform_incomingPort('selectNode', elm$json$Json$Decode$value);
+var elm$json$Json$Decode$null = _Json_decodeNull;
+var author$project$App$selectNone = _Platform_incomingPort(
+	'selectNone',
+	elm$json$Json$Decode$null(_Utils_Tuple0));
+var elm$core$Platform$Sub$batch = _Platform_batch;
 var author$project$App$subscriptions = function (model) {
-	return author$project$App$graphData(author$project$App$GraphData);
+	return elm$core$Platform$Sub$batch(
+		_List_fromArray(
+			[
+				author$project$App$graphData(author$project$App$GraphData),
+				author$project$App$selectNode(author$project$App$SelectNode),
+				author$project$App$selectEdge(author$project$App$SelectEdge),
+				author$project$App$selectNone(author$project$App$SelectNone)
+			]));
 };
-var elm$core$Debug$log = _Debug_log;
+var author$project$App$Edge = function (a) {
+	return {$: 'Edge', a: a};
+};
+var author$project$App$Node = function (a) {
+	return {$: 'Node', a: a};
+};
+var author$project$App$GraphElem = F3(
+	function (id, label, image) {
+		return {id: id, image: image, label: label};
+	});
+var elm$json$Json$Decode$field = _Json_decodeField;
+var elm$json$Json$Decode$map3 = _Json_map3;
+var elm$json$Json$Decode$map = _Json_map1;
+var elm$json$Json$Decode$oneOf = _Json_oneOf;
+var elm$json$Json$Decode$succeed = _Json_succeed;
+var elm$json$Json$Decode$maybe = function (decoder) {
+	return elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2(elm$json$Json$Decode$map, elm$core$Maybe$Just, decoder),
+				elm$json$Json$Decode$succeed(elm$core$Maybe$Nothing)
+			]));
+};
+var author$project$App$decodeGraphElem = A4(
+	elm$json$Json$Decode$map3,
+	author$project$App$GraphElem,
+	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'label', elm$json$Json$Decode$string),
+	elm$json$Json$Decode$maybe(
+		A2(elm$json$Json$Decode$field, 'image', elm$json$Json$Decode$string)));
+var elm$json$Json$Decode$decodeValue = _Json_run;
+var author$project$App$selectGraphElem = F2(
+	function (elem, val) {
+		var _n0 = A2(elm$json$Json$Decode$decodeValue, author$project$App$decodeGraphElem, val);
+		if (_n0.$ === 'Ok') {
+			var decodedVal = _n0.a;
+			return elem(decodedVal);
+		} else {
+			var err = _n0.a;
+			return author$project$App$NoneSelected;
+		}
+	});
 var elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
@@ -5340,12 +5407,33 @@ var author$project$App$update = F2(
 			case 'GraphData':
 				var data = msg.a;
 				return _Utils_Tuple2(
-					A2(
-						elm$core$Debug$log,
-						'GraphData',
-						_Utils_update(
-							model,
-							{graph: data})),
+					_Utils_update(
+						model,
+						{graph: data}),
+					elm$core$Platform$Cmd$none);
+			case 'SelectNode':
+				var obj = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							selected: A2(author$project$App$selectGraphElem, author$project$App$Node, obj)
+						}),
+					elm$core$Platform$Cmd$none);
+			case 'SelectEdge':
+				var obj = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							selected: A2(author$project$App$selectGraphElem, author$project$App$Edge, obj)
+						}),
+					elm$core$Platform$Cmd$none);
+			case 'SelectNone':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{selected: author$project$App$NoneSelected}),
 					elm$core$Platform$Cmd$none);
 			case 'ChangeTitle':
 				var newTitle = msg.a;
@@ -5395,9 +5483,7 @@ var author$project$App$update = F2(
 var elm$core$Basics$identity = function (x) {
 	return x;
 };
-var elm$json$Json$Decode$map = _Json_map1;
 var elm$json$Json$Decode$map2 = _Json_map2;
-var elm$json$Json$Decode$succeed = _Json_succeed;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
 		case 'Normal':
@@ -10781,6 +10867,27 @@ var mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 };
 var mdgriffith$elm_ui$Element$fill = mdgriffith$elm_ui$Internal$Model$Fill(1);
 var mdgriffith$elm_ui$Element$fillPortion = mdgriffith$elm_ui$Internal$Model$Fill;
+var mdgriffith$elm_ui$Internal$Flag$padding = mdgriffith$elm_ui$Internal$Flag$flag(2);
+var mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
+	function (a, b, c, d, e) {
+		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
+	});
+var mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
+	function (a, b) {
+		return {$: 'StyleClass', a: a, b: b};
+	});
+var mdgriffith$elm_ui$Element$padding = function (x) {
+	return A2(
+		mdgriffith$elm_ui$Internal$Model$StyleClass,
+		mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + elm$core$String$fromInt(x),
+			x,
+			x,
+			x,
+			x));
+};
 var mdgriffith$elm_ui$Internal$Model$Px = function (a) {
 	return {$: 'Px', a: a};
 };
@@ -10789,7 +10896,10 @@ var author$project$App$graphPanel = function () {
 	var palette = A3(
 		author$project$App$exposedDiv,
 		'palette',
-		_List_Nil,
+		_List_fromArray(
+			[
+				mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
+			]),
 		_List_fromArray(
 			[
 				A2(
@@ -10855,7 +10965,8 @@ var author$project$App$graphPanel = function () {
 			_List_fromArray(
 				[
 					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill),
-					mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
+					mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
+					mdgriffith$elm_ui$Element$padding(20)
 				]),
 			_List_fromArray(
 				[
@@ -10865,6 +10976,7 @@ var author$project$App$graphPanel = function () {
 					'graph',
 					_List_fromArray(
 						[
+							mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill),
 							mdgriffith$elm_ui$Element$height(
 							mdgriffith$elm_ui$Element$px(600))
 						]),
@@ -10884,15 +10996,6 @@ var mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
 };
 var mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
 var mdgriffith$elm_ui$Element$centerY = mdgriffith$elm_ui$Internal$Model$AlignY(mdgriffith$elm_ui$Internal$Model$CenterY);
-var mdgriffith$elm_ui$Internal$Flag$padding = mdgriffith$elm_ui$Internal$Flag$flag(2);
-var mdgriffith$elm_ui$Internal$Model$PaddingStyle = F5(
-	function (a, b, c, d, e) {
-		return {$: 'PaddingStyle', a: a, b: b, c: c, d: d, e: e};
-	});
-var mdgriffith$elm_ui$Internal$Model$StyleClass = F2(
-	function (a, b) {
-		return {$: 'StyleClass', a: a, b: b};
-	});
 var mdgriffith$elm_ui$Element$paddingXY = F2(
 	function (x, y) {
 		return _Utils_eq(x, y) ? A2(
@@ -11051,7 +11154,6 @@ var elm$html$Html$Events$stopPropagationOn = F2(
 			event,
 			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
 	});
-var elm$json$Json$Decode$field = _Json_decodeField;
 var elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
@@ -11877,18 +11979,6 @@ var mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
 var mdgriffith$elm_ui$Element$alignRight = mdgriffith$elm_ui$Internal$Model$AlignX(mdgriffith$elm_ui$Internal$Model$Right);
 var mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
 var mdgriffith$elm_ui$Element$none = mdgriffith$elm_ui$Internal$Model$Empty;
-var mdgriffith$elm_ui$Element$padding = function (x) {
-	return A2(
-		mdgriffith$elm_ui$Internal$Model$StyleClass,
-		mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + elm$core$String$fromInt(x),
-			x,
-			x,
-			x,
-			x));
-};
 var mdgriffith$elm_ui$Internal$Flag$fontSize = mdgriffith$elm_ui$Internal$Flag$flag(4);
 var mdgriffith$elm_ui$Internal$Model$FontSize = function (a) {
 	return {$: 'FontSize', a: a};
@@ -12074,7 +12164,7 @@ var author$project$App$sidebar = F2(
 					mdgriffith$elm_ui$Element$Font$color(
 					A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160))
 				]),
-			mdgriffith$elm_ui$Element$text('Variables'));
+			mdgriffith$elm_ui$Element$text('Variables:'));
 		var adder = A2(
 			mdgriffith$elm_ui$Element$row,
 			_List_fromArray(
