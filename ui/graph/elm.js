@@ -4347,9 +4347,10 @@ function _Browser_load(url)
 		}
 	}));
 }
-var author$project$App$NoneSelected = {$: 'NoneSelected'};
+var author$project$Amidol$NoneSelected = {$: 'NoneSelected'};
 var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
+var author$project$Amidol$emptyGraph = {edges: elm$core$Dict$empty, nodes: elm$core$Dict$empty};
 var elm$core$Dict$Black = {$: 'Black'};
 var elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -4948,12 +4949,12 @@ var elm$json$Json$Decode$errorToStringHelp = F2(
 	});
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
-var author$project$App$init = function (flags) {
+var author$project$Amidol$init = function (flags) {
 	return _Utils_Tuple2(
 		{
-			graph: '',
+			graph: author$project$Amidol$emptyGraph,
 			newVar: '',
-			selected: author$project$App$NoneSelected,
+			selected: author$project$Amidol$NoneSelected,
 			title: 'SIR',
 			vars: elm$core$Dict$fromList(
 				_List_fromArray(
@@ -4965,80 +4966,106 @@ var author$project$App$init = function (flags) {
 		},
 		elm$core$Platform$Cmd$none);
 };
-var author$project$App$GraphData = function (a) {
+var author$project$Amidol$GraphData = function (a) {
 	return {$: 'GraphData', a: a};
 };
-var author$project$App$SelectEdge = function (a) {
+var author$project$Amidol$SelectEdge = function (a) {
 	return {$: 'SelectEdge', a: a};
 };
-var author$project$App$SelectNode = function (a) {
+var author$project$Amidol$SelectNode = function (a) {
 	return {$: 'SelectNode', a: a};
 };
-var author$project$App$SelectNone = function (a) {
+var author$project$Amidol$SelectNone = function (a) {
 	return {$: 'SelectNone', a: a};
 };
-var elm$json$Json$Decode$string = _Json_decodeString;
-var author$project$App$graphData = _Platform_incomingPort('graphData', elm$json$Json$Decode$string);
 var elm$json$Json$Decode$value = _Json_decodeValue;
-var author$project$App$selectEdge = _Platform_incomingPort('selectEdge', elm$json$Json$Decode$value);
-var author$project$App$selectNode = _Platform_incomingPort('selectNode', elm$json$Json$Decode$value);
+var author$project$Amidol$graphData = _Platform_incomingPort('graphData', elm$json$Json$Decode$value);
+var elm$json$Json$Decode$string = _Json_decodeString;
+var author$project$Amidol$selectEdge = _Platform_incomingPort('selectEdge', elm$json$Json$Decode$string);
+var author$project$Amidol$selectNode = _Platform_incomingPort('selectNode', elm$json$Json$Decode$string);
 var elm$json$Json$Decode$null = _Json_decodeNull;
-var author$project$App$selectNone = _Platform_incomingPort(
+var author$project$Amidol$selectNone = _Platform_incomingPort(
 	'selectNone',
 	elm$json$Json$Decode$null(_Utils_Tuple0));
 var elm$core$Platform$Sub$batch = _Platform_batch;
-var author$project$App$subscriptions = function (model) {
+var author$project$Amidol$subscriptions = function (model) {
 	return elm$core$Platform$Sub$batch(
 		_List_fromArray(
 			[
-				author$project$App$graphData(author$project$App$GraphData),
-				author$project$App$selectNode(author$project$App$SelectNode),
-				author$project$App$selectEdge(author$project$App$SelectEdge),
-				author$project$App$selectNone(author$project$App$SelectNone)
+				author$project$Amidol$graphData(author$project$Amidol$GraphData),
+				author$project$Amidol$selectNode(author$project$Amidol$SelectNode),
+				author$project$Amidol$selectEdge(author$project$Amidol$SelectEdge),
+				author$project$Amidol$selectNone(author$project$Amidol$SelectNone)
 			]));
 };
-var author$project$App$Edge = function (a) {
-	return {$: 'Edge', a: a};
+var author$project$Amidol$SelectedEdge = function (a) {
+	return {$: 'SelectedEdge', a: a};
 };
-var author$project$App$Node = function (a) {
-	return {$: 'Node', a: a};
+var author$project$Amidol$SelectedNode = function (a) {
+	return {$: 'SelectedNode', a: a};
 };
-var author$project$App$GraphElem = F3(
-	function (id, label, image) {
-		return {id: id, image: image, label: label};
+var author$project$Amidol$Graph = F2(
+	function (nodes, edges) {
+		return {edges: edges, nodes: nodes};
+	});
+var author$project$Amidol$Edge = F4(
+	function (id, label, from, to) {
+		return {from: from, id: id, label: label, to: to};
 	});
 var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$map3 = _Json_map3;
-var elm$json$Json$Decode$map = _Json_map1;
-var elm$json$Json$Decode$oneOf = _Json_oneOf;
-var elm$json$Json$Decode$succeed = _Json_succeed;
-var elm$json$Json$Decode$maybe = function (decoder) {
-	return elm$json$Json$Decode$oneOf(
-		_List_fromArray(
-			[
-				A2(elm$json$Json$Decode$map, elm$core$Maybe$Just, decoder),
-				elm$json$Json$Decode$succeed(elm$core$Maybe$Nothing)
-			]));
-};
-var author$project$App$decodeGraphElem = A4(
-	elm$json$Json$Decode$map3,
-	author$project$App$GraphElem,
+var elm$json$Json$Decode$map4 = _Json_map4;
+var author$project$Amidol$decodeEdge = A5(
+	elm$json$Json$Decode$map4,
+	author$project$Amidol$Edge,
 	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'label', elm$json$Json$Decode$string),
-	elm$json$Json$Decode$maybe(
-		A2(elm$json$Json$Decode$field, 'image', elm$json$Json$Decode$string)));
-var elm$json$Json$Decode$decodeValue = _Json_run;
-var author$project$App$selectGraphElem = F2(
-	function (elem, val) {
-		var _n0 = A2(elm$json$Json$Decode$decodeValue, author$project$App$decodeGraphElem, val);
-		if (_n0.$ === 'Ok') {
-			var decodedVal = _n0.a;
-			return elem(decodedVal);
-		} else {
-			var err = _n0.a;
-			return author$project$App$NoneSelected;
-		}
+	A2(elm$json$Json$Decode$field, 'from', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'to', elm$json$Json$Decode$string));
+var author$project$Amidol$Node = F5(
+	function (id, label, image, x, y) {
+		return {id: id, image: image, label: label, x: x, y: y};
 	});
+var elm$json$Json$Decode$float = _Json_decodeFloat;
+var elm$json$Json$Decode$map5 = _Json_map5;
+var author$project$Amidol$decodeNode = A6(
+	elm$json$Json$Decode$map5,
+	author$project$Amidol$Node,
+	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'label', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'image', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'x', elm$json$Json$Decode$float),
+	A2(elm$json$Json$Decode$field, 'y', elm$json$Json$Decode$float));
+var elm$json$Json$Decode$decodeValue = _Json_run;
+var elm$json$Json$Decode$keyValuePairs = _Json_decodeKeyValuePairs;
+var elm$json$Json$Decode$map = _Json_map1;
+var elm$json$Json$Decode$dict = function (decoder) {
+	return A2(
+		elm$json$Json$Decode$map,
+		elm$core$Dict$fromList,
+		elm$json$Json$Decode$keyValuePairs(decoder));
+};
+var elm$json$Json$Decode$map2 = _Json_map2;
+var author$project$Amidol$decodeGraph = function (data) {
+	var decoder = A3(
+		elm$json$Json$Decode$map2,
+		author$project$Amidol$Graph,
+		A2(
+			elm$json$Json$Decode$field,
+			'nodes',
+			elm$json$Json$Decode$dict(author$project$Amidol$decodeNode)),
+		A2(
+			elm$json$Json$Decode$field,
+			'edges',
+			elm$json$Json$Decode$dict(author$project$Amidol$decodeEdge)));
+	var _n0 = A2(elm$json$Json$Decode$decodeValue, decoder, data);
+	if (_n0.$ === 'Ok') {
+		var graph = _n0.a;
+		return graph;
+	} else {
+		var err = _n0.a;
+		return author$project$Amidol$emptyGraph;
+	}
+};
 var elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
@@ -5401,7 +5428,7 @@ var elm$core$Dict$remove = F2(
 			return x;
 		}
 	});
-var author$project$App$update = F2(
+var author$project$Amidol$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'GraphData':
@@ -5409,31 +5436,33 @@ var author$project$App$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{graph: data}),
+						{
+							graph: author$project$Amidol$decodeGraph(data)
+						}),
 					elm$core$Platform$Cmd$none);
 			case 'SelectNode':
-				var obj = msg.a;
+				var id = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							selected: A2(author$project$App$selectGraphElem, author$project$App$Node, obj)
+							selected: author$project$Amidol$SelectedNode(id)
 						}),
 					elm$core$Platform$Cmd$none);
 			case 'SelectEdge':
-				var obj = msg.a;
+				var id = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							selected: A2(author$project$App$selectGraphElem, author$project$App$Edge, obj)
+							selected: author$project$Amidol$SelectedEdge(id)
 						}),
 					elm$core$Platform$Cmd$none);
 			case 'SelectNone':
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{selected: author$project$App$NoneSelected}),
+						{selected: author$project$Amidol$NoneSelected}),
 					elm$core$Platform$Cmd$none);
 			case 'ChangeTitle':
 				var newTitle = msg.a;
@@ -5483,7 +5512,7 @@ var author$project$App$update = F2(
 var elm$core$Basics$identity = function (x) {
 	return x;
 };
-var elm$json$Json$Decode$map2 = _Json_map2;
+var elm$json$Json$Decode$succeed = _Json_succeed;
 var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	switch (handler.$) {
 		case 'Normal':
@@ -10814,7 +10843,7 @@ var elm$core$Basics$composeL = F3(
 	});
 var mdgriffith$elm_ui$Internal$Model$unstyled = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Unstyled, elm$core$Basics$always);
 var mdgriffith$elm_ui$Element$html = mdgriffith$elm_ui$Internal$Model$unstyled;
-var author$project$App$exposedDiv = F3(
+var author$project$Amidol$exposedDiv = F3(
 	function (id, attrs, children) {
 		return A2(
 			mdgriffith$elm_ui$Element$el,
@@ -10892,9 +10921,9 @@ var mdgriffith$elm_ui$Internal$Model$Px = function (a) {
 	return {$: 'Px', a: a};
 };
 var mdgriffith$elm_ui$Element$px = mdgriffith$elm_ui$Internal$Model$Px;
-var author$project$App$graphPanel = function () {
+var author$project$Amidol$graphPanel = function () {
 	var palette = A3(
-		author$project$App$exposedDiv,
+		author$project$Amidol$exposedDiv,
 		'palette',
 		_List_fromArray(
 			[
@@ -10972,7 +11001,7 @@ var author$project$App$graphPanel = function () {
 				[
 					palette,
 					A3(
-					author$project$App$exposedDiv,
+					author$project$Amidol$exposedDiv,
 					'graph',
 					_List_fromArray(
 						[
@@ -10983,7 +11012,7 @@ var author$project$App$graphPanel = function () {
 					_List_Nil)
 				])));
 }();
-var author$project$App$ChangeTitle = function (a) {
+var author$project$Amidol$ChangeTitle = function (a) {
 	return {$: 'ChangeTitle', a: a};
 };
 var mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
@@ -11924,7 +11953,7 @@ var mdgriffith$elm_ui$Element$Input$text = mdgriffith$elm_ui$Element$Input$textH
 		spellchecked: false,
 		type_: mdgriffith$elm_ui$Element$Input$TextInputNode('text')
 	});
-var author$project$App$header = function (title) {
+var author$project$Amidol$header = function (title) {
 	return A2(
 		mdgriffith$elm_ui$Element$row,
 		_List_fromArray(
@@ -11956,23 +11985,23 @@ var author$project$App$header = function (title) {
 								mdgriffith$elm_ui$Element$centerY
 							]),
 						mdgriffith$elm_ui$Element$text('Model:')),
-					onChange: author$project$App$ChangeTitle,
+					onChange: author$project$Amidol$ChangeTitle,
 					placeholder: elm$core$Maybe$Nothing,
 					text: title
 				})
 			]));
 };
-var author$project$App$AddVar = function (a) {
+var author$project$Amidol$AddVar = function (a) {
 	return {$: 'AddVar', a: a};
 };
-var author$project$App$ChangeNewVar = function (a) {
+var author$project$Amidol$ChangeNewVar = function (a) {
 	return {$: 'ChangeNewVar', a: a};
 };
-var author$project$App$ChangeVar = F2(
+var author$project$Amidol$ChangeVar = F2(
 	function (a, b) {
 		return {$: 'ChangeVar', a: a, b: b};
 	});
-var author$project$App$DeleteVar = function (a) {
+var author$project$Amidol$DeleteVar = function (a) {
 	return {$: 'DeleteVar', a: a};
 };
 var mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
@@ -12105,7 +12134,7 @@ var mdgriffith$elm_ui$Element$Input$button = F2(
 	});
 var mdgriffith$elm_ui$Element$Input$OnRight = {$: 'OnRight'};
 var mdgriffith$elm_ui$Element$Input$labelRight = mdgriffith$elm_ui$Element$Input$Label(mdgriffith$elm_ui$Element$Input$OnRight);
-var author$project$App$sidebar = F2(
+var author$project$Amidol$sidebar = F2(
 	function (variables, newVar) {
 		var varEl = function (_n0) {
 			var key = _n0.a;
@@ -12134,7 +12163,7 @@ var author$project$App$sidebar = F2(
 								_List_fromArray(
 									[mdgriffith$elm_ui$Element$centerY]),
 								mdgriffith$elm_ui$Element$text(key + ' =')),
-							onChange: author$project$App$ChangeVar(key),
+							onChange: author$project$Amidol$ChangeVar(key),
 							placeholder: elm$core$Maybe$Nothing,
 							text: value
 						}),
@@ -12151,7 +12180,7 @@ var author$project$App$sidebar = F2(
 									]),
 								mdgriffith$elm_ui$Element$text('⨯')),
 							onPress: elm$core$Maybe$Just(
-								author$project$App$DeleteVar(key))
+								author$project$Amidol$DeleteVar(key))
 						})
 					]));
 		};
@@ -12184,7 +12213,7 @@ var author$project$App$sidebar = F2(
 						]),
 					{
 						label: A2(mdgriffith$elm_ui$Element$Input$labelRight, _List_Nil, mdgriffith$elm_ui$Element$none),
-						onChange: author$project$App$ChangeNewVar,
+						onChange: author$project$Amidol$ChangeNewVar,
 						placeholder: elm$core$Maybe$Nothing,
 						text: newVar
 					}),
@@ -12206,7 +12235,7 @@ var author$project$App$sidebar = F2(
 								]),
 							mdgriffith$elm_ui$Element$text('+')),
 						onPress: (newVar === '') ? elm$core$Maybe$Nothing : elm$core$Maybe$Just(
-							author$project$App$AddVar(newVar))
+							author$project$Amidol$AddVar(newVar))
 					})
 				]));
 		return A2(
@@ -12484,7 +12513,7 @@ var mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var mdgriffith$elm_ui$Element$layout = mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
-var author$project$App$view = function (model) {
+var author$project$Amidol$view = function (model) {
 	return A2(
 		mdgriffith$elm_ui$Element$layout,
 		_List_fromArray(
@@ -12500,7 +12529,7 @@ var author$project$App$view = function (model) {
 				]),
 			_List_fromArray(
 				[
-					author$project$App$header(model.title),
+					author$project$Amidol$header(model.title),
 					A2(
 					mdgriffith$elm_ui$Element$row,
 					_List_fromArray(
@@ -12510,8 +12539,8 @@ var author$project$App$view = function (model) {
 						]),
 					_List_fromArray(
 						[
-							author$project$App$graphPanel,
-							A2(author$project$App$sidebar, model.vars, model.newVar)
+							author$project$Amidol$graphPanel,
+							A2(author$project$Amidol$sidebar, model.vars, model.newVar)
 						]))
 				])));
 };
@@ -12742,7 +12771,7 @@ var elm$url$Url$fromString = function (str) {
 		A2(elm$core$String$dropLeft, 8, str)) : elm$core$Maybe$Nothing);
 };
 var elm$browser$Browser$element = _Browser_element;
-var author$project$App$main = elm$browser$Browser$element(
-	{init: author$project$App$init, subscriptions: author$project$App$subscriptions, update: author$project$App$update, view: author$project$App$view});
-_Platform_export({'App':{'init':author$project$App$main(
+var author$project$Amidol$main = elm$browser$Browser$element(
+	{init: author$project$Amidol$init, subscriptions: author$project$Amidol$subscriptions, update: author$project$Amidol$update, view: author$project$Amidol$view});
+_Platform_export({'Amidol':{'init':author$project$Amidol$main(
 	elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));

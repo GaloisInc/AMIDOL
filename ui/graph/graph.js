@@ -30,11 +30,12 @@ var journal = {
 
 
 
-    // Purpose: cause UI side effects... and nothing else. 
+    // Purpose: cause graphUI side effects... and nothing else. 
     // Always call last, after setting the relevant shared states.
     applyEventEffects : function(event) {
-        // event = { type: <<"add", "subtract">>, nodes: […], edges: […] }
+        // event = { type: <<"add", "subtract", ...>>, nodes: […], edges: […] }
         switch (event.type) {
+            // TODO: allow user to rename nodes and edges
             case "add":
                 node_data_set.add(event.nodes)
                 edge_data_set.add(event.edges)
@@ -49,12 +50,18 @@ var journal = {
                 _.mapObject(event.to, function(pos, nodeId){
                     network.moveNode(nodeId, pos.x, pos.y)
                 })
+                // TODO: change the x and y of the moved nodes in node_data_set
                 break
             default:
                 break
         }
-        UI.updateButtonStates()
-        ElmPorts.sendData()
+        graphUI.updateButtonStates()
+        var data = {
+            "nodes" : node_data_set.getDataSet()._data,
+            "edges" : edge_data_set.getDataSet()._data
+        }
+        // console.log(JSON.stringify(data, null, 2))
+        elmUI.ports.graphData.send(data);
     },
 
     invertEvent : function(initial_event) {
@@ -87,7 +94,7 @@ var journal = {
 }
 
 
-var UI = {
+var graphUI = {
     updateButtonStates : function() {
         if (_.isEmpty(journal.past)) {
             $("#undo_button").addClass("disabled")
@@ -163,35 +170,36 @@ var UI = {
         var network_data = { "nodes" : node_data_set, "edges" : edge_data_set}
         network = new vis.Network(container, network_data, options)
 
-        network.on("oncontext", UI.networkRightClick)
+        network.on("oncontext", graphUI.networkRightClick)
         network.on("doubleClick", function(){})
         network.on("oncontext", function(){})
         network.on("selectNode", function(x){
-            ElmPorts.selectNode(node_data_set.get([x.nodes[0]])[0])
+            elmUI.ports.selectNode.send(x.nodes[0])
         })
         network.on("deselectNode", function(x){
-            ElmPorts.selectNone()
+            elmUI.ports.selectNone.send(null)
         })
         network.on("selectEdge", function(x){
-            ElmPorts.selectEdge(edge_data_set.get([x.edges[0]])[0])
+            elmUI.ports.selectEdge.send(x.edges[0])
         })
         network.on("deselectEdge", function(x){
-            ElmPorts.selectNone()
+            elmUI.ports.selectNone.send(null)
         })
         network.on("hold", function(){})
         network.on("dragStart", function(e){
             var selectedNodes = network.getSelectedNodes()
             if ( ! _.isEmpty(selectedNodes)) {
-                UI.movingNodes = network.getPositions(selectedNodes)
+                graphUI.movingNodes = network.getPositions(selectedNodes)
             }
         })
         network.on("dragEnd", function(e){
-            if (UI.movingNodes != null) {
-                var from = UI.movingNodes
-                var to = network.getPositions(_.keys(UI.movingNodes))
-                UI.movingNodes = null
-                journal.past.push({ "type" : "move", "from": from, "to": to })
-                ElmPorts.sendData()
+            if (graphUI.movingNodes != null) {
+                journal.apply( {
+                    "type" : "move",
+                    "from": graphUI.movingNodes,
+                    "to": network.getPositions(_.keys(graphUI.movingNodes))
+                })
+                graphUI.movingNodes = null
             }
         })
         // $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
@@ -206,38 +214,14 @@ var UI = {
 }
 
 
-var ElmPorts = {
-    sendData : function(){
-        app.ports.graphData.send(JSON.stringify({
-            "nodes" : node_data_set.getDataSet()._data,
-            "edges" : edge_data_set.getDataSet()._data
-        }));
-        // }, null, 2));
-    },
-
-    selectNode : function(node){
-        app.ports.selectNode.send(node)
-    },
-
-    selectEdge : function(edge){
-        app.ports.selectEdge.send(edge)
-    },
-
-    selectNone : function(){
-        app.ports.selectNone.send(null)
-    }
-}
-
-
-
 $(function(){
     // can't set onclick attrs from within Elm!
-    $(".palette-img").attr("onclick", "UI.selectPaletteNode(this)")
+    $(".palette-img").attr("onclick", "graphUI.selectPaletteNode(this)")
     $("#undo_button").attr("onclick", "journal.undo()")
     $("#redo_button").attr("onclick", "journal.redo()")
 
-    UI.drawNetwork()
-    UI.updateButtonStates()
+    graphUI.drawNetwork()
+    graphUI.updateButtonStates()
 
     var sample_nodes = [
         {id: "1", label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 

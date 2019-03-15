@@ -1,4 +1,4 @@
-port module App exposing (init, main)
+port module Amidol exposing (init, main)
 
 import Browser
 import Debug
@@ -11,7 +11,7 @@ import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html, div, img)
 import Html.Attributes as HtmlAttr exposing (class, id, src)
-import Json.Decode exposing (decodeValue, field)
+import Json.Decode as Decode exposing (decodeValue, field)
 import Json.Encode
 
 
@@ -25,13 +25,13 @@ main =
         }
 
 
-port graphData : (String -> msg) -> Sub msg
+port graphData : (Decode.Value -> msg) -> Sub msg
 
 
-port selectNode : (Json.Decode.Value -> msg) -> Sub msg
+port selectNode : (String -> msg) -> Sub msg
 
 
-port selectEdge : (Json.Decode.Value -> msg) -> Sub msg
+port selectEdge : (String -> msg) -> Sub msg
 
 
 port selectNone : (() -> msg) -> Sub msg
@@ -43,38 +43,17 @@ port selectNone : (() -> msg) -> Sub msg
 
 type alias Model =
     { title : String
-    , graph : String
+    , graph : Graph
     , selected : Selected
     , vars : Dict.Dict String String
     , newVar : String
     }
 
 
-type Selected
-    = Node GraphElem
-    | Edge GraphElem
-    | NoneSelected
-
-
-type alias GraphElem =
-    { id : String
-    , label : String
-    , image : Maybe String
-    }
-
-
-decodeGraphElem : Json.Decode.Decoder GraphElem
-decodeGraphElem =
-    Json.Decode.map3 GraphElem
-        (field "id" Json.Decode.string)
-        (field "label" Json.Decode.string)
-        (Json.Decode.maybe <| field "image" Json.Decode.string)
-
-
 init : flags -> ( Model, Cmd Msg )
 init flags =
     ( { title = "SIR"
-      , graph = "" -- populated via GraphData when graph.js loads
+      , graph = emptyGraph
       , selected = NoneSelected
       , vars =
             Dict.fromList
@@ -88,14 +67,101 @@ init flags =
     )
 
 
+type Selected
+    = SelectedNode String
+    | SelectedEdge String
+    | NoneSelected
+
+
+type alias Graph =
+    { nodes : Dict.Dict String Node
+    , edges : Dict.Dict String Edge
+    }
+
+
+emptyGraph : Graph
+emptyGraph =
+    { nodes = Dict.empty, edges = Dict.empty }
+
+
+decodeGraph : Decode.Value -> Graph
+decodeGraph data =
+    let
+        decoder =
+            Decode.map2 Graph
+                (field "nodes" <| Decode.dict decodeNode)
+                (field "edges" <| Decode.dict decodeEdge)
+    in
+    case decodeValue decoder data of
+        Ok graph ->
+            graph
+
+        Err err ->
+            emptyGraph
+
+
+
+-- Debug.log (Decode.errorToString err) emptyGraph
+
+
+type alias Node =
+    { id : String
+    , label : String
+    , image : String
+    , x : Float
+    , y : Float
+    }
+
+
+decodeNode : Decode.Decoder Node
+decodeNode =
+    Decode.map5 Node
+        (field "id" Decode.string)
+        (field "label" Decode.string)
+        (field "image" Decode.string)
+        (field "x" Decode.float)
+        (field "y" Decode.float)
+
+
+type alias Edge =
+    { id : String
+    , label : String
+    , from : String
+    , to : String
+    }
+
+
+decodeEdge : Decode.Decoder Edge
+decodeEdge =
+    Decode.map4 Edge
+        (field "id" Decode.string)
+        (field "label" Decode.string)
+        (field "from" Decode.string)
+        (field "to" Decode.string)
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.batch
+        [ graphData GraphData
+        , selectNode SelectNode
+        , selectEdge SelectEdge
+        , selectNone SelectNone
+        ]
+
+
 
 -- UPDATE
 
 
 type Msg
-    = GraphData String
-    | SelectNode Json.Decode.Value
-    | SelectEdge Json.Decode.Value
+    = GraphData Decode.Value
+    | SelectNode String
+    | SelectEdge String
     | SelectNone ()
     | ChangeTitle String
     | AddVar String
@@ -104,27 +170,17 @@ type Msg
     | ChangeNewVar String
 
 
-selectGraphElem : (GraphElem -> Selected) -> Json.Decode.Value -> Selected
-selectGraphElem elem val =
-    case decodeValue decodeGraphElem val of
-        Ok decodedVal ->
-            elem decodedVal
-
-        Err err ->
-            NoneSelected
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GraphData data ->
-            ( { model | graph = data }, Cmd.none )
+            ( { model | graph = decodeGraph data }, Cmd.none )
 
-        SelectNode obj ->
-            ( { model | selected = selectGraphElem Node obj }, Cmd.none )
+        SelectNode id ->
+            ( { model | selected = SelectedNode id }, Cmd.none )
 
-        SelectEdge obj ->
-            ( { model | selected = selectGraphElem Edge obj }, Cmd.none )
+        SelectEdge id ->
+            ( { model | selected = SelectedEdge id }, Cmd.none )
 
         SelectNone () ->
             ( { model | selected = NoneSelected }, Cmd.none )
@@ -143,20 +199,6 @@ update msg model =
 
         ChangeNewVar newVarName ->
             ( { model | newVar = newVarName }, Cmd.none )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.batch
-        [ graphData GraphData
-        , selectNode SelectNode
-        , selectEdge SelectEdge
-        , selectNone SelectNone
-        ]
 
 
 
