@@ -4,21 +4,36 @@ This page helps Max keep track of UI development.
 
 ### Features:
 
-Before Milestone 2:
+Model variables:
+- Use `[node-or-edge-id].[var-name]` dot notation with existing flat `Dict`
+- Include `global.[var-name]` too?
+- Swap them out in the editor sidebar
+- Infer default set of vars per node 'type' (as indicated by `image`)
 
-1. Create and remove nodes
-2. Create and remove links
-3. Edit node labels
-4. Edit link labels
-5. Generate and send JSON
+Switch between models:
+- Bundle persistent parts of current `Model` into an `AmidolModel`
+- The new Elm `Model` will be something like a `Dict ModelName AmidolModel`
+- Model creation: name, select palette
+- Model choice via dropdown
+- Model deletion with confirm (postpone unless it's super easy)
+- Replace visjs graph on model switch
 
-After:
+Reward variables:
+- What are they?
+- How do they relate to node/edge/global vars?
 
-\6. Receive and display response (chart!)
-\7. Select and assign node images
+Experiments + Solver:
+- Parameters
+- Send to backend
+- Display results with [terezka/line-charts](https://package.elm-lang.org/packages/terezka/line-charts/latest/)
+
+
 
 ### Pending fixes and improvements:
 
+On this branch, the Elm graph editor (Main.elm) is back-burnered
+in favor of integrating visjs network.
+Some things to do, if I return to it: 
 - Node image code is commented out
 - Nice affordances for node and link selection
 - Key input for deletion (etc)
