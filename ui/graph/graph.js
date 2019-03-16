@@ -35,7 +35,6 @@ var journal = {
     applyEventEffects : function(event) {
         // event = { type: <<"add", "subtract", ...>>, nodes: […], edges: […] }
         switch (event.type) {
-            // TODO: allow user to rename nodes and edges
             case "add":
                 node_data_set.add(event.nodes)
                 edge_data_set.add(event.edges)
@@ -48,9 +47,14 @@ var journal = {
                 break
             case "move":
                 _.mapObject(event.to, function(pos, nodeId){
-                    network.moveNode(nodeId, pos.x, pos.y)
+                    node_data_set.update({id: nodeId, x: pos.x, y: pos.y})
                 })
-                // TODO: change the x and y of the moved nodes in node_data_set
+                break
+            case "renameEdge":
+                edge_data_set.update({id: event.id, label: event.to})
+                break
+            case "renameNode":
+                node_data_set.update({id: event.id, label: event.to})
                 break
             default:
                 break
@@ -78,6 +82,16 @@ var journal = {
                 event.from = event.to
                 event.to = from
                 return event
+            case "renameEdge":
+                var from = event.from
+                event.from = event.to
+                event.to = from
+                return event
+            case "renameNode":
+                var from = event.from
+                event.from = event.to
+                event.to = from
+                return event
             default:
                 return event
         }
@@ -95,6 +109,16 @@ var journal = {
 
 
 var graphUI = {
+    reanmeEdge: function(edgeId, newName) {
+        var existing = edge_data_set.get(edgeId)
+        var event = {type: "renameEdge", id: edgeId, from: existing.label, to: newName}
+        journal.apply(event)
+    },
+    reanmeNode: function(nodeId, newName) {
+        var existing = node_data_set.get(nodeId)
+        var event = {type: "renameNode", id: nodeId, from: existing.label, to: newName}
+        journal.apply(event)
+    },
     updateButtonStates : function() {
         if (_.isEmpty(journal.past)) {
             $("#undo_button").addClass("disabled")
