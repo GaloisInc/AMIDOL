@@ -109,16 +109,6 @@ var journal = {
 
 
 var graphUI = {
-    reanmeEdge: function(edgeId, newName) {
-        var existing = edge_data_set.get(edgeId)
-        var event = {type: "renameEdge", id: edgeId, from: existing.label, to: newName}
-        journal.apply(event)
-    },
-    reanmeNode: function(nodeId, newName) {
-        var existing = node_data_set.get(nodeId)
-        var event = {type: "renameNode", id: nodeId, from: existing.label, to: newName}
-        journal.apply(event)
-    },
     updateButtonStates : function() {
         if (_.isEmpty(journal.past)) {
             $("#undo_button").addClass("disabled")
@@ -155,21 +145,40 @@ var graphUI = {
             manipulation: {
                 initiallyActive: true,
                 addNode: function(node, callback){
-                    node.label = prompt("Name your new node:")
+                    node.label = prompt("Noun label:")
                     if (node.label != null) {
                         node.image = $("#palette img.selected").attr("src")
                         journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
                     }
                 },
                 addEdge: function(edge, callback){
-                    edge.label = prompt("Edge label:")
+                    edge.label = prompt("Verb label:")
                     if (edge.label != null) {
                         journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
                     }
                 },
-                // editNode: function(node, callback) {
-                //     alert(JSON.stringify(node))
-                // },
+                editNode: function(node, callback) {
+                    newName = prompt("New noun label:")
+                    callback(null);
+                    journal.apply({
+                        type: "renameNode",
+                        id: node.id,
+                        from: node.label,
+                        to: newName
+                    })
+                },
+                editEdge: {
+                    editWithoutDrag: function(edge, callback){
+                        newName = prompt("New verb label:")
+                        callback(null);
+                        journal.apply({
+                            type: "renameEdge",
+                            id: edge.id,
+                            from: edge.label,
+                            to: newName
+                        })
+                    }
+                },
                 deleteNode: function(dataIds, callback) {
                     journal.apply( { 
                         "type": "subtract", 
