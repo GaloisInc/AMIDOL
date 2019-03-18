@@ -140,6 +140,8 @@ var graphUI = {
                 arrows: "to"
             },
             interaction : {
+                // dragView: false,
+                // zoomView: false,
                 selectConnectedEdges: false
             },
             manipulation: {
@@ -257,13 +259,13 @@ $(function(){
     graphUI.updateButtonStates()
 
     var sample_nodes = [
-        {id: "1", label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
-        {id: "2", label: "Infected", image: "images/sick.jpg", x: 0, y: 150}, 
-        {id: "3", label: "Recovered", image: "images/happy.png", x: 250, y: 0}
+        {id: "S", label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
+        {id: "I", label: "Infected", image: "images/sick.jpg", x: 0, y: 150}, 
+        {id: "R", label: "Recovered", image: "images/happy.png", x: 250, y: 0}
     ]
     var sample_edges = [
-        {id: "a", from: "1", to: "2", label: "sickens"},
-        {id: "b", from: "2", to: "3", label: "recovers"}
+        {id: "infect", from: "S", to: "I", label: "infect"},
+        {id: "cure", from: "I", to: "R", label: "cure"}
     ]
 
     journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )

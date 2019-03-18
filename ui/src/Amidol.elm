@@ -57,9 +57,12 @@ init flags =
       , selected = NoneSelected
       , vars =
             Dict.fromList
-                [ ( "beta", "3.1415" )
-                , ( "gamma", "42" )
-                , ( "N", "9000" )
+                [ ( "Model.Total pop.", "0" )
+                , ( "S.Pop.", "0" )
+                , ( "I.Pop.", "0" )
+                , ( "R.Pop.", "0" )
+                , ( "infect.beta", "" )
+                , ( "cure.gamma", "" )
                 ]
       , newVar = ""
       }
@@ -228,15 +231,23 @@ header title =
         ]
 
 
-sidebar : Dict String String -> String -> Element Msg
-sidebar variables newVar =
+sidebar : Model -> Element Msg
+sidebar { graph, vars, newVar, selected } =
     let
         varEl ( key, value ) =
+            let
+                unPrefixedKey =
+                    String.concat <|
+                        List.intersperse "." <|
+                            Maybe.withDefault [] <|
+                                List.tail <|
+                                    String.split "." key
+            in
             row
                 [ spacing 10, padding 10, width fill ]
                 [ Input.text
                     [ alignRight, width <| px 100 ]
-                    { label = Input.labelLeft [ centerY ] <| text <| key ++ " ="
+                    { label = Input.labelLeft [ centerY ] <| text <| unPrefixedKey ++ " ="
                     , onChange = ChangeVar key
                     , placeholder = Nothing
                     , text = value
@@ -256,7 +267,36 @@ sidebar variables newVar =
                 , Font.color <| rgb255 160 160 160
                 ]
             <|
-                text "Variables:"
+                text <|
+                    (case selected of
+                        SelectedNode id ->
+                            Maybe.withDefault "" <|
+                                Maybe.map .label <|
+                                    Dict.get id graph.nodes
+
+                        SelectedEdge id ->
+                            Maybe.withDefault "" <|
+                                Maybe.map .label <|
+                                    Dict.get id graph.edges
+
+                        NoneSelected ->
+                            "Model"
+                    )
+                        ++ " variables:"
+
+        scope =
+            case selected of
+                SelectedNode id ->
+                    id ++ "."
+
+                SelectedEdge id ->
+                    id ++ "."
+
+                NoneSelected ->
+                    "Model."
+
+        prefixed key _ =
+            String.startsWith scope key
 
         adder =
             row
@@ -275,7 +315,7 @@ sidebar variables newVar =
                             Nothing
 
                         else
-                            Just (AddVar newVar)
+                            Just <| AddVar <| scope ++ newVar
                     , label =
                         el
                             [ Font.color <| rgb255 160 160 160
@@ -296,7 +336,7 @@ sidebar variables newVar =
         ]
     <|
         [ title ]
-            ++ (List.map varEl <| Dict.toList variables)
+            ++ (List.map varEl <| Dict.toList <| Dict.filter prefixed vars)
             ++ [ adder ]
 
 
@@ -356,5 +396,5 @@ view model =
         column [ height fill, width fill ]
             [ header model.title
             , row [ height fill, width fill ]
-                [ graphPanel, sidebar model.vars model.newVar ]
+                [ graphPanel, sidebar model ]
             ]

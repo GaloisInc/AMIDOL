@@ -4959,9 +4959,12 @@ var author$project$Amidol$init = function (flags) {
 			vars: elm$core$Dict$fromList(
 				_List_fromArray(
 					[
-						_Utils_Tuple2('beta', '3.1415'),
-						_Utils_Tuple2('gamma', '42'),
-						_Utils_Tuple2('N', '9000')
+						_Utils_Tuple2('Model.Total pop.', '0'),
+						_Utils_Tuple2('S.Pop.', '0'),
+						_Utils_Tuple2('I.Pop.', '0'),
+						_Utils_Tuple2('R.Pop.', '0'),
+						_Utils_Tuple2('infect.beta', ''),
+						_Utils_Tuple2('cure.gamma', '')
 					]))
 		},
 		elm$core$Platform$Cmd$none);
@@ -12004,6 +12007,70 @@ var author$project$Amidol$ChangeVar = F2(
 var author$project$Amidol$DeleteVar = function (a) {
 	return {$: 'DeleteVar', a: a};
 };
+var elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3(elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var elm$core$Dict$filter = F2(
+	function (isGood, dict) {
+		return A3(
+			elm$core$Dict$foldl,
+			F3(
+				function (k, v, d) {
+					return A2(isGood, k, v) ? A3(elm$core$Dict$insert, k, v, d) : d;
+				}),
+			elm$core$Dict$empty,
+			dict);
+	});
+var elm$core$List$intersperse = F2(
+	function (sep, xs) {
+		if (!xs.b) {
+			return _List_Nil;
+		} else {
+			var hd = xs.a;
+			var tl = xs.b;
+			var step = F2(
+				function (x, rest) {
+					return A2(
+						elm$core$List$cons,
+						sep,
+						A2(elm$core$List$cons, x, rest));
+				});
+			var spersed = A3(elm$core$List$foldr, step, _List_Nil, tl);
+			return A2(elm$core$List$cons, hd, spersed);
+		}
+	});
+var elm$core$List$tail = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return elm$core$Maybe$Just(xs);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var elm$core$String$startsWith = _String_startsWith;
 var mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
 var mdgriffith$elm_ui$Element$alignRight = mdgriffith$elm_ui$Internal$Model$AlignX(mdgriffith$elm_ui$Internal$Model$Right);
 var mdgriffith$elm_ui$Internal$Model$Empty = {$: 'Empty'};
@@ -12134,72 +12201,29 @@ var mdgriffith$elm_ui$Element$Input$button = F2(
 	});
 var mdgriffith$elm_ui$Element$Input$OnRight = {$: 'OnRight'};
 var mdgriffith$elm_ui$Element$Input$labelRight = mdgriffith$elm_ui$Element$Input$Label(mdgriffith$elm_ui$Element$Input$OnRight);
-var author$project$Amidol$sidebar = F2(
-	function (variables, newVar) {
-		var varEl = function (_n0) {
-			var key = _n0.a;
-			var value = _n0.b;
-			return A2(
-				mdgriffith$elm_ui$Element$row,
-				_List_fromArray(
-					[
-						mdgriffith$elm_ui$Element$spacing(10),
-						mdgriffith$elm_ui$Element$padding(10),
-						mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
-					]),
-				_List_fromArray(
-					[
-						A2(
-						mdgriffith$elm_ui$Element$Input$text,
-						_List_fromArray(
-							[
-								mdgriffith$elm_ui$Element$alignRight,
-								mdgriffith$elm_ui$Element$width(
-								mdgriffith$elm_ui$Element$px(100))
-							]),
-						{
-							label: A2(
-								mdgriffith$elm_ui$Element$Input$labelLeft,
-								_List_fromArray(
-									[mdgriffith$elm_ui$Element$centerY]),
-								mdgriffith$elm_ui$Element$text(key + ' =')),
-							onChange: author$project$Amidol$ChangeVar(key),
-							placeholder: elm$core$Maybe$Nothing,
-							text: value
-						}),
-						A2(
-						mdgriffith$elm_ui$Element$Input$button,
-						_List_Nil,
-						{
-							label: A2(
-								mdgriffith$elm_ui$Element$el,
-								_List_fromArray(
-									[
-										mdgriffith$elm_ui$Element$Font$color(
-										A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160))
-									]),
-								mdgriffith$elm_ui$Element$text('⨯')),
-							onPress: elm$core$Maybe$Just(
-								author$project$Amidol$DeleteVar(key))
-						})
-					]));
-		};
-		var title = A2(
-			mdgriffith$elm_ui$Element$el,
-			_List_fromArray(
-				[
-					mdgriffith$elm_ui$Element$centerX,
-					A2(mdgriffith$elm_ui$Element$paddingXY, 0, 20),
-					mdgriffith$elm_ui$Element$Font$color(
-					A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160))
-				]),
-			mdgriffith$elm_ui$Element$text('Variables:'));
-		var adder = A2(
+var author$project$Amidol$sidebar = function (_n0) {
+	var graph = _n0.graph;
+	var vars = _n0.vars;
+	var newVar = _n0.newVar;
+	var selected = _n0.selected;
+	var varEl = function (_n4) {
+		var key = _n4.a;
+		var value = _n4.b;
+		var unPrefixedKey = elm$core$String$concat(
+			A2(
+				elm$core$List$intersperse,
+				'.',
+				A2(
+					elm$core$Maybe$withDefault,
+					_List_Nil,
+					elm$core$List$tail(
+						A2(elm$core$String$split, '.', key)))));
+		return A2(
 			mdgriffith$elm_ui$Element$row,
 			_List_fromArray(
 				[
-					mdgriffith$elm_ui$Element$spacing(20),
-					mdgriffith$elm_ui$Element$padding(20),
+					mdgriffith$elm_ui$Element$spacing(10),
+					mdgriffith$elm_ui$Element$padding(10),
 					mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
 				]),
 			_List_fromArray(
@@ -12209,58 +12233,159 @@ var author$project$Amidol$sidebar = F2(
 					_List_fromArray(
 						[
 							mdgriffith$elm_ui$Element$alignRight,
-							mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
-						]),
-					{
-						label: A2(mdgriffith$elm_ui$Element$Input$labelRight, _List_Nil, mdgriffith$elm_ui$Element$none),
-						onChange: author$project$Amidol$ChangeNewVar,
-						placeholder: elm$core$Maybe$Nothing,
-						text: newVar
-					}),
-					A2(
-					mdgriffith$elm_ui$Element$Input$button,
-					_List_fromArray(
-						[
 							mdgriffith$elm_ui$Element$width(
 							mdgriffith$elm_ui$Element$px(100))
 						]),
+					{
+						label: A2(
+							mdgriffith$elm_ui$Element$Input$labelLeft,
+							_List_fromArray(
+								[mdgriffith$elm_ui$Element$centerY]),
+							mdgriffith$elm_ui$Element$text(unPrefixedKey + ' =')),
+						onChange: author$project$Amidol$ChangeVar(key),
+						placeholder: elm$core$Maybe$Nothing,
+						text: value
+					}),
+					A2(
+					mdgriffith$elm_ui$Element$Input$button,
+					_List_Nil,
 					{
 						label: A2(
 							mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[
 									mdgriffith$elm_ui$Element$Font$color(
-									A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160)),
-									mdgriffith$elm_ui$Element$Font$size(30)
+									A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160))
 								]),
-							mdgriffith$elm_ui$Element$text('+')),
-						onPress: (newVar === '') ? elm$core$Maybe$Nothing : elm$core$Maybe$Just(
-							author$project$Amidol$AddVar(newVar))
+							mdgriffith$elm_ui$Element$text('⨯')),
+						onPress: elm$core$Maybe$Just(
+							author$project$Amidol$DeleteVar(key))
 					})
 				]));
-		return A2(
-			mdgriffith$elm_ui$Element$column,
-			_List_fromArray(
-				[
-					mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill),
-					mdgriffith$elm_ui$Element$width(
-					mdgriffith$elm_ui$Element$fillPortion(1)),
-					mdgriffith$elm_ui$Element$Border$widthEach(
-					{bottom: 0, left: 2, right: 0, top: 0}),
-					mdgriffith$elm_ui$Element$Border$color(
-					A3(mdgriffith$elm_ui$Element$rgb255, 200, 200, 200))
-				]),
-			_Utils_ap(
+	};
+	var title = A2(
+		mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				mdgriffith$elm_ui$Element$centerX,
+				A2(mdgriffith$elm_ui$Element$paddingXY, 0, 20),
+				mdgriffith$elm_ui$Element$Font$color(
+				A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160))
+			]),
+		mdgriffith$elm_ui$Element$text(
+			function () {
+				switch (selected.$) {
+					case 'SelectedNode':
+						var id = selected.a;
+						return A2(
+							elm$core$Maybe$withDefault,
+							'',
+							A2(
+								elm$core$Maybe$map,
+								function ($) {
+									return $.label;
+								},
+								A2(elm$core$Dict$get, id, graph.nodes)));
+					case 'SelectedEdge':
+						var id = selected.a;
+						return A2(
+							elm$core$Maybe$withDefault,
+							'',
+							A2(
+								elm$core$Maybe$map,
+								function ($) {
+									return $.label;
+								},
+								A2(elm$core$Dict$get, id, graph.edges)));
+					default:
+						return 'Model';
+				}
+			}() + ' variables:'));
+	var scope = function () {
+		switch (selected.$) {
+			case 'SelectedNode':
+				var id = selected.a;
+				return id + '.';
+			case 'SelectedEdge':
+				var id = selected.a;
+				return id + '.';
+			default:
+				return 'Model.';
+		}
+	}();
+	var prefixed = F2(
+		function (key, _n1) {
+			return A2(elm$core$String$startsWith, scope, key);
+		});
+	var adder = A2(
+		mdgriffith$elm_ui$Element$row,
+		_List_fromArray(
+			[
+				mdgriffith$elm_ui$Element$spacing(20),
+				mdgriffith$elm_ui$Element$padding(20),
+				mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				mdgriffith$elm_ui$Element$Input$text,
 				_List_fromArray(
-					[title]),
-				_Utils_ap(
-					A2(
-						elm$core$List$map,
-						varEl,
-						elm$core$Dict$toList(variables)),
-					_List_fromArray(
-						[adder]))));
-	});
+					[
+						mdgriffith$elm_ui$Element$alignRight,
+						mdgriffith$elm_ui$Element$width(mdgriffith$elm_ui$Element$fill)
+					]),
+				{
+					label: A2(mdgriffith$elm_ui$Element$Input$labelRight, _List_Nil, mdgriffith$elm_ui$Element$none),
+					onChange: author$project$Amidol$ChangeNewVar,
+					placeholder: elm$core$Maybe$Nothing,
+					text: newVar
+				}),
+				A2(
+				mdgriffith$elm_ui$Element$Input$button,
+				_List_fromArray(
+					[
+						mdgriffith$elm_ui$Element$width(
+						mdgriffith$elm_ui$Element$px(100))
+					]),
+				{
+					label: A2(
+						mdgriffith$elm_ui$Element$el,
+						_List_fromArray(
+							[
+								mdgriffith$elm_ui$Element$Font$color(
+								A3(mdgriffith$elm_ui$Element$rgb255, 160, 160, 160)),
+								mdgriffith$elm_ui$Element$Font$size(30)
+							]),
+						mdgriffith$elm_ui$Element$text('+')),
+					onPress: (newVar === '') ? elm$core$Maybe$Nothing : elm$core$Maybe$Just(
+						author$project$Amidol$AddVar(
+							_Utils_ap(scope, newVar)))
+				})
+			]));
+	return A2(
+		mdgriffith$elm_ui$Element$column,
+		_List_fromArray(
+			[
+				mdgriffith$elm_ui$Element$height(mdgriffith$elm_ui$Element$fill),
+				mdgriffith$elm_ui$Element$width(
+				mdgriffith$elm_ui$Element$fillPortion(1)),
+				mdgriffith$elm_ui$Element$Border$widthEach(
+				{bottom: 0, left: 2, right: 0, top: 0}),
+				mdgriffith$elm_ui$Element$Border$color(
+				A3(mdgriffith$elm_ui$Element$rgb255, 200, 200, 200))
+			]),
+		_Utils_ap(
+			_List_fromArray(
+				[title]),
+			_Utils_ap(
+				A2(
+					elm$core$List$map,
+					varEl,
+					elm$core$Dict$toList(
+						A2(elm$core$Dict$filter, prefixed, vars))),
+				_List_fromArray(
+					[adder]))));
+};
 var mdgriffith$elm_ui$Internal$Model$OnlyDynamic = F2(
 	function (a, b) {
 		return {$: 'OnlyDynamic', a: a, b: b};
@@ -12540,7 +12665,7 @@ var author$project$Amidol$view = function (model) {
 					_List_fromArray(
 						[
 							author$project$Amidol$graphPanel,
-							A2(author$project$Amidol$sidebar, model.vars, model.newVar)
+							author$project$Amidol$sidebar(model)
 						]))
 				])));
 };
@@ -12651,7 +12776,6 @@ var elm$core$String$dropLeft = F2(
 			elm$core$String$length(string),
 			string);
 	});
-var elm$core$String$startsWith = _String_startsWith;
 var elm$url$Url$Http = {$: 'Http'};
 var elm$url$Url$Https = {$: 'Https'};
 var elm$core$String$indexes = _String_indexes;
