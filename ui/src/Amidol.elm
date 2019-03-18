@@ -2,7 +2,7 @@ port module Amidol exposing (init, main)
 
 import Browser
 import Debug
-import Dict
+import Dict exposing (Dict)
 import Element exposing (..)
 import Element.Background as Background
 import Element.Border as Border
@@ -45,7 +45,7 @@ type alias Model =
     { title : String
     , graph : Graph
     , selected : Selected
-    , vars : Dict.Dict String String
+    , vars : Dict String String
     , newVar : String
     }
 
@@ -74,8 +74,8 @@ type Selected
 
 
 type alias Graph =
-    { nodes : Dict.Dict String Node
-    , edges : Dict.Dict String Edge
+    { nodes : Dict String Node
+    , edges : Dict String Edge
     }
 
 
@@ -228,7 +228,7 @@ header title =
         ]
 
 
-sidebar : Dict.Dict String String -> String -> Element Msg
+sidebar : Dict String String -> String -> Element Msg
 sidebar variables newVar =
     let
         varEl ( key, value ) =
@@ -312,15 +312,15 @@ graphPanel =
             exposedDiv "palette"
                 [ width fill ]
                 [ img
-                    [ HtmlAttr.id "redo_button"
-                    , HtmlAttr.class "undo-redo"
-                    , HtmlAttr.src "images/redo.png"
-                    ]
-                    []
-                , img
                     [ HtmlAttr.id "undo_button"
                     , HtmlAttr.class "undo-redo"
                     , HtmlAttr.src "images/undo.png"
+                    ]
+                    []
+                , img
+                    [ HtmlAttr.id "redo_button"
+                    , HtmlAttr.class "undo-redo"
+                    , HtmlAttr.src "images/redo.png"
                     ]
                     []
                 , div

@@ -10935,18 +10935,18 @@ var author$project$Amidol$graphPanel = function () {
 				elm$html$Html$img,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$id('redo_button'),
+						elm$html$Html$Attributes$id('undo_button'),
 						elm$html$Html$Attributes$class('undo-redo'),
-						elm$html$Html$Attributes$src('images/redo.png')
+						elm$html$Html$Attributes$src('images/undo.png')
 					]),
 				_List_Nil),
 				A2(
 				elm$html$Html$img,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$id('undo_button'),
+						elm$html$Html$Attributes$id('redo_button'),
 						elm$html$Html$Attributes$class('undo-redo'),
-						elm$html$Html$Attributes$src('images/undo.png')
+						elm$html$Html$Attributes$src('images/redo.png')
 					]),
 				_List_Nil),
 				A2(
