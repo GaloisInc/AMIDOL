@@ -11,6 +11,7 @@ import Element.Font as Font
 import Element.Input as Input
 import Html exposing (Html, div, img)
 import Html.Attributes as HtmlAttr exposing (class, id, src)
+import Http
 import Json.Decode as Decode exposing (decodeValue, field)
 import Json.Encode as Encode
 
@@ -101,10 +102,6 @@ decodeGraph data =
 
         Err err ->
             emptyGraph
-
-
-
--- Debug.log (Decode.errorToString err) emptyGraph
 
 
 type alias Node =
@@ -199,6 +196,19 @@ type Msg
     | DeleteVar String
     | ChangeVar String String
     | ChangeNewVar String
+    | SendJson
+    | JsonReceived (Result Http.Error String)
+
+
+sendJson : Model -> Cmd Msg
+sendJson model =
+    Http.post
+        { url = "http://localhost:8080/appstate/model"
+        , body =
+            Http.stringBody "application/json" <|
+                Encode.encode 2 (encode model)
+        , expect = Http.expectString JsonReceived
+        }
 
 
 sync : Dict String String -> Graph -> Graph -> Dict String String
@@ -273,6 +283,12 @@ update msg model =
         ChangeNewVar newVarName ->
             ( { model | newVar = newVarName }, Cmd.none )
 
+        SendJson ->
+            ( model, sendJson model )
+
+        JsonReceived result ->
+            ( model, Cmd.none )
+
 
 
 -- VIEW
@@ -286,7 +302,11 @@ header title =
         , Border.widthEach { bottom = 2, top = 0, left = 0, right = 0 }
         , Border.color <| rgb255 200 200 200
         ]
-        [ Input.text [ centerX, width <| px 250 ]
+        [ Input.button [ alignLeft, Border.width 2, Border.rounded 8 ]
+            { onPress = Just SendJson
+            , label = el [ padding 10 ] <| text "Send to server"
+            }
+        , Input.text [ centerX, width <| px 250 ]
             { label =
                 Input.labelLeft
                     [ Font.color <| rgb255 160 160 160
