@@ -22,47 +22,118 @@ sorting objects by string key and arrays by some property of their contained ele
 I intend to avoid heterogeneous arrays.
 At present, I haven't bothered to sort object keys here.
 
-The top-level JSON object is (at least) a graph.
+The top-level JSON object is a `Model`.
 
 ```
-top ::= {
-    "nodes": [ node ],  # sorted by id
-    "links": [ link ],  # sorted by id
-    ...  # additional global properties as needed
+Model ::= {
+    "title": String
+    "nodes": { String: Node, ... } ,  # keyed by Node.id
+    "edges": { String: Edge, ... } ,  # keyed by Edge.id
+    "vars": { Var: String, ... }      # see Var definition below
 }
 ```
 
-As other UI elements come into play, they will be represented here in `top`.
-My preference is to avoid excessive nesting,
-but as we add major components (such as charts or menus),
-they will probably deserve their own JSON object definitions.
-
-
-A `node` object will have (at least) some basic visual properties.
-*(Note: JSON doesn't have an Integer type, but Elm does! We can enforce that the JSON numbers are indeed integers.)*
+`Node` objects come from visjs.
+Their `id` properties, when created through the UI, are UUIDs like "35347575-492b-4d7e-af90-3aa58aae91c9".
 
 ```
-node ::= {
-    "id": Integer,     # unique primary key
-    "view": String,    # file reference, e.g. "picture.svg"
+Node ::= {
+    "id": String,      # unique primary key
     "label": String,   # shown in the UI
-    "location": {
-        "x": Float,
-        "y": Float
-    },
-    ...  # additional style or semantic properties
+    "image": String,   # file reference, e.g. "images/person.jpg"
+    "x": Float,
+    "y": Float
 }
 ```
 
-A directed `link` object represents a connection between two nodes.
+An `Edge` object comes from visjs, and represents a directed link between two `Node` objects.
+When created through the UI, their `id` properties are also UUIDs.
 
 ```
 link ::= {
-    "id": Integer,      # unique primary key
-    "source": Integer,  # some node.id
-    "target": Integer,  # some node.id
-    "label": String,
-    ...  # additional style or semantic properties
+    "id": String,     # unique primary key
+    "label": String,  # shown in the UI
+    "from": Integer,  # some Node.id
+    "to": Integer,    # some Node.id
 }
 ```
 
+A `Var` is a `String` containing at least one dot (`.`),
+such that the part before the first dot is either
+- a key in the `nodes` object of the enclosing `Model`,
+- a key in the `edges` object of the enclosing `Model`,
+- or the literal string "Model"
+
+The part of a `Var` following the first dot can be any string,
+and is shown in the UI as the (implicitly scoped) variable name.
+
+### Example JSON `Model`
+
+{
+  "title": "SIR",
+  "nodes": {
+    "4236e9e8-2879-4dfb-aa97-158b6cda5466": {
+      "id": "4236e9e8-2879-4dfb-aa97-158b6cda5466",
+      "label": "Dead",
+      "image": "images/sick.jpg",
+      "x": 5,
+      "y": 349
+    },
+    "I": {
+      "id": "I",
+      "label": "Infected",
+      "image": "images/sick.jpg",
+      "x": 0,
+      "y": 150
+    },
+    "R": {
+      "id": "R",
+      "label": "Recovered",
+      "image": "images/happy.png",
+      "x": 250,
+      "y": 0
+    },
+    "S": {
+      "id": "S",
+      "label": "Susceptible",
+      "image": "images/person.png",
+      "x": -250,
+      "y": 0
+    }
+  },
+  "edges": {
+    "6eda69cb-2ae9-470c-9022-7c356e9ccbc3": {
+      "id": "6eda69cb-2ae9-470c-9022-7c356e9ccbc3",
+      "label": "lose immunity",
+      "from": "R",
+      "to": "S"
+    },
+    "7bb2fc00-ff29-4e35-b8dd-abfa02b4e4fb": {
+      "id": "7bb2fc00-ff29-4e35-b8dd-abfa02b4e4fb",
+      "label": "worse",
+      "from": "I",
+      "to": "4236e9e8-2879-4dfb-aa97-158b6cda5466"
+    },
+    "cure": {
+      "id": "cure",
+      "label": "better",
+      "from": "I",
+      "to": "R"
+    },
+    "infect": {
+      "id": "infect",
+      "label": "infect",
+      "from": "S",
+      "to": "I"
+    }
+  },
+  "vars": {
+    "4236e9e8-2879-4dfb-aa97-158b6cda5466.Pop.": "0",
+    "I.Pop.": "0",
+    "Model.Total pop.": "0",
+    "R.Pop.": "0",
+    "S.Pop.": "0"
+    "cure.beta": "",
+    "infect.gamma": ""
+  }
+}

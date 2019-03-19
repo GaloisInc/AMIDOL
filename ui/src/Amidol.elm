@@ -12,7 +12,7 @@ import Element.Input as Input
 import Html exposing (Html, div, img)
 import Html.Attributes as HtmlAttr exposing (class, id, src)
 import Json.Decode as Decode exposing (decodeValue, field)
-import Json.Encode
+import Json.Encode as Encode
 
 
 main : Program () Model Msg
@@ -141,6 +141,34 @@ decodeEdge =
         (field "label" Decode.string)
         (field "from" Decode.string)
         (field "to" Decode.string)
+
+
+encode : Model -> Encode.Value
+encode model =
+    let
+        encodeNode node =
+            Encode.object
+                [ ( "id", Encode.string node.id )
+                , ( "label", Encode.string node.label )
+                , ( "image", Encode.string node.image )
+                , ( "x", Encode.float node.x )
+                , ( "y", Encode.float node.y )
+                ]
+
+        encodeEdge edge =
+            Encode.object
+                [ ( "id", Encode.string edge.id )
+                , ( "label", Encode.string edge.label )
+                , ( "from", Encode.string edge.from )
+                , ( "to", Encode.string edge.to )
+                ]
+    in
+    Encode.object
+        [ ( "title", Encode.string model.title )
+        , ( "nodes", Encode.dict identity encodeNode model.graph.nodes )
+        , ( "edges", Encode.dict identity encodeEdge model.graph.edges )
+        , ( "vars", Encode.dict identity Encode.string model.vars )
+        ]
 
 
 
