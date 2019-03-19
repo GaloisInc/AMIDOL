@@ -4,11 +4,12 @@ This page helps Max keep track of UI development.
 
 ### Features:
 
-Model variables:
+Model variables: **DONE**
 - Use `[node-or-edge-id].[var-name]` dot notation with existing flat `Dict`
-- Include `global.[var-name]` too?
-- Swap them out in the editor sidebar
-- Infer default set of vars per node 'type' (as indicated by `image`)
+- Include `Model.[var-name]` for global vars
+- Show in the editor sidebar for selected node, edge, or model
+- Infer default set of vars per new node or edge
+- Delete matching vars when node or edge is deleted
 
 Switch between models:
 - Bundle persistent parts of current `Model` into an `AmidolModel`
@@ -25,6 +26,7 @@ Reward variables:
 Experiments + Solver:
 - Parameters
 - Send to backend
+    - Serialize JSON **WORKING**
 - Display results with [terezka/line-charts](https://package.elm-lang.org/packages/terezka/line-charts/latest/)
 
 

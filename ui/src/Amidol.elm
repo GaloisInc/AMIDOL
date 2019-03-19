@@ -173,11 +173,53 @@ type Msg
     | ChangeNewVar String
 
 
+sync : Dict String String -> Graph -> Graph -> Dict String String
+sync vars oldGraph newGraph =
+    let
+        newNodesOnly =
+            Dict.values <| Dict.diff newGraph.nodes oldGraph.nodes
+
+        newNodeVars =
+            Dict.fromList <|
+                List.concat <|
+                    List.map
+                        (\node ->
+                            [ ( node.id ++ ".Pop.", "0" )
+                            ]
+                        )
+                        newNodesOnly
+
+        newEdgesOnly =
+            Dict.values <| Dict.diff newGraph.edges oldGraph.edges
+
+        newEdgeVars =
+            Dict.fromList <| List.concat <| List.map (\edge -> []) newEdgesOnly
+
+        graphIds =
+            Dict.keys newGraph.nodes ++ Dict.keys newGraph.edges
+
+        ok var _ =
+            String.startsWith "Model." var
+                || List.any (\id -> String.startsWith (id ++ ".") var) graphIds
+    in
+    Dict.union (Dict.union newNodeVars newEdgeVars) (Dict.filter ok vars)
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         GraphData data ->
-            ( { model | graph = decodeGraph data }, Cmd.none )
+            let
+                newGraph =
+                    decodeGraph data
+            in
+            ( { model
+                | graph = newGraph
+                , vars = sync model.vars model.graph newGraph
+                , selected = NoneSelected
+              }
+            , Cmd.none
+            )
 
         SelectNode id ->
             ( { model | selected = SelectedNode id }, Cmd.none )
