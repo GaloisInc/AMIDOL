@@ -26,11 +26,16 @@
 		#palette img.undo-redo {
 			height: 25px;
 		}
-		#palette div.spacer {
+		#palette div.palette-label {
+			height: 60px;
+			line-height: 60px;
+			text-align: right;
+			display: ruby-text; /* XXX: alignment hack */
+		}
+		#palette span {
 			display: inline-block;
-			width: 100px;
-			padding: 0px;
-			margin: 0px;
+			vertical-align: middle;
+			width: 150px;
 		}
 		#palette img.selected {
 			border-color: lightblue;

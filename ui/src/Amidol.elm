@@ -32,10 +32,7 @@ port graphData : (Decode.Value -> msg) -> Sub msg
 port selectNode : (String -> msg) -> Sub msg
 
 
-port selectEdge : (String -> msg) -> Sub msg
-
-
-port selectNone : (() -> msg) -> Sub msg
+port selectModel : (() -> msg) -> Sub msg
 
 
 
@@ -55,15 +52,15 @@ init : flags -> ( Model, Cmd Msg )
 init flags =
     ( { title = "SIR"
       , graph = emptyGraph
-      , selected = NoneSelected
+      , selected = SelectedModel
       , vars =
             Dict.fromList
                 [ ( "Model.Total pop.", "0" )
                 , ( "S.Pop.", "0" )
                 , ( "I.Pop.", "0" )
                 , ( "R.Pop.", "0" )
-                , ( "infect.beta", "" )
-                , ( "cure.gamma", "" )
+                , ( "i.beta", "" )
+                , ( "c.gamma", "" )
                 ]
       , newVar = ""
       }
@@ -73,8 +70,7 @@ init flags =
 
 type Selected
     = SelectedNode String
-    | SelectedEdge String
-    | NoneSelected
+    | SelectedModel
 
 
 type alias Graph =
@@ -125,7 +121,6 @@ decodeNode =
 
 type alias Edge =
     { id : String
-    , label : String
     , from : String
     , to : String
     }
@@ -133,9 +128,8 @@ type alias Edge =
 
 decodeEdge : Decode.Decoder Edge
 decodeEdge =
-    Decode.map4 Edge
+    Decode.map3 Edge
         (field "id" Decode.string)
-        (field "label" Decode.string)
         (field "from" Decode.string)
         (field "to" Decode.string)
 
@@ -155,7 +149,6 @@ encode model =
         encodeEdge edge =
             Encode.object
                 [ ( "id", Encode.string edge.id )
-                , ( "label", Encode.string edge.label )
                 , ( "from", Encode.string edge.from )
                 , ( "to", Encode.string edge.to )
                 ]
@@ -177,8 +170,7 @@ subscriptions model =
     Sub.batch
         [ graphData GraphData
         , selectNode SelectNode
-        , selectEdge SelectEdge
-        , selectNone SelectNone
+        , selectModel SelectModel
         ]
 
 
@@ -189,8 +181,7 @@ subscriptions model =
 type Msg
     = GraphData Decode.Value
     | SelectNode String
-    | SelectEdge String
-    | SelectNone ()
+    | SelectModel ()
     | ChangeTitle String
     | AddVar String
     | DeleteVar String
@@ -227,20 +218,13 @@ sync vars oldGraph newGraph =
                         )
                         newNodesOnly
 
-        newEdgesOnly =
-            Dict.values <| Dict.diff newGraph.edges oldGraph.edges
-
-        newEdgeVars =
-            Dict.fromList <| List.concat <| List.map (\edge -> []) newEdgesOnly
-
-        graphIds =
-            Dict.keys newGraph.nodes ++ Dict.keys newGraph.edges
+        ids =
+            "Model" :: Dict.keys newGraph.nodes
 
         ok var _ =
-            String.startsWith "Model." var
-                || List.any (\id -> String.startsWith (id ++ ".") var) graphIds
+            List.any (\id -> String.startsWith (id ++ ".") var) ids
     in
-    Dict.union (Dict.union newNodeVars newEdgeVars) (Dict.filter ok vars)
+    Dict.union newNodeVars (Dict.filter ok vars)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -254,7 +238,7 @@ update msg model =
             ( { model
                 | graph = newGraph
                 , vars = sync model.vars model.graph newGraph
-                , selected = NoneSelected
+                , selected = SelectedModel
               }
             , Cmd.none
             )
@@ -262,11 +246,8 @@ update msg model =
         SelectNode id ->
             ( { model | selected = SelectedNode id, newVar = "" }, Cmd.none )
 
-        SelectEdge id ->
-            ( { model | selected = SelectedEdge id, newVar = "" }, Cmd.none )
-
-        SelectNone () ->
-            ( { model | selected = NoneSelected, newVar = "" }, Cmd.none )
+        SelectModel () ->
+            ( Debug.log "Model" { model | selected = SelectedModel, newVar = "" }, Cmd.none )
 
         ChangeTitle newTitle ->
             ( { model | title = newTitle }, Cmd.none )
@@ -364,12 +345,7 @@ sidebar { graph, vars, newVar, selected } =
                                 Maybe.map .label <|
                                     Dict.get id graph.nodes
 
-                        SelectedEdge id ->
-                            Maybe.withDefault "" <|
-                                Maybe.map .label <|
-                                    Dict.get id graph.edges
-
-                        NoneSelected ->
+                        SelectedModel ->
                             "Model"
                     )
                         ++ " variables:"
@@ -379,10 +355,7 @@ sidebar { graph, vars, newVar, selected } =
                 SelectedNode id ->
                     id ++ "."
 
-                SelectedEdge id ->
-                    id ++ "."
-
-                NoneSelected ->
+                SelectedModel ->
                     "Model."
 
         prefixed key _ =
@@ -454,20 +427,28 @@ graphPanel =
                     ]
                     []
                 , div
-                    [ HtmlAttr.class "spacer" ]
-                    []
+                    [ HtmlAttr.class "palette-label" ]
+                    [ Html.span [] [ Html.text "Nouns:" ] ]
                 , img
                     [ HtmlAttr.src "images/person.png"
                     , HtmlAttr.class "palette-img"
                     ]
                     []
                 , img
-                    [ HtmlAttr.src "images/sick.jpg"
+                    [ HtmlAttr.src "images/patient.png"
+                    , HtmlAttr.class "palette-img"
+                    ]
+                    []
+                , div
+                    [ HtmlAttr.class "palette-label" ]
+                    [ Html.span [] [ Html.text "Verbs:" ] ]
+                , img
+                    [ HtmlAttr.src "images/virus.png"
                     , HtmlAttr.class "palette-img"
                     ]
                     []
                 , img
-                    [ HtmlAttr.src "images/happy.png"
+                    [ HtmlAttr.src "images/pill.png"
                     , HtmlAttr.class "palette-img"
                     ]
                     []

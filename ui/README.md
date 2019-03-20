@@ -50,9 +50,8 @@ An `Edge` object comes from visjs, and represents a directed link between two `N
 When created through the UI, their `id` properties are also UUIDs.
 
 ```
-link ::= {
+Edge ::= {
     "id": String,     # unique primary key
-    "label": String,  # shown in the UI
     "from": Integer,  # some Node.id
     "to": Integer,    # some Node.id
 }
@@ -104,25 +103,21 @@ and is shown in the UI as the (implicitly scoped) variable name.
   "edges": {
     "6eda69cb-2ae9-470c-9022-7c356e9ccbc3": {
       "id": "6eda69cb-2ae9-470c-9022-7c356e9ccbc3",
-      "label": "lose immunity",
       "from": "R",
       "to": "S"
     },
     "7bb2fc00-ff29-4e35-b8dd-abfa02b4e4fb": {
       "id": "7bb2fc00-ff29-4e35-b8dd-abfa02b4e4fb",
-      "label": "worse",
       "from": "I",
       "to": "4236e9e8-2879-4dfb-aa97-158b6cda5466"
     },
     "cure": {
       "id": "cure",
-      "label": "better",
       "from": "I",
       "to": "R"
     },
     "infect": {
       "id": "infect",
-      "label": "infect",
       "from": "S",
       "to": "I"
     }
@@ -133,7 +128,5 @@ and is shown in the UI as the (implicitly scoped) variable name.
     "Model.Total pop.": "0",
     "R.Pop.": "0",
     "S.Pop.": "0"
-    "cure.beta": "",
-    "infect.gamma": ""
   }
 }

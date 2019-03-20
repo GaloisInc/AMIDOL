@@ -4522,7 +4522,7 @@ function _Browser_load(url)
 		}
 	}));
 }
-var author$project$Amidol$NoneSelected = {$: 'NoneSelected'};
+var author$project$Amidol$SelectedModel = {$: 'SelectedModel'};
 var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
 var author$project$Amidol$emptyGraph = {edges: elm$core$Dict$empty, nodes: elm$core$Dict$empty};
@@ -5129,7 +5129,7 @@ var author$project$Amidol$init = function (flags) {
 		{
 			graph: author$project$Amidol$emptyGraph,
 			newVar: '',
-			selected: author$project$Amidol$NoneSelected,
+			selected: author$project$Amidol$SelectedModel,
 			title: 'SIR',
 			vars: elm$core$Dict$fromList(
 				_List_fromArray(
@@ -5138,8 +5138,8 @@ var author$project$Amidol$init = function (flags) {
 						_Utils_Tuple2('S.Pop.', '0'),
 						_Utils_Tuple2('I.Pop.', '0'),
 						_Utils_Tuple2('R.Pop.', '0'),
-						_Utils_Tuple2('infect.beta', ''),
-						_Utils_Tuple2('cure.gamma', '')
+						_Utils_Tuple2('i.beta', ''),
+						_Utils_Tuple2('c.gamma', '')
 					]))
 		},
 		elm$core$Platform$Cmd$none);
@@ -5147,24 +5147,20 @@ var author$project$Amidol$init = function (flags) {
 var author$project$Amidol$GraphData = function (a) {
 	return {$: 'GraphData', a: a};
 };
-var author$project$Amidol$SelectEdge = function (a) {
-	return {$: 'SelectEdge', a: a};
+var author$project$Amidol$SelectModel = function (a) {
+	return {$: 'SelectModel', a: a};
 };
 var author$project$Amidol$SelectNode = function (a) {
 	return {$: 'SelectNode', a: a};
 };
-var author$project$Amidol$SelectNone = function (a) {
-	return {$: 'SelectNone', a: a};
-};
 var elm$json$Json$Decode$value = _Json_decodeValue;
 var author$project$Amidol$graphData = _Platform_incomingPort('graphData', elm$json$Json$Decode$value);
-var elm$json$Json$Decode$string = _Json_decodeString;
-var author$project$Amidol$selectEdge = _Platform_incomingPort('selectEdge', elm$json$Json$Decode$string);
-var author$project$Amidol$selectNode = _Platform_incomingPort('selectNode', elm$json$Json$Decode$string);
 var elm$json$Json$Decode$null = _Json_decodeNull;
-var author$project$Amidol$selectNone = _Platform_incomingPort(
-	'selectNone',
+var author$project$Amidol$selectModel = _Platform_incomingPort(
+	'selectModel',
 	elm$json$Json$Decode$null(_Utils_Tuple0));
+var elm$json$Json$Decode$string = _Json_decodeString;
+var author$project$Amidol$selectNode = _Platform_incomingPort('selectNode', elm$json$Json$Decode$string);
 var elm$core$Platform$Sub$batch = _Platform_batch;
 var author$project$Amidol$subscriptions = function (model) {
 	return elm$core$Platform$Sub$batch(
@@ -5172,12 +5168,8 @@ var author$project$Amidol$subscriptions = function (model) {
 			[
 				author$project$Amidol$graphData(author$project$Amidol$GraphData),
 				author$project$Amidol$selectNode(author$project$Amidol$SelectNode),
-				author$project$Amidol$selectEdge(author$project$Amidol$SelectEdge),
-				author$project$Amidol$selectNone(author$project$Amidol$SelectNone)
+				author$project$Amidol$selectModel(author$project$Amidol$SelectModel)
 			]));
-};
-var author$project$Amidol$SelectedEdge = function (a) {
-	return {$: 'SelectedEdge', a: a};
 };
 var author$project$Amidol$SelectedNode = function (a) {
 	return {$: 'SelectedNode', a: a};
@@ -5186,17 +5178,16 @@ var author$project$Amidol$Graph = F2(
 	function (nodes, edges) {
 		return {edges: edges, nodes: nodes};
 	});
-var author$project$Amidol$Edge = F4(
-	function (id, label, from, to) {
-		return {from: from, id: id, label: label, to: to};
+var author$project$Amidol$Edge = F3(
+	function (id, from, to) {
+		return {from: from, id: id, to: to};
 	});
 var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$map4 = _Json_map4;
-var author$project$Amidol$decodeEdge = A5(
-	elm$json$Json$Decode$map4,
+var elm$json$Json$Decode$map3 = _Json_map3;
+var author$project$Amidol$decodeEdge = A4(
+	elm$json$Json$Decode$map3,
 	author$project$Amidol$Edge,
 	A2(elm$json$Json$Decode$field, 'id', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'label', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'from', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'to', elm$json$Json$Decode$string));
 var author$project$Amidol$Node = F5(
@@ -5335,9 +5326,6 @@ var author$project$Amidol$encode = function (model) {
 					_Utils_Tuple2(
 					'id',
 					elm$json$Json$Encode$string(edge.id)),
-					_Utils_Tuple2(
-					'label',
-					elm$json$Json$Encode$string(edge.label)),
 					_Utils_Tuple2(
 					'from',
 					elm$json$Json$Encode$string(edge.from)),
@@ -6234,33 +6222,25 @@ var author$project$Amidol$sync = F3(
 							]);
 					},
 					newNodesOnly)));
-		var newEdgesOnly = elm$core$Dict$values(
-			A2(elm$core$Dict$diff, newGraph.edges, oldGraph.edges));
-		var newEdgeVars = elm$core$Dict$fromList(
-			elm$core$List$concat(
-				A2(
-					elm$core$List$map,
-					function (edge) {
-						return _List_Nil;
-					},
-					newEdgesOnly)));
-		var graphIds = _Utils_ap(
-			elm$core$Dict$keys(newGraph.nodes),
-			elm$core$Dict$keys(newGraph.edges));
+		var ids = A2(
+			elm$core$List$cons,
+			'Model',
+			elm$core$Dict$keys(newGraph.nodes));
 		var ok = F2(
 			function (_var, _n0) {
-				return A2(elm$core$String$startsWith, 'Model.', _var) || A2(
+				return A2(
 					elm$core$List$any,
 					function (id) {
 						return A2(elm$core$String$startsWith, id + '.', _var);
 					},
-					graphIds);
+					ids);
 			});
 		return A2(
 			elm$core$Dict$union,
-			A2(elm$core$Dict$union, newNodeVars, newEdgeVars),
+			newNodeVars,
 			A2(elm$core$Dict$filter, ok, vars));
 	});
+var elm$core$Debug$log = _Debug_log;
 var author$project$Amidol$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6272,7 +6252,7 @@ var author$project$Amidol$update = F2(
 						model,
 						{
 							graph: newGraph,
-							selected: author$project$Amidol$NoneSelected,
+							selected: author$project$Amidol$SelectedModel,
 							vars: A3(author$project$Amidol$sync, model.vars, model.graph, newGraph)
 						}),
 					elm$core$Platform$Cmd$none);
@@ -6282,23 +6262,18 @@ var author$project$Amidol$update = F2(
 					_Utils_update(
 						model,
 						{
+							newVar: '',
 							selected: author$project$Amidol$SelectedNode(id)
 						}),
 					elm$core$Platform$Cmd$none);
-			case 'SelectEdge':
-				var id = msg.a;
+			case 'SelectModel':
 				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{
-							selected: author$project$Amidol$SelectedEdge(id)
-						}),
-					elm$core$Platform$Cmd$none);
-			case 'SelectNone':
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{selected: author$project$Amidol$NoneSelected}),
+					A2(
+						elm$core$Debug$log,
+						'Model',
+						_Utils_update(
+							model,
+							{newVar: '', selected: author$project$Amidol$SelectedModel})),
 					elm$core$Platform$Cmd$none);
 			case 'ChangeTitle':
 				var newTitle = msg.a;
@@ -11547,6 +11522,7 @@ var author$project$Amidol$exposedDiv = F3(
 					children)));
 	});
 var elm$html$Html$img = _VirtualDom_node('img');
+var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		elm$html$Html$Attributes$stringProperty,
@@ -11642,9 +11618,18 @@ var author$project$Amidol$graphPanel = function () {
 				elm$html$Html$div,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$class('spacer')
+						elm$html$Html$Attributes$class('palette-label')
 					]),
-				_List_Nil),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$span,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('Nouns:')
+							]))
+					])),
 				A2(
 				elm$html$Html$img,
 				_List_fromArray(
@@ -11657,7 +11642,31 @@ var author$project$Amidol$graphPanel = function () {
 				elm$html$Html$img,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$src('images/sick.jpg'),
+						elm$html$Html$Attributes$src('images/patient.png'),
+						elm$html$Html$Attributes$class('palette-img')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('palette-label')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$span,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('Verbs:')
+							]))
+					])),
+				A2(
+				elm$html$Html$img,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$src('images/virus.png'),
 						elm$html$Html$Attributes$class('palette-img')
 					]),
 				_List_Nil),
@@ -11665,7 +11674,7 @@ var author$project$Amidol$graphPanel = function () {
 				elm$html$Html$img,
 				_List_fromArray(
 					[
-						elm$html$Html$Attributes$src('images/happy.png'),
+						elm$html$Html$Attributes$src('images/pill.png'),
 						elm$html$Html$Attributes$class('palette-img')
 					]),
 				_List_Nil)
@@ -12944,43 +12953,27 @@ var author$project$Amidol$sidebar = function (_n0) {
 			]),
 		mdgriffith$elm_ui$Element$text(
 			function () {
-				switch (selected.$) {
-					case 'SelectedNode':
-						var id = selected.a;
-						return A2(
-							elm$core$Maybe$withDefault,
-							'',
-							A2(
-								elm$core$Maybe$map,
-								function ($) {
-									return $.label;
-								},
-								A2(elm$core$Dict$get, id, graph.nodes)));
-					case 'SelectedEdge':
-						var id = selected.a;
-						return A2(
-							elm$core$Maybe$withDefault,
-							'',
-							A2(
-								elm$core$Maybe$map,
-								function ($) {
-									return $.label;
-								},
-								A2(elm$core$Dict$get, id, graph.edges)));
-					default:
-						return 'Model';
+				if (selected.$ === 'SelectedNode') {
+					var id = selected.a;
+					return A2(
+						elm$core$Maybe$withDefault,
+						'',
+						A2(
+							elm$core$Maybe$map,
+							function ($) {
+								return $.label;
+							},
+							A2(elm$core$Dict$get, id, graph.nodes)));
+				} else {
+					return 'Model';
 				}
 			}() + ' variables:'));
 	var scope = function () {
-		switch (selected.$) {
-			case 'SelectedNode':
-				var id = selected.a;
-				return id + '.';
-			case 'SelectedEdge':
-				var id = selected.a;
-				return id + '.';
-			default:
-				return 'Model.';
+		if (selected.$ === 'SelectedNode') {
+			var id = selected.a;
+			return id + '.';
+		} else {
+			return 'Model.';
 		}
 	}();
 	var prefixed = F2(

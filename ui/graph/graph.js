@@ -50,9 +50,6 @@ var journal = {
                     node_data_set.update({id: nodeId, x: pos.x, y: pos.y})
                 })
                 break
-            case "renameEdge":
-                edge_data_set.update({id: event.id, label: event.to})
-                break
             case "renameNode":
                 node_data_set.update({id: event.id, label: event.to})
                 break
@@ -78,11 +75,6 @@ var journal = {
                 event.type = "add"
                 return event
             case "move":
-                var from = event.from
-                event.from = event.to
-                event.to = from
-                return event
-            case "renameEdge":
                 var from = event.from
                 event.from = event.to
                 event.to = from
@@ -147,21 +139,19 @@ var graphUI = {
             manipulation: {
                 initiallyActive: true,
                 addNode: function(node, callback){
-                    node.label = prompt("Noun label:")
+                    node.label = prompt("Label:")
                     if (node.label != null) {
                         node.image = $("#palette img.selected").attr("src")
                         journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
                     }
                 },
                 addEdge: function(edge, callback){
-                    edge.label = prompt("Verb label:")
-                    if (edge.label != null) {
-                        journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
-                    }
+                    callback(null)
+                    journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
                 },
                 editNode: function(node, callback) {
                     newName = prompt("New noun label:")
-                    callback(null);
+                    callback(null)
                     journal.apply({
                         type: "renameNode",
                         id: node.id,
@@ -169,18 +159,7 @@ var graphUI = {
                         to: newName
                     })
                 },
-                editEdge: {
-                    editWithoutDrag: function(edge, callback){
-                        newName = prompt("New verb label:")
-                        callback(null);
-                        journal.apply({
-                            type: "renameEdge",
-                            id: edge.id,
-                            from: edge.label,
-                            to: newName
-                        })
-                    }
-                },
+                editEdge: false,
                 deleteNode: function(dataIds, callback) {
                     journal.apply( { 
                         "type": "subtract", 
@@ -193,6 +172,7 @@ var graphUI = {
                         "type": "subtract", 
                         "nodes": node_data_set.get(dataIds.nodes), 
                         "edges": edge_data_set.get(dataIds.edges) 
+
                     } )
                 }
             }
@@ -212,13 +192,10 @@ var graphUI = {
             elmUI.ports.selectNode.send(x.nodes[0])
         })
         network.on("deselectNode", function(x){
-            elmUI.ports.selectNone.send(null)
-        })
-        network.on("selectEdge", function(x){
-            elmUI.ports.selectEdge.send(x.edges[0])
+            elmUI.ports.selectModel.send(null)
         })
         network.on("deselectEdge", function(x){
-            elmUI.ports.selectNone.send(null)
+            elmUI.ports.selectModel.send(null)
         })
         network.on("hold", function(){})
         network.on("dragStart", function(e){
@@ -259,13 +236,17 @@ $(function(){
     graphUI.updateButtonStates()
 
     var sample_nodes = [
-        {id: "S", label: "Susceptible", image: "images/person.png", x: -250, y: 0}, 
-        {id: "I", label: "Infected", image: "images/sick.jpg", x: 0, y: 150}, 
-        {id: "R", label: "Recovered", image: "images/happy.png", x: 250, y: 0}
+        {id: "S", label: "Susceptible", image: "images/person.png", x: -250, y: 0},
+        {id: "i", label: "infect", image: "images/virus.png", x: -125, y: 75},
+        {id: "I", label: "Infected", image: "images/patient.png", x: 0, y: 150},
+        {id: "c", label: "cure", image: "images/pill.png", x: 125, y: 75},
+        {id: "R", label: "Recovered", image: "images/person.png", x: 250, y: 0}
     ]
     var sample_edges = [
-        {id: "infect", from: "S", to: "I", label: "infect"},
-        {id: "cure", from: "I", to: "R", label: "cure"}
+        {id: "Si", from: "S", to: "i"},
+        {id: "iI", from: "i", to: "I"},
+        {id: "Ic", from: "I", to: "c"},
+        {id: "cR", from: "c", to: "R"}
     ]
 
     journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
