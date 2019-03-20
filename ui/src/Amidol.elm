@@ -260,13 +260,13 @@ update msg model =
             )
 
         SelectNode id ->
-            ( { model | selected = SelectedNode id }, Cmd.none )
+            ( { model | selected = SelectedNode id, newVar = "" }, Cmd.none )
 
         SelectEdge id ->
-            ( { model | selected = SelectedEdge id }, Cmd.none )
+            ( { model | selected = SelectedEdge id, newVar = "" }, Cmd.none )
 
         SelectNone () ->
-            ( { model | selected = NoneSelected }, Cmd.none )
+            ( { model | selected = NoneSelected, newVar = "" }, Cmd.none )
 
         ChangeTitle newTitle ->
             ( { model | title = newTitle }, Cmd.none )
