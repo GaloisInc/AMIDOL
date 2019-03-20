@@ -1,5 +1,5 @@
 { "verb": {
-  "id": "Infect",
+  "type": "Infect",
   "model": "../AIR/infect.air",
   "icon": "virus.svg",
   "inputvariables": ["S"],

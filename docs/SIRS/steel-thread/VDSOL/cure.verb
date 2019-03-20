@@ -1,5 +1,5 @@
 { "verb": {
-  "id": "Cure",
+  "type": "Cure",
   "model": "../AIR/cure.air",
   "icon": "cure.svg",
   "inputvariables": ["I"],

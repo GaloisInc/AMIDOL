@@ -1,5 +1,5 @@
 { "noun": {
-  "id": "Population",
+  "type": "Population",
   "model": "../population.air",
   "icon": "patient.svg",
   "inputvariables": ["P"],
