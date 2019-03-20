@@ -60,7 +60,6 @@ Edge ::= {
 A `Var` is a `String` containing at least one dot (`.`),
 such that the part before the first dot is either
 - a key in the `nodes` object of the enclosing `Model`,
-- a key in the `edges` object of the enclosing `Model`,
 - or the literal string "Model"
 
 The part of a `Var` following the first dot can be any string,
@@ -68,6 +67,7 @@ and is shown in the UI as the (implicitly scoped) variable name.
 
 ### Example JSON `Model`
 
+```json
 {
   "title": "SIR",
   "nodes": {
@@ -130,3 +130,4 @@ and is shown in the UI as the (implicitly scoped) variable name.
     "S.Pop.": "0"
   }
 }
+```
