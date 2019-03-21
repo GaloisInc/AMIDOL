@@ -82,10 +82,16 @@
 					edge_data_set.remove(edge_ids_to_remove)
 					break
 				case "move":
-					_.mapObject(event.to, function(pos, nodeId){
-						network.moveNode(nodeId, pos.x, pos.y)
-					})
-					break
+	                _.mapObject(event.to, function(pos, nodeId){
+	                    node_data_set.update({id: nodeId, x: pos.x, y: pos.y})
+	                })
+	                break
+	            case "renameEdge":
+	                edge_data_set.update({id: event.id, label: event.to})
+	                break
+	            case "renameNode":
+	                node_data_set.update({id: event.id, label: event.to})
+	                break
 				default:
 					break
 			}
@@ -106,6 +112,16 @@
 					event.from = event.to
 					event.to = from
 					return event
+	            case "renameEdge":
+	                var from = event.from
+	                event.from = event.to
+	                event.to = from
+	                return event
+	            case "renameNode":
+	                var from = event.from
+	                event.from = event.to
+	                event.to = from
+	                return event
 				default:
 					return event
 			}
@@ -123,6 +139,18 @@
 
 
 	var UI = {
+	    renameEdge: function(edgeId, newName) {
+	        var existing = edge_data_set.get(edgeId)
+	        var event = {type: "renameEdge", id: edgeId, from: existing.label, to: newName}
+	        journal.apply(event)
+	    },
+
+	    renameNode: function(nodeId, newName) {
+	        var existing = node_data_set.get(nodeId)
+	        var event = {type: "renameNode", id: nodeId, from: existing.label, to: newName}
+	        journal.apply(event)
+	    },
+		
 		updateButtonStates : function() {
 			if (_.isEmpty(journal.past)) {
 				$("#undo_button").addClass("disabled")
@@ -196,7 +224,20 @@
 			network = new vis.Network(container, network_data, options)
 
 			network.on("oncontext", UI.networkRightClick)
-			network.on("doubleClick", function(){})
+			network.on("doubleClick", function(e){
+				// Renameing nodes and edges:
+				if (_.size(e.nodes) == 1) {
+					var newName = prompt("New node name:")
+					if (newName !== null) {
+						UI.renameNode(e.nodes[0], newName)
+					}
+				} else { if (_.size(e.edges) == 1) {
+					var newName = prompt("New edge name:")
+					if (newName !== null) {
+						UI.renameEdge(e.edges[0], newName)
+					}
+				}}
+			})
 			network.on("oncontext", function(){})
 			network.on("deselectNode", function(){})
 			network.on("hold", function(){})
