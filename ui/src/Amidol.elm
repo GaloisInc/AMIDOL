@@ -9,6 +9,7 @@ import Element.Border as Border
 import Element.Events exposing (..)
 import Element.Font as Font
 import Element.Input as Input
+import Element.Keyed as Keyed
 import Html exposing (Html, div, img)
 import Html.Attributes as HtmlAttr exposing (class, id, src)
 import Http
@@ -294,29 +295,113 @@ update msg model =
 -- VIEW
 
 
-header : String -> Element Msg
-header title =
+grey : Float -> Color
+grey amount =
+    rgb amount amount amount
+
+
+black =
+    grey 0
+
+
+lightGrey =
+    grey 0.63
+
+
+lighterGrey =
+    grey 0.78
+
+
+white =
+    grey 1
+
+
+dropdown : List String -> Element Msg
+dropdown items =
+    let
+        mkRow item =
+            row
+                [ width fill
+                , Background.color white
+                , mouseOver [ Background.color lighterGrey ]
+                , padding 10
+                , Border.color black
+                , Border.widthEach { bottom = 2, top = 0, left = 0, right = 0 }
+                ]
+                [ el
+                    [ padding 0
+                    ]
+                  <|
+                    text item
+                ]
+    in
+    column
+        [ spaceEvenly
+        , Border.widthEach { bottom = 0, top = 2, left = 2, right = 2 }
+        , Border.color black
+        ]
+    <|
+        List.map mkRow items
+
+
+header : String -> List String -> Element Msg
+header title menuItems =
     row
         [ width fill
         , paddingXY 20 5
+        , spacing 10
         , Border.widthEach { bottom = 2, top = 0, left = 0, right = 0 }
-        , Border.color <| rgb255 200 200 200
+        , Border.color lighterGrey
         ]
-        [ Input.button [ alignLeft, Border.width 2, Border.rounded 8 ]
+        [ Input.button
+            [ alignLeft
+            , Border.width 2
+            , Border.rounded 8
+            , Background.color white
+            , mouseOver [ Background.color lighterGrey ]
+            ]
             { onPress = Just SendJson
             , label = el [ padding 10 ] <| text "Send to server"
             }
-        , Input.text [ centerX, width <| px 250 ]
+        , Input.text
+            [ centerX
+            , width <| px 250
+            , padding 10
+            , Border.color lighterGrey
+            , Border.rounded 0
+            , Border.width 2
+            ]
             { label =
-                Input.labelLeft
-                    [ Font.color <| rgb255 160 160 160
-                    , centerY
-                    ]
-                <|
-                    text "Model:"
+                Input.labelLeft [ centerY ] <|
+                    Input.button
+                        [ padding 10
+                        , Border.width 2
+                        , Border.color white
+                        , mouseOver [ Border.color black ]
+                        , below <| dropdown menuItems
+                        ]
+                        { onPress = Nothing
+                        , label =
+                            el
+                                [ Font.color lightGrey
+                                , mouseOver [ Font.color black ]
+                                ]
+                            <|
+                                text "Model:"
+                        }
             , onChange = ChangeTitle
             , placeholder = Nothing
             , text = title
+            }
+        , Input.button
+            [ centerX
+            , Border.width 2
+            , Border.rounded 8
+            , Background.color white
+            , mouseOver [ Background.color lighterGrey ]
+            ]
+            { onPress = Nothing
+            , label = el [ padding 10 ] <| text "New"
             }
         ]
 
@@ -333,7 +418,8 @@ sidebar { graph, vars, newVar, selected } =
                                 List.tail <|
                                     String.split "." key
             in
-            row
+            ( key
+            , row
                 [ spacing 10, padding 10, width fill ]
                 [ Input.text
                     [ alignRight, width <| px 100 ]
@@ -346,15 +432,16 @@ sidebar { graph, vars, newVar, selected } =
                     []
                     -- paddingEach { top = 0, right = 10, bottom = 0, left = 0 } ]
                     { onPress = Just (DeleteVar key)
-                    , label = el [ Font.color <| rgb255 160 160 160 ] <| text "⨯"
+                    , label = el [ Font.color lightGrey ] <| text "⨯"
                     }
                 ]
+            )
 
         title =
             el
                 [ centerX
                 , paddingXY 0 20
-                , Font.color <| rgb255 160 160 160
+                , Font.color lightGrey
                 ]
             <|
                 text <|
@@ -408,7 +495,7 @@ sidebar { graph, vars, newVar, selected } =
                             Just <| AddVar <| scope ++ newVar
                     , label =
                         el
-                            [ Font.color <| rgb255 160 160 160
+                            [ Font.color lightGrey
                             , Font.size 30
                             ]
                         <|
@@ -416,18 +503,18 @@ sidebar { graph, vars, newVar, selected } =
                     }
                 ]
     in
-    column
+    Keyed.column
         [ height fill
         , width <| fillPortion 1
 
         -- , spacingXY 0 10
         , Border.widthEach { bottom = 0, top = 0, left = 2, right = 0 }
-        , Border.color <| rgb255 200 200 200
+        , Border.color lighterGrey
         ]
     <|
-        [ title ]
+        [ ( "title", title ) ]
             ++ (List.map varEl <| Dict.toList <| Dict.filter prefixed vars)
-            ++ [ adder ]
+            ++ [ ( "adder", adder ) ]
 
 
 exposedDiv : String -> List (Attribute msg) -> List (Html msg) -> Element msg
@@ -484,7 +571,7 @@ view : Model -> Html Msg
 view model =
     layout [ height fill ] <|
         column [ height fill, width fill ]
-            [ header model.title
+            [ header model.title []
             , row [ height fill, width fill ]
                 [ graphPanel, sidebar model ]
             ]

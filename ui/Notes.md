@@ -11,7 +11,7 @@ Model variables: **DONE**
 - Infer default set of vars per new node or edge
 - Delete matching vars when node or edge is deleted
 
-Switch between models:
+Switch between models: **WIP**
 - Bundle persistent parts of current `Model` into an `AmidolModel`
 - The new Elm `Model` will be something like a `Dict ModelName AmidolModel`
 - Model creation: name, select palette
@@ -26,7 +26,7 @@ Reward variables:
 Experiments + Solver:
 - Parameters
 - Send to backend
-    - Serialize JSON **WORKING**
+    - Serialize JSON **DONE**
 - Display results with [terezka/line-charts](https://package.elm-lang.org/packages/terezka/line-charts/latest/)
 
 
