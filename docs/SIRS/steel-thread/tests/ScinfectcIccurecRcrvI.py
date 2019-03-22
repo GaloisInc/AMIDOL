@@ -1,6 +1,7 @@
 import numpy as np
 import simpy
-from collections import OrderedDict
+from collections import OrderedDict, Counter
+from tqdm import tqdm
 
 processList = list()
 
@@ -126,18 +127,25 @@ class rvIRateReward(AMIDOLRateReward):
 	else:
 	   return(simpy.core.Infinity)
 
-params = AMIDOLParameters()
-cure = cureEvent()
-infect = infectEvent()
-rvI = rvIRateReward()
+rvICounter = Counter()
+maxRuns = 100
 
-env = simpy.Environment()
-cureProcess = env.process(cure.simpyProcess(env, params))
-processList.append(cureProcess)
-infectProcess = env.process(infect.simpyProcess(env, params))
-processList.append(infectProcess)
-rvIProcess = env.process(rvI.simpyProcess(env, params))
+for trace in tqdm(range(0, maxRuns)):
+    params = AMIDOLParameters()
+    cure = cureEvent()
+    infect = infectEvent()
+    rvI = rvIRateReward()
 
-env.run(until=(rvI.samplePoints[-1]+1.0))
+    env = simpy.Environment()
+    processList = []
+    cureProcess = env.process(cure.simpyProcess(env, params))
+    processList.append(cureProcess)
+    infectProcess = env.process(infect.simpyProcess(env, params))
+    processList.append(infectProcess)
+    rvIProcess = env.process(rvI.simpyProcess(env, params))
 
-print(rvI.rewards)
+    env.run(until=rvI.samplePoints[-1])
+    results = {k: v / maxRuns for k, v in rvI.rewards.iteritems()}
+    rvICounter = Counter(results) + rvICounter
+    
+print(rvICounter)

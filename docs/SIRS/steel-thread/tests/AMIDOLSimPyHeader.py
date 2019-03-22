@@ -1,6 +1,7 @@
 import numpy as np
 import simpy
-from collections import OrderedDict
+from collections import OrderedDict, Counter
+from tqdm import tqdm
 
 processList = list()
 
