@@ -374,20 +374,21 @@ header title menuItems =
             { label =
                 Input.labelLeft [ centerY ] <|
                     Input.button
-                        [ padding 10
-                        , Border.width 2
-                        , Border.color white
-                        , mouseOver [ Border.color black ]
-                        , below <| dropdown menuItems
-                        ]
+                        ([ padding 10
+                         , Border.width 2
+                         , Border.color white
+                         ]
+                            ++ (if List.isEmpty menuItems then
+                                    []
+
+                                else
+                                    [ mouseOver [ Border.color black ]
+                                    , below <| dropdown menuItems
+                                    ]
+                               )
+                        )
                         { onPress = Nothing
-                        , label =
-                            el
-                                [ Font.color lightGrey
-                                , mouseOver [ Font.color black ]
-                                ]
-                            <|
-                                text "Model:"
+                        , label = el [ Font.color lightGrey ] <| text "Model:"
                         }
             , onChange = ChangeTitle
             , placeholder = Nothing
@@ -571,7 +572,7 @@ view : Model -> Html Msg
 view model =
     layout [ height fill ] <|
         column [ height fill, width fill ]
-            [ header model.title []
+            [ header model.title [] -- [ "Model A", "Model 0", "Model T" ]
             , row [ height fill, width fill ]
                 [ graphPanel, sidebar model ]
             ]

@@ -13010,30 +13010,29 @@ var author$project$Amidol$header = F2(
 								[mdgriffith$elm_ui$Element$centerY]),
 							A2(
 								mdgriffith$elm_ui$Element$Input$button,
-								_List_fromArray(
-									[
-										mdgriffith$elm_ui$Element$padding(10),
-										mdgriffith$elm_ui$Element$Border$width(2),
-										mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$white),
-										mdgriffith$elm_ui$Element$mouseOver(
-										_List_fromArray(
-											[
-												mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$black)
-											])),
-										mdgriffith$elm_ui$Element$below(
-										author$project$Amidol$dropdown(menuItems))
-									]),
+								_Utils_ap(
+									_List_fromArray(
+										[
+											mdgriffith$elm_ui$Element$padding(10),
+											mdgriffith$elm_ui$Element$Border$width(2),
+											mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$white)
+										]),
+									elm$core$List$isEmpty(menuItems) ? _List_Nil : _List_fromArray(
+										[
+											mdgriffith$elm_ui$Element$mouseOver(
+											_List_fromArray(
+												[
+													mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$black)
+												])),
+											mdgriffith$elm_ui$Element$below(
+											author$project$Amidol$dropdown(menuItems))
+										])),
 								{
 									label: A2(
 										mdgriffith$elm_ui$Element$el,
 										_List_fromArray(
 											[
-												mdgriffith$elm_ui$Element$Font$color(author$project$Amidol$lightGrey),
-												mdgriffith$elm_ui$Element$mouseOver(
-												_List_fromArray(
-													[
-														mdgriffith$elm_ui$Element$Font$color(author$project$Amidol$black)
-													]))
+												mdgriffith$elm_ui$Element$Font$color(author$project$Amidol$lightGrey)
 											]),
 										mdgriffith$elm_ui$Element$text('Model:')),
 									onPress: elm$core$Maybe$Nothing
