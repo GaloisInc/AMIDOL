@@ -1,5 +1,6 @@
 import numpy as np
 import simpy
+from collections import OrderedDict
 
 processList = list()
 
@@ -105,7 +106,7 @@ class cureEvent(AMIDOLEvent):
 
 class rvIRateReward(AMIDOLRateReward):
     def __init__(self):
-        self.rewards = dict()
+        self.rewards = OrderedDict()
         self.samplePoints = [0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0, 95.0, 100.0]
         self.delays = list()
         self.delays.append(self.samplePoints[0])
