@@ -120,7 +120,10 @@ class rvIRateReward(AMIDOLRateReward):
 
 
     def getDelay(self, params):
-        return(self.delays.pop(0))
+    	if (self.delays):
+	   return(self.delays.pop(0))
+	else:
+	   return(simpy.core.Infinity)
 
 params = AMIDOLParameters()
 cure = cureEvent()
@@ -134,6 +137,6 @@ infectProcess = env.process(infect.simpyProcess(env, params))
 processList.append(infectProcess)
 rvIProcess = env.process(rvI.simpyProcess(env, params))
 
-env.run(until=90.0)
+env.run(until=(rvI.samplePoints[-1]+1.0))
 
 print(rvI.rewards)
