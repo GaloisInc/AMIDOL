@@ -31,44 +31,52 @@ The state variable transition function maps events, and markings to new markings
 ## Example AIR Schema
 
 ```json
-{ Model: {
-  id: "string",
-  statevariables: [{
-    id: "string",
-    label: "string"
-    type: "sv_type",
-    initial_value: "expression"
-  }]
-  events: [{
-    id: "string",
-    label: "string",
-    rate: "expression",
-    input_predicate: {
-      enabling_condition: "expression"
+{ "model": {
+  "id": "string",
+  "statevariables": [{
+    "id": "string",
+    "label": "string",
+    "type": "sv_type",
+    "initial_value": "expression"
+  }],
+  "events": [{
+    "id": "string",
+    "label": "string",
+    "rate": "expression",
+    "input_predicate": {
+      "enabling_condition": "expression"
+    },
+    "output_predicate": {
+      "transition_function": ["lvalue = expression", "lvalue = expression", ...]
     }
-    output_predicate: {
-      transition_function: ["lvalue = expression", "lvalue = expression", ...]
-    }
-  }]
-  raterewards: [{
-    id: "string",
-    variable: "string",
-    temporaltype: instantoftime|intervaloftime|timeaveragedintervaloftime|steadystate,
-    samplingpoints: [{
-      time: "float"
+  }],
+  "constants": [{
+    "id": "string",
+    "value": "extern"|"expression"
+  }],
+  "symbols": [{
+    "id": "string",
+    "value": "extern"|"expression"
+  }],
+  "raterewards": [{
+    "id": "string",
+    "variable": "string",
+    "temporaltype": "instantoftime"|"intervaloftime"|"timeaveragedintervaloftime"|"steadystate",
+    "samplingpoints": [{
+      "time": "float"
       }]    
-  }]
-  impulserewards: [{
-    id: "string",
-    event: "string",
-    temporaltype: instantoftime|intervaloftime|timeaveragedintervaloftime|steadystate,
-    samplingpoints: [{
-      time: "float"
+  }],
+  "impulserewards": [{
+    "id": "string",
+    "event": "string",
+    "temporaltype": "instantoftime"|"intervaloftime"|"timeaveragedintervaloftime"|"steadystate",
+    "samplingpoints": [{
+      "time": "float"
       }]    
-  }]
-  composedrewards: [{
-    id: "string",
-    expression: "expression"
+  }],
+  "composedrewards": [{
+    "id": "string",
+    "expression": "expression"
   }]
  }}
 ```

@@ -1,0 +1,8 @@
+{ "verb": {
+  "type": "Cure",
+  "model": "../AIR/cure.air",
+  "icon": "cure.svg",
+  "inputvariables": ["I"],
+  "outputvariables": ["R"],
+  "parameters": [{"id": "gamma", "val": "0"}]
+}}

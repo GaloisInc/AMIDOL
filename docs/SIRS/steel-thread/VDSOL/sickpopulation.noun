@@ -1,0 +1,8 @@
+{ "noun": {
+  "type": "Population",
+  "model": "../population.air",
+  "icon": "patient.svg",
+  "inputvariables": ["P"],
+  "outputvariables": ["P"],
+  "parameters": [{"id": "P", "val": "0"}]
+}}

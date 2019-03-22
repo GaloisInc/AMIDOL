@@ -1,0 +1,45 @@
+{"model": {
+  "id": "ScinfectcIccure",
+  "statevariables": [{"id": "S_Pcinfect_S", "label": "S_Pcinfect_S", "type": "float", "initial_value": "51999999"},
+  {"id": "ScinfectcI_Scinfect_IcI_Pccure_I", "label": "ScinfectcI_Scinfect_IcI_Pccure_I", "type": "float", "initial_value": "1"},
+  {"id": "R", "label": "R", "type": "float", "initial_value": "0"}],
+  "events": [{"id": "infect", "label": "infect", "rate": "beta*S*I/(total_pop)",
+              "input_predicate": "", "output_predicate": ""},
+             {"id": "cure", "label": "cure", "rate": "gamma*I",
+              "input_predicate": "", "output_predicate": ""}],
+  "constants": [{"id": "beta", "value": "1/3 * 1.24"},
+                {"id": "gamma", "value": "1/3"}],
+  "symbols": [{"id": "total_pop", "value": "S_P + I_P + R_P"}],
+  "raterewards": [],
+  "impulserewards": [],
+  "composedrewards": []
+}}
+
+{"model": {
+ "id": "R",
+ "statevariables": [{"id": "P", "label": "P", "type": "float", "initial_value": "0"}],
+ "events": [],
+ "constants": [],
+ "symbols": [],
+ "raterewards": [],
+ "impulserewards": [],
+ "composedrewards": []
+}}
+
+{"model": {
+  "id": "SIRRewards",
+  "statevariables": [],
+  "events": [],
+  "constants": [],
+  "symbols": [],
+  "raterewards": [{"id": "rvI", "variable": "I_P", "temporaltype": "instantoftime",
+                   "samplingpoints": [{"time": "0.0"}, {"time": "5.0"}, {"time": "10.0"},
+                                      {"time": "15.0"}, {"time": "20.0"}, {"time": "25.0"},
+                                      {"time": "30.0"}, {"time": "35.0"}, {"time": "40.0"},
+                                      {"time": "45.0"}, {"time": "50.0"}, {"time": "55.0"},
+                                      {"time": "60.0"}, {"time": "65.0"}, {"time": "70.0"},
+                                      {"time": "75.0"}, {"time": "80.0"}, {"time": "85.0"},
+                                      {"time": "90.0"}, {"time": "95.0"}, {"time": "100.0"}]}],
+  "impulserewards": [],
+  "composedrewards": []
+}}
