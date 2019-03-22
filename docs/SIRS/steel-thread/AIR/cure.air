@@ -1,12 +1,12 @@
-{"model": {
- "id": "cure_model",
- "statevariables": [{"id": "I", "label": "I", "type": "float", "initial_value": "0"},
- 		    {"id": "R", "label": "R", "type": "float", "initial_value": "0"}],
- "events": [{"id": "cure", "label": "cure", "rate": "gamma*I",
+{"irModel": {
+ "irModelName": "cure_model",
+ "stateVariables": [{"name": "I", "label": "I", "type": "float", "initial_value": "0"},
+ 		    {"name": "R", "label": "R", "type": "float", "initial_value": "0"}],
+ "events": [{"name": "cure", "label": "cure", "rate": "gamma*I",
  	     "input_predicate": "", "output_predicate": ""}],
- "constants": [{"id": "gamma", "value": "extern"}],
- "symbols": [],
- "raterewards": [],
- "impulserewards": [],
- "composedrewards": []
+ "constants": [{"name": "gamma", "value": "extern"}],
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
 }}
