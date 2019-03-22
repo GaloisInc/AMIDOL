@@ -5127,20 +5127,23 @@ var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var author$project$Amidol$init = function (flags) {
 	return _Utils_Tuple2(
 		{
-			graph: author$project$Amidol$emptyGraph,
+			current: {
+				graph: author$project$Amidol$emptyGraph,
+				title: 'SIR',
+				vars: elm$core$Dict$fromList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('Model.Total pop.', '0'),
+							_Utils_Tuple2('S.Pop.', '0'),
+							_Utils_Tuple2('I.Pop.', '0'),
+							_Utils_Tuple2('R.Pop.', '0'),
+							_Utils_Tuple2('infect.beta', ''),
+							_Utils_Tuple2('cure.gamma', '')
+						]))
+			},
 			newVar: '',
-			selected: author$project$Amidol$NoneSelected,
-			title: 'SIR',
-			vars: elm$core$Dict$fromList(
-				_List_fromArray(
-					[
-						_Utils_Tuple2('Model.Total pop.', '0'),
-						_Utils_Tuple2('S.Pop.', '0'),
-						_Utils_Tuple2('I.Pop.', '0'),
-						_Utils_Tuple2('R.Pop.', '0'),
-						_Utils_Tuple2('infect.beta', ''),
-						_Utils_Tuple2('cure.gamma', '')
-					]))
+			others: elm$core$Dict$empty,
+			selected: author$project$Amidol$NoneSelected
 		},
 		elm$core$Platform$Cmd$none);
 };
@@ -5306,7 +5309,7 @@ var elm$json$Json$Encode$object = function (pairs) {
 			pairs));
 };
 var elm$json$Json$Encode$string = _Json_wrap;
-var author$project$Amidol$encode = function (model) {
+var author$project$Amidol$encode = function (amodel) {
 	var encodeNode = function (node) {
 		return elm$json$Json$Encode$object(
 			_List_fromArray(
@@ -5351,16 +5354,16 @@ var author$project$Amidol$encode = function (model) {
 			[
 				_Utils_Tuple2(
 				'title',
-				elm$json$Json$Encode$string(model.title)),
+				elm$json$Json$Encode$string(amodel.title)),
 				_Utils_Tuple2(
 				'nodes',
-				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, encodeNode, model.graph.nodes)),
+				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, encodeNode, amodel.graph.nodes)),
 				_Utils_Tuple2(
 				'edges',
-				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, encodeEdge, model.graph.edges)),
+				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, encodeEdge, amodel.graph.edges)),
 				_Utils_Tuple2(
 				'vars',
-				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, elm$json$Json$Encode$string, model.vars))
+				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, elm$json$Json$Encode$string, amodel.vars))
 			]));
 };
 var elm$core$Basics$composeR = F3(
@@ -6122,7 +6125,7 @@ var elm$http$Http$post = function (r) {
 		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: elm$core$Maybe$Nothing, tracker: elm$core$Maybe$Nothing, url: r.url});
 };
 var elm$http$Http$stringBody = _Http_pair;
-var author$project$Amidol$sendJson = function (model) {
+var author$project$Amidol$sendJson = function (amodel) {
 	return elm$http$Http$post(
 		{
 			body: A2(
@@ -6131,7 +6134,7 @@ var author$project$Amidol$sendJson = function (model) {
 				A2(
 					elm$json$Json$Encode$encode,
 					2,
-					author$project$Amidol$encode(model))),
+					author$project$Amidol$encode(amodel))),
 			expect: elm$http$Http$expectString(author$project$Amidol$JsonReceived),
 			url: 'http://localhost:8080/appstate/model'
 		});
@@ -6263,18 +6266,21 @@ var author$project$Amidol$sync = F3(
 	});
 var author$project$Amidol$update = F2(
 	function (msg, model) {
+		var current = model.current;
 		switch (msg.$) {
 			case 'GraphData':
 				var data = msg.a;
 				var newGraph = author$project$Amidol$decodeGraph(data);
+				var newAmodel = _Utils_update(
+					current,
+					{
+						graph: newGraph,
+						vars: A3(author$project$Amidol$sync, current.vars, current.graph, newGraph)
+					});
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{
-							graph: newGraph,
-							selected: author$project$Amidol$NoneSelected,
-							vars: A3(author$project$Amidol$sync, model.vars, model.graph, newGraph)
-						}),
+						{current: newAmodel, selected: author$project$Amidol$NoneSelected}),
 					elm$core$Platform$Cmd$none);
 			case 'SelectNode':
 				var id = msg.a;
@@ -6307,7 +6313,11 @@ var author$project$Amidol$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{title: newTitle}),
+						{
+							current: _Utils_update(
+								current,
+								{title: newTitle})
+						}),
 					elm$core$Platform$Cmd$none);
 			case 'AddVar':
 				var key = msg.a;
@@ -6315,8 +6325,12 @@ var author$project$Amidol$update = F2(
 					_Utils_update(
 						model,
 						{
-							newVar: '',
-							vars: A3(elm$core$Dict$insert, key, '', model.vars)
+							current: _Utils_update(
+								current,
+								{
+									vars: A3(elm$core$Dict$insert, key, '', current.vars)
+								}),
+							newVar: ''
 						}),
 					elm$core$Platform$Cmd$none);
 			case 'DeleteVar':
@@ -6325,7 +6339,11 @@ var author$project$Amidol$update = F2(
 					_Utils_update(
 						model,
 						{
-							vars: A2(elm$core$Dict$remove, key, model.vars)
+							current: _Utils_update(
+								current,
+								{
+									vars: A2(elm$core$Dict$remove, key, current.vars)
+								})
 						}),
 					elm$core$Platform$Cmd$none);
 			case 'ChangeVar':
@@ -6335,7 +6353,11 @@ var author$project$Amidol$update = F2(
 					_Utils_update(
 						model,
 						{
-							vars: A3(elm$core$Dict$insert, key, value, model.vars)
+							current: _Utils_update(
+								current,
+								{
+									vars: A3(elm$core$Dict$insert, key, value, current.vars)
+								})
 						}),
 					elm$core$Platform$Cmd$none);
 			case 'ChangeNewVar':
@@ -6348,7 +6370,7 @@ var author$project$Amidol$update = F2(
 			case 'SendJson':
 				return _Utils_Tuple2(
 					model,
-					author$project$Amidol$sendJson(model));
+					author$project$Amidol$sendJson(current));
 			default:
 				var result = msg.a;
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
@@ -13144,8 +13166,7 @@ var mdgriffith$elm_ui$Element$Keyed$column = F2(
 			mdgriffith$elm_ui$Internal$Model$Keyed(children));
 	});
 var author$project$Amidol$sidebar = function (_n0) {
-	var graph = _n0.graph;
-	var vars = _n0.vars;
+	var current = _n0.current;
 	var newVar = _n0.newVar;
 	var selected = _n0.selected;
 	var varEl = function (_n4) {
@@ -13227,7 +13248,7 @@ var author$project$Amidol$sidebar = function (_n0) {
 								function ($) {
 									return $.label;
 								},
-								A2(elm$core$Dict$get, id, graph.nodes)));
+								A2(elm$core$Dict$get, id, current.graph.nodes)));
 					case 'SelectedEdge':
 						var id = selected.a;
 						return A2(
@@ -13238,7 +13259,7 @@ var author$project$Amidol$sidebar = function (_n0) {
 								function ($) {
 									return $.label;
 								},
-								A2(elm$core$Dict$get, id, graph.edges)));
+								A2(elm$core$Dict$get, id, current.graph.edges)));
 					default:
 						return 'Model';
 				}
@@ -13324,7 +13345,7 @@ var author$project$Amidol$sidebar = function (_n0) {
 					elm$core$List$map,
 					varEl,
 					elm$core$Dict$toList(
-						A2(elm$core$Dict$filter, prefixed, vars))),
+						A2(elm$core$Dict$filter, prefixed, current.vars))),
 				_List_fromArray(
 					[
 						_Utils_Tuple2('adder', adder)
@@ -13598,7 +13619,10 @@ var author$project$Amidol$view = function (model) {
 				]),
 			_List_fromArray(
 				[
-					A2(author$project$Amidol$header, model.title, _List_Nil),
+					A2(
+					author$project$Amidol$header,
+					model.current.title,
+					elm$core$Dict$keys(model.others)),
 					A2(
 					mdgriffith$elm_ui$Element$row,
 					_List_fromArray(

@@ -43,29 +43,38 @@ port selectNone : (() -> msg) -> Sub msg
 -- MODEL
 
 
-type alias Model =
+type alias AmidolModel =
     { title : String
     , graph : Graph
-    , selected : Selected
     , vars : Dict String String
+    }
+
+
+type alias Model =
+    { current : AmidolModel
+    , others : Dict String AmidolModel
+    , selected : Selected
     , newVar : String
     }
 
 
 init : flags -> ( Model, Cmd Msg )
 init flags =
-    ( { title = "SIR"
-      , graph = emptyGraph
+    ( { current =
+            { title = "SIR"
+            , graph = emptyGraph
+            , vars =
+                Dict.fromList
+                    [ ( "Model.Total pop.", "0" )
+                    , ( "S.Pop.", "0" )
+                    , ( "I.Pop.", "0" )
+                    , ( "R.Pop.", "0" )
+                    , ( "infect.beta", "" )
+                    , ( "cure.gamma", "" )
+                    ]
+            }
+      , others = Dict.empty
       , selected = NoneSelected
-      , vars =
-            Dict.fromList
-                [ ( "Model.Total pop.", "0" )
-                , ( "S.Pop.", "0" )
-                , ( "I.Pop.", "0" )
-                , ( "R.Pop.", "0" )
-                , ( "infect.beta", "" )
-                , ( "cure.gamma", "" )
-                ]
       , newVar = ""
       }
     , Cmd.none
@@ -141,8 +150,8 @@ decodeEdge =
         (field "to" Decode.string)
 
 
-encode : Model -> Encode.Value
-encode model =
+encode : AmidolModel -> Encode.Value
+encode amodel =
     let
         encodeNode node =
             Encode.object
@@ -162,10 +171,10 @@ encode model =
                 ]
     in
     Encode.object
-        [ ( "title", Encode.string model.title )
-        , ( "nodes", Encode.dict identity encodeNode model.graph.nodes )
-        , ( "edges", Encode.dict identity encodeEdge model.graph.edges )
-        , ( "vars", Encode.dict identity Encode.string model.vars )
+        [ ( "title", Encode.string amodel.title )
+        , ( "nodes", Encode.dict identity encodeNode amodel.graph.nodes )
+        , ( "edges", Encode.dict identity encodeEdge amodel.graph.edges )
+        , ( "vars", Encode.dict identity Encode.string amodel.vars )
         ]
 
 
@@ -201,13 +210,13 @@ type Msg
     | JsonReceived (Result Http.Error String)
 
 
-sendJson : Model -> Cmd Msg
-sendJson model =
+sendJson : AmidolModel -> Cmd Msg
+sendJson amodel =
     Http.post
         { url = "http://localhost:8080/appstate/model"
         , body =
             Http.stringBody "application/json" <|
-                Encode.encode 2 (encode model)
+                Encode.encode 2 (encode amodel)
         , expect = Http.expectString JsonReceived
         }
 
@@ -245,16 +254,21 @@ sync vars oldGraph newGraph =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg ({ current } as model) =
     case msg of
         GraphData data ->
             let
                 newGraph =
                     decodeGraph data
+
+                newAmodel =
+                    { current
+                        | graph = newGraph
+                        , vars = sync current.vars current.graph newGraph
+                    }
             in
             ( { model
-                | graph = newGraph
-                , vars = sync model.vars model.graph newGraph
+                | current = newAmodel
                 , selected = NoneSelected
               }
             , Cmd.none
@@ -270,22 +284,22 @@ update msg model =
             ( { model | selected = NoneSelected, newVar = "" }, Cmd.none )
 
         ChangeTitle newTitle ->
-            ( { model | title = newTitle }, Cmd.none )
+            ( { model | current = { current | title = newTitle } }, Cmd.none )
 
         AddVar key ->
-            ( { model | vars = Dict.insert key "" model.vars, newVar = "" }, Cmd.none )
+            ( { model | current = { current | vars = Dict.insert key "" current.vars }, newVar = "" }, Cmd.none )
 
         DeleteVar key ->
-            ( { model | vars = Dict.remove key model.vars }, Cmd.none )
+            ( { model | current = { current | vars = Dict.remove key current.vars } }, Cmd.none )
 
         ChangeVar key value ->
-            ( { model | vars = Dict.insert key value model.vars }, Cmd.none )
+            ( { model | current = { current | vars = Dict.insert key value current.vars } }, Cmd.none )
 
         ChangeNewVar newVarName ->
             ( { model | newVar = newVarName }, Cmd.none )
 
         SendJson ->
-            ( model, sendJson model )
+            ( model, sendJson current )
 
         JsonReceived result ->
             ( model, Cmd.none )
@@ -408,7 +422,7 @@ header title menuItems =
 
 
 sidebar : Model -> Element Msg
-sidebar { graph, vars, newVar, selected } =
+sidebar { current, newVar, selected } =
     let
         varEl ( key, value ) =
             let
@@ -450,12 +464,12 @@ sidebar { graph, vars, newVar, selected } =
                         SelectedNode id ->
                             Maybe.withDefault "" <|
                                 Maybe.map .label <|
-                                    Dict.get id graph.nodes
+                                    Dict.get id current.graph.nodes
 
                         SelectedEdge id ->
                             Maybe.withDefault "" <|
                                 Maybe.map .label <|
-                                    Dict.get id graph.edges
+                                    Dict.get id current.graph.edges
 
                         NoneSelected ->
                             "Model"
@@ -514,7 +528,7 @@ sidebar { graph, vars, newVar, selected } =
         ]
     <|
         [ ( "title", title ) ]
-            ++ (List.map varEl <| Dict.toList <| Dict.filter prefixed vars)
+            ++ (List.map varEl <| Dict.toList <| Dict.filter prefixed current.vars)
             ++ [ ( "adder", adder ) ]
 
 
@@ -572,7 +586,7 @@ view : Model -> Html Msg
 view model =
     layout [ height fill ] <|
         column [ height fill, width fill ]
-            [ header model.title [] -- [ "Model A", "Model 0", "Model T" ]
+            [ header model.current.title (Dict.keys model.others)
             , row [ height fill, width fill ]
                 [ graphPanel, sidebar model ]
             ]
