@@ -23,16 +23,20 @@ We assume the user builds a model using the nouns and verbs defined in the `VDSO
   * `I` to `cure`
   * `cure` to `R`
 
+* The user defines a reward model.
+
 * The backend should take this information and compose the resulting models in the following steps:
   * [Step 0](BackendSteps/step0.json): Generate instance models for all nouns and verbs.
   * [Step 1](BackendSteps/step1.json): Compose `S` and `infect` resulting in `Scinfect`.
   * [Step 2](BackendSteps/step2.json): Compose `infect` with `I`.  Since `infect` has already been composed with `S` resulting in `Scinfect`, we compose `Scinfect` with `I` resulting in `ScinfectcI`.
   * [Step 3](BackendSteps/step3.json): Compose `I` with `cure`.  Since `I` was already composed to form `ScinfectcI`, we compose `ScinfectcI` with `cure` resulting in `ScinfectcIccure`.
   * [Step 4](BackendSteps/step4.json): Compose `cure` with `R`.  Since `cure` was already composed to form `ScinfectcIccure`, we compose `ScinfectcIccure` with `R` resulting in `ScinfectcIccurecR`.
+  * [Step 5](BackendSteps/step5.json): Compose `SIRRewards` with `ScinfectcIccurecR`.  This involves unioning the empty rate reward variable list of `ScinfectcIccurecR` with `SIRRewards` rate reward variable list.  This results in the new model `ScinfectcIccurecRcSIRRewards`
 
-We have some ugly variable names now, but they should work fine for our purposes.  We should keep track of naming and aliases, and do a pass to rename where necessary due to external naming, constants, etc, resulting in [Step 5](BackendSteps/step5.json).
+We have some ugly variable names now, but they should work fine for our purposes.  We should keep track of naming and aliases, and do a pass to rename where necessary due to external naming, constants, etc, resulting in [Step 6](BackendSteps/step6.json).
 
 Create the PySCeS model file for the final model, as in [ScinfectcIccurecR.psc](BackendSteps/ScinfectcIccurecR.psc).
+**NEED TO FIX ABOVE PySCeS Model**
 
 * See [tests](tests/) directory for jupyter which tests this PySCeS model.
 * **TODO**: Reward variable definition and composing
