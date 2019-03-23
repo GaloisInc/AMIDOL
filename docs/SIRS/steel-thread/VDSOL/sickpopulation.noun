@@ -1,6 +1,6 @@
 { "noun": {
   "className": "Population",
-  "classDef": "../population.air",
+  "classDef": "../AIR/population.air",
   "icon": "patient.svg",
   "inputVariables": ["P"],
   "outputVariables": ["P"],
