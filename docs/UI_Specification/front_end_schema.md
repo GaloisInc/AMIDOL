@@ -17,22 +17,22 @@ Basic user workflow begins by **loading** a project.
 
 ```json
 { "noun": {
-    "id": "string",
-    "model": "filename",
+    "className": "string",
+    "classDef": "filename",
     "icon": "filename.svg",
-    "inputvariables": ["string"],
-    "outputvariables": ["string"],
-    "parameters": [{"id": "string", "val": "expression"}]
+    "inputVariables": ["string"],
+    "outputVariables": ["string"],
+    "parameters": [{"name": "string", "value": "expression"}]
   }
 }
 
 { "verb": {
-  "id": "string",
-  "model": "filename",
+  "className": "string",
+  "classDef": "filename",
   "icon": "filename.svg",
-  "inputvariables": ["string"],
-  "outputvariables": ["string"],
-  "parameters": [{"id": "string", "val": "expression"}]
+  "inputVariables": ["string"],
+  "outputVariables": ["string"],
+  "parameters": [{"name": "string", "value": "expression"}]
   }
 }
 ```

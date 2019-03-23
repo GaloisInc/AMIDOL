@@ -1,12 +1,12 @@
-{"model": {
- "id": "infect_model",
- "statevariables": [{"id": "S", "label": "S", "type": "float", "initial_value": "0"},
- 		    {"id": "I", "label": "I", "type": "float", "initial_value": "0"}],
- "events": [{"id": "infect", "label": "infect", "rate": "beta*S*I/(total_pop)",
+{"irModel": {
+ "irModelName": "infect_model",
+ "stateVariables": [{"name": "S", "label": "S", "type": "float", "initial_value": "0"},
+ 		    {"name": "I", "label": "I", "type": "float", "initial_value": "0"}],
+ "events": [{"name": "infect", "label": "infect", "rate": "beta*S*I/(total_pop)",
  	     "input_predicate": "", "output_predicate": ""}],
- "constants": [{"id": "beta", "value": "extern"}],
- "symbols": [{"id": "total_pop", "value": "extern"}],
- "raterewards": [],
- "impulserewards": [],
- "composedrewards": []
+ "constants": [{"name": "beta", "value": "extern"}],
+ "expressions": [{"name": "total_pop", "value": "extern"}],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
 }}

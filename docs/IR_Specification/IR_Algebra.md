@@ -31,16 +31,16 @@ The state variable transition function maps events, and markings to new markings
 ## Example AIR Schema
 
 ```json
-{ "model": {
-  "id": "string",
-  "statevariables": [{
-    "id": "string",
+{ "irModel": {
+  "irModelName": "string",
+  "stateVariables": [{
+    "name": "string",
     "label": "string",
     "type": "sv_type",
     "initial_value": "expression"
   }],
   "events": [{
-    "id": "string",
+    "name": "string",
     "label": "string",
     "rate": "expression",
     "input_predicate": {
@@ -51,23 +51,23 @@ The state variable transition function maps events, and markings to new markings
     }
   }],
   "constants": [{
-    "id": "string",
+    "name": "string",
     "value": "extern"|"expression"
   }],
-  "symbols": [{
-    "id": "string",
+  "expressions": [{
+    "name": "string",
     "value": "extern"|"expression"
   }],
-  "raterewards": [{
-    "id": "string",
+  "rateRewards": [{
+    "name": "string",
     "variable": "string",
     "temporaltype": "instantoftime"|"intervaloftime"|"timeaveragedintervaloftime"|"steadystate",
     "samplingpoints": [{
       "time": "float"
       }]    
   }],
-  "impulserewards": [{
-    "id": "string",
+  "impulseRewards": [{
+    "name": "string",
     "event": "string",
     "temporaltype": "instantoftime"|"intervaloftime"|"timeaveragedintervaloftime"|"steadystate",
     "samplingpoints": [{
@@ -75,37 +75,8 @@ The state variable transition function maps events, and markings to new markings
       }]    
   }],
   "composedrewards": [{
-    "id": "string",
+    "name": "string",
     "expression": "expression"
   }]
  }}
-```
-
-## SIRS Example
-```json
-{ Model:
-  statevariables: [{
-    (id: "S", label: "susceptible_M0", type: "int", initial_value: "10"),
-    (id: "I", label: "infected_M0", type: "int", initial_value: "0"),
-    (id: "R", label: "recovered_M0", type: "int", initial_value: "0")
-    }]
-  events: [{
-    (id: "infection", label: "infection_M0", rate: "beta",
-      input_predicate: {enabling_condition: "S > 0"},
-      output_predicate: {transition_function: ["S = S - _rate_*S*I/(S+I+R)", "I = I + _rate_*S*I/(S+I+R)"]}),
-    (id: "recovery", label: "recovery_M0", rate: "gamma",
-      input_predicate: {enabling_condition: "I > 0"},
-      output_predicate: {transition_function: ["I = I - _rate_*I", "R = R + _rate_*I"]})
-    }]
-  raterewards: [{
-    (id: "s_40", state: "S", temporaltype: instantoftime, samplingpoints: [{40}]),
-    (id: "s_45", state: "S", temporaltype: instantoftime, samplingpoints: [{45}]),
-    (id: "s_50", state: "S", temporaltype: instantoftime, samplingpoints: [{50}]),
-    (id: "average_s", state: "S", temporaltype: timeaveragedintervaloftime,   samplingpoints: [{40}, {50}])
-    }]
-  impulserewards: [{
-    (id: "total_infections", event: "infection", temporaltype: intervaloftime,
-    samplingpoints: [{40}, {50}])
-    }]
-}
-```
+ ```

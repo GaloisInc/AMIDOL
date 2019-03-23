@@ -1,10 +1,10 @@
-{"model": {
- "id": "",
- "statevariables": [],
+{"irModel": {
+ "irModelName": "",
+ "stateVariables": [],
  "events": [],
  "constants": [],
- "symbols": [],
- "raterewards": [],
- "impulserewards": [],
- "composedrewards": []
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
 }}

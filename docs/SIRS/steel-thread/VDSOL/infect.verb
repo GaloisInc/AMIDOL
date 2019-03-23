@@ -1,8 +1,8 @@
 { "verb": {
-  "type": "Infect",
-  "model": "../AIR/infect.air",
+  "className": "Infect",
+  "classDef": "../AIR/infect.air",
   "icon": "virus.svg",
-  "inputvariables": ["S"],
-  "outputvariables": ["I"],
-  "parameters": [{"id": "beta", "val": "0"}, {"id": "total_pop", "val": "0"}]
+  "inputVariables": ["S"],
+  "outputVariables": ["I"],
+  "parameters": [{"name": "beta", "value": "0"}, {"name": "total_pop", "value": "0"}]
 }}

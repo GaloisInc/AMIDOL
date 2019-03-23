@@ -1,8 +1,8 @@
 { "noun": {
-  "type": "Population",
-  "model": "../population.air",
+  "className": "Population",
+  "classDef": "../population.air",
   "icon": "patient.svg",
-  "inputvariables": ["P"],
-  "outputvariables": ["P"],
-  "parameters": [{"id": "P", "val": "0"}]
+  "inputVariables": ["P"],
+  "outputVariables": ["P"],
+  "parameters": [{"name": "P", "value": "0"}]
 }}
