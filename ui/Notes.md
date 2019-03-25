@@ -12,12 +12,12 @@ Model variables: **DONE**
 - Delete matching vars when node or edge is deleted
 
 Switch between models: **WIP**
-- Bundle persistent parts of current `Model` into an `AmidolModel`
+- Bundle persistent parts of current `Model` into an `AmidolModel` -- **DONE**
 - The new Elm `Model` will be something like a `Dict ModelName AmidolModel`
-- Model creation: name, select palette
-- Model choice via dropdown
+- Model creation: name, select palette -- view **DONE**, just add event attrs
+- Model choice via dropdown -- **TODO** `Msg SwitchModel`
 - Model deletion with confirm (postpone unless it's super easy)
-- Replace visjs graph on model switch
+- Replace visjs graph on model switch  -- **DONE**
 
 Reward variables:
 - What are they?

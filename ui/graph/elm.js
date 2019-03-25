@@ -4526,6 +4526,7 @@ var author$project$Amidol$NoneSelected = {$: 'NoneSelected'};
 var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var elm$core$Dict$empty = elm$core$Dict$RBEmpty_elm_builtin;
 var author$project$Amidol$emptyGraph = {edges: elm$core$Dict$empty, nodes: elm$core$Dict$empty};
+var elm$core$Basics$False = {$: 'False'};
 var elm$core$Dict$Black = {$: 'Black'};
 var elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -4746,7 +4747,6 @@ var elm$core$Dict$fromList = function (assocs) {
 		elm$core$Dict$empty,
 		assocs);
 };
-var elm$core$Basics$False = {$: 'False'};
 var elm$core$Basics$True = {$: 'True'};
 var elm$core$Result$isOk = function (result) {
 	if (result.$ === 'Ok') {
@@ -5143,7 +5143,8 @@ var author$project$Amidol$init = function (flags) {
 			},
 			newVar: '',
 			others: elm$core$Dict$empty,
-			selected: author$project$Amidol$NoneSelected
+			selected: author$project$Amidol$NoneSelected,
+			showModelMenu: false
 		},
 		elm$core$Platform$Cmd$none);
 };
@@ -5247,8 +5248,66 @@ var author$project$Amidol$decodeGraph = function (data) {
 		return author$project$Amidol$emptyGraph;
 	}
 };
-var author$project$Amidol$JsonReceived = function (a) {
-	return {$: 'JsonReceived', a: a};
+var author$project$Amidol$emptyModel = {
+	current: {graph: author$project$Amidol$emptyGraph, title: '', vars: elm$core$Dict$empty},
+	newVar: '',
+	others: elm$core$Dict$empty,
+	selected: author$project$Amidol$NoneSelected,
+	showModelMenu: false
+};
+var elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			elm$core$List$foldl,
+			F2(
+				function (_n0, obj) {
+					var k = _n0.a;
+					var v = _n0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var elm$json$Json$Encode$string = _Json_wrap;
+var author$project$Amidol$encodeEdge = function (edge) {
+	return elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'id',
+				elm$json$Json$Encode$string(edge.id)),
+				_Utils_Tuple2(
+				'label',
+				elm$json$Json$Encode$string(edge.label)),
+				_Utils_Tuple2(
+				'from',
+				elm$json$Json$Encode$string(edge.from)),
+				_Utils_Tuple2(
+				'to',
+				elm$json$Json$Encode$string(edge.to))
+			]));
+};
+var elm$json$Json$Encode$float = _Json_wrap;
+var author$project$Amidol$encodeNode = function (node) {
+	return elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'id',
+				elm$json$Json$Encode$string(node.id)),
+				_Utils_Tuple2(
+				'label',
+				elm$json$Json$Encode$string(node.label)),
+				_Utils_Tuple2(
+				'image',
+				elm$json$Json$Encode$string(node.image)),
+				_Utils_Tuple2(
+				'x',
+				elm$json$Json$Encode$float(node.x)),
+				_Utils_Tuple2(
+				'y',
+				elm$json$Json$Encode$float(node.y))
+			]));
 };
 var elm$core$Basics$identity = function (x) {
 	return x;
@@ -5294,61 +5353,22 @@ var elm$json$Json$Encode$dict = F3(
 				_Json_emptyObject(_Utils_Tuple0),
 				dictionary));
 	});
-var elm$json$Json$Encode$float = _Json_wrap;
-var elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			elm$core$List$foldl,
-			F2(
-				function (_n0, obj) {
-					var k = _n0.a;
-					var v = _n0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
+var author$project$Amidol$encodeGraph = function (graph) {
+	return elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'nodes',
+				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, author$project$Amidol$encodeNode, graph.nodes)),
+				_Utils_Tuple2(
+				'edges',
+				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, author$project$Amidol$encodeEdge, graph.edges))
+			]));
 };
-var elm$json$Json$Encode$string = _Json_wrap;
+var author$project$Amidol$JsonReceived = function (a) {
+	return {$: 'JsonReceived', a: a};
+};
 var author$project$Amidol$encode = function (amodel) {
-	var encodeNode = function (node) {
-		return elm$json$Json$Encode$object(
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'id',
-					elm$json$Json$Encode$string(node.id)),
-					_Utils_Tuple2(
-					'label',
-					elm$json$Json$Encode$string(node.label)),
-					_Utils_Tuple2(
-					'image',
-					elm$json$Json$Encode$string(node.image)),
-					_Utils_Tuple2(
-					'x',
-					elm$json$Json$Encode$float(node.x)),
-					_Utils_Tuple2(
-					'y',
-					elm$json$Json$Encode$float(node.y))
-				]));
-	};
-	var encodeEdge = function (edge) {
-		return elm$json$Json$Encode$object(
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'id',
-					elm$json$Json$Encode$string(edge.id)),
-					_Utils_Tuple2(
-					'label',
-					elm$json$Json$Encode$string(edge.label)),
-					_Utils_Tuple2(
-					'from',
-					elm$json$Json$Encode$string(edge.from)),
-					_Utils_Tuple2(
-					'to',
-					elm$json$Json$Encode$string(edge.to))
-				]));
-	};
 	return elm$json$Json$Encode$object(
 		_List_fromArray(
 			[
@@ -5357,10 +5377,10 @@ var author$project$Amidol$encode = function (amodel) {
 				elm$json$Json$Encode$string(amodel.title)),
 				_Utils_Tuple2(
 				'nodes',
-				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, encodeNode, amodel.graph.nodes)),
+				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, author$project$Amidol$encodeNode, amodel.graph.nodes)),
 				_Utils_Tuple2(
 				'edges',
-				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, encodeEdge, amodel.graph.edges)),
+				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, author$project$Amidol$encodeEdge, amodel.graph.edges)),
 				_Utils_Tuple2(
 				'vars',
 				A3(elm$json$Json$Encode$dict, elm$core$Basics$identity, elm$json$Json$Encode$string, amodel.vars))
@@ -6139,6 +6159,7 @@ var author$project$Amidol$sendJson = function (amodel) {
 			url: 'http://localhost:8080/appstate/model'
 		});
 };
+var author$project$Amidol$setGraphData = _Platform_outgoingPort('setGraphData', elm$core$Basics$identity);
 var elm$core$Dict$diff = F2(
 	function (t1, t2) {
 		return A3(
@@ -6264,9 +6285,19 @@ var author$project$Amidol$sync = F3(
 			A2(elm$core$Dict$union, newNodeVars, newEdgeVars),
 			A2(elm$core$Dict$filter, ok, vars));
 	});
+var elm$core$Dict$member = F2(
+	function (key, dict) {
+		var _n0 = A2(elm$core$Dict$get, key, dict);
+		if (_n0.$ === 'Just') {
+			return true;
+		} else {
+			return false;
+		}
+	});
 var author$project$Amidol$update = F2(
 	function (msg, model) {
 		var current = model.current;
+		var others = model.others;
 		switch (msg.$) {
 			case 'GraphData':
 				var data = msg.a;
@@ -6371,9 +6402,30 @@ var author$project$Amidol$update = F2(
 				return _Utils_Tuple2(
 					model,
 					author$project$Amidol$sendJson(current));
-			default:
+			case 'JsonReceived':
 				var result = msg.a;
 				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+			case 'ShowModelMenu':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{showModelMenu: true}),
+					elm$core$Platform$Cmd$none);
+			case 'HideModelMenu':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{showModelMenu: false}),
+					elm$core$Platform$Cmd$none);
+			default:
+				return ((current.title === '') || A2(elm$core$Dict$member, current.title, others)) ? _Utils_Tuple2(model, elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					_Utils_update(
+						author$project$Amidol$emptyModel,
+						{
+							others: A3(elm$core$Dict$insert, current.title, current, others)
+						}),
+					author$project$Amidol$setGraphData(
+						author$project$Amidol$encodeGraph(author$project$Amidol$emptyGraph)));
 		}
 	});
 var elm$json$Json$Decode$succeed = _Json_succeed;
@@ -6584,15 +6636,6 @@ var elm$core$Set$insert = F2(
 		var dict = _n0.a;
 		return elm$core$Set$Set_elm_builtin(
 			A3(elm$core$Dict$insert, key, _Utils_Tuple0, dict));
-	});
-var elm$core$Dict$member = F2(
-	function (key, dict) {
-		var _n0 = A2(elm$core$Dict$get, key, dict);
-		if (_n0.$ === 'Just') {
-			return true;
-		} else {
-			return false;
-		}
 	});
 var elm$core$Set$member = F2(
 	function (key, _n0) {
@@ -11728,7 +11771,10 @@ var author$project$Amidol$graphPanel = function () {
 var author$project$Amidol$ChangeTitle = function (a) {
 	return {$: 'ChangeTitle', a: a};
 };
+var author$project$Amidol$HideModelMenu = {$: 'HideModelMenu'};
+var author$project$Amidol$NewModel = {$: 'NewModel'};
 var author$project$Amidol$SendJson = {$: 'SendJson'};
+var author$project$Amidol$ShowModelMenu = {$: 'ShowModelMenu'};
 var mdgriffith$elm_ui$Internal$Model$Rgba = F4(
 	function (a, b, c, d) {
 		return {$: 'Rgba', a: a, b: b, c: c, d: d};
@@ -12046,7 +12092,9 @@ var author$project$Amidol$dropdown = function (items) {
 				mdgriffith$elm_ui$Element$spaceEvenly,
 				mdgriffith$elm_ui$Element$Border$widthEach(
 				{bottom: 0, left: 2, right: 2, top: 2}),
-				mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$black)
+				mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$black),
+				mdgriffith$elm_ui$Element$width(
+				mdgriffith$elm_ui$Element$px(((250 + 10) + 60) + 10))
 			]),
 		A2(elm$core$List$map, mkRow, items));
 };
@@ -12112,6 +12160,33 @@ var mdgriffith$elm_ui$Element$Border$rounded = function (radius) {
 			'border-radius',
 			elm$core$String$fromInt(radius) + 'px'));
 };
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onMouseEnter = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'mouseenter',
+		elm$json$Json$Decode$succeed(msg));
+};
+var mdgriffith$elm_ui$Element$Events$onMouseEnter = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Attr, elm$html$Html$Events$onMouseEnter);
+var elm$html$Html$Events$onMouseLeave = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'mouseleave',
+		elm$json$Json$Decode$succeed(msg));
+};
+var mdgriffith$elm_ui$Element$Events$onMouseLeave = A2(elm$core$Basics$composeL, mdgriffith$elm_ui$Internal$Model$Attr, elm$html$Html$Events$onMouseLeave);
+var mdgriffith$elm_ui$Internal$Flag$fontAlignment = mdgriffith$elm_ui$Internal$Flag$flag(12);
+var mdgriffith$elm_ui$Element$Font$alignRight = A2(mdgriffith$elm_ui$Internal$Model$Class, mdgriffith$elm_ui$Internal$Flag$fontAlignment, mdgriffith$elm_ui$Internal$Style$classes.textRight);
 var mdgriffith$elm_ui$Internal$Flag$fontColor = mdgriffith$elm_ui$Internal$Flag$flag(14);
 var mdgriffith$elm_ui$Element$Font$color = function (fontColor) {
 	return A2(
@@ -12140,17 +12215,6 @@ var elm$html$Html$Attributes$tabindex = function (n) {
 };
 var mdgriffith$elm_ui$Internal$Flag$cursor = mdgriffith$elm_ui$Internal$Flag$flag(21);
 var mdgriffith$elm_ui$Element$pointer = A2(mdgriffith$elm_ui$Internal$Model$Class, mdgriffith$elm_ui$Internal$Flag$cursor, mdgriffith$elm_ui$Internal$Style$classes.cursorPointer);
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
 var elm$html$Html$Events$onClick = function (msg) {
 	return A2(
 		elm$html$Html$Events$on,
@@ -13037,7 +13101,9 @@ var author$project$Amidol$header = F2(
 										[
 											mdgriffith$elm_ui$Element$padding(10),
 											mdgriffith$elm_ui$Element$Border$width(2),
-											mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$white)
+											mdgriffith$elm_ui$Element$Border$color(author$project$Amidol$white),
+											mdgriffith$elm_ui$Element$Events$onMouseEnter(author$project$Amidol$ShowModelMenu),
+											mdgriffith$elm_ui$Element$Events$onMouseLeave(author$project$Amidol$HideModelMenu)
 										]),
 									elm$core$List$isEmpty(menuItems) ? _List_Nil : _List_fromArray(
 										[
@@ -13054,7 +13120,10 @@ var author$project$Amidol$header = F2(
 										mdgriffith$elm_ui$Element$el,
 										_List_fromArray(
 											[
-												mdgriffith$elm_ui$Element$Font$color(author$project$Amidol$lightGrey)
+												mdgriffith$elm_ui$Element$width(
+												mdgriffith$elm_ui$Element$px(60)),
+												mdgriffith$elm_ui$Element$Font$color(author$project$Amidol$lightGrey),
+												mdgriffith$elm_ui$Element$Font$alignRight
 											]),
 										mdgriffith$elm_ui$Element$text('Model:')),
 									onPress: elm$core$Maybe$Nothing
@@ -13085,7 +13154,7 @@ var author$project$Amidol$header = F2(
 									mdgriffith$elm_ui$Element$padding(10)
 								]),
 							mdgriffith$elm_ui$Element$text('New')),
-						onPress: elm$core$Maybe$Nothing
+						onPress: elm$core$Maybe$Just(author$project$Amidol$NewModel)
 					})
 				]));
 	});
@@ -13604,6 +13673,7 @@ var mdgriffith$elm_ui$Element$layoutWith = F3(
 var mdgriffith$elm_ui$Element$layout = mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
 var author$project$Amidol$view = function (model) {
+	var menuItems = model.showModelMenu ? elm$core$Dict$keys(model.others) : _List_Nil;
 	return A2(
 		mdgriffith$elm_ui$Element$layout,
 		_List_fromArray(
@@ -13619,10 +13689,7 @@ var author$project$Amidol$view = function (model) {
 				]),
 			_List_fromArray(
 				[
-					A2(
-					author$project$Amidol$header,
-					model.current.title,
-					elm$core$Dict$keys(model.others)),
+					A2(author$project$Amidol$header, model.current.title, menuItems),
 					A2(
 					mdgriffith$elm_ui$Element$row,
 					_List_fromArray(

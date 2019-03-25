@@ -269,4 +269,14 @@ $(function(){
     ]
 
     journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
+
+    elmUI.ports.setGraphData.subscribe(function(graph){
+        node_data_set.clear()
+        node_data_set.add(_.values(graph.nodes))
+        edge_data_set.clear()
+        edge_data_set.add(_.values(graph.edges))
+        journal.past = []
+        journal.future = []
+        graphUI.updateButtonStates()
+    })
 })

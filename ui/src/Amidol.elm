@@ -30,6 +30,9 @@ main =
 port graphData : (Decode.Value -> msg) -> Sub msg
 
 
+port setGraphData : Encode.Value -> Cmd msg
+
+
 port selectNode : (String -> msg) -> Sub msg
 
 
@@ -55,6 +58,17 @@ type alias Model =
     , others : Dict String AmidolModel
     , selected : Selected
     , newVar : String
+    , showModelMenu : Bool
+    }
+
+
+emptyModel : Model
+emptyModel =
+    { current = { title = "", graph = emptyGraph, vars = Dict.empty }
+    , others = Dict.empty
+    , selected = NoneSelected
+    , newVar = ""
+    , showModelMenu = False
     }
 
 
@@ -76,6 +90,7 @@ init flags =
       , others = Dict.empty
       , selected = NoneSelected
       , newVar = ""
+      , showModelMenu = False
       }
     , Cmd.none
     )
@@ -96,6 +111,14 @@ type alias Graph =
 emptyGraph : Graph
 emptyGraph =
     { nodes = Dict.empty, edges = Dict.empty }
+
+
+encodeGraph : Graph -> Encode.Value
+encodeGraph graph =
+    Encode.object
+        [ ( "nodes", Encode.dict identity encodeNode graph.nodes )
+        , ( "edges", Encode.dict identity encodeEdge graph.edges )
+        ]
 
 
 decodeGraph : Decode.Value -> Graph
@@ -123,6 +146,17 @@ type alias Node =
     }
 
 
+encodeNode : Node -> Encode.Value
+encodeNode node =
+    Encode.object
+        [ ( "id", Encode.string node.id )
+        , ( "label", Encode.string node.label )
+        , ( "image", Encode.string node.image )
+        , ( "x", Encode.float node.x )
+        , ( "y", Encode.float node.y )
+        ]
+
+
 decodeNode : Decode.Decoder Node
 decodeNode =
     Decode.map5 Node
@@ -141,6 +175,16 @@ type alias Edge =
     }
 
 
+encodeEdge : Edge -> Encode.Value
+encodeEdge edge =
+    Encode.object
+        [ ( "id", Encode.string edge.id )
+        , ( "label", Encode.string edge.label )
+        , ( "from", Encode.string edge.from )
+        , ( "to", Encode.string edge.to )
+        ]
+
+
 decodeEdge : Decode.Decoder Edge
 decodeEdge =
     Decode.map4 Edge
@@ -152,24 +196,6 @@ decodeEdge =
 
 encode : AmidolModel -> Encode.Value
 encode amodel =
-    let
-        encodeNode node =
-            Encode.object
-                [ ( "id", Encode.string node.id )
-                , ( "label", Encode.string node.label )
-                , ( "image", Encode.string node.image )
-                , ( "x", Encode.float node.x )
-                , ( "y", Encode.float node.y )
-                ]
-
-        encodeEdge edge =
-            Encode.object
-                [ ( "id", Encode.string edge.id )
-                , ( "label", Encode.string edge.label )
-                , ( "from", Encode.string edge.from )
-                , ( "to", Encode.string edge.to )
-                ]
-    in
     Encode.object
         [ ( "title", Encode.string amodel.title )
         , ( "nodes", Encode.dict identity encodeNode amodel.graph.nodes )
@@ -208,6 +234,9 @@ type Msg
     | ChangeNewVar String
     | SendJson
     | JsonReceived (Result Http.Error String)
+    | ShowModelMenu
+    | HideModelMenu
+    | NewModel
 
 
 sendJson : AmidolModel -> Cmd Msg
@@ -254,7 +283,7 @@ sync vars oldGraph newGraph =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ current } as model) =
+update msg ({ current, others } as model) =
     case msg of
         GraphData data ->
             let
@@ -303,6 +332,21 @@ update msg ({ current } as model) =
 
         JsonReceived result ->
             ( model, Cmd.none )
+
+        ShowModelMenu ->
+            ( { model | showModelMenu = True }, Cmd.none )
+
+        HideModelMenu ->
+            ( { model | showModelMenu = False }, Cmd.none )
+
+        NewModel ->
+            if current.title == "" || Dict.member current.title others then
+                ( model, Cmd.none )
+
+            else
+                ( { emptyModel | others = Dict.insert current.title current others }
+                , setGraphData <| encodeGraph emptyGraph
+                )
 
 
 
@@ -353,6 +397,7 @@ dropdown items =
         [ spaceEvenly
         , Border.widthEach { bottom = 0, top = 2, left = 2, right = 2 }
         , Border.color black
+        , width <| px (250 + 10 + 60 + 10)
         ]
     <|
         List.map mkRow items
@@ -391,6 +436,8 @@ header title menuItems =
                         ([ padding 10
                          , Border.width 2
                          , Border.color white
+                         , onMouseEnter ShowModelMenu
+                         , onMouseLeave HideModelMenu
                          ]
                             ++ (if List.isEmpty menuItems then
                                     []
@@ -402,7 +449,14 @@ header title menuItems =
                                )
                         )
                         { onPress = Nothing
-                        , label = el [ Font.color lightGrey ] <| text "Model:"
+                        , label =
+                            el
+                                [ width <| px 60
+                                , Font.color lightGrey
+                                , Font.alignRight
+                                ]
+                            <|
+                                text "Model:"
                         }
             , onChange = ChangeTitle
             , placeholder = Nothing
@@ -415,7 +469,7 @@ header title menuItems =
             , Background.color white
             , mouseOver [ Background.color lighterGrey ]
             ]
-            { onPress = Nothing
+            { onPress = Just NewModel
             , label = el [ padding 10 ] <| text "New"
             }
         ]
@@ -584,9 +638,17 @@ graphPanel =
 
 view : Model -> Html Msg
 view model =
+    let
+        menuItems =
+            if model.showModelMenu then
+                Dict.keys model.others
+
+            else
+                []
+    in
     layout [ height fill ] <|
         column [ height fill, width fill ]
-            [ header model.current.title (Dict.keys model.others)
+            [ header model.current.title menuItems
             , row [ height fill, width fill ]
                 [ graphPanel, sidebar model ]
             ]
