@@ -3,7 +3,7 @@
  "stateVariables": [{"name": "S", "label": "S", "type": "float", "initial_value": "0"},
  		    {"name": "I", "label": "I", "type": "float", "initial_value": "0"}],
  "events": [{"name": "infect", "label": "infect", "rate": "beta*S*I/(total_pop)",
- 	     "input_predicate": "", "output_predicate": ""}],
+ 	     "input_predicate": "beta*S*I > 0.0", "output_predicate": "(S-=1, I+=1)"}],
  "constants": [{"name": "beta", "value": "extern"}],
  "expressions": [{"name": "total_pop", "value": "extern"}],
  "rateRewards": [],

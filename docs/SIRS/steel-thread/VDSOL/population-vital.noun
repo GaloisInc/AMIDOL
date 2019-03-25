@@ -1,0 +1,9 @@
+{ "noun": {
+  "className": "Population_Vital",
+  "classDef": "../AIR/population-vital.air",
+  "icon": "population-vital.svg",
+  "inputVariables": ["P"],
+  "outputVariables": ["P"],
+  "parameters": [{"name": "P", "value": "0"}, {"name": "mu", "value": 0}, {"name": "nu", "value": "0"},
+  		 {"name": "totalpop", "value": "0"]
+}}

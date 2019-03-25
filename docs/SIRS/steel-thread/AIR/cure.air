@@ -3,7 +3,7 @@
  "stateVariables": [{"name": "I", "label": "I", "type": "float", "initial_value": "0"},
  		    {"name": "R", "label": "R", "type": "float", "initial_value": "0"}],
  "events": [{"name": "cure", "label": "cure", "rate": "gamma*I",
- 	     "input_predicate": "", "output_predicate": ""}],
+ 	     "input_predicate": "I > 0.0", "output_predicate": "(I-=1, R+=1)"}],
  "constants": [{"name": "gamma", "value": "extern"}],
  "expressions": [],
  "rateRewards": [],
