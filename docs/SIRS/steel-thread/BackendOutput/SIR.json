@@ -1,0 +1,51 @@
+{ "nouns": ["S.noun", "I.noun", "R.noun"],
+  "verbs": ["infect.verb", "cure.verb"],
+  "edges": [{"source": "S.noun", "sink": "infect.verb"}, {"source": "infect.verb", "sink": "I.noun"},
+	    {"source": "I.noun", "sink": "cure.verb"}, {"source": "cure.verb", "sink": "R.noun"}]
+}
+
+{ "noun": {
+  "className": "S",
+  "classDef": "../AIR/population.air",
+  "icon": "person.svg",
+  "inputVariables": ["P"],
+  "outputVariables": ["P"],
+  "parameters": [{"name": "P", "value": "51999999"}]
+}}
+
+{ "noun": {
+  "className": "I",
+  "classDef": "../AIR/population.air",
+  "icon": "patient.svg",
+  "inputVariables": ["P"],
+  "outputVariables": ["P"],
+  "parameters": [{"name": "P", "value": "1"}]
+}}
+
+{ "noun": {
+  "className": "R",
+  "classDef": "../AIR/population.air",
+  "icon": "person.svg",
+  "inputVariables": ["P"],
+  "outputVariables": ["P"],
+  "parameters": [{"name": "P", "value": "0"}]
+}}
+
+{ "verb": {
+  "className": "infect",
+  "classDef": "../AIR/infect.air",
+  "icon": "virus.svg",
+  "inputVariables": ["S"],
+  "outputVariables": ["I"],
+  "parameters": [{"name": "beta", "value": "1.0/3.0 * 1.24"}, {"name": "total_pop", "value": "S_P + I_P + R_P"}]
+}}
+
+{ "verb": {
+  "className": "cure",
+  "classDef": "../AIR/cure.air",
+  "classIcon": "cure.svg",
+  "inputVariables": ["I"],
+  "outputVariables": ["R"],
+  "parameters": [{"name": "gamma", "value": "1.0/3.0"}]
+}}
+

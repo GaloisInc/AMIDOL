@@ -37,6 +37,19 @@ Basic user workflow begins by **loading** a project.
 }
 ```
 
+## Frontend Output schema
+
+```json
+{ "nouns": ["noun1.noun", "noun2.noun", ...],
+  "verbs": ["verb1.verb", "verb2.verb", ...],
+  "edges": [{"source": "noun1.noun", "sink": "verb1.verb"}, ...]
+}
+
+//Nouns
+
+//Verbs
+```
+
 ## Model composition schema
 
 ```json

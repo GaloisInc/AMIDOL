@@ -1,0 +1,10 @@
+{"irModel": {
+ "irModelName": "population_model",
+ "stateVariables": [{"name": "P", "label": "P", "type": "float", "initial_value": "0"}],
+ "events": [],
+ "constants": [],
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
+}}
