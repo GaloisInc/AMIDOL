@@ -2,3 +2,8 @@
 *~
 ir/target
 ir/project/target
+
+# Various tmp files
+ir/tmp_model.psc
+ir/tmp_output.json
+ir/tmp_script.py

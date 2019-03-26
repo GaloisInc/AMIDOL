@@ -56,6 +56,13 @@ object Main extends App with Directives with ui.UiJsonSupport {
               complete(SciPyLinearSteadyState.routeComplete(AppState.currentModel, inputs))
             }
           }
+        } ~
+        pathPrefix("pysces") {
+          path("integrate") {
+            parameters('inputs.as[PySCeS.Inputs]) { inputs =>
+              complete(PySCeS.routeComplete(AppState.currentModel, inputs))
+            }
+          }
         }
       }
     } ~

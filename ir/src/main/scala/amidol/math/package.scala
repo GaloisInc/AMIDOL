@@ -105,6 +105,15 @@ package object math {
       case Literal(d) => d
     }
 
+    def renameVariables(renamer: Renamer[Variable, Variable]): Expr = expr match {
+      case Plus(lhs, rhs) => Plus(lhs.renameVariables(renamer), rhs.renameVariables(renamer))
+      case Mult(lhs, rhs) => Mult(lhs.renameVariables(renamer), rhs.renameVariables(renamer))
+      case Negate(e) => Negate(e.renameVariables(renamer))
+      case Inverse(e) => Inverse(e.renameVariables(renamer))
+      case v: Variable => renamer.getOrInsert(v) 
+      case l: Literal => l
+
+    }
   }
 
 }
