@@ -1,0 +1,56 @@
+"stoichiometry": {
+  "species": {
+    "className": "species",
+    "type": "noun",
+    "classDef": "species.air",
+    "icon": "molecule.svg",
+    "inputVariables": ["S"],
+    "outputVariables": ["S"],
+    "parameters": [{"name": "S", "value": "0"}]
+  },
+  "reaction_1_1": {
+    "className": "reaction_1_1",
+    "type": "verb",
+    "classDef": "reaction_1_1.air",
+    "icon": "reaction_1_1.svg",
+    "inputVariables": ["A"],
+    "outputVariables": ["X"],
+    "parameters": [{"name": "k", "value": "1.0"}]
+  },
+  "reaction_1_2": {
+    "className": "reaction_1_2",
+    "type": "verb",
+    "classDef": "reaction_1_2.air",
+    "icon": "reaction_1_2.svg",
+    "inputVariables": ["A"],
+    "outputVariables": ["X", "Y"],
+    "parameters": [{"name": "k", "value": "1.0"}]
+  },
+  "reaction_2_1": {
+    "className": "reaction_2_1",
+    "type": "verb",
+    "classDef": "reaction_2_1.air",
+    "icon": "reaction_2_1.svg",
+    "inputVariables": ["A", "B"],
+    "outputVariables": ["X"],
+    "parameters": [{"name": "k", "value": "1.0"}]
+  },
+  "reaction_1_1x2": {
+    "className": "reaction_1_1x2",
+    "type": "verb",
+    "classDef": "reaction_1_1x2.air",
+    "icon": "reaction_1_1x2.svg",
+    "inputVariables": ["A"],
+    "outputVariables": ["X"],
+    "parameters": [{"name": "k", "value": "1.0"}]
+  },
+  "reaction_2_1": {
+    "className": "reaction_1x2_1",
+    "type": "verb",
+    "classDef": "reaction_1x2_1.air",
+    "icon": "reaction_1x2_1.svg",
+    "inputVariables": ["A"],
+    "outputVariables": ["X"],
+    "parameters": [{"name": "k", "value": "1.0"}]
+  }
+}
