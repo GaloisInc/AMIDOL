@@ -1,0 +1,561 @@
+<!doctype html>
+<meta charset="utf-8">
+<head>
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="vis-4.21.0.min.js"></script>
+	<script type="text/javascript" src="underscore-1.9.1.min.js"></script>
+	<link rel="stylesheet" href="vis-4.21.0.min.css" type="text/css" />
+
+<script type="text/javascript">
+
+	var node_data_set, edge_data_set, network;
+	var global_vars = { global_count : 0 };
+	var reward_vars = [ { name: "foo", opt1: 0, opt2: 1, range: { start: 0, end: 100, step: 5 }} ];
+
+	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
+
+	function getOrElse(value, alternate) {
+		if (typeof value != "undefined" && value != null) {
+			return value
+		} else {
+			return alternate
+		}
+	}
+
+	var journal = {
+		past : [],
+		future : [],
+
+		// `apply`, `undo`, and `redo` manage the journals _and_ trigger effects through applyEventEffects
+		apply: function(event) {
+			this.past.push(event)
+			this.future = []
+			this.applyEventEffects(event)
+		},
+
+		undo : function() {
+			if (this.past.length > 0) {
+				var journal_event = this.past.pop()
+				this.future.unshift(journal_event)
+				this.applyEventEffects(this.invertEvent(journal_event))
+			}
+		},
+
+		redo : function() {
+			if (this.future.length > 0) {
+				var journal_event = this.future.shift()
+				this.past.push(journal_event)
+				this.applyEventEffects(journal_event)
+			}
+		},
+
+
+		// Purpose: cause UI side effects... and nothing else. 
+		// Always call last, after setting the relevant shared states.
+		applyEventEffects : function(event) {
+			switch (event.type) {
+				case "add":
+					node_data_set.add(event.nodes)
+					edge_data_set.add(event.edges)
+					break
+				case "subtract":
+					var node_ids_to_remove = _.pluck(event.nodes, "id")
+					var edge_ids_to_remove = _.pluck(event.edges, "id")
+					node_data_set.remove(node_ids_to_remove)
+					edge_data_set.remove(edge_ids_to_remove)
+					break
+				case "move":
+					_.mapObject(event.to, function(pos, nodeId){
+						node_data_set.update({id: nodeId, x: pos.x, y: pos.y})
+					})
+					break
+				case "renameEdge":
+					edge_data_set.update({id: event.id, label: event.to})
+					break
+				case "renameNode":
+					node_data_set.update({id: event.id, label: event.to})
+					UI.render.localVars(event.id)
+					break
+				case "setProp":
+					// { type: "setProp", id: 0, key: "", previous: "", updated: "" }
+					var newParams = _.clone(get(node_data_set.get(event.id), ['props', 'parameters']))
+					var newParamList = _.filter(newParams, (kv) => kv.name != event.key)
+					if (event.updated !== null) {
+						newParamList.push({ name: event.key, value: event.updated })
+					}
+					var newProps = _.clone(get(node_data_set.get(event.id), ['props']))
+					newProps['parameters'] = newParamList
+					node_data_set.update({ id: event.id, props: newProps })
+					break
+				default:
+					console.log("Unknown event in applyEventEffects: " + JSON.stringify(event))
+					break
+			}
+			UI.updateButtonStates()
+		},
+
+		invertEvent : function(initial_event) {
+			var event = _.clone(initial_event)  // make a copy, return a new object
+			switch (event.type) {
+				case "add":
+					event.type = "subtract"
+					return event
+				case "subtract":
+					event.type = "add"
+					return event
+				case "move":
+					var from = event.from
+					event.from = event.to
+					event.to = from
+					return event
+				case "renameEdge":
+					var from = event.from
+					event.from = event.to
+					event.to = from
+					return event
+				case "renameNode":
+					var from = event.from
+					event.from = event.to
+					event.to = from
+					return event
+				case "setProp":
+					var previous = event.previous
+					event.previous = event.updated
+					event.updated = previous
+					return event
+				default:
+					console.log("Unknown event in invertEvent: " + JSON.stringify(event))
+					return event
+			}
+		},
+
+		logHistory : function() {
+			console.log(
+				JSON.stringify(
+					[ _.map(journal.past, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}),
+					  _.map(journal.future, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}) ]
+				)
+			)
+		}
+	}
+
+	var UI = {
+		render: {
+			palette : function(palette) {
+				$("#palette.paletteItem").remove()
+				$("#palette").append(_.map(Object.values(palette), function(p){
+					return $("<img />").attr({src: p.icon, classname: p.className}).attr("onclick", "UI.selectPaletteNode(this)").addClass("paletteItem").addClass(p.type)
+				}))
+				if ($(".selected").length == 0) { $(".paletteItem").first().addClass("selected") }
+			},
+			localVars : function(id) {
+				var vs = $("#localVars")
+				vs.empty()
+				if (_.isNull(id)) {
+					vs.append("<p>Select a node to display its variables</p><h1>Global Variables:</h1>")
+					_.mapObject(global_vars, (v, k) => vs.append(
+						$("<div>"+k+': <input value="'+v+'" onblur=""></input></div>')
+					))
+				} else {
+					var thisNode = node_data_set.get(id)
+					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">back to global variables</p><h1>' + getOrElse(thisNode.label, "(no_name)") + "</h1>")
+					var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
+					vs.append(_.map(vars, function(v){
+						return $("<div>"+v.name+': <input value="'+v.value+'" onblur="UI.propBlur({id: '+id+'}, \''+v.name+'\', this.value)"></input></div>')
+					}))
+				}
+			},
+			rewardVars : function() {
+				// type items = [ { id: String, var1: Integer, var2: Integer, field: String }, … ]
+				var rvs = $("#rewardVars")
+				rvs.empty()
+				rvs.append("<h1>Reward Variables:</h1>")
+				rvs.append(_.map(reward_vars, function(r){
+					return $('<div>'+r.name+': <input value="'+r.opt1+'"></input><input value="'+r.opt2+'"></input><input value="'+r.range.start+'"></input><input value="'+r.range.end+'"></input><input value="'+r.range.step+'"></input></div>')
+				}))
+			},
+			network : function() {
+				var data = { "nodes" : [], "edges" : [] }
+				var options = {
+					physics: false,
+					nodes: {
+						shape: "image"
+					},
+					edges: {
+						smooth: false,
+						color: { color: "black" },
+						arrows: "to"
+					},
+					manipulation: {
+						initiallyActive: true,
+						addNode: function(node, callback){
+							node.label = prompt("Name your new node:")
+							if (node.label != null) {
+								node.image = $("#palette img.selected").attr("src")
+								var className = $("#palette img.selected").attr("classname")
+								var node = UI.makeNode(node, className)
+								journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
+							}
+						},
+						addEdge: function(edge, callback){
+							// edge.label = prompt("Edge label:")
+							var fromType = get(node_data_set.get(edge.from), ['props', 'type'])
+							var toType = get(node_data_set.get(edge.to), ['props', 'type'])
+							if (fromType !== toType) {
+								journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
+							} else {
+								alert("Cannot draw edges between two " + fromType + "s.")
+							}
+						},
+						editEdge: false,
+						// editNode: function(node, callback) {
+						// 	var props = getOrElse(node.props, [])
+						// 	UI.render.localVars(node.id, node.label, props)
+						// 	callback() // returns the editing bar to its normal state
+						// },
+						deleteNode: function(dataIds, callback) {
+							journal.apply( { 
+								"type": "subtract", 
+								"nodes": node_data_set.get(dataIds.nodes), 
+								"edges": edge_data_set.get(dataIds.edges)
+							} )
+						},
+						deleteEdge: function(dataIds, callback) {
+							journal.apply( { 
+								"type": "subtract", 
+								"nodes": node_data_set.get(dataIds.nodes), 
+								"edges": edge_data_set.get(dataIds.edges) 
+							} )
+						}
+					}
+				}
+
+				node_data_set = new vis.DataSet(data.nodes)
+				edge_data_set = new vis.DataSet(data.edges)
+
+				var container = document.getElementById('graph')
+				var network_data = { "nodes" : node_data_set, "edges" : edge_data_set}
+				network = new vis.Network(container, network_data, options)
+
+				network.on("oncontext", UI.networkRightClick)
+				network.on("doubleClick", function(e){
+					// Renameing nodes and edges:
+					if (_.size(e.nodes) == 1) {
+						var newName = prompt("New node name:")
+						if (newName !== null) {
+							UI.renameNode(e.nodes[0], newName)
+						}
+					} 
+					// else { if (_.size(e.edges) == 1) {
+					// 	var newName = prompt("New edge name:")
+					// 	if (newName !== null) {
+					// 		UI.renameEdge(e.edges[0], newName)
+					// 	}
+					// }}
+				})
+				// network.on("oncontext", function(){})
+				network.on("selectNode", function(data){
+					if (data.nodes.length == 1) {
+						UI.render.localVars(data.nodes[0])
+					}
+				})
+				network.on("deselectNode", function(data){
+					UI.render.localVars(null)
+				})
+				// network.on("selectEdge", function(data){console.log("selectEdge"); console.log(data)})
+				// network.on("deselectEdge", function(data){console.log("deselectEdge"); console.log(data)})
+				network.on("hold", function(e){
+					console.log(e)
+				})
+				network.on("dragStart", function(e){
+					var selectedNodes = network.getSelectedNodes()
+					if ( ! _.isEmpty(selectedNodes)) {
+						UI.movingNodes = network.getPositions(selectedNodes)
+					}
+				})
+				network.on("dragEnd", function(e){
+					if (UI.movingNodes != null) {
+						var from = UI.movingNodes
+						var to = network.getPositions(_.keys(UI.movingNodes))
+						UI.movingNodes = null
+						journal.past.push({ "type" : "move", "from": from, "to": to })
+					}
+				})
+				// $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
+			}
+		},
+
+		makeNode : function(node, className) {
+			if ( ! node.hasOwnProperty("id")) { 
+				function randomUuid() {
+					return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+						var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+						return v.toString(16)
+					})
+				}
+				node.id = randomUuid()
+			}
+			node.props = _.clone(availablePalettes[chosenPalette][className])
+			node.image = node.props.icon
+			return node
+		},
+
+		// This is a terrible hack!
+		propBlur: function(idObj, key, val){
+			UI.setProp(idObj.id, key, val)
+		},
+
+		setProp: function(id, key, value) {
+			var paramList = get(node_data_set.get(id), ['props', 'parameters'])
+			var previous = get(_.find(paramList, (p) => p.name === key), ['value'])
+			journal.apply(
+				{ type: "setProp", id: id, key: key, previous: previous, updated: value }
+			)
+		},
+
+		renameEdge : function(edgeId, newName) {
+			var existing = edge_data_set.get(edgeId)
+			var event = {type: "renameEdge", id: edgeId, from: existing.label, to: newName}
+			journal.apply(event)
+		},
+
+		renameNode : function(nodeId, newName) {
+			var existing = node_data_set.get(nodeId)
+			var event = {type: "renameNode", id: nodeId, from: existing.label, to: newName}
+			journal.apply(event)
+		},
+		
+		updateButtonStates : function() {
+			if (_.isEmpty(journal.past)) {
+				$("#undo_button").addClass("disabled")
+			} else {
+				$("#undo_button").removeClass("disabled")
+			}
+			if (_.isEmpty(journal.future)) {
+				$("#redo_button").addClass("disabled")
+			} else {
+				$("#redo_button").removeClass("disabled")
+			}
+			var selectedNodes = network.getSelectedNodes()
+			if (selectedNodes.length == 1) {
+				UI.render.localVars(selectedNodes[0])
+			} else {
+				UI.render.localVars(null)
+			}
+		},
+
+		selectPaletteNode : function(elem) {
+			$("#palette img").removeClass("selected")
+			$(elem).addClass("selected")
+		},
+
+		networkRightClick : function(context) {
+			context.event.preventDefault()
+		},
+
+		movingNodes : null, // or:  { nodeId1: {x: xValue, y: yValue}, … }
+
+		download : function() {
+			var data = { journal: journal.past, reward_vars: reward_vars, global_vars: global_vars }
+			var blob = new Blob([JSON.stringify(data)], {type: "application/json"})
+			var a = document.createElement('a')
+			a.download = "model.json"
+			a.href = URL.createObjectURL(blob)
+			a.target = "_blank"
+			a.click()
+		},
+
+		upload : function(event) {
+			var files = event.target.files
+			_.map(files, function(f){
+				if (f.type === "application/json") {
+					journal.future = []
+					var reader = new FileReader()
+					reader.onload = function(e) {
+						var data = JSON.parse(e.target.result)
+						journal.future = journal.future.concat(data.journal)
+						global_vars = data.global_vars
+						reward_vars = data.reward_vars
+						UI.updateButtonStates()
+					}
+					reader.onloadend = function(e) {
+						do { $("#redo_button").click() }
+						while ( ! $("#redo_button").hasClass("disabled"))
+						UI.render.reward_vars()
+						UI.render.localVars()
+					}
+					reader.readAsText(f)
+				}
+			})
+		}
+	}
+
+
+	var IR = {
+		submit : function(){ 
+			console.log("Sending:"); console.log(IR.getData())
+			$.post("/submit", IR.getData(), function(data, status, jqXHR) {
+				alert(data)
+			} )
+		},
+
+		getData : function(){
+			return {
+				"nodes" : node_data_set.getDataSet()._data,
+				"edges" : edge_data_set.getDataSet()._data,
+				"rewardVars": reward_vars,
+				"globalVars": global_vars
+			}
+		}
+	}
+
+
+	var chosenPalette = "sir"
+	var availablePalettes = {
+		"sir" : {
+			"population": {
+				"className": "population",
+				"type": "noun",
+				"classDef": "population.air",
+				"icon": "images/person.svg",
+				"inputVariables": ["P"],
+				"outputVariables": ["P"],
+				"parameters": [{"name": "P", "value": "0"}]
+			}, 
+			"patient" : {
+				"className": "patient",
+				"type": "noun",
+				"classDef": "patient.air",
+				"icon": "images/patient.svg",
+				"inputVariables": ["P"],
+				"outputVariables": ["P"],
+				"parameters": [{"name": "P", "value": "0"}]
+			}, 
+			"infect": {
+				"className": "infect",
+				"type": "verb",
+				"classDef": "infect.air",
+				"icon": "images/virus.svg",
+				"inputVariables": ["S"],
+				"outputVariables": ["I"],
+				"parameters": [
+					{"name": "beta", "value": "0"},
+					{"name": "total_pop", "value": "0"}
+				]
+			},
+			"cure": {
+				"className": "cure",
+				"type": "verb",
+				"classDef": "cure.air",
+				"icon": "images/cure.svg",
+				"inputVariables": ["I"],
+				"outputVariables": ["R"],
+				"parameters": [{"name": "gamma", "value": "0"}]
+			}
+		}
+	}
+
+
+
+	$(function(){
+		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
+
+		var p = availablePalettes[chosenPalette]
+		var startingPalette = availablePalettes[chosenPalette] 
+
+		UI.render.palette(startingPalette)
+		UI.render.localVars(null)
+		UI.render.rewardVars([])
+		UI.render.network()
+		UI.updateButtonStates()
+
+		var sample_nodes = [
+			UI.makeNode({id: 1, label: "Susceptible", x: -350, y: 0}, "population"), 
+			UI.makeNode({id: 2, label: "Exposed", x: -175, y: 0}, "infect"),
+			UI.makeNode({id: 3, label: "Infected", x: -0, y: 0}, "patient"),
+			UI.makeNode({id: 4, label: "Cured", x: 175, y: 0}, "cure"),
+			UI.makeNode({id: 5, label: "Recovered", x: 350, y: 0}, "population")
+		]
+		var sample_edges = [
+			{id: "a", from: 1, to: 2},
+			{id: "b", from: 2, to: 3},
+			{id: "c", from: 3, to: 4},
+			{id: "d", from: 4, to: 5},
+		]
+
+		journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
+	})
+
+</script>
+
+<style type="text/css">
+	html, body, #graph {
+		padding: 0px;
+		margin: 0px;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+	}
+	#header {
+		text-align: center;
+	}
+	#graph {
+		float:left;
+		width: 80%;
+		/*border: 5px solid gray;*/
+	}
+	#palette img {
+		margin: 5px;
+		padding: 5px;
+		height: 50px;
+		border: 5px solid white;
+	}
+	.verb {
+		fill: gray;
+	}
+	#palette img.selected {
+		border-color: lightblue;
+	}
+	#palette .right {
+		float: right;
+		height: 25px;
+	}
+	#palette img.disabled {
+		opacity: 0.25;
+	}
+	#variables {
+		height: 100%;
+		width: 20%;
+		border-color: green;
+		float: left;
+	}
+	#localVars {
+		width: 100%;
+		height: 50%;
+		float: left;
+		background-color: lightblue;
+	}
+	#rewardVars {
+		width: 100%;
+		height: 50%;
+		float: left;
+		background-color: lightgray;
+	}
+
+</style></head>
+<body>
+	<!-- <div id="header"><h1>SIR</h1></div> -->
+	<div id="palette">
+		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
+		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />
+		<img id="undo_button" class="right" src="images/undo.png" onclick="journal.undo()" />
+		<img id="upload" class="right" src="images/upload.png" onclick="document.getElementById('choose-upload').click()" />
+		<img id="download" class="right" src="images/download.png" onclick="UI.download()" />
+		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
+	</div>
+	<div id="graph"></div>
+	<div id="variables">
+		<div id="localVars"></div>
+		<div id="rewardVars"></div>
+	</div>
+</body>
