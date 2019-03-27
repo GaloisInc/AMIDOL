@@ -15,12 +15,12 @@ object SciPyIntegrate extends ContinuousInitialValue {
   val backendDescription: String = "Generates SciPy code to integrate an ODE system"
   
   // TODO: revisit this when we have discrete events
-  def applicable(model: Graph): Boolean = true
+  def applicable(model: Model): Boolean = true
 
   // TODO: do we want proper AST manipulation
   type Python = String
 
-  def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
+  def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
     for {
       constants <- Try(inputs.constants.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
       boundary  <- Try(inputs.boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
@@ -32,11 +32,11 @@ object SciPyIntegrate extends ContinuousInitialValue {
       ).map(_.toDouble)
 
       // Set up the system of differential equations 
-      stateVars: List[NodeId] = model.nodes.keys.toList
-      derivatives: Map[NodeId, math.Expr] = {
-        var builder = Map.empty[NodeId, math.Expr]
+      stateVars: List[NounId] = model.nouns.keys.toList
+      derivatives: Map[NounId, math.Expr] = {
+        var builder = Map.empty[NounId, math.Expr]
 
-        for ((_, Edge(_, src, tgt, expr)) <- model.edges) {
+        for ((_, Verb(_, src, tgt, expr)) <- model.verbs) {
           builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
           builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
         }
@@ -45,9 +45,9 @@ object SciPyIntegrate extends ContinuousInitialValue {
       }
 
       // Pretty printing
-      stateVarsStr   = stateVars.map(i => model.nodes(i).stateVariable.prettyPrint())
-      derivativesStr = derivatives.toList.map(ie => s"d${model.nodes(ie._1).stateVariable.prettyPrint()}_ = ${ie._2.prettyPrint()}") 
-      initialCondStr = stateVars.map(i => boundary(model.nodes(i).stateVariable))
+      stateVarsStr   = stateVars.map(i => model.nouns(i).stateVariable.prettyPrint())
+      derivativesStr = derivatives.toList.map(ie => s"d${model.nouns(ie._1).stateVariable.prettyPrint()}_ = ${ie._2.prettyPrint()}") 
+      initialCondStr = stateVars.map(i => boundary(model.nouns(i).stateVariable))
       constantsStr   = constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
       writeImageFile = inputs.savePlot
 
@@ -118,24 +118,24 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
                                    "points of a linear system"
 
   // TODO: revisit this when we have discrete events
-  def applicable(model: Graph): Boolean = true
+  def applicable(model: Model): Boolean = true
 
   // TODO: do we want proper AST manipulation
   type Python = String
 
-  def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
+  def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
 
     // Extract the system
     val eqns: Map[math.Variable, math.Expr] = {
-      var builder: Map[NodeId, math.Expr] = model.nodes.keys.map(_ -> (0: math.Expr)).toMap
+      var builder: Map[NounId, math.Expr] = model.nouns.keys.map(_ -> (0: math.Expr)).toMap
 
-      for ((_, Edge(_, src, tgt, expr)) <- model.edges) {
+      for ((_, Verb(_, src, tgt, expr)) <- model.verbs) {
         builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
         builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
       }
 
       builder
-        .map { case (nId, exp) => model.nodes(nId).stateVariable -> exp }
+        .map { case (nId, exp) => model.nouns(nId).stateVariable -> exp }
         .toMap
     }
 

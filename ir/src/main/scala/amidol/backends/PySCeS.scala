@@ -15,13 +15,13 @@ object PySCeS extends ContinuousInitialValue {
   val backendDescription: String = ""
   
   // TODO: revisit this when we have discrete events
-  def applicable(model: Graph): Boolean = true
+  def applicable(model: Model): Boolean = true
 
   // TODO: do we want proper AST manipulation
   type Python = String
   type PySCeS = String
 
-  def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
+  def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
     // PySCeS doesn't like unicode =.=
     val renamer = Renamer.filterAscii()
 
@@ -30,9 +30,9 @@ object PySCeS extends ContinuousInitialValue {
       boundary  <- Try(inputs.boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
 
       // Pretty-printing
-      reactions: List[PySCeS] = model.edges.toList.map { case (_, Edge(edgeId, src, tgt, expr)) =>
-        val srcVar = renamer.getOrInsert(model.nodes(src).stateVariable)
-        val tgtVar = renamer.getOrInsert(model.nodes(tgt).stateVariable)
+      reactions: List[PySCeS] = model.verbs.toList.map { case (_, Verb(edgeId, src, tgt, expr)) =>
+        val srcVar = renamer.getOrInsert(model.nouns(src).stateVariable)
+        val tgtVar = renamer.getOrInsert(model.nouns(tgt).stateVariable)
         s"""|reaction_${edgeId.id.toString.replace('-','n')}:
             |     ${srcVar.prettyPrint()} > ${tgtVar.prettyPrint()}
             |     ${expr.renameVariables(renamer).prettyPrint()}
@@ -92,7 +92,7 @@ object PySCeS extends ContinuousInitialValue {
       outputMap <- Try {
         Files.write(Paths.get("tmp_script.py"), pythonCode.getBytes)
         println("Running `python tmp_script.py`...")
-        "python tmp_script.py".! // blocks until script returns
+        "python tmp_script.py" ! ProcessLogger(_ => ()) // blocks until script returns
         scala.io.Source.fromFile("tmp_output.json").mkString
       }
 

@@ -26,13 +26,13 @@ package object backends {
     type Outputs
     implicit def outputsFormat: RootJsonFormat[Outputs]
 
-    /** Is this a backend we can [[run]] on our [[Graph]]? */
-    def applicable(model: Graph): Boolean
+    /** Is this a backend we can [[run]] on our [[Model]]? */
+    def applicable(model: Model): Boolean
 
     /** Run the backend */
-    def run(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]]
+    def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]]
 
-    final def routeComplete(model: Graph, inputs: Inputs)(implicit ec: ExecutionContext): Future[Option[Outputs]] =
+    final def routeComplete(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Option[Outputs]] =
       Future(applicable(model)).flatMap { isApplicable: Boolean =>
         if (isApplicable) {
           run(model, inputs).map {

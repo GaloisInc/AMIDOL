@@ -18,7 +18,7 @@ object convert {
   }
   
   
-  implicit object graphRepr extends UiRepresentable[amidol.Graph] {
+  implicit object graphRepr extends UiRepresentable[amidol.Model] {
     type UiRepr = ui.Graph
 
     private def sequenceTry[A](s: Seq[Try[A]]): Try[Seq[A]] = {
@@ -34,31 +34,31 @@ object convert {
       Success(builder.result)
     }
 
-    def fromUi(g: ui.Graph): Try[amidol.Graph] = for {
-      gNodes <- sequenceTry[amidol.Node](g.nodes.map(nodeRepr.fromUi(_)))
-      gNodesMap = gNodes.map(n => n.id -> n).toMap
-      gEdges <- sequenceTry[amidol.Edge](g.links.map(edgeRepr.fromUi(_)))
-      gEdgesMap = gEdges.map(e => e.id -> e).toMap
-    } yield amidol.Graph(gNodesMap, gEdgesMap)
+    def fromUi(g: ui.Graph): Try[amidol.Model] = for {
+      gNodes <- sequenceTry[amidol.Noun](g.nodes.map(nodeRepr.fromUi(_)))
+      gNouns = gNodes.map(n => n.id -> n).toMap
+      gEdges <- sequenceTry[Verb](g.links.map(edgeRepr.fromUi(_)))
+      gVerbs = gEdges.map(e => e.id -> e).toMap
+    } yield amidol.Model(gNouns, gVerbs)
 
-    def toUi(g: amidol.Graph): ui.Graph = ui.Graph(
-      g.nodes.values.map(nodeRepr.toUi(_)).toSeq,
-      g.edges.values.map(edgeRepr.toUi(_)).toSeq
+    def toUi(g: amidol.Model): ui.Graph = ui.Graph(
+      g.nouns.values.map(nodeRepr.toUi(_)).toSeq,
+      g.verbs.values.map(edgeRepr.toUi(_)).toSeq
     )
   }
 
-  implicit object nodeRepr extends UiRepresentable[amidol.Node] {
+  implicit object nodeRepr extends UiRepresentable[amidol.Noun] {
     type UiRepr = ui.Node
 
-    def fromUi(n: ui.Node): Try[amidol.Node] = for {
+    def fromUi(n: ui.Node): Try[amidol.Noun] = for {
         exp <- math.Expr(n.label)
-        nId = NodeId(n.id)
+        nId = NounId(n.id)
         nStateVar <- exp.asVariable
         nView = n.view
         nLocation = n.location
-      } yield amidol.Node(nId, nStateVar, nView, nLocation)
+      } yield amidol.Noun(nId, nStateVar, nView, nLocation)
     
-    def toUi(n: amidol.Node): ui.Node = ui.Node(
+    def toUi(n: amidol.Noun): ui.Node = ui.Node(
         n.id.id,
         n.view,
         n.stateVariable.prettyPrint(),
@@ -66,17 +66,17 @@ object convert {
       )
   }
 
-  implicit object edgeRepr extends UiRepresentable[amidol.Edge] {
+  implicit object edgeRepr extends UiRepresentable[Verb] {
     type UiRepr = ui.Link
 
-    def fromUi(e: ui.Link): Try[amidol.Edge] = for {
+    def fromUi(e: ui.Link): Try[Verb] = for {
         eLabel <- math.Expr(e.label)
-        eId = EdgeId(e.id)
-        eSource = NodeId(e.source)
-        eTarget = NodeId(e.target)
-      } yield amidol.Edge(eId, eSource, eTarget, eLabel)
+        eId = VerbId(e.id)
+        eSource = NounId(e.source)
+        eTarget = NounId(e.target)
+      } yield Verb(eId, eSource, eTarget, eLabel)
 
-    def toUi(e: amidol.Edge): ui.Link = ui.Link(
+    def toUi(e: Verb): ui.Link = ui.Link(
         e.id.id,
         e.source.id,
         e.target.id,

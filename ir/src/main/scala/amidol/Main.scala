@@ -21,7 +21,7 @@ object Main extends App with Directives with ui.UiJsonSupport {
   // TODO: eventually, think about thread safety here (what happens if someone changes the model
   // while the backend is running?)
   object AppState {
-    var currentModel: Graph = Graph(Map.empty, Map.empty) 
+    var currentModel: Model = Model(Map.empty, Map.empty) 
   }
 
   // Set up actor system and contexts

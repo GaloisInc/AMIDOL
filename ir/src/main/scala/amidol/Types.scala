@@ -6,16 +6,16 @@ import java.util.Date
 
 // All of this file is subject to a ton of change! No idea what the best way is to handle this...
 
-case class NodeId(id: Long) extends AnyVal
-case class EdgeId(id: Long) extends AnyVal
+case class NounId(id: Long) extends AnyVal
+case class VerbId(id: Long) extends AnyVal
 
-case class Graph(
-  nodes: Map[NodeId, Node],
-  edges: Map[EdgeId, Edge]
+case class Model(
+  nouns: Map[NounId, Noun],
+  verbs: Map[VerbId, Verb]
 )
 
-case class Node(
-  id: NodeId,
+case class Noun(
+  id: NounId,
   stateVariable: Variable,
   
   // Only for pruposes of recreating ui.Graph. TODO: should we remove?
@@ -23,10 +23,10 @@ case class Node(
   location: ui.Point
 )
 
-case class Edge(
-  id: EdgeId,
-  source: NodeId, 
-  target: NodeId,
+case class Verb(
+  id: VerbId,
+  source: NounId, 
+  target: NounId,
   label: Expr
 )
 
