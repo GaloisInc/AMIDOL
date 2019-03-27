@@ -1,0 +1,11 @@
+"birth": {
+                "className": "birth",
+                "type": "verb",
+                "classDef": "birth.air",
+                "icon": "images/birth.svg",
+                "inputVariables": ["P"],
+                "outputVariables": ["Q"],
+                "parameters": [
+                    {"name": "mu", "value": "0"}
+                ]
+            }
