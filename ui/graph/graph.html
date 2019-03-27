@@ -393,8 +393,10 @@
 
 	var IR = {
 		submit : function(){ 
-			$.post("/submit", IR.getData() )
-			alert(JSON.stringify(IR.getData())) 
+			console.log("Sending:"); console.log(IR.getData())
+			$.post("/submit", IR.getData(), function(data, status, jqXHR) {
+				alert(data)
+			} )
 		},
 
 		getData : function(){
