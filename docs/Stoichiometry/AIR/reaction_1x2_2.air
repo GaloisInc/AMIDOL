@@ -1,0 +1,12 @@
+{"irModel": {
+ "irModelName": "reaction_1x2_2",
+ "stateVariables": [{"name": "A", "label": "A", "type": "float", "initial_value": "0.0"},
+                    {"name": "X", "label": "X", "type": "float", "initial_value": "0.0"}],
+ "events": [{"name": "react", "label": "react", "rate": "k * A * A",
+             "input_predicate": "(A > 1)", "output_predicate": "(A -= 2.0, X += 2.0)"}],
+ "constants": [{"name": "k", "value": "1.0"}],
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
+}}
