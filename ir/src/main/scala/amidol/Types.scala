@@ -27,7 +27,7 @@ case class Verb(
   id: VerbId,
   source: NounId, 
   target: NounId,
-  label: Expr
+  label: Expr      // TODO rename to "rate" or such
 )
 
 

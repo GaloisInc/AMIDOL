@@ -37,41 +37,53 @@ object Main extends App with Directives with ui.UiJsonSupport {
   val route = respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*)) {
     get {
       path("") {
-        getFromFile("../ui/index.html")  // Serve up the Elm-generated UI
+        getFromResource("web/graph.html")
+      } ~
+      pathPrefix("") {
+        getFromDirectory(new java.io.File("src/main/resources/web").getCanonicalPath)
       } ~
       pathPrefix("appstate") {
         path("model") {
           complete(ui.convert.graphRepr.toUi(AppState.currentModel))
         }
-      } ~
-      pathPrefix("backends") {
-        pathPrefix("scipy") {
-          path("integrate") {
-            parameters('inputs.as[SciPyIntegrate.Inputs]) { inputs =>
-              complete(SciPyIntegrate.routeComplete(AppState.currentModel, inputs))
-            }
-          } ~
-          path("cmtc-equilibrium") {
-            parameters('inputs.as[SciPyLinearSteadyState.Inputs]) { inputs =>
-              complete(SciPyLinearSteadyState.routeComplete(AppState.currentModel, inputs))
-            }
-          }
-        } ~
-        pathPrefix("pysces") {
-          path("integrate") {
-            parameters('inputs.as[PySCeS.Inputs]) { inputs =>
-              complete(PySCeS.routeComplete(AppState.currentModel, inputs))
-            }
-          }
-        }
-      }
+      }// ~
+   //   pathPrefix("backends") {
+   //     pathPrefix("scipy") {
+   //       path("integrate") {
+   //         parameters('inputs.as[SciPyIntegrate.Inputs]) { inputs =>
+   //           complete(SciPyIntegrate.routeComplete(AppState.currentModel, inputs))
+   //         }
+   //       } ~
+   //       path("cmtc-equilibrium") {
+   //         parameters('inputs.as[SciPyLinearSteadyState.Inputs]) { inputs =>
+   //           complete(SciPyLinearSteadyState.routeComplete(AppState.currentModel, inputs))
+   //         }
+   //       }
+   //     } ~
+   //     pathPrefix("pysces") {
+   //       path("integrate") {
+   //         parameters('inputs.as[PySCeS.Inputs]) { inputs =>
+   //           complete(PySCeS.routeComplete(AppState.currentModel, inputs))
+   //         }
+   //       }
+   //     }
+   //   }
+    } ~
+    options {
+      complete(
+        Success("Yay")
+      )
     } ~
     post {
       pathPrefix("appstate") {
         path("model") {
-          entity(as[ui.Graph]) { newModel: ui.Graph =>
+         // entity(as[ui.Graph]) { newModel: ui.Graph =>
+          formField(
+            'model.as[uinew.Graph],
+            'globalVariables.as[Map[String,Double]]
+          ) { case (newModel: uinew.Graph, globalVariables: Map[String,Double]) =>
             complete {
-              ui.convert.graphRepr.fromUi(newModel) match {
+              uinew.convert.graphRepr.fromUi(newModel) match {
                 case Success(parsed) =>
                   AppState.currentModel = parsed
                   StatusCodes.Created -> s"Model has been updated"
@@ -82,14 +94,39 @@ object Main extends App with Directives with ui.UiJsonSupport {
             }
           }
         }
+      } ~
+      pathPrefix("backends") {
+        pathPrefix("scipy") {
+          path("integrate") {
+            entity(as[SciPyIntegrate.Inputs]) { inputs =>
+              complete(
+                StatusCodes.Created -> SciPyIntegrate.routeComplete(AppState.currentModel, inputs)
+              )
+            }
+          }// ~
+      //    path("cmtc-equilibrium") {
+      //      parameters('inputs.as[SciPyLinearSteadyState.Inputs]) { inputs =>
+      //        complete(SciPyLinearSteadyState.routeComplete(AppState.currentModel, inputs))
+      //      }
+      //    }
+        }// ~
+     //   pathPrefix("pysces") {
+     //     path("integrate") {
+     //       parameters('inputs.as[PySCeS.Inputs]) { inputs =>
+     //         complete(PySCeS.routeComplete(AppState.currentModel, inputs))
+     //       }
+     //     }
+     //   }
       }
     }
   }
 
   // Start the server
-  val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
+  val address = "localhost"
+  val port = 8080
+  val bindingFuture = Http().bindAndHandle(route, address, port)
 
-  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
+  println(s"Server online at http://$address:$port/\nPress RETURN to stop...")
   StdIn.readLine() // let it run until user presses return
   bindingFuture
     .flatMap(_.unbind()) // trigger unbinding from the port
