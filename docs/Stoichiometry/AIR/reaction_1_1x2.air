@@ -3,7 +3,7 @@
  "stateVariables": [{"name": "A", "label": "A", "type": "float", "initial_value": "0.0"},
                     {"name": "X", "label": "X", "type": "float", "initial_value": "0.0"}],
  "events": [{"name": "react", "label": "react", "rate": "k * A",
-             "input_predicate": "(A > 0)", "output_predicate": "(A -= 1.0, X += 1.0)"}],
+             "input_predicate": "(A > 0)", "output_predicate": "(A -= 1.0, X += 2.0)"}],
  "constants": [{"name": "k", "value": "1.0"}],
  "expressions": [],
  "rateRewards": [],
