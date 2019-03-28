@@ -1,0 +1,11 @@
+{"irModel": {
+ "irModelName": "death_model",
+ "stateVariables": [{"name": "P", "label": "P", "type": "float", "initial_value": "0"}],
+ "events": [{"name": "death", "label": "death", "rate": "nu*P",
+ 	     "input_predicate": "P > 0.0", "output_predicate": "(P-=1)"}],
+ "constants": [{"name": "nu", "value": "extern"}],
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
+}}

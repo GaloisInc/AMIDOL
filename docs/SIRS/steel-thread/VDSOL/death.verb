@@ -1,0 +1,11 @@
+"death": {
+                "className": "death",
+                "type": "verb",
+                "classDef": "death.air",
+                "icon": "images/death.svg",
+                "inputVariables": ["P"],
+                "outputVariables": [],
+                "parameters": [
+                    {"name": "nu", "value": "0"}
+                ]
+            },
