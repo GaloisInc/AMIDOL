@@ -2,7 +2,7 @@ package amidol.ui
 
 import amidol._
 import scala.util._
-
+/*
 object convert {
 
   // Typeclass for converting into and out of UI types
@@ -85,3 +85,4 @@ object convert {
   }
 
 }
+*/

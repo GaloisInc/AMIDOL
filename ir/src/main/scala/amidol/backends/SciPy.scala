@@ -43,9 +43,22 @@ object SciPyIntegrate extends ContinuousInitialValue {
       derivatives: Map[NounId, math.Expr] = {
         var builder = Map.empty[NounId, math.Expr]
 
-        for ((_, Verb(_, src, tgt, expr)) <- model.verbs) {
-          builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
-          builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
+        for ((_, verb) <- model.verbs) {
+          verb match {
+            case Conserved(_, src, tgt, expr) =>
+              builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
+              builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
+
+            case Unconserved(_, src, tgt, exprOut, exprIn) =>
+              builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(exprOut))
+              builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             exprIn )
+
+            case Source(_, tgt, exprIn) =>
+              builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             exprIn )
+
+            case Sink(_, src, exprOut) =>
+              builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(exprOut))
+          }
         }
 
         builder
@@ -143,9 +156,22 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
     val eqns: Map[math.Variable, math.Expr] = {
       var builder: Map[NounId, math.Expr] = model.nouns.keys.map(_ -> (0: math.Expr)).toMap
 
-      for ((_, Verb(_, src, tgt, expr)) <- model.verbs) {
-        builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
-        builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
+      for ((_, verb) <- model.verbs) {
+        verb match {
+          case Conserved(_, src, tgt, expr) =>
+            builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
+            builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
+
+          case Unconserved(_, src, tgt, exprOut, exprIn) =>
+            builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(exprOut))
+            builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             exprIn )
+
+          case Source(_, tgt, exprIn) =>
+            builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             exprIn )
+
+          case Sink(_, src, exprOut) =>
+            builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(exprOut))
+        }
       }
 
       builder

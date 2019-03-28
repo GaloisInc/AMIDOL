@@ -26,7 +26,7 @@ object convert {
       val incomingLinks = graph.links.values.map(l => (l.to, NounId(l.from))).toMap
 
       val nouns = List.newBuilder[Noun]
-      val verbs = List.newBuilder[Verb]
+      val verbs = List.newBuilder[Conserved]
       val initialConditions = Map.newBuilder[String, Double]
 
       for (Node(id, image, label, props, x, y) <- graph.nodes.values) {
@@ -40,7 +40,7 @@ object convert {
               .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> math.Literal(v.toDouble) }
               .toMap
             val rateExpr = math.Expr(rate_template).get.applySubstitution(paramMap)
-            verbs += Verb(VerbId(id), incomingLinks(id), outgoingLinks(id), rateExpr)
+            verbs += Conserved(VerbId(id), incomingLinks(id), outgoingLinks(id), rateExpr)
         }
       }
 
@@ -48,12 +48,12 @@ object convert {
       val outputVar = math.Variable('OUTPUT)
 
       val nounMap = nouns.result.map(n => n.id -> n).toMap
-      val verbMap = verbs.result.map((v: Verb) => {
+      val verbMap = verbs.result.map((v: Conserved) => {
         val substitution = Map(
           inputVar -> nounMap(v.source).stateVariable,
           outputVar -> nounMap(v.target).stateVariable
         )
-        v.id -> v.copy(label = v.label.applySubstitution(substitution))
+        v.id -> v.copy(rate = v.rate.applySubstitution(substitution))
       }).toMap
 
       (Model(nounMap, verbMap), initialConditions.result)

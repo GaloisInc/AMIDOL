@@ -43,12 +43,12 @@ object Main extends App with Directives with ui.UiJsonSupport {
       } ~
       pathPrefix("") {
         getFromDirectory(new java.io.File("src/main/resources/web").getCanonicalPath)
-      } ~
+      } /* ~
       pathPrefix("appstate") {
         path("model") {
           complete(ui.convert.graphRepr.toUi(AppState.currentModel))
         }
-      }
+      } */
     } ~
     options {
       complete(

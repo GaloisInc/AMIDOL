@@ -23,11 +23,30 @@ case class Noun(
   location: ui.Point
 )
 
-case class Verb(
+sealed trait Verb
+case class Conserved(
+  id: VerbId,
+  source: NounId,
+  target: NounId,
+  rate: Expr
+) extends Verb
+
+case class Unconserved(
   id: VerbId,
   source: NounId, 
   target: NounId,
-  label: Expr      // TODO rename to "rate" or such
-)
+  rateOut: Expr,
+  rateIn: Expr
+) extends Verb
 
+case class Source(
+  id: VerbId,
+  target: NounId,
+  rateIn: Expr
+) extends Verb
 
+case class Sink(
+  id: VerbId,
+  source: NounId,
+  rateOut: Expr
+) extends Verb
