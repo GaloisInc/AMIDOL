@@ -10,13 +10,8 @@
 
 	var node_data_set, edge_data_set, network;
 	var global_vars = { global_count : 0 };
-	var reward_vars = [ { name: "foo", opt1: 0, opt2: 1, range: { start: 0, end: 100, step: 5 }} ];
-  var execute_setup = {
-    problem: "Initial value problem",
-    start: 0,
-    end: 100,
-    step: 5
-  }
+	var reward_vars = [ { key: "foo", opt1: "0", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
+ 
 
 	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
 
@@ -93,6 +88,12 @@
 					newProps['parameters'] = newParamList
 					node_data_set.update({ id: event.id, props: newProps })
 					break
+				case "setRewardVar":
+					var new_rvs = _.filter(reward_vars, (v) => v.key != event.key)
+					if (event.new != null) { new_rvs.push(event.new) }
+					reward_vars = new_rvs
+					UI.render.rewardVars()
+					break
 				default:
 					console.log("Unknown event in applyEventEffects: " + JSON.stringify(event))
 					break
@@ -129,6 +130,11 @@
 					event.previous = event.updated
 					event.updated = previous
 					return event
+				case "setRewardVar":
+					var old = event.old
+					event.old = event.new
+					event.new = old
+					return event
 				default:
 					console.log("Unknown event in invertEvent: " + JSON.stringify(event))
 					return event
@@ -146,7 +152,9 @@
 	}
 
 	var UI = {
+
 		render: {
+
 			palette : function(palette) {
 				$("#palette.paletteItem").remove()
 				$("#palette").append(_.map(Object.values(palette), function(p){
@@ -154,6 +162,7 @@
 				}))
 				if ($(".selected").length == 0) { $(".paletteItem").first().addClass("selected") }
 			},
+
 			localVars : function(id) {
 				var vs = $("#localVars")
 				vs.empty()
@@ -164,30 +173,48 @@
 					))
 				} else {
 					var thisNode = node_data_set.get(id)
-					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">back to global variables</p><h1>' + getOrElse(thisNode.label, "(no_name)") + "</h1>")
+					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">⇐ back to global variables</p><h1>' + getOrElse(thisNode.label, "(no_name)") + "</h1>")
 					var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
 					vs.append(_.map(vars, function(v){
 						return $("<div>"+v.name+': <input value="'+v.value+'" onblur="UI.propBlur({id: '+id+'}, \''+v.name+'\', this.value)"></input></div>')
 					}))
 				}
 			},
+
 			rewardVars : function() {
-				// type items = [ { id: String, var1: Integer, var2: Integer, field: String }, … ]
 				var rvs = $("#rewardVars")
 				rvs.empty()
 				rvs.append("<h1>Reward Variables:</h1>")
+				var nodeNames = _.map(node_data_set.get(), (n) => [n.id, n.label] )
+				var rv_names = ["Instant of Time", "Interval of Time", "Time Avg. Interval", "Steady State"]
 				rvs.append(_.map(reward_vars, function(r){
-					return $('<div>'+r.name+': <input value="'+r.opt1+'"></input><input value="'+r.opt2+'"></input><input value="'+r.range.start+'"></input><input value="'+r.range.end+'"></input><input value="'+r.range.step+'"></input></div>')
+					return $("<div>").change((e) => UI.updateRewardVar(e.target)).append([
+						$("<h2>").attr({class: "key"}).html(r.key),
+						$("<button>").html("X").click((e) => alert("TODO: delete me")),
+						$("<select>").attr({class: "opt1"}).append(
+							_.map(nodeNames, function(n) { 
+								var opt = $("<option>").attr('value', n[0]).html(n[1])
+								if (r.opt1 == n[0]) { opt.attr('selected','selected') }
+								return opt
+							})
+						),
+						$("<select>").attr({class: "opt2"}).append(
+							_.map(rv_names, function(n, idx) { 
+								var opt = $("<option>").attr({'value': n}).html(n)
+								if (idx != 0) { opt.attr('disabled', 'disabled') }
+								return opt
+							})
+						),
+						$("<p>").html("Range"),
+						$("<label>").html("Start"),
+						$("<input>").attr({class: "range_start", value: r.range.start, 'size': 5}),
+						$("<label>").html("Stop"),
+						$("<input>").attr({class: "range_end", value: r.range.end, 'size': 5}),
+						$("<label>").html("End"),
+						$("<input>").attr({class: "range_step", value: r.range.step, 'size': 5})
+					])
 				}))
-			},
-      executeSetup : function() {
-				var stp = $("#executeSetup")
-				stp.empty()
-				stp.append("<h1>Execute Setup:</h1>")
-        stp.append('Problem: ' + execute_setup.problem + '</br>')
-        stp.append('Initial:   <input value="' + execute_setup.start + '"></input></br>') 
-        stp.append('Final:     <input value="' + execute_setup.end   + '"></input></br>') 
-        stp.append('Step size: <input value="' + execute_setup.step  + '"></input></br>') 
+				rvs.append($("<button>").html("New").click((e) => alert("TODO")))
 			},
 
 			network : function() {
@@ -321,6 +348,23 @@
 			UI.setProp(idObj.id, key, val)
 		},
 
+		updateRewardVar : function(changedElem) {
+			parent = $(changedElem).parent()
+			var new_rv = {
+				key: parent.find(".key").html(),
+				opt1: parent.find(".opt1 option:selected").val(),
+				opt2: parent.find(".opt2 option:selected").val(),
+				range: {
+					start: parent.find(".range_start").val(),
+					end: parent.find(".range_end").val(),
+					step: parent.find(".range_step").val()
+				}
+			}
+			var old_rv = _.find(reward_vars, (v) => v.key == new_rv.key)
+			var event = { type: "setRewardVar", key: new_rv.key, old: old_rv, new: new_rv }
+			journal.apply( event )
+		},
+
 		setProp: function(id, key, value) {
 			var paramList = get(node_data_set.get(id), ['props', 'parameters'])
 			var previous = get(_.find(paramList, (p) => p.name === key), ['value'])
@@ -358,6 +402,7 @@
 			} else {
 				UI.render.localVars(null)
 			}
+			UI.render.rewardVars()
 		},
 
 		selectPaletteNode : function(elem) {
@@ -373,11 +418,10 @@
 
 		download : function() {
 			var data = {
-        journal: journal.past,
-        reward_vars: reward_vars,
-        global_vars: global_vars,
-        execute_setup: execute_setup  // stores initial, final, and step size
-      }
+				journal: journal.past,
+				reward_vars: reward_vars,
+				global_vars: global_vars,
+			}
 			var blob = new Blob([JSON.stringify(data)], {type: "application/json"})
 			var a = document.createElement('a')
 			a.download = "model.json"
@@ -397,13 +441,11 @@
 						journal.future = journal.future.concat(data.journal)
 						global_vars = data.global_vars
 						reward_vars = data.reward_vars
-            execute_setup = data.execute_setup
 						UI.updateButtonStates()
 					}
 					reader.onloadend = function(e) {
 						do { $("#redo_button").click() }
 						while ( ! $("#redo_button").hasClass("disabled"))
-						UI.render.execute_setup()
 						UI.render.reward_vars()
 						UI.render.localVars()
 					}
@@ -428,7 +470,6 @@
 				"nodes" : node_data_set.getDataSet()._data,
 				"links" : edge_data_set.getDataSet()._data,
 				"rewardVars": reward_vars,
-        "executeSetup": execute_setup,
 				"globalVars": global_vars
 			}
 		}
@@ -479,14 +520,12 @@
 	$(function(){
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
 
-		var p = availablePalettes[chosenPalette]
 		var startingPalette = availablePalettes[chosenPalette] 
 
+		UI.render.network()
 		UI.render.palette(startingPalette)
 		UI.render.localVars(null)
-		UI.render.rewardVars([])
-		UI.render.executeSetup()
-		UI.render.network()
+		UI.render.rewardVars()
 		UI.updateButtonStates()
 
 		var sample_nodes = [
@@ -530,6 +569,13 @@
 		height: 50px;
 		border: 5px solid white;
 	}
+	.vis-manipulation {
+		outline: 1px solid gray;
+		z-index: -1;
+	}
+	.vis-close {
+		display: none !important;
+	}
 	.verb {
 		fill: gray;
 	}
@@ -547,25 +593,25 @@
 		height: 100%;
 		width: 20%;
 		border-color: green;
-		float: left;
+		float: right;
 	}
 	#localVars {
 		width: 100%;
-		height: 33%;
-		float: left;
-		background-color: lightblue;
+		height: 45%;
+		/*background-color: lightblue;*/
+		outline: 1px solid gray;
+		overflow: scroll;
+		padding: 1em;
+		box-sizing: border-box;
 	}
 	#rewardVars {
 		width: 100%;
-		height: 33%;
-		float: left;
-		background-color: lightgray;
-	}
-  #executeSetup {
-		width: 100%;
-		height: 33%;
-		float: left;
-		background-color: lightgreen;
+		height: 45%;
+		/*background-color: lightgray;*/
+		outline: 1px solid gray;
+		overflow: scroll;
+		padding: 1em;
+		box-sizing: border-box;
 	}
 
 </style></head>
@@ -583,6 +629,5 @@
 	<div id="variables">
 		<div id="localVars"></div>
 		<div id="rewardVars"></div>
-		<div id="executeSetup"></div>
 	</div>
 </body>
