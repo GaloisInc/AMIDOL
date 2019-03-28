@@ -6,6 +6,21 @@
 	<script type="text/javascript" src="underscore-1.9.1.min.js"></script>
 	<link rel="stylesheet" href="vis-4.21.0.min.css" type="text/css" />
 
+	<script type="text/javascript" src="jquery.fancybox.min.js"></script>
+	<link rel="stylesheet" href="jquery.fancybox.min.css" type="text/css" />
+
+
+
+<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="skeleton.css">
+
+	
+
+
 <script type="text/javascript">
 
   $.postJSON = function(url, data, callback) {
@@ -178,16 +193,16 @@
 				var vs = $("#localVars")
 				vs.empty()
 				if (_.isNull(id)) {
-					vs.append("<p>Select a node to display its variables</p><h1>Global Variables:</h1>")
+					vs.append("<p>Select a node to display its variables</p><h2>Global Variables:</h2>")
 					_.mapObject(global_vars, (v, k) => vs.append(
 						$("<div>"+k+': <input value="'+v+'" onblur=""></input></div>')
 					))
 				} else {
 					var thisNode = node_data_set.get(id)
-					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">⇐ back to global variables</p><h1>' + getOrElse(thisNode.label, "(no_name)") + "</h1>")
+					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">⇐ back to global variables</p><h2>' + getOrElse(thisNode.label, "(no_name)") + "</h2>")
 					var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
 					vs.append(_.map(vars, function(v){
-						return $("<div>"+v.name+': <input value="'+v.value+'" onblur="UI.propBlur({id: '+id+'}, \''+v.name+'\', this.value)"></input></div>')
+						return $("<div>"+v.name+': <input value="'+v.value+'" onblur="UI.propBlur({id: \''+id+'\'}, \''+v.name+'\', this.value)"></input></div>')
 					}))
 				}
 			},
@@ -195,12 +210,12 @@
 			rewardVars : function() {
 				var rvs = $("#rewardVars")
 				rvs.empty()
-				rvs.append("<h1>Reward Variables:</h1>")
+				rvs.append("<h2>Reward Variables:</h2>")
 				var nodeNames = _.map(node_data_set.get(), (n) => [n.id, n.label] )
 				var rv_names = ["Instant of Time", "Interval of Time", "Time Avg. Interval", "Steady State"]
 				rvs.append(_.map(reward_vars, function(r){
 					return $("<div>").change((e) => UI.updateRewardVar(e.target)).append([
-						$("<h2>").attr({class: "key"}).html(r.key),
+						$("<h3>").attr({class: "key"}).html(r.key),
 						$("<button>").html("X").click((e) => alert("TODO: delete me")),
 						$("<select>").attr({class: "opt1"}).append(
 							_.map(nodeNames, function(n) { 
@@ -470,24 +485,24 @@
 	var IR = {
 		submit : function(){ 
 			console.log("Sending:"); console.log(IR.getData())
-      var payload = {
-        "graph": JSON.stringify({
-				  "nodes" : node_data_set.getDataSet()._data,
-				  "links" : edge_data_set.getDataSet()._data
-        }),
-        "globalVariables": JSON.stringify(global_vars)
-      }
-      $.post("/appstate", payload, function(data, status, jqXHR) {
-				alert(data)
-        var simParams = {
-          "initialTime": 0,
-          "finalTime": 100,
-          "stepSize": 1,
-          "savePlot": null
-        }
-        $.postJSON("/backends/scipy/integrate", simParams, function(data, status, jqXHR) {
-          alert(data)
-        })
+			var payload = {
+				"graph": JSON.stringify({
+					"nodes" : node_data_set.getDataSet()._data,
+					"links" : edge_data_set.getDataSet()._data
+				}),
+				"globalVariables": JSON.stringify(global_vars)
+			}
+			$.post("/appstate", payload, function(data, status, jqXHR) {
+				console.log(data)
+				var simParams = {
+					"initialTime": 0,
+					"finalTime": 100,
+					"stepSize": 1,
+					"savePlot": null
+				}
+				$.postJSON("/backends/scipy/integrate", simParams, function(data, status, jqXHR) {
+					console.log(data)
+				})
 			})
 		},
 
@@ -524,10 +539,10 @@
 				"type": "verb",
 				"classDef": "infect.air",
 				"icon": "images/virus.svg",
-        "rate_template": "beta * INPUT * OUTPUT / total_pop",
+				"rate_template": "beta * INPUT * OUTPUT / total_pop",
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
-					{"name": "total_pop", "value": "750"}
+					{"name": "total_pop", "value": "5"}
 				]
 			},
 			"cure": {
@@ -535,7 +550,7 @@
 				"type": "verb",
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
-        "rate_template": "gamma * INPUT",
+				"rate_template": "gamma * INPUT",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
 		}
@@ -555,17 +570,17 @@
 		UI.updateButtonStates()
 
 		var sample_nodes = [
-			UI.makeNode({id: 1, label: "Susceptible", x: -350, y: 0}, "population"), 
-			UI.makeNode({id: 2, label: "Exposed", x: -175, y: 0}, "infect"),
-			UI.makeNode({id: 3, label: "Infected", x: -0, y: 0}, "patient"),
-			UI.makeNode({id: 4, label: "Cured", x: 175, y: 0}, "cure"),
-			UI.makeNode({id: 5, label: "Recovered", x: 350, y: 0}, "population")
+			UI.makeNode({id: "1", label: "Susceptible", x: -350, y: 0}, "population"), 
+			UI.makeNode({id: "2", label: "Exposed", x: -175, y: 0}, "infect"),
+			UI.makeNode({id: "3", label: "Infected", x: -0, y: 0}, "patient"),
+			UI.makeNode({id: "4", label: "Cured", x: 175, y: 0}, "cure"),
+			UI.makeNode({id: "5", label: "Recovered", x: 350, y: 0}, "population")
 		]
 		var sample_edges = [
-			{id: "a", from: 1, to: 2},
-			{id: "b", from: 2, to: 3},
-			{id: "c", from: 3, to: 4},
-			{id: "d", from: 4, to: 5},
+			{id: "a", from: "1", to: "2"},
+			{id: "b", from: "2", to: "3"},
+			{id: "c", from: "3", to: "4"},
+			{id: "d", from: "4", to: "5"},
 		]
 
 		journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
@@ -597,7 +612,7 @@
 	}
 	.vis-manipulation {
 		outline: 1px solid gray;
-		z-index: -1;
+		width: 99.9% !important; /* Ugly UI hack! */
 	}
 	.vis-close {
 		display: none !important;
@@ -624,7 +639,6 @@
 	#localVars {
 		width: 100%;
 		height: 45%;
-		/*background-color: lightblue;*/
 		outline: 1px solid gray;
 		overflow: scroll;
 		padding: 1em;
@@ -633,16 +647,20 @@
 	#rewardVars {
 		width: 100%;
 		height: 45%;
-		/*background-color: lightgray;*/
 		outline: 1px solid gray;
 		overflow: scroll;
 		padding: 1em;
 		box-sizing: border-box;
 	}
+	h2 {
+		font-size: 1.75em;
+	}
+	h3 {
+		font-size: 1.5em;
+	}
 
 </style></head>
 <body>
-	<!-- <div id="header"><h1>SIR</h1></div> -->
 	<div id="palette">
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
 		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />

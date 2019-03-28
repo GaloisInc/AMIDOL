@@ -6,8 +6,8 @@ import java.util.Date
 
 // All of this file is subject to a ton of change! No idea what the best way is to handle this...
 
-case class NounId(id: Long) extends AnyVal
-case class VerbId(id: Long) extends AnyVal
+case class NounId(id: String) extends AnyVal
+case class VerbId(id: String) extends AnyVal
 
 case class Model(
   nouns: Map[NounId, Noun],
