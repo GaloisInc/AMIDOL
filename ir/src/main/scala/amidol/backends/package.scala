@@ -30,12 +30,26 @@ package object backends {
     def applicable(model: Model): Boolean
 
     /** Run the backend */
-    def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]]
+    def run(
+      model: Model,
+      constants: Map[String, Double],
+      boundary:  Map[String, Double],
+      inputs: Inputs
+    )(implicit
+      ec: ExecutionContext
+    ): Future[Try[Outputs]]
 
-    final def routeComplete(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Option[Outputs]] =
+    final def routeComplete(
+      model: Model, 
+      constants: Map[String, Double],
+      boundary:  Map[String, Double],
+      inputs: Inputs
+    )(implicit
+      ec: ExecutionContext
+    ): Future[Option[Outputs]] =
       Future(applicable(model)).flatMap { isApplicable: Boolean =>
         if (isApplicable) {
-          run(model, inputs).map {
+          run(model, constants, boundary, inputs).map {
             case Success(outputs) => Some(outputs)
             case Failure(err) =>
               println(s"Failed to run ${name} backend: ${err.getMessage}")
@@ -53,8 +67,6 @@ package object backends {
     val problemDescription = "Continuous initial value problem"
     
     case class Inputs(
-      constants: Map[String, Double],
-      boundary:  Map[String, Double],
       initialTime: Double,
       finalTime: Double,
       stepSize: Double,
@@ -66,7 +78,7 @@ package object backends {
       times: Seq[Double]
     )
     
-    implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat6(Inputs.apply)
+    implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat4(Inputs.apply)
     implicit val outputsFormat: RootJsonFormat[Outputs] = jsonFormat2(Outputs.apply)
   }
 

@@ -21,7 +21,9 @@ object Main extends App with Directives with ui.UiJsonSupport {
   // TODO: eventually, think about thread safety here (what happens if someone changes the model
   // while the backend is running?)
   object AppState {
-    var currentModel: Model = Model(Map.empty, Map.empty) 
+    var currentModel: Model = Model(Map.empty, Map.empty)
+    var currentGlobalConstants: Map[String, Double] = Map.empty   // TODO: these should be validated _before_ beingn written in
+    var currentInitialConditions: Map[String, Double] = Map.empty // TODO: these should be validated _before_ beingn written in
   }
 
   // Set up actor system and contexts
@@ -46,28 +48,7 @@ object Main extends App with Directives with ui.UiJsonSupport {
         path("model") {
           complete(ui.convert.graphRepr.toUi(AppState.currentModel))
         }
-      }// ~
-   //   pathPrefix("backends") {
-   //     pathPrefix("scipy") {
-   //       path("integrate") {
-   //         parameters('inputs.as[SciPyIntegrate.Inputs]) { inputs =>
-   //           complete(SciPyIntegrate.routeComplete(AppState.currentModel, inputs))
-   //         }
-   //       } ~
-   //       path("cmtc-equilibrium") {
-   //         parameters('inputs.as[SciPyLinearSteadyState.Inputs]) { inputs =>
-   //           complete(SciPyLinearSteadyState.routeComplete(AppState.currentModel, inputs))
-   //         }
-   //       }
-   //     } ~
-   //     pathPrefix("pysces") {
-   //       path("integrate") {
-   //         parameters('inputs.as[PySCeS.Inputs]) { inputs =>
-   //           complete(PySCeS.routeComplete(AppState.currentModel, inputs))
-   //         }
-   //       }
-   //     }
-   //   }
+      }
     } ~
     options {
       complete(
@@ -75,22 +56,21 @@ object Main extends App with Directives with ui.UiJsonSupport {
       )
     } ~
     post {
-      pathPrefix("appstate") {
-        path("model") {
-         // entity(as[ui.Graph]) { newModel: ui.Graph =>
-          formField(
-            'model.as[uinew.Graph],
-            'globalVariables.as[Map[String,Double]]
-          ) { case (newModel: uinew.Graph, globalVariables: Map[String,Double]) =>
-            complete {
-              uinew.convert.graphRepr.fromUi(newModel) match {
-                case Success(parsed) =>
-                  AppState.currentModel = parsed
-                  StatusCodes.Created -> s"Model has been updated"
+      path("appstate") {
+        formField(
+          'graph.as[uinew.Graph],
+          'globalVariables.as[Map[String,Double]]
+        ) { case (graph: uinew.Graph, globalVariables: Map[String,Double]) =>
+          complete {
+            uinew.convert.graphRepr.fromUi(graph) match {
+              case Success((parsed, initialConds)) =>
+                AppState.currentModel = parsed
+                AppState.currentGlobalConstants = globalVariables
+                AppState.currentInitialConditions = initialConds
+                StatusCodes.Created -> s"Model has been updated"
 
-                case Failure(f) =>
-                  StatusCodes.BadRequest -> s"Couldn't parse model: ${f.toString}"
-              }
+              case Failure(f) =>
+                StatusCodes.BadRequest -> s"Couldn't parse model: ${f.toString}"
             }
           }
         }
@@ -100,23 +80,42 @@ object Main extends App with Directives with ui.UiJsonSupport {
           path("integrate") {
             entity(as[SciPyIntegrate.Inputs]) { inputs =>
               complete(
-                StatusCodes.Created -> SciPyIntegrate.routeComplete(AppState.currentModel, inputs)
+                StatusCodes.OK -> SciPyIntegrate.routeComplete(
+                  AppState.currentModel,
+                  AppState.currentGlobalConstants,
+                  AppState.currentInitialConditions,
+                  inputs
+                )
               )
             }
-          }// ~
-      //    path("cmtc-equilibrium") {
-      //      parameters('inputs.as[SciPyLinearSteadyState.Inputs]) { inputs =>
-      //        complete(SciPyLinearSteadyState.routeComplete(AppState.currentModel, inputs))
-      //      }
-      //    }
-        }// ~
-     //   pathPrefix("pysces") {
-     //     path("integrate") {
-     //       parameters('inputs.as[PySCeS.Inputs]) { inputs =>
-     //         complete(PySCeS.routeComplete(AppState.currentModel, inputs))
-     //       }
-     //     }
-     //   }
+          } ~
+          path("cmtc-equilibrium") {
+            entity(as[SciPyLinearSteadyState.Inputs]) { inputs =>
+              complete(
+                StatusCodes.OK -> SciPyLinearSteadyState.routeComplete(
+                  AppState.currentModel,
+                  AppState.currentGlobalConstants,
+                  AppState.currentInitialConditions,
+                  inputs
+                )
+              )
+            }
+          }
+        } ~
+        pathPrefix("pysces") {
+          path("integrate") {
+            entity(as[PySCeS.Inputs]) { inputs =>
+              complete(
+                StatusCodes.OK -> PySCeS.routeComplete(
+                  AppState.currentModel,
+                  AppState.currentGlobalConstants,
+                  AppState.currentInitialConditions,
+                  inputs
+                )
+              )
+            }
+          }
+        }
       }
     }
   }

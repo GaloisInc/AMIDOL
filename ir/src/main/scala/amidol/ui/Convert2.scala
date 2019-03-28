@@ -21,21 +21,26 @@ object convert {
       Success(builder.result)
     }
 
-    def fromUi(g: uinew.Graph): Try[amidol.Model] = Try {
-      val outgoingLinks = g.links.map(l => (l.from, NounId(l.to))).toMap
-      val incomingLinks = g.links.map(l => (l.to, NounId(l.from))).toMap
+    def fromUi(graph: uinew.Graph): Try[(amidol.Model, Map[String, Double])] = Try {
+      val outgoingLinks = graph.links.values.map(l => (l.from, NounId(l.to))).toMap
+      val incomingLinks = graph.links.values.map(l => (l.to, NounId(l.from))).toMap
 
       val nouns = List.newBuilder[Noun]
       val verbs = List.newBuilder[Verb]
+      val initialConditions = Map.newBuilder[String, Double]
 
-      for (Node(id, image, label, props, x, y) <- g.nodes) {
+      for (Node(id, image, label, props, x, y) <- graph.nodes.values) {
         props match {
-          case NounProps(params) => 
-            // TODO do something with `params`
+          case NounProps(params) =>
+            val paramMap = params.map { case Parameter(n,v) => n -> v.toDouble }.toMap
+            initialConditions += (label -> paramMap("Initial"))
             nouns += Noun(NounId(id), math.Variable(Symbol(label)), image, ui.Point(x,y))
           case VerbProps(rate_template, params) =>
-            // TODO do something with `params`
-            verbs += Verb(VerbId(id), incomingLinks(id), outgoingLinks(id), math.Expr(rate_template).get)
+            val paramMap = params
+              .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> math.Literal(v.toDouble) }
+              .toMap
+            val rateExpr = math.Expr(rate_template).get.applySubstitution(paramMap)
+            verbs += Verb(VerbId(id), incomingLinks(id), outgoingLinks(id), rateExpr)
         }
       }
 
@@ -51,7 +56,7 @@ object convert {
         v.id -> v.copy(label = v.label.applySubstitution(substitution))
       }).toMap
 
-      Model(nounMap, verbMap)
+      (Model(nounMap, verbMap), initialConditions.result)
     }
 
     def toUi(g: amidol.Model): uinew.Graph = ???

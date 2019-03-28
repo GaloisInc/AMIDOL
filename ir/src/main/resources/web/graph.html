@@ -8,6 +8,17 @@
 
 <script type="text/javascript">
 
+  $.postJSON = function(url, data, callback) {
+        return jQuery.ajax({
+                  'type': 'POST',
+                  'url': url,
+                  'contentType': 'application/json',
+                  'data': JSON.stringify(data),
+                  'dataType': 'json',
+                  'success': callback
+              });
+  };
+
 	var node_data_set, edge_data_set, network;
 	var global_vars = { global_count : 0 };
 	var reward_vars = [ { key: "foo", opt1: "0", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
@@ -459,10 +470,25 @@
 	var IR = {
 		submit : function(){ 
 			console.log("Sending:"); console.log(IR.getData())
-      var payload = { "model": JSON.stringify(IR.getData()), "globalVariables": "{}" }
-      $.post("/appstate/model", payload, function(data, status, jqXHR) {
+      var payload = {
+        "graph": JSON.stringify({
+				  "nodes" : node_data_set.getDataSet()._data,
+				  "links" : edge_data_set.getDataSet()._data
+        }),
+        "globalVariables": JSON.stringify(global_vars)
+      }
+      $.post("/appstate", payload, function(data, status, jqXHR) {
 				alert(data)
-			} )
+        var simParams = {
+          "initialTime": 0,
+          "finalTime": 100,
+          "stepSize": 1,
+          "savePlot": null
+        }
+        $.postJSON("/backends/scipy/integrate", simParams, function(data, status, jqXHR) {
+          alert(data)
+        })
+			})
 		},
 
 		getData : function(){
@@ -484,14 +510,14 @@
 				"type": "noun",
 				"classDef": "population.air",
 				"icon": "images/person.svg",
-				"parameters": [{"name": "P", "value": "0"}]
+				"parameters": [{"name": "Initial", "value": "250"}]
 			}, 
 			"patient" : {
 				"className": "patient",
 				"type": "noun",
 				"classDef": "patient.air",
 				"icon": "images/patient.svg",
-				"parameters": [{"name": "P", "value": "0"}]
+				"parameters": [{"name": "Initial", "value": "250"}]
 			}, 
 			"infect": {
 				"className": "infect",
@@ -500,8 +526,8 @@
 				"icon": "images/virus.svg",
         "rate_template": "beta * INPUT * OUTPUT / total_pop",
 				"parameters": [
-					{"name": "beta", "value": "0"},
-					{"name": "total_pop", "value": "0"}
+					{"name": "beta", "value": "0.413"},
+					{"name": "total_pop", "value": "750"}
 				]
 			},
 			"cure": {
@@ -509,8 +535,8 @@
 				"type": "verb",
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
-        "rate_template": "gamme * INPUT",
-				"parameters": [{"name": "gamma", "value": "0"}]
+        "rate_template": "gamma * INPUT",
+				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
 		}
 	}

@@ -20,10 +20,17 @@ object SciPyIntegrate extends ContinuousInitialValue {
   // TODO: do we want proper AST manipulation
   type Python = String
 
-  def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
+  override def run(
+    model: Model,
+    constants: Map[String, Double],
+    boundary:  Map[String, Double],
+    inputs: Inputs
+  )(implicit
+    ec: ExecutionContext
+  ): Future[Try[Outputs]] = Future {
     for {
-      constants <- Try(inputs.constants.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
-      boundary  <- Try(inputs.boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
+      constants <- Try(constants.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
+      boundary  <- Try(boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
     
       timeRange: Seq[Double] = Range.BigDecimal(
         start = inputs.initialTime,
@@ -123,7 +130,14 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
   // TODO: do we want proper AST manipulation
   type Python = String
 
-  def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
+  override def run(
+    model: Model,
+    constants: Map[String, Double],
+    boundary:  Map[String, Double],
+    inputs: Inputs
+  )(implicit
+    ec: ExecutionContext
+  ): Future[Try[Outputs]] = Future {
 
     // Extract the system
     val eqns: Map[math.Variable, math.Expr] = {

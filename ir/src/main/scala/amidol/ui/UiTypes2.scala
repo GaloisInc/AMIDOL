@@ -5,8 +5,8 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 
 /// The full set of shapes and lines in the UI
 case class Graph(
-  nodes: Seq[Node],
-  links: Seq[Link]
+  nodes: Map[String,Node],
+  links: Map[String,Link]
 )
 object Graph extends UiJsonSupport
 
@@ -37,7 +37,7 @@ object NounProps extends UiJsonSupport
 
 case class Parameter(
   name: String,
-  value: Double
+  value: String
 )
 object Parameter extends UiJsonSupport
 

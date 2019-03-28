@@ -21,13 +21,21 @@ object PySCeS extends ContinuousInitialValue {
   type Python = String
   type PySCeS = String
 
-  def run(model: Model, inputs: Inputs)(implicit ec: ExecutionContext): Future[Try[Outputs]] = Future {
+  override def run(
+    model: Model,
+    constants: Map[String, Double],
+    boundary:  Map[String, Double],
+    inputs: Inputs
+  )(implicit
+    ec: ExecutionContext
+  ): Future[Try[Outputs]] = Future {
+
     // PySCeS doesn't like unicode =.=
     val renamer = Renamer.filterAscii()
 
     for {
-      constants <- Try(inputs.constants.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
-      boundary  <- Try(inputs.boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
+      constants <- Try(constants.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
+      boundary  <- Try(boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
 
       // Pretty-printing
       reactions: List[PySCeS] = model.verbs.toList.map { case (_, Verb(edgeId, src, tgt, expr)) =>

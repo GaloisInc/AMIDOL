@@ -24,7 +24,7 @@ package object math {
     lazy val parser: PackratParser[Expr] = {
       lazy val atom: PackratParser[Expr] =
         ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
-        | raw"(?U)\p{L}+".r             ^^ { v => Variable(Symbol(v))  }
+        | raw"(?U)\p{L}[\p{L}_]*".r             ^^ { v => Variable(Symbol(v))  }
         | "(" ~> term <~ ")"
         | "-" ~> atom                   ^^ { e => Negate(e) }
         )
