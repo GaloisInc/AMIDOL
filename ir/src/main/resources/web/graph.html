@@ -264,7 +264,7 @@
 					loop : true,
 					afterClose: function() { $("#results").empty() },
 					beforeShow: function() {
-						// Hack: Creating the Chartist objects are in the `beforeShow` function because they were not rendering properly when fancybox changed slides. (all elements in the graph were rendered at a single point)
+						// Creating the Chartist objects are in the `beforeShow` function because they were not rendering properly when fancybox changed slides. (all elements in the graph were rendered at a single point)
 						_.map(chartsData, function(singleChartData, idx){
 							var pluginOpts = {
 								chartPadding: { top: 20, right: 0, bottom: 20, left: 0 },
@@ -393,6 +393,10 @@
 				})
 				// $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
 			}
+		},
+
+		choosePalette: function(elem) {
+			UI.render.palette(availablePalettes[$(elem).val()])
 		},
 
 		makeNode : function(node, className) {
@@ -611,9 +615,9 @@
 	}
 
 
-	var chosenPalette = "vital_dynamics"
+	var chosenPalette = "SIR-VD"
 	var availablePalettes = {
-		"sir" : {
+		"SIR" : {
 			"population": {
 				"className": "population",
 				"type": "noun",
@@ -654,7 +658,7 @@
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
 		},
-		"vital_dynamics": {
+		"SIR-VD": {
 			"population": {
 				"className": "population",
 				"type": "noun",
@@ -724,7 +728,7 @@
 	$(function(){
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
 
-		var startingPalette = availablePalettes[chosenPalette] 
+		var startingPalette = availablePalettes[chosenPalette]
 
 		UI.render.network()
 		UI.render.palette(startingPalette)
@@ -796,6 +800,10 @@
 	#exec_button {
 		margin: 2em;
 	}
+	#paletteChooser{
+		margin: 1.5em 1.5em 0em 1.5em;
+		float: left;
+	}
 	#palette img.disabled {
 		opacity: 0.25;
 	}
@@ -846,6 +854,12 @@
 <body>
 	<div id="results" style="display: none;"></div>
 	<div id="palette">
+		<div id="paletteChooser">
+			<select onchange="UI.choosePalette(this)">
+				<option>SIR</option>
+				<option>SIR-VD</option>
+			</select>
+		</div>
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
 		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />
 		<img id="undo_button" class="right" src="images/undo.png" onclick="journal.undo()" />
