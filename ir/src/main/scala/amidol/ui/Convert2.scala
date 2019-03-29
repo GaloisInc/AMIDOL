@@ -37,7 +37,7 @@ object convert {
             nouns += Noun(NounId(id), math.Variable(Symbol(label)), image, ui.Point(x,y))
           case VerbProps(rate_template, params) =>
             val paramMap = params
-              .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> math.Literal(v.toDouble) }
+              .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> math.Expr(v).get }
               .toMap
             val rateExpr = math.Expr(rate_template).get.applySubstitution(paramMap)
             verbs += Conserved(VerbId(id), incomingLinks(id), outgoingLinks(id), rateExpr)
