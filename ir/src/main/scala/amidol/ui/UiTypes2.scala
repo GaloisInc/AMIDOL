@@ -12,7 +12,7 @@ object Graph extends UiJsonSupport
 
 /// A single shape in the UI
 case class Node(
-  id: Long,
+  id: String,
   image: String,
   label: String,
   props: NodeProps,
@@ -44,8 +44,8 @@ object Parameter extends UiJsonSupport
 /// And edge between two nodes in the UI
 case class Link(
   id: String,
-  from: Long,
-  to: Long
+  from: String,
+  to: String
 )
 object Link extends UiJsonSupport
 

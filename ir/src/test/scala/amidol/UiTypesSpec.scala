@@ -11,14 +11,14 @@ class UiTypesSpec extends FlatSpec with Matchers {
   val graphJsonSrc: String = Source.fromResource("sirs_graph.json").getLines.mkString
   val expectedGraph: ui.Graph = ui.Graph(
     nodes = Seq(
-      ui.Node(0, "susceptible_dummy.svg", "Susceptible", ui.Point(100,100)),
-      ui.Node(1, "infectious_dummy.svg",  "Infectious",  ui.Point(300,100)),
-      ui.Node(2, "recovered_dummy.svg",   "Recovered",   ui.Point(500,100))
+      ui.Node("0", "susceptible_dummy.svg", "Susceptible", ui.Point(100,100)),
+      ui.Node("1", "infectious_dummy.svg",  "Infectious",  ui.Point(300,100)),
+      ui.Node("2", "recovered_dummy.svg",   "Recovered",   ui.Point(500,100))
     ),
     links = Seq(
-      ui.Link(-1, 0, 1, "β * Susceptible * Infectious / N"),
-      ui.Link(-2, 1, 2, "γ * Infectious"),
-      ui.Link(-3, 2, 0, "μ * Recovered")
+      ui.Link("-1", "0", "1", "β * Susceptible * Infectious / N"),
+      ui.Link("-2", "1", "2", "γ * Infectious"),
+      ui.Link("-3", "2", "0", "μ * Recovered")
     )
   )
 
