@@ -633,7 +633,10 @@
 				"type": "verb",
 				"classDef": "infect.air",
 				"icon": "images/virus.svg",
-				"rate_template": "beta * INPUT * OUTPUT / total_pop",
+        "verb_sort": {
+          "type": "conserved",
+				  "rate_template": "beta * INPUT * OUTPUT / total_pop"
+        },
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
 					{"name": "total_pop", "value": "Susceptible + Infected + Recovered"}
@@ -644,7 +647,10 @@
 				"type": "verb",
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
-				"rate_template": "gamma * INPUT",
+        "verb_sort": {
+          "type": "conserved",
+				  "rate_template": "gamma * INPUT"
+        },
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
 		},
@@ -668,7 +674,10 @@
 				"type": "verb",
 				"classDef": "infect.air",
 				"icon": "images/virus.svg",
-				"rate_template": "beta * INPUT * OUTPUT / total_pop",
+        "verb_sort": {
+          "type": "conserved",
+				  "rate_template": "beta * INPUT * OUTPUT / total_pop"
+        },
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
 					{"name": "total_pop", "value": "Susceptible + Infected + Recovered"}
@@ -679,7 +688,10 @@
 				"type": "verb",
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
-				"rate_template": "gamma * INPUT",
+        "verb_sort": {
+          "type": "conserved",
+				  "rate_template": "gamma * INPUT"
+        },
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			},
 			"birth": {
