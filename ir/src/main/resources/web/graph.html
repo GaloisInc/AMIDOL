@@ -13,8 +13,6 @@
 
 <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="normalize.css">
   <link rel="stylesheet" href="skeleton.css">
 
@@ -23,20 +21,9 @@
 
 <script type="text/javascript">
 
-  $.postJSON = function(url, data, callback) {
-        return jQuery.ajax({
-                  'type': 'POST',
-                  'url': url,
-                  'contentType': 'application/json',
-                  'data': JSON.stringify(data),
-                  'dataType': 'json',
-                  'success': callback
-              });
-  };
-
 	var node_data_set, edge_data_set, network;
-	var global_vars = { global_count : 0 };
-	var reward_vars = [ { key: "foo", opt1: "0", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
+	var global_vars = { Example : 0 };
+	var reward_vars = [ { key: "Foo", opt1: "3", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
  
 
 	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
@@ -48,6 +35,19 @@
 			return alternate
 		}
 	}
+
+	$.postJSON = function(url, data, callback) {
+		return jQuery.ajax({
+			'type': 'POST',
+			'url': url,
+			'contentType': 'application/json',
+			'data': JSON.stringify(data),
+			'dataType': 'json',
+			'success': callback
+		});
+	};
+
+	
 
 	var journal = {
 		past : [],
@@ -195,14 +195,15 @@
 				if (_.isNull(id)) {
 					vs.append("<p>Select a node to display its variables</p><h2>Global Variables:</h2>")
 					_.mapObject(global_vars, (v, k) => vs.append(
-						$("<div>"+k+': <input value="'+v+'" onblur=""></input></div>')
+						$("<div><label>"+k+'</label><input value="'+v+'" onblur=""></input></div>')
 					))
+					// vs.append($("<button>").html("New").click((e) => UI.addGlobalVar() ))
 				} else {
 					var thisNode = node_data_set.get(id)
 					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">⇐ back to global variables</p><h2>' + getOrElse(thisNode.label, "(no_name)") + "</h2>")
 					var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
 					vs.append(_.map(vars, function(v){
-						return $("<div>"+v.name+': <input value="'+v.value+'" onblur="UI.propBlur({id: \''+id+'\'}, \''+v.name+'\', this.value)"></input></div>')
+						return $("<div><label>"+v.name+'</label><input value="'+v.value+'" onblur="UI.propBlur({id: \''+id+'\'}, \''+v.name+'\', this.value)"></input></div>')
 					}))
 				}
 			},
@@ -216,7 +217,6 @@
 				rvs.append(_.map(reward_vars, function(r){
 					return $("<div>").change((e) => UI.updateRewardVar(e.target)).append([
 						$("<h3>").attr({class: "key"}).html(r.key),
-						$("<button>").html("X").click((e) => alert("TODO: delete me")),
 						$("<select>").attr({class: "opt1"}).append(
 							_.map(nodeNames, function(n) { 
 								var opt = $("<option>").attr('value', n[0]).html(n[1])
@@ -231,16 +231,22 @@
 								return opt
 							})
 						),
-						$("<p>").html("Range"),
+						$("<h4>").html("Range"),
 						$("<label>").html("Start"),
 						$("<input>").attr({class: "range_start", value: r.range.start, 'size': 5}),
 						$("<label>").html("Stop"),
 						$("<input>").attr({class: "range_end", value: r.range.end, 'size': 5}),
 						$("<label>").html("End"),
-						$("<input>").attr({class: "range_step", value: r.range.step, 'size': 5})
+						$("<input>").attr({class: "range_step", value: r.range.step, 'size': 5}),
+						$("<br />"),
+						$("<button>").html("Delete").css({clear: "both"}).click(function(e){
+								UI.removeRewardVar(r.key)
+								// reward_vars = _.filter(reward_vars, (v) => v.key != r.key)
+								// UI.render.rewardVars()
+							})
 					])
 				}))
-				rvs.append($("<button>").html("New").click((e) => alert("TODO")))
+				rvs.append($("<button>").html("New").click((e) => UI.addRewardVar() ))
 			},
 
 			network : function() {
@@ -391,6 +397,32 @@
 			journal.apply( event )
 		},
 
+		addRewardVar : function() {
+			var name = prompt("Name your new reward varaible:")
+			if (name != undefined && ! _.contains(_.pluck(reward_vars, "id"), name )) {
+				var new_rv = { 
+					key: name, 
+					opt1: "0", 
+					opt2: "Instant of Time", 
+					range: { start: 0, end: 100, step: 5 }
+				}
+				var event = { type: "setRewardVar", key: new_rv.key, old: null, new: new_rv }
+				journal.apply(event)
+			}
+		},
+
+		removeRewardVar : function(key) {
+			if (key != undefined && ! _.contains(_.pluck(reward_vars, "id"), key )) {
+				var old_rv = _.find(reward_vars, (v) => v.key == key)
+				var event = { type: "setRewardVar", key: key, old: old_rv, new: null }
+				journal.apply(event)
+			}
+		},
+
+		addGlobalVar : function() {
+			alert("TODO")
+		},
+
 		setProp: function(id, key, value) {
 			var paramList = get(node_data_set.get(id), ['props', 'parameters'])
 			var previous = get(_.find(paramList, (p) => p.name === key), ['value'])
@@ -483,41 +515,52 @@
 
 
 	var IR = {
-		submit : function(){ 
-			console.log("Sending:"); console.log(IR.getData())
-			var payload = {
-				"graph": JSON.stringify({
-					"nodes" : node_data_set.getDataSet()._data,
-					"links" : edge_data_set.getDataSet()._data
-				}),
-				"globalVariables": JSON.stringify(global_vars)
-			}
-			$.post("/appstate", payload, function(data, status, jqXHR) {
-				console.log(data)
-				var simParams = {
-					"initialTime": 0,
-					"finalTime": 100,
-					"stepSize": 1,
-					"savePlot": null
-				}
-				$.postJSON("/backends/scipy/integrate", simParams, function(data, status, jqXHR) {
-					console.log(data)
+		submit : function(){
+			if (_.isEmpty(reward_vars)) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
+
+			$.fancybox.open($("<img>").attr({src: "images/spinner.gif"}))
+			
+			IR.submitGraph(function(data, status, jqXHR) {
+				_.map(reward_vars, function(rv) {
+					var simParams = {
+						"initialTime": rv.range.start,
+						"finalTime": rv.range.end,
+						"stepSize": rv.range.step,
+						"savePlot": null
+					}
+					IR.execute.scipy.integrate(simParams, function(data, status, jqXHR) {
+						$.fancybox.destroy()
+						$.fancybox.open([$("<div>").html("One"), "<div>Two</div>"])
+					})
 				})
 			})
 		},
 
+		submitGraph : function(onSuccessFunc){
+			$.post("/appstate", IR.getData(), onSuccessFunc)
+		},
+
+		execute : {
+			scipy : {
+				integrate : function(simParams, onSuccessFunc) {
+					$.postJSON("/backends/scipy/integrate", simParams, onSuccessFunc)
+				}
+			}
+		},
+
 		getData : function(){
 			return {
-				"nodes" : node_data_set.getDataSet()._data,
-				"links" : edge_data_set.getDataSet()._data,
-				"rewardVars": reward_vars,
-				"globalVars": global_vars
+				graph: JSON.stringify({
+					nodes : node_data_set.getDataSet()._data,
+					links : edge_data_set.getDataSet()._data
+				}),
+				globalVariables: JSON.stringify(global_vars)
 			}
 		}
 	}
 
 
-	var chosenPalette = "sir"
+	var chosenPalette = "vital_dynamics"
 	var availablePalettes = {
 		"sir" : {
 			"population": {
@@ -552,6 +595,63 @@
 				"icon": "images/cure.svg",
 				"rate_template": "gamma * INPUT",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
+			}
+		},
+		"vital_dynamics": {
+			"population": {
+				"className": "population",
+				"type": "noun",
+				"classDef": "population.air",
+				"icon": "images/person.svg",
+				"parameters": [{"name": "Initial", "value": "250"}]
+			}, 
+			"patient" : {
+				"className": "patient",
+				"type": "noun",
+				"classDef": "patient.air",
+				"icon": "images/patient.svg",
+				"parameters": [{"name": "Initial", "value": "250"}]
+			}, 
+			"infect": {
+				"className": "infect",
+				"type": "verb",
+				"classDef": "infect.air",
+				"icon": "images/virus.svg",
+				"rate_template": "beta * INPUT * OUTPUT / total_pop",
+				"parameters": [
+					{"name": "beta", "value": "0.413"},
+					{"name": "total_pop", "value": "5"}
+				]
+			},
+			"cure": {
+				"className": "cure",
+				"type": "verb",
+				"classDef": "cure.air",
+				"icon": "images/cure.svg",
+				"rate_template": "gamma * INPUT",
+				"parameters": [{"name": "gamma", "value": "0.333"}]
+			},
+			"birth": {
+				"className": "birth",
+				"type": "verb",
+				"classDef": "birth.air",
+				"icon": "images/birth.svg",
+				"inputVariables": ["P"],
+				"outputVariables": ["Q"],
+				"parameters": [
+					{"name": "mu", "value": "0"}
+				]
+			},
+			"death": {
+				"className": "death",
+				"type": "verb",
+				"classDef": "death.air",
+				"icon": "images/death.svg",
+				"inputVariables": ["P"],
+				"outputVariables": [],
+				"parameters": [
+					{"name": "nu", "value": "0"}
+				]
 			}
 		}
 	}
@@ -601,7 +701,7 @@
 	}
 	#graph {
 		float:left;
-		width: 80%;
+		width: 75%;
 		/*border: 5px solid gray;*/
 	}
 	#palette img {
@@ -623,16 +723,21 @@
 	#palette img.selected {
 		border-color: lightblue;
 	}
-	#palette .right {
-		float: right;
+	#palette img.right {
 		height: 25px;
+	}
+	#palette .right{
+		float: right;
+	}
+	#exec_button {
+		margin: 2em;
 	}
 	#palette img.disabled {
 		opacity: 0.25;
 	}
 	#variables {
 		height: 100%;
-		width: 20%;
+		width: 25%;
 		border-color: green;
 		float: right;
 	}
@@ -644,6 +749,9 @@
 		padding: 1em;
 		box-sizing: border-box;
 	}
+	#localVars p {
+		/*text-decoration: underline;*/
+	}
 	#rewardVars {
 		width: 100%;
 		height: 45%;
@@ -652,11 +760,18 @@
 		padding: 1em;
 		box-sizing: border-box;
 	}
+	#rewardVars div:not(:last-child) {
+		border-bottom: 1px solid #000;
+		margin-bottom: 1em;
+	}
 	h2 {
 		font-size: 1.75em;
 	}
 	h3 {
 		font-size: 1.5em;
+	}
+	h4 {
+		font-size: 1.1em;
 	}
 
 </style></head>
@@ -670,8 +785,8 @@
 		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
 	</div>
 	<div id="graph"></div>
-	<div id="variables">
-		<div id="localVars"></div>
-		<div id="rewardVars"></div>
+	<div id="variables" class="compensate-for-scrollbar">
+		<div id="localVars" class="compensate-for-scrollbar"></div>
+		<div id="rewardVars" class="compensate-for-scrollbar"></div>
 	</div>
 </body>
