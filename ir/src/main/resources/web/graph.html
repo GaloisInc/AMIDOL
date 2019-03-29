@@ -9,13 +9,14 @@
 	<script type="text/javascript" src="jquery.fancybox.min.js"></script>
 	<link rel="stylesheet" href="jquery.fancybox.min.css" type="text/css" />
 
+	<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
+	<link rel="stylesheet" href="normalize.css">
+	<link rel="stylesheet" href="skeleton.css">
 
-<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-
-  <link rel="stylesheet" href="normalize.css">
-  <link rel="stylesheet" href="skeleton.css">
-
+	<link rel="stylesheet" href="chartist.min.css" type="text/css" />
+	<script type="text/javascript" src="chartist.min.js"></script>
+	<script type="text/javascript" src="chartist-plugin-axistitle.min.js"></script>
 	
 
 
@@ -23,7 +24,7 @@
 
 	var node_data_set, edge_data_set, network;
 	var global_vars = { Example : 0 };
-	var reward_vars = [ { key: "Foo", opt1: "3", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
+	var reward_vars = [ { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
  
 
 	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
@@ -182,7 +183,7 @@
 		render: {
 
 			palette : function(palette) {
-				$("#palette.paletteItem").remove()
+				$("#palette .paletteItem").remove()
 				$("#palette").append(_.map(Object.values(palette), function(p){
 					return $("<img />").attr({src: p.icon, classname: p.className}).attr("onclick", "UI.selectPaletteNode(this)").addClass("paletteItem").addClass(p.type)
 				}))
@@ -212,15 +213,17 @@
 				var rvs = $("#rewardVars")
 				rvs.empty()
 				rvs.append("<h2>Reward Variables:</h2>")
-				var nodeNames = _.map(node_data_set.get(), (n) => [n.id, n.label] )
+				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
+					if (n.props.type == "noun") { return [n.id, n.label] } else { [] }
+				}), (a) => ! _.isEmpty(a))
 				var rv_names = ["Instant of Time", "Interval of Time", "Time Avg. Interval", "Steady State"]
 				rvs.append(_.map(reward_vars, function(r){
 					return $("<div>").change((e) => UI.updateRewardVar(e.target)).append([
 						$("<h3>").attr({class: "key"}).html(r.key),
 						$("<select>").attr({class: "opt1"}).append(
 							_.map(nodeNames, function(n) { 
-								var opt = $("<option>").attr('value', n[0]).html(n[1])
-								if (r.opt1 == n[0]) { opt.attr('selected','selected') }
+								var opt = $("<option>").attr('value', n[1]).html(n[1])
+								if (r.opt1 == n[1]) { opt.attr('selected','selected') }
 								return opt
 							})
 						),
@@ -234,19 +237,51 @@
 						$("<h4>").html("Range"),
 						$("<label>").html("Start"),
 						$("<input>").attr({class: "range_start", value: r.range.start, 'size': 5}),
-						$("<label>").html("Stop"),
+						$("<label>").html("Until"),
 						$("<input>").attr({class: "range_end", value: r.range.end, 'size': 5}),
-						$("<label>").html("End"),
+						$("<label>").html("Step"),
 						$("<input>").attr({class: "range_step", value: r.range.step, 'size': 5}),
 						$("<br />"),
 						$("<button>").html("Delete").css({clear: "both"}).click(function(e){
-								UI.removeRewardVar(r.key)
-								// reward_vars = _.filter(reward_vars, (v) => v.key != r.key)
-								// UI.render.rewardVars()
-							})
+							UI.removeRewardVar(r.key)
+						})
 					])
 				}))
 				rvs.append($("<button>").html("New").click((e) => UI.addRewardVar() ))
+			},
+
+			fancyCharts : function(chartsData) {
+				$.fancybox.destroy()
+				var chartIdPrefix = "chart-"
+				var charts = _.map(chartsData, function(i, idx) {
+					return $("<div>").attr({id: chartIdPrefix + idx, class: "resultChart"})
+				})
+				$("#results").append(charts)
+				$.fancybox.open(charts, {
+					helpers : { 
+						title : { type : 'inside' }
+					},
+					loop : true,
+					afterClose: function() { $("#results").empty() },
+					beforeShow: function() {
+						// Hack: Creating the Chartist objects are in the `beforeShow` function because they were not rendering properly when fancybox changed slides. (all elements in the graph were rendered at a single point)
+						_.map(chartsData, function(singleChartData, idx){
+							var pluginOpts = {
+								chartPadding: { top: 20, right: 0, bottom: 20, left: 0 },
+								plugins: [ Chartist.plugins.ctAxisTitle({
+									axisX: {
+										axisTitle: singleChartData.title,
+										axisClass: "ct-axis-title",
+										offset: { x: 0, y: 40 },
+										textAnchor: "middle"
+									},
+									axisY: {}
+								})]
+							}
+							new Chartist.Line("#" + chartIdPrefix + idx, singleChartData, pluginOpts)
+						})
+					}
+				})
 			},
 
 			network : function() {
@@ -402,7 +437,7 @@
 			if (name != undefined && ! _.contains(_.pluck(reward_vars, "id"), name )) {
 				var new_rv = { 
 					key: name, 
-					opt1: "0", 
+					opt1: getOrElse(_.find(node_data_set.get(), (n) => n.props.type == "noun"), {label: ""}).label,
 					opt2: "Instant of Time", 
 					range: { start: 0, end: 100, step: 5 }
 				}
@@ -515,22 +550,38 @@
 
 
 	var IR = {
+
+		chartCount: 0,
+		chartDataAcc: [],
+
 		submit : function(){
 			if (_.isEmpty(reward_vars)) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
 
 			$.fancybox.open($("<img>").attr({src: "images/spinner.gif"}))
 			
 			IR.submitGraph(function(data, status, jqXHR) {
+				IR.chartCount = reward_vars.length
+
 				_.map(reward_vars, function(rv) {
 					var simParams = {
-						"initialTime": rv.range.start,
-						"finalTime": rv.range.end,
-						"stepSize": rv.range.step,
+						"initialTime": parseFloat(rv.range.start),
+						"finalTime": parseFloat(rv.range.end),
+						"stepSize": parseFloat(rv.range.step),
 						"savePlot": null
 					}
 					IR.execute.scipy.integrate(simParams, function(data, status, jqXHR) {
-						$.fancybox.destroy()
-						$.fancybox.open([$("<div>").html("One"), "<div>Two</div>"])
+						IR.chartDataAcc.push({
+							title: rv.opt1,
+							labels: data.times,
+							series: [
+								data.variables[rv.opt1]
+							]
+						})
+						if (IR.chartCount == IR.chartDataAcc.length){
+							UI.render.fancyCharts( IR.chartDataAcc )
+							IR.chartDataAcc = []
+							IR.chartCount = 0
+						}
 					})
 				})
 			})
@@ -724,6 +775,7 @@
 		border-color: lightblue;
 	}
 	#palette img.right {
+		margin-top: 1em;
 		height: 25px;
 	}
 	#palette .right{
@@ -773,9 +825,14 @@
 	h4 {
 		font-size: 1.1em;
 	}
+	.resultChart {
+		width: 80%;
+		height: 80%
+	}
 
 </style></head>
 <body>
+	<div id="results" style="display: none;"></div>
 	<div id="palette">
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
 		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />
