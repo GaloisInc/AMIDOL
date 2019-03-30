@@ -572,6 +572,7 @@
 			
 			IR.submitGraph(function(data, status, jqXHR) {
 				IR.chartCount = reward_vars.length
+				IR.chartDataAcc = []
 
 				_.map(reward_vars, function(rv) {
 					var simParams = {
