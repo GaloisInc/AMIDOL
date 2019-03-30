@@ -129,7 +129,7 @@
 		},
 
 		invertEvent : function(initial_event) {
-			var event = _.clone(initial_event)  // make a copy, return a new object
+			var event = _.clone(initial_event)	// make a copy, return a new object
 			switch (event.type) {
 				case "add":
 					event.type = "subtract"
@@ -172,7 +172,7 @@
 			console.log(
 				JSON.stringify(
 					[ _.map(journal.past, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}),
-					  _.map(journal.future, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}) ]
+						_.map(journal.future, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}) ]
 				)
 			)
 		}
@@ -397,7 +397,7 @@
 						journal.past.push({ "type" : "move", "from": from, "to": to })
 					}
 				})
-				// $("#graph").on("mousemove", null)  // Cannot use network 'dragging' event?
+				// $("#graph").on("mousemove", null)	// Cannot use network 'dragging' event?
 			}
 		},
 
@@ -518,7 +518,7 @@
 			context.event.preventDefault()
 		},
 
-		movingNodes : null, // or:  { nodeId1: {x: xValue, y: yValue}, … }
+		movingNodes : null, // or:	{ nodeId1: {x: xValue, y: yValue}, … }
 
 		download : function() {
 			var data = {
@@ -710,10 +710,10 @@
 				"type": "verb",
 				"classDef": "birth.air",
 				"icon": "images/birth.svg",
-        "verb_sort": {
-          "type": "source",
-				  "rate_in_template": "mu * OUTPUT"
-        },
+				"verb_sort": {
+					"type": "source",
+					"rate_in_template": "mu * OUTPUT"
+				},
 				"parameters": [
 					{"name": "mu", "value": "0"}
 				]
@@ -723,16 +723,16 @@
 				"type": "verb",
 				"classDef": "death.air",
 				"icon": "images/death.svg",
-        "verb_sort": {
-          "type": "sink",
-				  "rate_out_template": "mu * INPUT"
-        },
+				"verb_sort": {
+					"type": "sink",
+					"rate_out_template": "mu * INPUT"
+				},
 				"parameters": [
 					{"name": "nu", "value": "0"}
 				]
 			}
 		},
-    "predator_prey" : {
+		"predator_prey" : {
 			"predator": {
 				"className": "predator",
 				"type": "noun",
@@ -752,14 +752,14 @@
 				"type": "verb",
 				"classDef": "hunting.air",
 				"icon": "images/hunting.svg",
-        "verb_sort": {
-          "type": "unconserved",
-				  "rate_in_template": "beta * INPUT * OUTPUT",
-				  "rate_out_template": "delta * INPUT * OUTPUT"
-        },
+				"verb_sort": {
+					"type": "unconserved",
+					"rate_in_template": "beta * INPUT * OUTPUT",
+					"rate_out_template": "delta * INPUT * OUTPUT"
+				},
 				"parameters": [
 					{"name": "beta", "value": "1.33"},
-          {"name": "delta", "value": "1"}
+					{"name": "delta", "value": "1"}
 				]
 			},
 			"breeding": {
@@ -767,10 +767,10 @@
 				"type": "verb",
 				"classDef": "breeding.air",
 				"icon": "images/breeding.svg",
-        "verb_sort": {
-          "type": "source",
-				  "rate_in_template": "alpha * OUTPUT"
-        },
+				"verb_sort": {
+					"type": "source",
+					"rate_in_template": "alpha * OUTPUT"
+				},
 				"parameters": [{"name": "alpha", "value": "0.66"}]
 			},
 			"death": {
@@ -778,10 +778,10 @@
 				"type": "verb",
 				"classDef": "death.air",
 				"icon": "images/death.svg",
-        "verb_sort": {
-          "type": "sink",
-				  "rate_out_template": "gamma * INPUT"
-        },
+				"verb_sort": {
+					"type": "sink",
+					"rate_out_template": "gamma * INPUT"
+				},
 				"parameters": [
 					{"name": "gamma", "value": "1"}
 				]
@@ -815,8 +815,8 @@
 			{id: "c", from: "3", to: "4"},
 			{id: "d", from: "4", to: "5"},
 		]
-    /*
-    var sample_nodes = [
+		/*
+		var sample_nodes = [
 			UI.makeNode({id: "1", label: "Breeding", x: -175, y: -175}, "breeding"), 
 			UI.makeNode({id: "2", label: "Prey", x: -175, y: 0}, "prey"),
 			UI.makeNode({id: "3", label: "Hunting", x: -0, y: 0}, "hunting"),
@@ -829,7 +829,7 @@
 			{id: "c", from: "3", to: "4"},
 			{id: "d", from: "4", to: "5"},
 		]
-    */
+		*/
 
 		journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
 	})
