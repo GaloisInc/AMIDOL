@@ -300,11 +300,14 @@
 						initiallyActive: true,
 						addNode: function(node, callback){
 							node.label = prompt("Name your new node:")
-							if (node.label != null) {
+							var isUnused = _.find(node_data_set.get(), (n) => n.label == node.label) === undefined
+							if (node.label != null && isUnused) {
 								node.image = $("#palette img.selected").attr("src")
 								var className = $("#palette img.selected").attr("classname")
 								var node = UI.makeNode(node, className)
 								journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
+							} else {
+								if (! isUnused) { alert("That name is already used.") }
 							}
 						},
 						addEdge: function(edge, callback){
@@ -352,8 +355,11 @@
 					// Renameing nodes and edges:
 					if (_.size(e.nodes) == 1) {
 						var newName = prompt("New node name:")
-						if (newName !== null) {
+						var isUnused = _.find(node_data_set.get(), (n) => n.label == newName) === undefined
+						if (newName !== null && isUnused) {
 							UI.renameNode(e.nodes[0], newName)
+						} else {
+							if (! isUnused) { alert("That name is already used.") }
 						}
 					} 
 					// else { if (_.size(e.edges) == 1) {
