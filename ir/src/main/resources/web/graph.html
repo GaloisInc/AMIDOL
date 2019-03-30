@@ -580,6 +580,11 @@
 						"stepSize": parseFloat(rv.range.step),
 						"savePlot": null
 					}
+					if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
+						alert("Sampling the range you defined will require more memory than this system can spare right now.")
+						$.fancybox.destroy()
+						return false
+					}
 					IR.execute.scipy.integrate(simParams, function(data, status, jqXHR) {
 						IR.chartDataAcc.push({
 							title: rv.opt1,
