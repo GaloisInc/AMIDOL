@@ -795,6 +795,7 @@
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
 
 		var startingPalette = availablePalettes[chosenPalette]
+		$("#paletteChooser select").append(_.map(_.keys(availablePalettes), (k) => $("<option>").html(k)))
 
 		UI.render.network()
 		UI.render.palette(startingPalette)
@@ -936,10 +937,7 @@
 	<div id="results" style="display: none;"></div>
 	<div id="palette">
 		<div id="paletteChooser">
-			<select onchange="UI.choosePalette(this)">
-				<option>SIR</option>
-				<option>SIR-VD</option>
-			</select>
+			<select onchange="UI.choosePalette(this)"></select>
 		</div>
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
 		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />
