@@ -17,7 +17,11 @@ import java.util.concurrent.atomic.AtomicLong
 import java.nio.file.Files
 import java.nio.file.Paths
 
+import com.typesafe.config.ConfigFactory
+
 object Main extends App with Directives with ui.UiJsonSupport {
+
+  val conf = ConfigFactory.load();
 
   // Mutable app state
   //
@@ -131,11 +135,11 @@ object Main extends App with Directives with ui.UiJsonSupport {
   }
 
   // Start the server
-  val address = "localhost"
-  val port = 8080
+  val address = conf.getString("amidol.address") // "52.43.67.227"
+  val port = conf.getInt("amidol.port") // 80
   val bindingFuture = Http().bindAndHandle(route, address, port)
 
-  println(s"Server online at http://$address:$port/\nPress RETURN to stop...")
+  println(s"Server online at $address:$port/\nPress RETURN to stop...")
   StdIn.readLine() // let it run until user presses return
   bindingFuture
     .flatMap(_.unbind()) // trigger unbinding from the port
