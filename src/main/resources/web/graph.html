@@ -211,6 +211,7 @@
 					vs.append(_.map(vars, function(v){
 						return $("<div><label>"+v.name+'</label><input value="'+v.value+'" onblur="UI.propBlur({id: \''+id+'\'}, \''+v.name+'\', this.value)"></input></div>')
 					}))
+					vs.append($("<button>").html("<strike>New</strike>").click((e) => UI.addLocalVar() ))
 				}
 			},
 
@@ -508,6 +509,10 @@
 			alert("Not supported yet.")
 		},
 
+		addLocalVar : function() {
+			alert("Not supported yet.")
+		},
+
 		setProp: function(id, key, value) {
 			var paramList = get(node_data_set.get(id), ['props', 'parameters'])
 			var previous = get(_.find(paramList, (p) => p.name === key), ['value'])
@@ -659,8 +664,8 @@
 		getData : function(){
 			return {
 				graph: JSON.stringify({
-					nodes : node_data_set.get(),
-					links : edge_data_set.get()
+					nodes : node_data_set.getDataSet()._data,
+					links : edge_data_set.getDataSet()._data
 				}),
 				globalVariables: JSON.stringify(global_vars)
 			}
