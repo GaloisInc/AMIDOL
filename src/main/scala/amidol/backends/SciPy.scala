@@ -24,7 +24,8 @@ object SciPyIntegrate extends ContinuousInitialValue {
     model: Model,
     constants: Map[String, Double],
     boundary:  Map[String, Double],
-    inputs: Inputs
+    inputs: Inputs,
+    requestId: Long
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
@@ -39,11 +40,11 @@ object SciPyIntegrate extends ContinuousInitialValue {
       ).map(_.toDouble)
 
       // Set up the system of differential equations 
-      stateVars: List[NounId] = model.nouns.keys.toList
-      derivatives: Map[NounId, math.Expr] = {
-        var builder = Map.empty[NounId, math.Expr]
+      stateVars: List[StateId] = model.states.keys.toList
+      derivatives: Map[StateId, math.Expr] = {
+        var builder = Map.empty[StateId, math.Expr]
 
-        for ((_, verb) <- model.verbs) {
+        for ((_, verb) <- model.events) {
           verb match {
             case Conserved(_, src, tgt, expr) =>
               builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
@@ -65,9 +66,9 @@ object SciPyIntegrate extends ContinuousInitialValue {
       }
 
       // Pretty printing
-      stateVarsStr   = stateVars.map(i => model.nouns(i).stateVariable.prettyPrint())
-      derivativesStr = derivatives.toList.map(ie => s"d${model.nouns(ie._1).stateVariable.prettyPrint()}_ = ${ie._2.prettyPrint()}") 
-      initialCondStr = stateVars.map(i => boundary(model.nouns(i).stateVariable))
+      stateVarsStr   = stateVars.map(i => model.states(i).stateVariable.prettyPrint())
+      derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).stateVariable.prettyPrint()}_ = ${ie._2.prettyPrint()}") 
+      initialCondStr = stateVars.map(i => boundary(model.states(i).stateVariable))
       constantsStr   = constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
       writeImageFile = inputs.savePlot
 
@@ -116,9 +117,9 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
       // Run the code
       outputArrs <- {
-        Files.write(Paths.get("tmp_script.py"), pythonCode.getBytes)
-        println("Running `python3 tmp_script.py`...")
-        Try("python3 tmp_script.py".!!) // blocks until script returns
+        Files.write(Paths.get("tmp_scripts", s"${requestId}_tmp_script.py"), pythonCode.getBytes)
+        println(s"Running `python3 tmp_scripts/${requestId}_tmp_script.py`...")
+        Try(s"python3 tmp_scripts/${requestId}_tmp_script.py".!!) // blocks until script returns
       }
 
       // Parse the output back out
@@ -147,16 +148,17 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
     model: Model,
     constants: Map[String, Double],
     boundary:  Map[String, Double],
-    inputs: Inputs
+    inputs: Inputs,
+    requestId: Long
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
 
     // Extract the system
     val eqns: Map[math.Variable, math.Expr] = {
-      var builder: Map[NounId, math.Expr] = model.nouns.keys.map(_ -> (0: math.Expr)).toMap
+      var builder: Map[StateId, math.Expr] = model.states.keys.map(_ -> (0: math.Expr)).toMap
 
-      for ((_, verb) <- model.verbs) {
+      for ((_, verb) <- model.events) {
         verb match {
           case Conserved(_, src, tgt, expr) =>
             builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
@@ -175,7 +177,7 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
       }
 
       builder
-        .map { case (nId, exp) => model.nouns(nId).stateVariable -> exp }
+        .map { case (nId, exp) => model.states(nId).stateVariable -> exp }
         .toMap
     }
 
@@ -207,9 +209,9 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
 
       // Run the code
       outputArr <- {
-        Files.write(Paths.get("tmp_script.py"), pythonCode.getBytes)
-        println("Running `python3 tmp_script.py`...")
-        Try("python3 tmp_script.py".!!) // blocks until script returns
+        Files.write(Paths.get("tmp_scripts", s"${requestId}_tmp_script.py"), pythonCode.getBytes)
+        println(s"Running `python3 tmp_scripts/${requestId}_tmp_script.py`...")
+        Try(s"python3 tmp_scripts/${requestId}_tmp_script.py".!!) // blocks until script returns
       }
 
       // Parse the output back out

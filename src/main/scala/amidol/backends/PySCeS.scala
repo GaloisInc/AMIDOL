@@ -25,7 +25,8 @@ object PySCeS extends ContinuousInitialValue {
     model: Model,
     constants: Map[String, Double],
     boundary:  Map[String, Double],
-    inputs: Inputs
+    inputs: Inputs,
+    requestId: Long
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
@@ -38,18 +39,18 @@ object PySCeS extends ContinuousInitialValue {
       boundary  <- Try(boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
 
       // Pretty-printing
-      reactions: List[PySCeS] = model.verbs.toList.map {
+      reactions: List[PySCeS] = model.events.toList.map {
         case (_, Conserved(edgeId, src, tgt, expr)) =>
-          val srcVar = renamer.getOrInsert(model.nouns(src).stateVariable)
-          val tgtVar = renamer.getOrInsert(model.nouns(tgt).stateVariable)
+          val srcVar = renamer.getOrInsert(model.states(src).stateVariable)
+          val tgtVar = renamer.getOrInsert(model.states(tgt).stateVariable)
           s"""|reaction_${edgeId.id.toString.replace('-','n')}:
               |     ${srcVar.prettyPrint()} > ${tgtVar.prettyPrint()}
               |     ${expr.renameVariables(renamer).prettyPrint()}
               |""".stripMargin
 
         case (_, Unconserved(edgeId, src, tgt, exprOut, exprIn)) =>
-          val srcVar = renamer.getOrInsert(model.nouns(src).stateVariable)
-          val tgtVar = renamer.getOrInsert(model.nouns(tgt).stateVariable)
+          val srcVar = renamer.getOrInsert(model.states(src).stateVariable)
+          val tgtVar = renamer.getOrInsert(model.states(tgt).stateVariable)
           s"""|reactionsource_${edgeId.id.toString.replace('-','n')}:
               |     $$pool > ${tgtVar.prettyPrint()}
               |     ${exprIn.renameVariables(renamer).prettyPrint()}
@@ -60,14 +61,14 @@ object PySCeS extends ContinuousInitialValue {
               |""".stripMargin
 
         case (_, Source(edgeId, tgt, exprIn)) =>
-          val tgtVar = renamer.getOrInsert(model.nouns(tgt).stateVariable)
+          val tgtVar = renamer.getOrInsert(model.states(tgt).stateVariable)
           s"""|reaction_${edgeId.id.toString.replace('-','n')}:
               |     $$pool > ${tgtVar.prettyPrint()}
               |     ${exprIn.renameVariables(renamer).prettyPrint()}
               |""".stripMargin
 
         case (_, Sink(edgeId, src, exprOut)) =>
-          val srcVar = renamer.getOrInsert(model.nouns(src).stateVariable)
+          val srcVar = renamer.getOrInsert(model.states(src).stateVariable)
           s"""|reaction_${edgeId.id.toString.replace('-','n')}:
               |     ${srcVar.prettyPrint()} > $$pool
               |     ${exprOut.renameVariables(renamer).prettyPrint()}
@@ -93,7 +94,7 @@ object PySCeS extends ContinuousInitialValue {
         |# Parameter values
         |${initialAndConstants.mkString("\n")}
         |""".stripMargin
-      _ <- Try(Files.write(Paths.get("tmp_model.psc"), pyscesCode.getBytes))
+      _ <- Try(Files.write(Paths.get("tmp_scripts", s"${requestId}_tmp_model.psc"), pyscesCode.getBytes))
 
       // Python code 
       currentDir <- Try(new java.io.File(".").getCanonicalPath()) // TODO: I think we need some escaping...
@@ -109,7 +110,7 @@ object PySCeS extends ContinuousInitialValue {
         |            return obj.tolist()
         |        return json.JSONEncoder.default(self, obj)
         |
-        |mod = pysces.model('tmp_model', dir='${currentDir}')
+        |mod = pysces.model('${requestId}_tmp_model', dir='${currentDir}/tmp_scripts')
         |mod.sim_start  = ${inputs.initialTime}
         |mod.sim_end    = ${inputs.finalTime - 1}
         |mod.sim_points = ${(inputs.finalTime - inputs.initialTime) / inputs.stepSize}
@@ -119,17 +120,17 @@ object PySCeS extends ContinuousInitialValue {
         |output = { lbl: arr for lbl, arr in zip(Slabels, Sdata.transpose()) }
         |output_str = json.dumps(output, cls=NumpyEncoder)
         |
-        |output_file = open('${currentDir}/tmp_output.json', mode='w')
+        |output_file = open('${currentDir}/tmp_scripts/${requestId}_tmp_output.json', mode='w')
         |output_file.write(output_str)
         |output_file.close()
         |""".stripMargin
 
       // Run the code
       outputMap <- Try {
-        Files.write(Paths.get("tmp_script.py"), pythonCode.getBytes)
-        println("Running `python tmp_script.py`...")
-        "python tmp_script.py" ! ProcessLogger(_ => ()) // blocks until script returns
-        scala.io.Source.fromFile("tmp_output.json").mkString
+        Files.write(Paths.get("tmp_scripts", s"${requestId}_tmp_script.py"), pythonCode.getBytes)
+        println(s"Running `python tmp_scripts/${requestId}_tmp_script.py`...")
+        s"python tmp_scripts/${requestId}_tmp_script.py" ! ProcessLogger(_ => ()) // blocks until script returns
+        scala.io.Source.fromFile(s"tmp_scripts/${requestId}_tmp_output.json").mkString
       }
 
       // Parse the output back out
