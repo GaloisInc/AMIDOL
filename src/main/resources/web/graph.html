@@ -564,7 +564,7 @@
 					reader.onloadend = function(e) {
 						do { $("#redo_button").click() }
 						while ( ! $("#redo_button").hasClass("disabled"))
-						UI.render.reward_vars()
+						UI.render.rewardVars()
 						UI.render.localVars()
 					}
 					reader.readAsText(f)
@@ -685,7 +685,7 @@
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
 		},
-		"SIR-VD": {
+		"SIRS-VD": {
 			"population": {
 				"className": "population",
 				"type": "noun",
@@ -735,7 +735,7 @@
 					"rate_in_template": "mu * OUTPUT"
 				},
 				"parameters": [
-					{"name": "mu", "value": "0"}
+					{"name": "mu", "value": "0.00007"}
 				]
 			},
 			"death": {
@@ -745,12 +745,26 @@
 				"icon": "images/death.svg",
 				"verb_sort": {
 					"type": "sink",
-					"rate_out_template": "mu * INPUT"
+					"rate_out_template": "nu * INPUT"
 				},
 				"parameters": [
-					{"name": "nu", "value": "0"}
+					{"name": "nu", "value": "0.00002"}
 				]
-			}
+			},
+      "time": {
+        "className": "time",
+				"type": "verb",
+				"classDef": "time.air",
+				"icon": "images/time.svg",
+				"verb_sort": {
+					"type": "conserved",
+					"rate_template": "eta * INPUT"
+				},
+				"parameters": [
+					{"name": "eta", "value": "0.002"}
+				]
+
+      }
 		},
 		"predator_prey" : {
 			"predator": {

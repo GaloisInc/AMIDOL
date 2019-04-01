@@ -1,0 +1,352 @@
+{
+  "journal": [
+    {
+      "type": "add",
+      "nodes": [
+        {
+          "id": "1",
+          "label": "Susceptible",
+          "x": -350,
+          "y": 0,
+          "props": {
+            "className": "population",
+            "type": "noun",
+            "classDef": "population.air",
+            "icon": "images/person.svg",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "500"
+              }
+            ]
+          },
+          "image": "images/person.svg"
+        },
+        {
+          "id": "1_birth",
+          "label": "Susceptible Birth",
+          "x": -350,
+          "y": 80,
+          "props": {
+            "className": "birth",
+            "type": "verb",
+            "classDef": "birth.air",
+            "icon": "images/birth.svg",
+            "verb_sort": {
+              "type": "source",
+              "rate_in_template": "nu * OUTPUT"
+            },
+            "parameters": [
+              {
+                "name": "nu",
+                "value": "0.00007 "
+              }
+            ]
+          },
+          "image": "images/birth.svg"
+        },
+        {
+          "id": "1_death",
+          "label": "Susceptible Death",
+          "x": -350,
+          "y": -80,
+          "props": {
+            "className": "death",
+            "type": "verb",
+            "classDef": "death.air",
+            "icon": "images/death.svg",
+            "verb_sort": {
+              "type": "sink",
+              "rate_out_template": "nu * INPUT"
+            },
+            "parameters": [
+              {
+                "name": "nu",
+                "value": "0.00002 "
+              }
+            ]
+          },
+          "image": "images/death.svg"
+        },
+        {
+          "id": "2",
+          "label": "Exposed",
+          "x": -175,
+          "y": -175,
+          "props": {
+            "className": "infect",
+            "type": "verb",
+            "classDef": "infect.air",
+            "icon": "images/virus.svg",
+            "verb_sort": {
+              "type": "conserved",
+              "rate_template": "beta * INPUT * OUTPUT / total_pop"
+            },
+            "parameters": [
+              {
+                "name": "beta",
+                "value": "0.413"
+              },
+              {
+                "name": "total_pop",
+                "value": "Susceptible + Infected + Recovered"
+              }
+            ]
+          },
+          "image": "images/virus.svg"
+        },
+        {
+          "id": "3",
+          "label": "Infected",
+          "x": 0,
+          "y": -175,
+          "props": {
+            "className": "patient",
+            "type": "noun",
+            "classDef": "patient.air",
+            "icon": "images/patient.svg",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "1"
+              }
+            ]
+          },
+          "image": "images/patient.svg"
+        },
+        {
+          "id": "3_birth",
+          "label": "Infected Birth",
+          "x": 0,
+          "y": -95,
+          "props": {
+            "className": "birth",
+            "type": "verb",
+            "classDef": "birth.air",
+            "icon": "images/birth.svg",
+            "verb_sort": {
+              "type": "source",
+              "rate_in_template": "nu * OUTPUT"
+            },
+            "parameters": [
+              {
+                "name": "nu",
+                "value": "0.00007 "
+              }
+            ]
+          },
+          "image": "images/birth.svg"
+        },
+        {
+          "id": "3_death",
+          "label": "Infected Death",
+          "x": 0,
+          "y": -255,
+          "props": {
+            "className": "death",
+            "type": "verb",
+            "classDef": "death.air",
+            "icon": "images/death.svg",
+            "verb_sort": {
+              "type": "sink",
+              "rate_out_template": "nu * INPUT"
+            },
+            "parameters": [
+              {
+                "name": "nu",
+                "value": "0.00002 "
+              }
+            ]
+          },
+          "image": "images/death.svg"
+        },
+        {
+          "id": "4",
+          "label": "Cured",
+          "x": 175,
+          "y": -175,
+          "props": {
+            "className": "cure",
+            "type": "verb",
+            "classDef": "cure.air",
+            "icon": "images/cure.svg",
+            "verb_sort": {
+              "type": "conserved",
+              "rate_template": "gamma * INPUT"
+            },
+            "parameters": [
+              {
+                "name": "gamma",
+                "value": "0.333"
+              }
+            ]
+          },
+          "image": "images/cure.svg"
+        },
+        {
+          "id": "5",
+          "label": "Recovered",
+          "x": 350,
+          "y": 0,
+          "props": {
+            "className": "population",
+            "type": "noun",
+            "classDef": "population.air",
+            "icon": "images/person.svg",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "0"
+              }
+            ]
+          },
+          "image": "images/person.svg"
+        },
+        {
+          "id": "5_birth",
+          "label": "Recovered Birth",
+          "x": 350,
+          "y": 80,
+          "props": {
+            "className": "birth",
+            "type": "verb",
+            "classDef": "birth.air",
+            "icon": "images/birth.svg",
+            "verb_sort": {
+              "type": "source",
+              "rate_in_template": "nu * OUTPUT"
+            },
+            "parameters": [
+              {
+                "name": "nu",
+                "value": "0.00007 "
+              }
+            ]
+          },
+          "image": "images/birth.svg"
+        },
+        {
+          "id": "5_death",
+          "label": "Recovered Death",
+          "x": 350,
+          "y": -80,
+          "props": {
+            "className": "death",
+            "type": "verb",
+            "classDef": "death.air",
+            "icon": "images/death.svg",
+            "verb_sort": {
+              "type": "sink",
+              "rate_out_template": "nu * INPUT"
+            },
+            "parameters": [
+              {
+                "name": "nu",
+                "value": "0.00002 "
+              }
+            ]
+          },
+          "image": "images/death.svg"
+        },
+        {
+          "id": "6",
+          "label": "Time",
+          "x": 0,
+          "y": 0,
+          "props": {
+            "className": "cure",
+            "type": "verb",
+            "classDef": "time.air",
+            "icon": "images/time.svg",
+            "verb_sort": {
+              "type": "conserved",
+              "rate_template": "eta * INPUT"
+            },
+            "parameters": [
+              {
+                "name": "eta",
+                "value": "0.002"
+              }
+            ]
+          },
+          "image": "images/time.svg"
+        }
+      ],
+      "edges": [
+        {
+          "id": "a",
+          "from": "1",
+          "to": "2"
+        },
+        {
+          "id": "a_birth",
+          "from": "1_birth",
+          "to": "1"
+        },
+        {
+          "id": "a_death",
+          "from": "1",
+          "to": "1_death"
+        },
+        {
+          "id": "b",
+          "from": "2",
+          "to": "3"
+        },
+        {
+          "id": "c",
+          "from": "3",
+          "to": "4"
+        },
+        {
+          "id": "c_birth",
+          "from": "3_birth",
+          "to": "3"
+        },
+        {
+          "id": "c_death",
+          "from": "3",
+          "to": "3_death"
+        },
+        {
+          "id": "d",
+          "from": "4",
+          "to": "5"
+        },
+        {
+          "id": "e",
+          "from": "5",
+          "to": "6"
+        },
+        {
+          "id": "e_birth",
+          "from": "5_birth",
+          "to": "5"
+        },
+        {
+          "id": "e_death",
+          "from": "5",
+          "to": "5_death"
+        },
+        {
+          "id": "f",
+          "from": "6",
+          "to": "1"
+        }
+      ]
+    }
+  ],
+  "reward_vars": [
+    {
+      "key": "Example",
+      "opt1": "Susceptible",
+      "opt2": "Instant of Time",
+      "range": {
+        "start": 0,
+        "end": 100,
+        "step": 5
+      }
+    }
+  ],
+  "global_vars": {}
+}
