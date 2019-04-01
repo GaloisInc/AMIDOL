@@ -38,18 +38,18 @@ object PySCeS extends ContinuousInitialValue {
       boundary  <- Try(boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
 
       // Pretty-printing
-      reactions: List[PySCeS] = model.verbs.toList.map {
+      reactions: List[PySCeS] = model.events.toList.map {
         case (_, Conserved(edgeId, src, tgt, expr)) =>
-          val srcVar = renamer.getOrInsert(model.nouns(src).stateVariable)
-          val tgtVar = renamer.getOrInsert(model.nouns(tgt).stateVariable)
+          val srcVar = renamer.getOrInsert(model.states(src).stateVariable)
+          val tgtVar = renamer.getOrInsert(model.states(tgt).stateVariable)
           s"""|reaction_${edgeId.id.toString.replace('-','n')}:
               |     ${srcVar.prettyPrint()} > ${tgtVar.prettyPrint()}
               |     ${expr.renameVariables(renamer).prettyPrint()}
               |""".stripMargin
 
         case (_, Unconserved(edgeId, src, tgt, exprOut, exprIn)) =>
-          val srcVar = renamer.getOrInsert(model.nouns(src).stateVariable)
-          val tgtVar = renamer.getOrInsert(model.nouns(tgt).stateVariable)
+          val srcVar = renamer.getOrInsert(model.states(src).stateVariable)
+          val tgtVar = renamer.getOrInsert(model.states(tgt).stateVariable)
           s"""|reactionsource_${edgeId.id.toString.replace('-','n')}:
               |     $$pool > ${tgtVar.prettyPrint()}
               |     ${exprIn.renameVariables(renamer).prettyPrint()}
@@ -60,14 +60,14 @@ object PySCeS extends ContinuousInitialValue {
               |""".stripMargin
 
         case (_, Source(edgeId, tgt, exprIn)) =>
-          val tgtVar = renamer.getOrInsert(model.nouns(tgt).stateVariable)
+          val tgtVar = renamer.getOrInsert(model.states(tgt).stateVariable)
           s"""|reaction_${edgeId.id.toString.replace('-','n')}:
               |     $$pool > ${tgtVar.prettyPrint()}
               |     ${exprIn.renameVariables(renamer).prettyPrint()}
               |""".stripMargin
 
         case (_, Sink(edgeId, src, exprOut)) =>
-          val srcVar = renamer.getOrInsert(model.nouns(src).stateVariable)
+          val srcVar = renamer.getOrInsert(model.states(src).stateVariable)
           s"""|reaction_${edgeId.id.toString.replace('-','n')}:
               |     ${srcVar.prettyPrint()} > $$pool
               |     ${exprOut.renameVariables(renamer).prettyPrint()}

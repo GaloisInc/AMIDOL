@@ -444,7 +444,7 @@
 		},
 
 		addRewardVar : function() {
-			var name = prompt("Name your new reward varaible:")
+			var name = prompt("Name your new reward variable:")
 			if (name != undefined && ! _.contains(_.pluck(reward_vars, "id"), name )) {
 				var new_rv = { 
 					key: name, 

@@ -6,16 +6,16 @@ import java.util.Date
 
 // All of this file is subject to a ton of change! No idea what the best way is to handle this...
 
-case class NounId(id: String) extends AnyVal
-case class VerbId(id: String) extends AnyVal
+case class StateId(id: String) extends AnyVal
+case class EventId(id: String) extends AnyVal
 
 case class Model(
-  nouns: Map[NounId, Noun],
-  verbs: Map[VerbId, Verb]
+  states: Map[StateId, State],
+  events: Map[EventId, Event]
 )
 
-case class Noun(
-  id: NounId,
+case class State(
+  id: StateId,
   stateVariable: Variable,
   
   // Only for pruposes of recreating ui.Graph. TODO: should we remove?
@@ -23,30 +23,30 @@ case class Noun(
   location: ui.Point
 )
 
-sealed trait Verb
+sealed trait Event
 case class Conserved(
-  id: VerbId,
-  source: NounId,
-  target: NounId,
+  id: EventId,
+  source: StateId,
+  target: StateId,
   rate: Expr
-) extends Verb
+) extends Event
 
 case class Unconserved(
-  id: VerbId,
-  source: NounId, 
-  target: NounId,
+  id: EventId,
+  source: StateId,
+  target: StateId,
   rateOut: Expr,
   rateIn: Expr
-) extends Verb
+) extends Event
 
 case class Source(
-  id: VerbId,
-  target: NounId,
+  id: EventId,
+  target: StateId,
   rateIn: Expr
-) extends Verb
+) extends Event
 
 case class Sink(
-  id: VerbId,
-  source: NounId,
+  id: EventId,
+  source: StateId,
   rateOut: Expr
-) extends Verb
+) extends Event
