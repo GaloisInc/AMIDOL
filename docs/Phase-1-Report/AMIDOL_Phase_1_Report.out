@@ -14,10 +14,13 @@
 \BOOKMARK [1][-]{section.7}{AMIDOL Inference Engine}{}% 14
 \BOOKMARK [1][-]{section.8}{Domain Models}{}% 15
 \BOOKMARK [2][-]{subsection.8.1}{SIS/SIRS}{section.8}% 16
-\BOOKMARK [2][-]{subsection.8.2}{Artificial Chemistry and Intracellular Viral Infection}{section.8}% 17
-\BOOKMARK [2][-]{subsection.8.3}{HIV Transactivation Model}{section.8}% 18
+\BOOKMARK [2][-]{subsection.8.2}{SIS/SIRS with Vital Dynamics}{section.8}% 17
+\BOOKMARK [2][-]{subsection.8.3}{Lotka-Volterra Model}{section.8}% 18
 \BOOKMARK [1][-]{section.9}{Code Repositories and Current Builds}{}% 19
-\BOOKMARK [2][-]{subsection.9.1}{Front-End Architecture for VDSOLs}{section.9}% 20
+\BOOKMARK [2][-]{subsection.9.1}{Front-End Architecture}{section.9}% 20
 \BOOKMARK [2][-]{subsection.9.2}{Backend Architecture for IR and Inference Engine}{section.9}% 21
 \BOOKMARK [2][-]{subsection.9.3}{Integrating AMIDOL}{section.9}% 22
 \BOOKMARK [1][-]{section.10}{Next Steps and Phase 2}{}% 23
+\BOOKMARK [1][-]{appendix.A}{Additional Domain Models}{}% 24
+\BOOKMARK [2][-]{subsection.A.1}{Artificial Chemistry and Intracellular Viral Infection}{appendix.A}% 25
+\BOOKMARK [2][-]{subsection.A.2}{HIV Transactivation Model}{appendix.A}% 26

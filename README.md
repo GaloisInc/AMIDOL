@@ -1,14 +1,13 @@
 # AMIDOL
 
-The UI (an Elm project contained in the `ui` directory) is a series of
-HTML pages through which users will interact with the system. That includes
-drawing/manipulating semi-formal models, issuing queries, loading data.
-
-The main system (a Scala project contained in the `ir` directory) compiles
-questions that users may have about models they've created into code artifacts
-targeting different simulation/solver backends. Over time, we expect this
-system to also manipulate and compose datasets (from real-world observations
-as well as from the output of other simulations).
+AMIDOL is designed to support models in a number of scientific, physical, social, and hybrid domains by
+allowing domain experts to construct meta-models in a novel way, using visual domain specific
+ontological languages (VDSOLs). These VDSOLs utilize an underlying intermediate abstract
+representation to give formal meaning to the intuitive process diagrams scientists and domain
+experts normally create. AMIDOL then provides translations from these VDSOLs into an intermediate
+representation which can be transformed as appropriate to compose models, apply optimizations, and
+translate them into executable representations allowing AMIDOL's inference engine to execute
+prognostic queries on reward models and communicate results to domain experts.
 
 ### Building
 
@@ -34,7 +33,6 @@ AMIDOL$ sbt run
 
 This opens a back-end web server on http://localhost:8080/ . 
 
-[0]: https://guide.elm-lang.org/install.html
 [1]: https://www.scala-sbt.org/download.html
 [2]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 [3]: https://www.python.org/downloads/

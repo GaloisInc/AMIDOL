@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  1 APR 2019 11:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.16)  1 APR 2019 14:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -475,20 +475,18 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 93.
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
+) [1
+
+{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/sc' undefined
 (Font)              using `OT1/cmr/bx/n' instead on input line 113.
 
-[1
-
-{/usr/local/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<figs/system-architecture.pdf, id=110, 956.58478pt x 412.59721pt>
+<figs/system-architecture.pdf, id=122, 956.58478pt x 412.59721pt>
 File: figs/system-architecture.pdf Graphic file (type pdf)
 <use figs/system-architecture.pdf>
 Package pdftex.def Info: figs/system-architecture.pdf  used on input line 118.
 (pdftex.def)             Requested size: 469.75502pt x 202.6151pt.
-
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
  Make it at least 13.59999pt.
@@ -511,149 +509,136 @@ LaTeX Font Warning: Font shape `OMS/cmtt/m/n' undefined
 <figs/SIR-palette.png, id=183, 484.81125pt x 79.29625pt>
 File: figs/SIR-palette.png Graphic file (type png)
 <use figs/SIR-palette.png>
-Package pdftex.def Info: figs/SIR-palette.png  used on input line 181.
+Package pdftex.def Info: figs/SIR-palette.png  used on input line 183.
 (pdftex.def)             Requested size: 469.75502pt x 76.83739pt.
 <figs/SIR-VD-palette.png, id=185, 630.355pt x 81.30376pt>
 File: figs/SIR-VD-palette.png Graphic file (type png)
 <use figs/SIR-VD-palette.png>
-Package pdftex.def Info: figs/SIR-VD-palette.png  used on input line 186.
+Package pdftex.def Info: figs/SIR-VD-palette.png  used on input line 188.
 (pdftex.def)             Requested size: 469.75502pt x 60.58934pt.
 <figs/PREDPREY-palette.png, id=186, 554.07pt x 76.285pt>
 File: figs/PREDPREY-palette.png Graphic file (type png)
 <use figs/PREDPREY-palette.png>
-Package pdftex.def Info: figs/PREDPREY-palette.png  used on input line 191.
+Package pdftex.def Info: figs/PREDPREY-palette.png  used on input line 193.
 (pdftex.def)             Requested size: 469.75502pt x 64.67609pt.
- [4 <./figs/SIR-palette.png> <./figs/SIR-VD-palette.png> <./figs/PREDPREY-palet
-te.png>] [5] [6]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 287.
+ [4] [5 <./figs/SIR-palette.png> <./figs/SIR-VD-palette.png> <./figs/PREDPREY-p
+alette.png>] [6] [7]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 299.
 
 
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 287.
- [7] [8] [9]
-<figs/table.pdf, id=301, 724.7075pt x 416.55624pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 299.
+ [8] [9]
+<figs/table.pdf, id=315, 724.7075pt x 416.55624pt>
 File: figs/table.pdf Graphic file (type pdf)
 <use figs/table.pdf>
-Package pdftex.def Info: figs/table.pdf  used on input line 349.
+Package pdftex.def Info: figs/table.pdf  used on input line 365.
 (pdftex.def)             Requested size: 469.75502pt x 270.01468pt.
-
-[10 <./figs/table.pdf>]
-
-LaTeX Warning: Citation `oliphant2004scipy' on page 11 undefined on input line 
-364.
-
-
-LaTeX Warning: Citation `ahnert2011odeint' on page 11 undefined on input line 3
-64.
-
-[11] (/usr/local/texlive/2018/texmf-dist/tex/latex/listings/lstlang1.sty
+ [10]
+[11 <./figs/table.pdf>]
+(/usr/local/texlive/2018/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-Overfull \hbox (16.43004pt too wide) in paragraph at lines 412--413
+) [12]
+Overfull \hbox (16.43004pt too wide) in paragraph at lines 429--430
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
 
-Overfull \hbox (42.71031pt too wide) in paragraph at lines 420--421
+Overfull \hbox (42.71031pt too wide) in paragraph at lines 437--438
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-
-Overfull \hbox (16.43004pt too wide) in paragraph at lines 421--422
-[][][][][][][][][][][][][][][][][][][][][][][][][][] 
- []
-
-[12]
-<figs/regionsmap.pdf, id=401, 706.64pt x 486.81876pt>
+[13]
+<figs/regionsmap.pdf, id=419, 706.64pt x 486.81876pt>
 File: figs/regionsmap.pdf Graphic file (type pdf)
 <use figs/regionsmap.pdf>
-Package pdftex.def Info: figs/regionsmap.pdf  used on input line 462.
+Package pdftex.def Info: figs/regionsmap.pdf  used on input line 473.
 (pdftex.def)             Requested size: 469.75502pt x 323.6264pt.
- [13]
-<figs/2007-2008-SIRS.pdf, id=416, 729.92903pt x 388.55966pt>
+<figs/2007-2008-SIRS.pdf, id=421, 729.92903pt x 388.55966pt>
 File: figs/2007-2008-SIRS.pdf Graphic file (type pdf)
 <use figs/2007-2008-SIRS.pdf>
-Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 470.
+Package pdftex.def Info: figs/2007-2008-SIRS.pdf  used on input line 481.
 (pdftex.def)             Requested size: 469.75502pt x 250.0647pt.
-<figs/ViralRep-Crop.png, id=419, 426.59375pt x 225.84375pt>
-File: figs/ViralRep-Crop.png Graphic file (type png)
-<use figs/ViralRep-Crop.png>
-Package pdftex.def Info: figs/ViralRep-Crop.png  used on input line 487.
-(pdftex.def)             Requested size: 469.75502pt x 248.70801pt.
- [14 <./figs/regionsmap.pdf>] [15 <./figs/2007-2008-SIRS.pdf> <./figs/ViralRep-
-Crop.png>]
-<figs/HIV-Tat-figure.pdf, id=452, 478.6884pt x 342.67935pt>
-File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
-<use figs/HIV-Tat-figure.pdf>
-Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 512.
-(pdftex.def)             Requested size: 469.75502pt x 336.30452pt.
-<figs/TatModel.pdf, id=453, 650.43pt x 191.71625pt>
-File: figs/TatModel.pdf Graphic file (type pdf)
-<use figs/TatModel.pdf>
-Package pdftex.def Info: figs/TatModel.pdf  used on input line 517.
-(pdftex.def)             Requested size: 469.75502pt x 138.4656pt.
- [16] [17 <./figs/HIV-Tat-figure.pdf> <./figs/TatModel.pdf>]
-<figs/Editor2.png, id=516, 963.6pt x 985.6825pt>
-File: figs/Editor2.png Graphic file (type png)
-<use figs/Editor2.png>
-Package pdftex.def Info: figs/Editor2.png  used on input line 565.
-(pdftex.def)             Requested size: 469.75502pt x 480.52205pt.
-<figs/LoadModel-crop.pdf, id=517, 524.96124pt x 739.76375pt>
-File: figs/LoadModel-crop.pdf Graphic file (type pdf)
-<use figs/LoadModel-crop.pdf>
-Package pdftex.def Info: figs/LoadModel-crop.pdf  used on input line 578.
-(pdftex.def)             Requested size: 469.75502pt x 661.9885pt.
-
-LaTeX Warning: Float too large for page by 48.75848pt on input line 581.
-
-<figs/QueryIntegrateBackend-crop.pdf, id=518, 524.96124pt x 293.095pt>
-File: figs/QueryIntegrateBackend-crop.pdf Graphic file (type pdf)
-<use figs/QueryIntegrateBackend-crop.pdf>
-Package pdftex.def Info: figs/QueryIntegrateBackend-crop.pdf  used on input lin
-e 584.
-(pdftex.def)             Requested size: 469.75502pt x 262.28036pt.
-[18] [19 <./figs/Editor2.png>] [20 <./figs/LoadModel-crop.pdf>]
-<figs/QueryResult.png, id=573, 462.528pt x 346.896pt>
-File: figs/QueryResult.png Graphic file (type png)
-<use figs/QueryResult.png>
-Package pdftex.def Info: figs/QueryResult.png  used on input line 598.
-(pdftex.def)             Requested size: 469.75502pt x 352.33655pt.
- [21 <./figs/QueryIntegrateBackend-crop.pdf>] [22 <./figs/QueryResult.png>]
+<figs/SIR-VD.png, id=422, 2206.2425pt x 1208.515pt>
+File: figs/SIR-VD.png Graphic file (type png)
+<use figs/SIR-VD.png>
+Package pdftex.def Info: figs/SIR-VD.png  used on input line 491.
+(pdftex.def)             Requested size: 469.75502pt x 257.31776pt.
+ [14] [15 <./figs/regionsmap.pdf> <./figs/2007-2008-SIRS.pdf>] [16 <./figs/SIR-
+VD.png>]
+<figs/AMIDOL-UI.png, id=465, 1427.3325pt x 784.9325pt>
+File: figs/AMIDOL-UI.png Graphic file (type png)
+<use figs/AMIDOL-UI.png>
+Package pdftex.def Info: figs/AMIDOL-UI.png  used on input line 522.
+(pdftex.def)             Requested size: 469.75502pt x 258.33385pt.
+<figs/SIR-output.png, id=466, 1149.29375pt x 594.22pt>
+File: figs/SIR-output.png Graphic file (type png)
+<use figs/SIR-output.png>
+Package pdftex.def Info: figs/SIR-output.png  used on input line 528.
+(pdftex.def)             Requested size: 469.75502pt x 242.87921pt.
+<figs/Lotka-Volterra.png, id=469, 2203.23125pt x 1214.5375pt>
+File: figs/Lotka-Volterra.png Graphic file (type png)
+<use figs/Lotka-Volterra.png>
+Package pdftex.def Info: figs/Lotka-Volterra.png  used on input line 537.
+(pdftex.def)             Requested size: 469.75502pt x 258.9522pt.
+ [17] [18 <./figs/AMIDOL-UI.png> <./figs/SIR-output.png>] [19 <./figs/Lotka-Vol
+terra.png>]
+<figs/bunnies.png, id=516, 1730.465pt x 984.67876pt>
+File: figs/bunnies.png Graphic file (type png)
+<use figs/bunnies.png>
+Package pdftex.def Info: figs/bunnies.png  used on input line 591.
+(pdftex.def)             Requested size: 469.75502pt x 267.29419pt.
+ [20 <./figs/bunnies.png>] [21]
 (./AMIDOL_Phase_1_Report.bbl
-Underfull \hbox (badness 1755) in paragraph at lines 15--20
+Underfull \hbox (badness 1755) in paragraph at lines 27--32
 []\OT1/cmr/m/n/10.95 CDC.  Na-tional, re-gional, and state level out-pa-tient i
 ll-ness and vi-ral surveil-lance.
  []
 
-[23] [24])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 615.
- [25]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 615.
+[22] [23])
+<figs/ViralRep-Crop.png, id=552, 426.59375pt x 225.84375pt>
+File: figs/ViralRep-Crop.png Graphic file (type png)
+<use figs/ViralRep-Crop.png>
+Package pdftex.def Info: figs/ViralRep-Crop.png  used on input line 641.
+(pdftex.def)             Requested size: 469.75502pt x 248.70801pt.
+ [24]
+<figs/HIV-Tat-figure.pdf, id=567, 478.6884pt x 342.67935pt>
+File: figs/HIV-Tat-figure.pdf Graphic file (type pdf)
+<use figs/HIV-Tat-figure.pdf>
+Package pdftex.def Info: figs/HIV-Tat-figure.pdf  used on input line 666.
+(pdftex.def)             Requested size: 469.75502pt x 336.30452pt.
+<figs/TatModel.pdf, id=568, 650.43pt x 191.71625pt>
+File: figs/TatModel.pdf Graphic file (type pdf)
+<use figs/TatModel.pdf>
+Package pdftex.def Info: figs/TatModel.pdf  used on input line 671.
+(pdftex.def)             Requested size: 469.75502pt x 138.4656pt.
+ [25 <./figs/ViralRep-Crop.png>] [26 <./figs/HIV-Tat-figure.pdf> <./figs/TatMod
+el.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 712.
+ [27]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 712.
  (./AMIDOL_Phase_1_Report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 615.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 615.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 712.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 712.
 Package rerunfilecheck Info: File `AMIDOL_Phase_1_Report.out' has not changed.
-(rerunfilecheck)             Checksum: D729896344FEAF476095823C160A664C;1613.
+(rerunfilecheck)             Checksum: 176B85497C265403519F6CDDD43721FF;1813.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 615.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 712.
  ) 
 Here is how much of TeX's memory you used:
- 10357 strings out of 492649
- 150826 string characters out of 6129622
- 374111 words of memory out of 5000000
- 13886 multiletter control sequences out of 15000+600000
+ 10414 strings out of 492649
+ 151577 string characters out of 6129622
+ 348664 words of memory out of 5000000
+ 13901 multiletter control sequences out of 15000+600000
  12468 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,12n,43p,1414b,1960s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,13n,43p,1414b,1958s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb>
@@ -671,10 +656,10 @@ e/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
 018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/20
 18/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/201
 8/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on AMIDOL_Phase_1_Report.pdf (25 pages, 1289560 bytes).
+Output written on AMIDOL_Phase_1_Report.pdf (27 pages, 2320725 bytes).
 PDF statistics:
- 743 PDF objects out of 1000 (max. 8388607)
- 612 compressed objects within 7 object streams
- 229 named destinations out of 1000 (max. 500000)
- 255 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 749 PDF objects out of 1000 (max. 8388607)
+ 628 compressed objects within 7 object streams
+ 270 named destinations out of 1000 (max. 500000)
+ 284 words of extra memory for PDF output out of 10000 (max. 10000000)
 
