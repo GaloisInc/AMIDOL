@@ -24,7 +24,8 @@ object SciPyIntegrate extends ContinuousInitialValue {
     model: Model,
     constants: Map[String, Double],
     boundary:  Map[String, Double],
-    inputs: Inputs
+    inputs: Inputs,
+    requestId: Long
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
@@ -116,9 +117,9 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
       // Run the code
       outputArrs <- {
-        Files.write(Paths.get("tmp_script.py"), pythonCode.getBytes)
-        println("Running `python3 tmp_script.py`...")
-        Try("python3 tmp_script.py".!!) // blocks until script returns
+        Files.write(Paths.get("tmp_scripts", s"${requestId}_tmp_script.py"), pythonCode.getBytes)
+        println(s"Running `python3 tmp_scripts/${requestId}_tmp_script.py`...")
+        Try(s"python3 tmp_scripts/${requestId}_tmp_script.py".!!) // blocks until script returns
       }
 
       // Parse the output back out
@@ -147,7 +148,8 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
     model: Model,
     constants: Map[String, Double],
     boundary:  Map[String, Double],
-    inputs: Inputs
+    inputs: Inputs,
+    requestId: Long
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
@@ -207,9 +209,9 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
 
       // Run the code
       outputArr <- {
-        Files.write(Paths.get("tmp_script.py"), pythonCode.getBytes)
-        println("Running `python3 tmp_script.py`...")
-        Try("python3 tmp_script.py".!!) // blocks until script returns
+        Files.write(Paths.get("tmp_scripts", s"${requestId}_tmp_script.py"), pythonCode.getBytes)
+        println(s"Running `python3 tmp_scripts/${requestId}_tmp_script.py`...")
+        Try(s"python3 tmp_scripts/${requestId}_tmp_script.py".!!) // blocks until script returns
       }
 
       // Parse the output back out

@@ -13,6 +13,9 @@ import scala.util._
 
 import spray.json._
 
+import java.util.concurrent.atomic.AtomicLong
+import java.nio.file.Files
+import java.nio.file.Paths
 
 object Main extends App with Directives with ui.UiJsonSupport {
 
@@ -24,8 +27,10 @@ object Main extends App with Directives with ui.UiJsonSupport {
     var currentUiGraph: ui.Graph = ui.Graph(Map.empty, Map.empty)
 
     var currentModel: Model = Model(Map.empty, Map.empty)
-    var currentGlobalConstants: Map[String, Double] = Map.empty   // TODO: these should be validated _before_ beingn written in
-    var currentInitialConditions: Map[String, Double] = Map.empty // TODO: these should be validated _before_ beingn written in
+    var currentGlobalConstants: Map[String, Double] = Map.empty   // TODO: these should be validated _before_ being written in
+    var currentInitialConditions: Map[String, Double] = Map.empty // TODO: these should be validated _before_ being written in
+
+    val requestId: AtomicLong = new AtomicLong()
   }
 
   // Set up actor system and contexts
@@ -33,11 +38,10 @@ object Main extends App with Directives with ui.UiJsonSupport {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  // How to route requests.
-  //
-  //   * curl -H "Content-Type: application/json" -X POST -d @src/main/resources/sirs_graph.json "http://localhost:8080/appstate/model"
-  //   * curl "http://localhost:8080/appstate/model"
-  //
+
+  // Set up the folder for temporary files
+  Files.createDirectories(Paths.get("tmp_scripts"))
+
   val route = respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*)) {
     get {
       path("") {
@@ -87,7 +91,8 @@ object Main extends App with Directives with ui.UiJsonSupport {
                   AppState.currentModel,
                   AppState.currentGlobalConstants,
                   AppState.currentInitialConditions,
-                  inputs
+                  inputs,
+                  AppState.requestId.incrementAndGet()
                 )
               )
             }
@@ -99,7 +104,8 @@ object Main extends App with Directives with ui.UiJsonSupport {
                   AppState.currentModel,
                   AppState.currentGlobalConstants,
                   AppState.currentInitialConditions,
-                  inputs
+                  inputs,
+                  AppState.requestId.incrementAndGet()
                 )
               )
             }
@@ -113,7 +119,8 @@ object Main extends App with Directives with ui.UiJsonSupport {
                   AppState.currentModel,
                   AppState.currentGlobalConstants,
                   AppState.currentInitialConditions,
-                  inputs
+                  inputs,
+                  AppState.requestId.incrementAndGet()
                 )
               )
             }

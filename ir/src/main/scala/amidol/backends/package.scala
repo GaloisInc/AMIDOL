@@ -34,7 +34,8 @@ package object backends {
       model: Model,
       constants: Map[String, Double],
       boundary:  Map[String, Double],
-      inputs: Inputs
+      inputs: Inputs,
+      requestId: Long
     )(implicit
       ec: ExecutionContext
     ): Future[Try[Outputs]]
@@ -43,13 +44,14 @@ package object backends {
       model: Model, 
       constants: Map[String, Double],
       boundary:  Map[String, Double],
-      inputs: Inputs
+      inputs: Inputs,
+      requestId: Long
     )(implicit
       ec: ExecutionContext
     ): Future[Option[Outputs]] =
       Future(applicable(model)).flatMap { isApplicable: Boolean =>
         if (isApplicable) {
-          run(model, constants, boundary, inputs).map {
+          run(model, constants, boundary, inputs, requestId).map {
             case Success(outputs) => Some(outputs)
             case Failure(err) =>
               println(s"Failed to run ${name} backend: ${err.getMessage}")
