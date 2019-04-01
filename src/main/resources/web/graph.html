@@ -25,6 +25,7 @@
 	var node_data_set, edge_data_set, network;
 	var global_vars = { Example : 0 };
 	var reward_vars = [ { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
+	var chosen_backend = "scipy"
  
 
 	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
@@ -180,6 +181,10 @@
 
 	var UI = {
 
+		changeBackend: function(elem) {
+			chosen_backend = $(elem).val()
+		},
+
 		render: {
 
 			palette : function(palette) {
@@ -218,12 +223,16 @@
 				}), (a) => ! _.isEmpty(a))
 				var rv_names = ["Instant of Time", "Interval of Time", "Time Avg. Interval", "Steady State"]
 				rvs.append(_.map(reward_vars, function(r){
-					return $("<div>").change((e) => UI.updateRewardVar(e.target)).append([
+					var did_find_rvar_name = false
+					var thing = $("<div>").change((e) => UI.updateRewardVar(e.target)).append([
 						$("<h3>").attr({class: "key"}).html(r.key),
 						$("<select>").attr({class: "opt1"}).append(
 							_.map(nodeNames, function(n) { 
 								var opt = $("<option>").attr('value', n[1]).html(n[1])
-								if (r.opt1 == n[1]) { opt.attr('selected','selected') }
+								if (r.opt1 == n[1]) { 
+									opt.attr('selected','selected') 
+									did_find_rvar_name = true
+								}
 								return opt
 							})
 						),
@@ -246,6 +255,11 @@
 							UI.removeRewardVar(r.key)
 						})
 					])
+					if ( ! did_find_rvar_name) {
+						// Set "selected on UI element"
+						// Set the value to the reward var.
+					}
+					return thing
 				}))
 				rvs.append($("<button>").html("New").click((e) => UI.addRewardVar() ))
 			},
@@ -586,7 +600,7 @@
 						$.fancybox.destroy()
 						return false
 					}
-					IR.execute.scipy.integrate(simParams, function(data, status, jqXHR) {
+					IR.execute.backend.integrate(simParams, function(data, status, jqXHR) {
 						IR.chartDataAcc.push({
 							title: rv.opt1,
 							labels: data.times,
@@ -609,9 +623,9 @@
 		},
 
 		execute : {
-			scipy : {
+			backend : {
 				integrate : function(simParams, onSuccessFunc) {
-					$.postJSON("/backends/scipy/integrate", simParams, onSuccessFunc)
+					$.postJSON("/backends/"+chosen_backend+"/integrate", simParams, onSuccessFunc)
 				}
 			}
 		},
@@ -804,10 +818,6 @@
 		$("#paletteChooser select").append(_.map(_.keys(availablePalettes), (k) => $("<option>").html(k)))
 
 		UI.render.network()
-		UI.render.palette(startingPalette)
-		UI.render.localVars(null)
-		UI.render.rewardVars()
-		UI.updateButtonStates()
 
 		var sample_nodes = [
 			UI.makeNode({id: "1", label: "Susceptible", x: -350, y: 0}, "population"), 
@@ -839,6 +849,12 @@
 		*/
 
 		journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
+
+
+		UI.render.palette(startingPalette)
+		UI.render.localVars(null)
+		UI.render.rewardVars()
+		UI.updateButtonStates()
 	})
 
 </script>
@@ -886,7 +902,10 @@
 		float: right;
 	}
 	#exec_button {
-		margin: 2em;
+		margin: 22px 0px 22px 22px;
+	}
+	#exec_chooser {
+		margin: 22px 0px 22px 0px;
 	}
 	#paletteChooser{
 		margin: 1.5em 1.5em 0em 1.5em;
@@ -945,6 +964,10 @@
 		<div id="paletteChooser">
 			<select onchange="UI.choosePalette(this)"></select>
 		</div>
+		<select id="exec_chooser" class="right" onchange="UI.changeBackend(this)">
+			<option value="scipy">SciPy</option>
+			<option value="pysces">PySCeS</option>
+		</select>
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
 		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />
 		<img id="undo_button" class="right" src="images/undo.png" onclick="journal.undo()" />
