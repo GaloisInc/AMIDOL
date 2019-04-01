@@ -95,9 +95,9 @@
 
 \section{Introduction}
 
-Phase one of the \amidol{} project for ASKE has focused on proving out the initial concepts, theories, algorithms, and defining the core architectures, domain specific languages, and intermediate representations necessary to support the ambitious goal of advancing the state of the art of complex system analysis and machine-assisted science in ways that lower the overhead requirements in terms of large teams of domain experts, data scientists, mathematicians, and software engineers.  \amidol{}: the Agile Metamodel Interface using Domain-specific Ontological Languages, a project that aims to reduce the overhead associated with the model life cycle and enables domain experts and scientists to more easily build, maintain, and reason over models in robust and highly performable ways, and to respond rapidly to emerging crises in an agile and impactful way.  We do this by addressing the lack of generalizability, poor performance, and difficulties encountered when attempting to synthesize actionable knowledge and policies from the raw outputs of mathematical models.
+Phase 1 of the \amidol{} project for ASKE has focused on proving out the initial concepts, theories, algorithms, and defining the core architectures, domain specific languages, and intermediate representations necessary to support the ambitious goal of advancing the state of the art of complex system analysis and machine-assisted science in ways that lower the overhead requirements in terms of large teams of domain experts, data scientists, mathematicians, and software engineers.  \amidol{}: the Agile Metamodel Interface using Domain-specific Ontological Languages, aims to reduce the overhead associated with the model life cycle and to enable domain experts and scientists to more easily build, maintain, and reason over models in robust and highly performable ways, and to respond rapidly to emerging crises in an agile and impactful way.  We do this by addressing the lack of generalizability, poor performance, and difficulties encountered when attempting to synthesize actionable knowledge and policies from the raw outputs of mathematical models.
 
-\amidol{} is designed to support models in a number of scientific, physical, social, and hybrid domains by allowing domain experts to construct meta-models in a novel way, using visual domain specific ontological languages (VDSOLs).  These VDSOLs utilize an underlying intermediate abstract representation to give formal meaning to the intuitive process diagrams scientists and domain experts normally create.  \amidol{} then provides translations from these VDSOLs into an intermediate representation which can be transformed as appropriate to compose models, apply optimizations, and translate them into executable representations allowing \amidol{}'s inference engine to execute prognostic queries on reward models and communicate results to domain experts. \amidol{} binds results to the original ontologies providing more explainability when compared to conventional methods.
+\amidol{} is designed to support models in a number of scientific, physical, social, and hybrid domains by allowing domain experts to construct meta-models in a novel way, using visual domain specific ontological languages (VDSOLs).  These VDSOLs utilize an underlying intermediate abstract representation to give formal meaning to the intuitive process diagrams scientists and domain experts normally create.  \amidol{} then provides translations from these VDSOLs into an intermediate representation which can be transformed as appropriate to compose models, apply optimizations, and translate them into executable representations allowing \amidol{}'s inference engine to execute prognostic queries on reward models and communicate results to domain experts. In Phase 2\amidol{} will bind these results to the original ontologies providing more explainability when compared to conventional methods.
 
 \amidol{} addresses the problem of machine-assisted inference with two high-level goals:
 
@@ -106,13 +106,13 @@ Phase one of the \amidol{} project for ASKE has focused on proving out the initi
 \item improving the explainability and agility of the results of machine-inference.
 \end{enumerate}
 
-Our techniques for achieving these goals incorporate abstract functional representations, intermediate languages, and semantic knowledge representation and binding in graph structures into traditional machine learning and model solution techniques.
+The VDSOLs help achieve these goals by lowering the barrier for entry associated with formal modeling languages.  VDSOLs allow the expression of rich mathematical concepts using visual diagrams for systems and processes.  The \amidol{} intermediate representation backs these diagrams with mathematical meaning, and allows the creation of new VDSOL elements as necessary with full expressivity, and Turing completeness.  The use of the intermediate representation also allows \amidol{} to decouple the problem of model optimization, performance, and implementation from the task of model definition, ensuring any model defined in any VDSOL is translated to the same abstract representation.  This abstraction can then be transformed using a set of well defined operations, eventually resulting in executable code which the \amidol{} inference engine can execute.  Because \amidol{} uses a universal representation for this intermediate form, models defined with \amidol{} can be easily ported to off the shelf solution techniques which have already been vetted by the community, and optimized for high performance computing.
 
-The Phase 1 Prototype for \amidol{} shows a proof of concept of the core capabilities required to achieve this full vision in Phase 2, and has helped to identify the necessary next steps in realizing a the full framework as part of the ASKE program.
+The Phase 1 Prototype for \amidol{} shows a proof of concept of the core capabilities required to achieve this full vision in Phase 2, and has helped to identify the necessary next steps in realizing a the full framework as part of the ASKE program.  We include in our prototype three VDSOLs to show flexibility, and two backend targets already in use by the community.
 
 \section{\amidol{} Architecture}
 
-\amidol{}'s architecture is illustrated in Figure \ref{Fig:AMIDOLArch}.  It consists of three main components, the UI Editor, the \amidol{} backend, and the \amidol{} inference engine.  Domain experts interact with \amidol{} by defining formal models using a visual domain specific ontological language (VDSOL) defined using a formal palette.  These palettes consist of a set of nouns and verbs that can be connected via directed edges to form visual representations of the system in question.
+\amidol{}'s architecture is illustrated in Figure \ref{Fig:AMIDOLArch}.  It consists of three main components, the UI Editor which allows for the definition of models in an appropriate VDSOL, the \amidol{} backend which translates to and from the \amidol intermediate representation, and the \amidol{} inference engine.  Domain experts interact with \amidol{} by defining formal models using a visual domain specific ontological language (VDSOL) defined using a formal palette.  These palettes consist of a set of nouns and verbs that can be connected via directed edges to form visual representations of the system in question.  In Phase 2 we will extend this implementation to include a database of prior results, and a Design of Experiments interface which allows for complex analyses on models, and comparisons with past executions.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{figs/system-architecture.pdf}
@@ -120,9 +120,9 @@ The Phase 1 Prototype for \amidol{} shows a proof of concept of the core capabil
   \label{Fig:AMIDOLArch}
 \end{figure}
 
-Once a model or models has been defined in such a VDSOL, the \amidol{} backend translates the directed graph of nouns and verbs into the \amidol{} intermediate representation, or IR.  The IR is a domain agnostic, universal, modeling formalism.  The \amidol{} backend takes models represented in the IR and can perform model composition to build new models out of two or more existing models, can perform transformations on a model resulting in more performable versions of a model to allow for performable, efficient, solution of a model that takes into account structural optimizations, and the necessary requirements to solve a set of reward variables, and can be used to analyze two models to check for the equivalence of two models. The \amidol{} inference engine finally solves a model for a set of defined reward variables, and stores the results obtained in a results database.
+Once a model or models have been defined in a VDSOL, the \amidol{} backend translates the directed graph of nouns and verbs into the \amidol{} intermediate representation, or IR.  The IR is a domain agnostic, universal, modeling formalism.  The \amidol{} backend takes models represented in the IR and can perform model composition to build new models out of two or more existing models, can perform transformations on a model resulting in more performable versions of a model to allow for efficient solution of a model that takes into account structural optimizations, and the necessary requirements to solve a set of reward variables, and can be used to analyze two models to check for the equivalence of two models. The \amidol{} inference engine finally solves a model for a set of defined reward variables, and stores the results obtained in a results database.
 
-The Phase 1 Prototype of \amidol{} implements initial versions of all of these components which are described in the remainder of this report.  During Phase 2 the features of these components will be expanded to full functionality.
+The Phase 1 Prototype of \amidol{} implements initial versions of all of these components which are described in the remainder of this report, except the results database and Design of Experiments interface.  During Phase 2 the features of these components will be expanded to full functionality, and the results database and Design of Experiments interface will be implemented.
 
 \section{\amidol{} VDSOL}
 
@@ -172,7 +172,9 @@ The Phase 1 Prototype of \amidol{} implements initial versions of all of these c
         }
 \end{lstlisting}
 
-Each noun or verb is given a \texttt{class name}, a \texttt{type} (either noun or verb), a \texttt{class definition} as a pointer to a model in the \amidol{} intermediate representation, an \texttt{icon} to represent the element visually in the editor, and a set of \texttt{input variables}, \texttt{output variables}, and user specifiable \texttt{parameters}.  These definitions create VDSOL elements in an object oriented fashion, declaring nouns and verbs as abstract data types with public, private, and protected methods.  The class as defined in the \amidol{} intermediate representation cannot by default be accessed by the outside world.  The declared set of input variables expose state variables of this intermediate representation as protected members which can only be accessed by a VDSOL object of the opposing type with the same arity, i.e. nouns may only be accessed by verbs and vice versa and the cardinality of the input variables of the accessed object must match the cardinality of the output variables of the other object.  In Phase 2 these conditions will be relaxed to allow multigraph compositions to provider richer modeling choices and capabilities.  The set of parameters provide public interfaces which the user can specify as constants or expressions to further define interdependencies in a complex system.
+Each noun or verb is given a \texttt{class name}, a \texttt{type} (either noun or verb), a \texttt{class definition} as a pointer to a model in the \amidol{} intermediate representation, an \texttt{icon} to represent the element visually in the editor, and a set of \texttt{input variables}, \texttt{output variables}, and user specifiable \texttt{parameters}.
+
+These definitions create VDSOL elements in an object oriented fashion, declaring nouns and verbs as abstract data types with public, private, and protected methods.  The class as defined in the \amidol{} intermediate representation cannot by default be accessed elements outside of the noun or verb itself, and the \texttt{input variables}, \texttt{output variables}, and \texttt{parameters} are used to expose state variables or events as public or protected members for certain well defined interactions.  The declared set of input variables expose state variables as protected members which can only be accessed by a VDSOL object of the opposite type, and with the same arity, i.e. nouns may only be accessed by verbs and vice versa and then only when cardinality of the input variables of the accessed object exactly match the cardinality of the output variables of the other object.  In Phase 2 these conditions will be relaxed to allow multigraph compositions to provider richer modeling choices and capabilities.  The set of parameters provide public interfaces which the user can specify as constants or expressions to further define interdependencies in a complex system.
 
 The goal of \amidol{}'s VDSOLs is to enable domain experts to define their models using an interface and visual language similar to the semi-formal diagrams they use today, but with the advantage that \amidol{}s VDSOLs have formal, executable, meaning.  VDSOLs provide a performable, reusable, system for scientists to use when attempting to derive insights relating to the complex systems they represent.  Figure \ref{Fig:Palettes} shows example palettes in \amidol{} which are implemented for the Phase 1 prototype.
 
@@ -197,6 +199,8 @@ The goal of \amidol{}'s VDSOLs is to enable domain experts to define their model
 \end{figure}
 
 \amidol{} is designed to be extended to support any domain through the use of palettes, and to allow researchers to draw diagrams using a visual language that they can modify, extend, and adapt to their needs.  Because these palettes are backed by a universal intermediate representation, they are compatible and comparable even across palettes allowing models developed in differing VDSOLs to be contrasted, analyzed, and even composed.
+
+In Phase 2 these capabilities will be explored with compartmental models for infectious diseases, composing models of populations with limited contact.
 
 \subsection{Structure of \amidol{} VDSOLs}
 
@@ -269,18 +273,23 @@ The Abstract Intermediate Representation (IR) for \amidol{} is meant to be a uni
 }}
 \end{lstlisting}
 
-The \amidol{} backend performs transformations on models defined in this IR allowing it to compose models via well structured transformations as shown in Figure \ref{Fig:AMIDOLBackend}.  In Phase 1 these transformations are limited to composition, and translation to a solver target.  In Phase 2 these transformations will be expanded to include performance optimizations, solution partitioning, and equivalence testing.  Even though we have not implemented the Model Composition editor for Phase 1, the backend composition operators have been implemented in our prototype as they form the basic operation needed to combine nouns, verbs, and reward variables into an executable model.  The design principles used for the backend focus on this concept of reusable operations which enable complex interactions and features.
+The \amidol{} backend performs transformations on models defined in this IR allowing it to act on models via well structured transformations as shown in Figure \ref{Fig:AMIDOLBackend}.  Even though we have not implemented the Model Composition editor for Phase 1, the backend composition operators have been implemented in our prototype as they form the basic operation needed to combine nouns, verbs, and reward variables into an executable model.  The design principles used for the backend focus on this concept of reusable operations which enable complex interactions and features.
 
 \begin{figure}
   \begin{eqnarray}
-    \mathrm{translate}(\mathrm{VDSOL}) & \rightarrow & \mathrm{IR}\\
-    \mathrm{compose}(\mathrm{VDSOL}_A, \mathrm{VDSOL}_B) & \rightarrow & \mathrm{VDSOL}_C\\
+    \mathrm{translate}(\mathrm{VDSOL}_A) & \rightarrow & \mathrm{IR}_A\\
+    \mathrm{compose}(\mathrm{IR}_A, \mathrm{IR}_B) & \rightarrow & \mathrm{IR}_C\\
+    \mathrm{translate}(\mathrm{IR}_A) & \rightarrow & \mathrm{target}_A\\
+    \mathrm{optimize}(\mathrm{IR}_A)) & \rightarrow & \mathrm{IR}_B\\
+    \mathrm{equivalence}(\mathrm{IR}_A, \mathrm{IR}_B) & \rightarrow & \mathrm{True} \vee \mathrm{False}
   \end{eqnarray}
   \caption{}
   \label{Fig:AMIDOLBackend}
 \end{figure}
 
-The intermediate representation employed by \amidol{} have their roots in Markov models \cite{howard2012dynamic}, Generalized Stochastic Petri-nets with inhibitor arcs \cite{chiola1993generalized} which have been shown to be Turing complete, and stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic} which are extensions of Petri-nets that allow more compact model specification.  \amidol{} currently extends these concepts primarily by creating ways to link to the original ontology of nouns and verbs, and by allowing embedded reward structures to be linked to a graph-based results database which stores the outcomes of experiments and can be used for the construction of arbitrary measures on the underlying model to support inference needs.
+Currently the Phase 1 prototype implements only the \texttt{translate} and \texttt{compose} functionality shown in Figure \ref{Fig:AMIDOLBackend}, but in Phase 2 we will extend \amidol{} to account for all of this proposed functionality.  A core goal of \amidol{} is to use the intermediate representation to abstract away a lot of the details of target translations for solution, including necessary performance optimizations, conditions for solutions, and requirements of solution targets.
+
+The intermediate representation employed by \amidol{} has its roots in Markov models \cite{howard2012dynamic}, Generalized Stochastic Petri-nets with inhibitor arcs \cite{chiola1993generalized} (which have been shown to be Turing complete), and stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic} (an extension of Petri-nets that allow more compact model specification).  \amidol{} currently extends these concepts primarily by creating ways to link to the original ontology of nouns and verbs, and by allowing embedded reward structures to be linked to a graph-based results database which stores the outcomes of experiments and can be used for the construction of arbitrary measures on the underlying model to support inference needs.
 
 
 \subsection{Language Properties}
@@ -308,6 +317,8 @@ Informally the IR represents models defined in a given VDSOL using an formalism 
 \section{\amidol{} Reward Variables}
 
 The \amidol{} intermediate representation allows for the specification of reward variables or structures over a given model, and the composition of these structures with a model to produce composed models which can then be solved by the inference engine.  Given a model $M = (S, E, L, \Phi, \Lambda, \Delta)$ we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards). \cite{qureshi1996algorithms,deavours1999efficient,ciardo1996well,sanders1991reduced}
+
+In Phase 1 we have only implemented reward variables, as a performable discrete event solver is required to fully validate an implementation of impulse reward variables (whose solution is otherwise trivial for numerical methods).  During Phase 2 we will rapidly identify a discrete event solver as a backend target, and include impulse rewards as an early stage Phase 2 goal and deliverable.
 
 \subsection{Rate Reward Variables}
 
@@ -342,6 +353,8 @@ Time-averaged interval of time variables quantify accumulated reward over some i
 
 Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.
 
+For Phase 1 we have focused on instant of time variables.  During Phase 2 we will implement interval of time and steady state reward variables.  Steady state reward variables will make heavy use of our ability to perform transformations on the IR, as they represent an often wholly different solution target.
+
 \subsection{Composed Reward Variables}
 
 A key target of Phase 2 for \amidol{} will be extension of reward variables to allow composed rewards, which are expressions defined over other reward variables allowing us to construct a set of arbitrary measures on the set of atomic, and universal, measures of rate and impulse rewards. While individual reward variables form the basis for model evaluation, \amidol{} will support expressions defined over reward variables using basic arithmetic operations allowing reward variables to be composed via normal mathematical expressions.
@@ -366,7 +379,7 @@ Sensitivity, uncertainty, and correctness measures can easily be constructed in 
 
 The Phase 1 prototype of \amidol{} supports two solver targets for the intermediate representation PySCeS: the Python Simulator for Cellular Systems \cite{olivier2011pysces,olivier2005modelling}, an extendable toolkit for analyzing compartmental systems, and through the use of the SciPy odeint functionality to simulate an ordinary differential equation based representation of a model in the IR \cite{oliphant2004scipy,ahnert2011odeint}.  These targets were chosen both for reasons of validation, since they produce comparable output, but also as a proof of concept given their very different target languages.
 
-The PySCeS solver has its own internal language which is used to specify compartmental models.  \amidol{} supports this backend by providing a translation from the IR into the PySCeS specification language, and then invoking PySCeS on the translation.
+The PySCeS solver has its own internal language which is used to specify compartmental models.  \amidol{} supports this backend by providing a translation from the IR into the PySCeS specification language, and then invoking PySCeS on the translation.  We illustrate a translation here by showing the outputs of \amidol{} for the basic SIR model in PySCeS:
 
 \begin{verbatim}
 Modelname: tmp_model
@@ -393,7 +406,7 @@ Infected = 250.0
 Example = 0.0
 \end{verbatim}
 
-The SciPy odeint solver target is supported through a similar method by \amidol{}.  A translation is provided from the IR into a Python script which includes and invokes SciPy's odeint solver for ordinary differential equations.  The IR model is then represented directly as a system of ordinary differential equations for solution.
+The SciPy odeint solver target is supported through a similar method by \amidol{}.  A translation is provided from the IR into a Python script which includes and invokes SciPy's odeint solver for ordinary differential equations.  The IR model is then represented directly as a system of ordinary differential equations for solution.  We show here the same model previously generated for PySCeS as generated by \amidol{} for SciPy odeint:
 
 \begin{lstlisting}[language=python]
 from scipy.integrate import odeint
@@ -431,12 +444,14 @@ print(json.dumps(output, cls=NumpyEncoder))
 
 \amidol{}'s backend inference engine is designed to support a wide range of inference techniques as build targets chosen by the intermediate representation based on the requirements of the reward variables being computed, and the limitations and requirements of the models being solved.  A model, for instance, which has general event distributions, cannot be solved by successive matrix multiplication; the distribution of a reward variable can likewise not be computed by solving the underlying system of differential equations.
 
+The strength of \amidol{} is this decoupling of modeling and representational concerns from the choice of executable implementation. \amidol{} removes these concerns from the domain expert, and automates these translations, allowing arbitrary modifications to be performed on the visual model, and rapid iteration of model structure, and parameters while exploring hypothesis, or comparing a model to actual data.  While \amidol{} doesn't prevent a user from making mistakes while modeling, it reduces the occurance of implementation details, and helps users to more rapidly design and prototype models by removing abstract concerns, and details such as choice of language, or unfamiliar requirements of solution methods.  While some work must be done to adapt \amidol{} to support a new solver target, once accomplished it can be leveraged for any VDSOL, allowing easy collaboration, and an ability to build on the work of others in a generalizable way.
+
 A key feature for Phase 2 of \amidol{} will be the use of multiple solvers and techniques on the same model to compute different reward variables where appropriate, with the results being fed into a results database.  This  backend architecture helps to ensure the performability of models designed in \amidol{}, and flexibility of solution technique helping researchers avoid the pitfall of being bound to a single target using hand coded models, which may or may not be performable.
 
 
 \section{Domain Models}
 
-We are currently testing \amidol{} using several domain models whose primary domain is epidemiology.  We have selected a range of models to test different scenarios, use cases, and assumptions to aid in the prototype design of \amidol{}.
+We are currently testing \amidol{} using several domain models.  We have selected a range of models to test different scenarios, use cases, and assumptions to aid in the prototype design of \amidol{}.
 
 \subsection{SIS/SIRS}
 
@@ -467,6 +482,149 @@ Using data from a given region, and a given strain, we estimate R0 for the epide
 \caption{2007 - 2008 Flu Season}
 \label{Fig:R0}
 \end{figure}
+
+\subsection{SIS/SIRS with Vital Dynamics}
+
+Extending the SIRS model, we also include an example of palette extension.  The palettes defined for \amidol{} can be modified, and even extended, easily by adding new nouns and verbs.  This allows for the long term curation of models by domain experts, who can easily extend their earlier work as new processes and interactions are discovered.  The Vital Dynamics modification of SIRS allows the definition of models in which new individuals are born into populations, and for individuals to be removed from populations due to death from various causes.  Increasesing the rate of infected populations dying, when compared to susceptible and recovered populations, also allows modeling a potentially lethal disease.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/SIR-VD.png}
+\caption{SIR Model with Vital Dynamics}
+\label{Fig:SIR-VD-Draw}
+\end{figure}
+
+The following equations show the typical modification of the ordinary differential equations used to represent a SIR model with vital dynamics:
+
+\begin{eqnarray}
+  \frac{dS}{dt} &=& \mu N - \frac{\beta S I }{N} - \nu S\\
+  \frac{dI}{dt} &=& \frac{\beta S I}{N} - \gamma I - \nu I\\
+  \frac{dR}{dt} &=& \gamma I - \nu R
+\end{eqnarray}
+
+While these equations convey the underlying mathematical meaning of the model, their intuitive and semantic meaning is somewhat opaque.  Figure \ref{Fig:SIR-VD-Draw} shows the implementation of this model in \amidol{}'s SIR-VD palette.  The result is a diagram that mirrors the sort of semi-formal diagram which has intuitive meaning to a domain expert and also has the same mathematical meaning as the system of equations due to \amidol{}'s ability to perform a direct translation to the same underlying model.
+
+\subsection{Lotka-Volterra Model}
+
+As an example of a wholly different palette for a VDSOL, and to demonstrate the capability of our Phase 1 prototype to handle models in different domains, we have also implemented a domain model for the Lotka-Volterra model of predator-prey relationships \cite{freedman1980deterministic,brauer2012mathematical,hoppensteadt2006predator}.  Frequently used to describe the basic dynamics of biological systems with two species interactions, the Lotka-Volterra model assumes a single predator, and single prey species.  While a simple model, this system is an example of a Kolmogorov model which is used as the underlying framework for modeling other dynamic systems, such as competing species in a niche, the impact of disease on a species, and mutalistic relationships.  It is provided in our initial prototype primarily as another model for which it is easy to validate and generate expectations, and to demonstrate the capacity of our prototype to work in multiple domains.
+
+\section{Code Repositories and Current Builds}
+
+The Phase 1 \amidol{} prototype is available, along with all source code in our repository with instructions on building and executing the current system.  Models can be designed in the current VDSOL editor, a javascript front-end.  The intermediate representation is implemented as a Scala project which compiles queries issued by users for a particular model they've created into code artifacts targeting different solver backends. Over time, we expect this system to also manipulate and compose datasets (from real-world observations as well as from the output of other simulations), and utilize the results database to save intermediate results and compare evaluations and models.
+
+\subsection{Front-End Architecture}
+
+\amidol{}'s user interface is currently implemented using HTML, CSS, and Javascript, communicating with the Scala back-end using JSON over HTTP.  This client/server approach leverages standard browser technologies for rapid development of rich interactions tailored for the specific needs of scientific modeling. It also decouples the concerns of visual presentation and manipulation from the underlying representations of model semantics and helps to hide the details from domain experts reducing their cognitive load when designing models.
+
+The current user interface implements a rich visual editor allowing users to select a palette to work in, to save and load VDSOL diagrams, undo and redo operations, to customize parameters exposed by nouns and verbs, to define reward variables on a diagram, and to call multiple backend solver targets to solve those reward variables.
+Currently, the user interface implements a visual editor for directed graphs having labeled vertices and edges, which represent the nouns and verbs of a VDSOL.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/AMIDOL-UI.png}
+\caption{Current Front-End featuring the SIR VDSOL.  The front-end enables the embedding of custom SVGs for nouns and verbs, allowing eventual specialization of produced figures, better matching current domain conventions.}
+\label{Fig:Editor}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/SIR-output.png}
+\caption{Output from the SIR Model in \amidol{}}
+\label{Fig:SIROut}
+\end{figure}
+
+
+Figure \ref{Fig:Editor} shows the standard SIR model parameterized to fit real data from the CDC's Influenza B infections for Health and Human Services Region 5 during the 2007-2008 flu season.  Executing this model gives us the results shown in Figure \ref{Fig:SIROut}.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{figs/Lotka-Volterra.png}
+\caption{Example Lotka-Volterra Model in \amidol{}.}
+\label{Fig:Lotka}
+\end{figure}
+
+Figure \ref{Fig:Lotka} shows the Lotka-Volterra model of population dynamics implemented in \amidol{} using the predator-prey palette of nouns and verbs.  This visual diagram is a recreation of semi-formal drawings a domain expert might draw, and meant to be more accessible than the ordinary differential equations which represent this system,
+
+\begin{eqnarray}
+  \frac{dx}{dt} &=& \alpha x - \beta x y\\
+  \frac{dy}{dt} &=& \delta x y - \gamma y
+\end{eqnarray}
+
+Where $x$ is the number of rabbits, and $y$ is the number of foxes.  The \amidol{} translates this drawing automatically into the IR, and from the IR into a SciPy and odeint based representation, resulting in the following executable code:
+
+\begin{lstlisting}[language=python]
+  from scipy.integrate import odeint
+import json
+import numpy as np
+import matplotlib.pyplot as plt
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+# User defined constants
+Example = 0.0
+
+# The ODE system
+def deriv_(y_, t_):
+    Bunnies, Foxes = y_
+    dBunnies_ = 0.0 + 0.66 * Bunnies - 1.0 * Bunnies * Foxes
+    dFoxes_ = 0.0 + 4.0 / 3.0 * Bunnies * Foxes - 1.0 * Foxes
+    return dBunnies_, dFoxes_
+
+# Boundary conditions and setup
+timeRange_ = [ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0,
+11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0,
+22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0,
+33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 40.0, 41.0, 42.0, 43.0,
+44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0, 52.0, 53.0, 54.0,
+55.0, 56.0, 57.0, 58.0, 59.0, 60.0, 61.0, 62.0, 63.0, 64.0, 65.0,
+66.0, 67.0, 68.0, 69.0, 70.0, 71.0, 72.0, 73.0, 74.0, 75.0, 76.0,
+77.0, 78.0, 79.0, 80.0, 81.0, 82.0, 83.0, 84.0, 85.0, 86.0, 87.0,
+88.0, 89.0, 90.0, 91.0, 92.0, 93.0, 94.0, 95.0, 96.0, 97.0, 98.0,
+99.0 ]
+y0_ = 5.0, 1.0
+output = odeint(deriv_, y0_, timeRange_).T
+
+print(json.dumps(output, cls=NumpyEncoder))
+\end{lstlisting}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figs/bunnies.png}
+\caption{Output from the Lotka-Volterra in \amidol{}}
+\label{Fig:LKOut}
+\end{figure}
+
+Figure \ref{Fig:LKOut} shows the current output of the \amidol{} inference engine, matching expectations for the Lotka-Volterra model as parameterized in this example.
+
+\paragraph{A note on the results from the \amidol{} backend}
+
+The Phase 1 prototype currently focuses on a proof of concept for the necessary core technologies of the \amidol{} framework.  During Phase 2 we will be building on the backend's capabilities by implementing a results database and design of experiments interface.  Part of this interface will include extensible plotting and visualization methods given a general form of results.  An early part of our Phase 2 effort will be spent defining a formal results schema and representation, and selecting an appropriate results database to store this schema.  Our design will focus, again, on generalizable techniques that apply to the abstract representations of models, but enable the user to interact with them only through knowledge of the higher level VDSOL concepts.
+
+\subsection{Backend Architecture for IR and Inference Engine}
+
+The backend component interfaces with the UI via a local web server. The idea here is that every time the user interacts with the UI either to modify or to query the model, that information also gets relayed to the backend via a set of web endpoints. When the backend receives new information about the model from the UI, it parses this into some internal representation. This includes such tasks as parsing equations from user-inputted strings and checking that state variables being referred to actually exist. Queries submitted about a model follow a slightly longer path: after being parsed out and validated, the backend figures out how to transform the IR and the query into executable code using reward variables, executes this code, and returns the result back out to the user and eventual results database.
+
+Within the backend, the IR is stored in a graph format resembling what the user constructed in the UI. By maintaining some degree of similarity, we hope to make it simpler to translate results obtained in the backend back out into something end users can easily understand. Queries about models are translated into code artifacts targeting existing solver and simulation programs. We wish to avoid doing actual simulations within the system, instead focusing on intelligently compiling queries into programs that external solvers can run allowing code reuse, and allowing the backend to generate targets for existing, high performance, solver engines. In order to do this we still need to implement a minimum amount of symbolic algebra (e.g. detecting when a continuous rate  model is linear). For the time being, we’ve been targeting Python’s SciPy module as a backend to answer basic simulation questions such as: the the initial value problem for general systems as well as for continuous-time Markov chains.
+
+The backend is written in Scala, leveraging a set of libraries built on top of the Akka actor system for the web server, JSON processing, asynchronous computation, and eventually for the graph in which the IR and data will be stored. The advantages to using Scala include: deployable anywhere the JVM runs, large set of available libraries, and a functional outlook which lends itself well to compiler problems.
+
+\subsection{Integrating AMIDOL}
+
+The JSON API which defines client/server interaction is the only channel by which tangible VDSOL models and the computational AFI/IR communicate. The UI itself doesn't hold any persistent model state which is not represented in a given VDSOL; it is precisely a view or translation of the AFI/IR. This property is what enables the list of integration concepts, and restful architecture.
+
+\section{Next Steps and Phase 2}
+
+The Phase 1 prototype for \amidol{} proves the core technologies and functionality required for success in this project are feasible, achievable, and provide the necessary functionality to support our vision for Phase 2.  Phase 2 will work on extending this base functionality and building on top of our current architecture.  During Phase 2 we will work with more complex models, including full models of H3N2 and H5N1 which include multiple geographic compartments, and the calculation of complex reward variables on these models which require a fully developed Design of Experiments interface as well as model composition.
+
+A large component of our Phase 2 progress will revolve around the use of the results database as a support for tying the results of solving reward variables back to the primitives present in the VDSOL.  A key lesson learned from Phase 1 was the importance of relating reward variables to elements in the VDSOL.  The current state of the art for reward variables involves their definition on model primitives such as state variables and events, which are elements of our IR and not a given VDSOL.  This is not ideal for our goals and desired outcomes which focus on expert interaction with the VDSOL while hiding details of the underlying model.  Our intention is to extend the definition of reward variables in Phase 2 such that we have equivalents for rate and impulse rewards which are instead defined more naturally over nouns and verbs.  We plan to do so by defining reward coupling points in an extension of our VDSOL which indicate what a measure on a noun or a verb will return.  This will allow rewards to be more naturally defined than they currently are both in our prototype and by other modeling tools, and will allow us to infer information on \textbf{structural types} of nouns and verbs, determine equivalences, and capture knowledge from domain experts when they tell us they believe nouns in two different models represent the same abstract quantity.
+
+We intend to collaborate with other performers in the ASKE program, especially TA1 performers, to identify natural ways to import diagrams and models extracted from primary sources, and translate them into \amidol{} models.  This will help show the expressive power of \amidol{}'s system of model definition, and the suitability of the \amidol{} backend and IR as a universal model translation, optimization, and representation layer.
+
+\bibliography{AMIDOL-MWS}
+
+\appendix
+\section{Additional Domain Models}
+
+During the course of our work for Phase 1, and in preparation for Phase 2, we have begun identifying and specifying a number of additional models which will help us in our development goals, and in validating our implementations.  Those models are documented in this appendix, but not implemented in our Phase 1 prototype.
 
 \subsection{Artificial Chemistry and Intracellular Viral Infection}
 
@@ -550,124 +708,6 @@ k_basal &=& 10^{-8} (transcripts/s)\\
 
 As can be seen, the rates differ by many orders of magnitude, a situation that causes the model to be classified as stiff, and thus difficult to solve by many ODE techniques.  We are using this model to test the Design of Experiments capability of \amidol{} to automatically select appropriate solution techniques for a user, avoiding numerical instability and the use of inefficient algorithms which otherwise could be pitfalls for traditional modeling methods.
 
-\section{Code Repositories and Current Builds}
-
-The Phase 1 \amidol{} prototype is available, along with all source code in our repository under the \texttt{ir} directory with instructions on building and executing the current system.  Models can be designed in the current VDSOL editor, a javascript front-end.  The intermediate representation is implemented as a Scala project which compiles queries issued by users for a particular model they've created into code artifacts targeting different solver backends. Over time, we expect this system to also manipulate and compose datasets (from real-world observations as well as from the output of other simulations), and utilize the results database to save intermediate results and compare evaluations and models.
-
-
-\subsection{Front-End Architecture}
-
-\amidol{}'s user interface is currently implemented using HTML, CSS, and Javascript, communicating with the Scala back-end using JSON over HTTP.  This client/server approach leverages standard browser technologies for rapid development of rich interactions tailored for the specific needs of scientific modeling. It also decouples the concerns of visual presentation and manipulation from the underlying representations of model semantics and helps to hide the details from domain experts reducing their cognitive load when designing models.
-
-The current user interface implements a rich visual editor allowing users to select a palette to work in, to save and load VDSOL diagrams, undo and redo operations, to customize parameters exposed by nouns and verbs, to define reward variables on a diagram, and to call multiple backend solver targets to solve those reward variables.
-Currently, the user interface implements a visual editor for directed graphs having labeled vertices and edges, which represent the nouns and verbs of a VDSOL.
-
-\begin{figure}
-\includegraphics[width=\textwidth]{figs/AMIDOL-UI.png}
-\caption{Current Front-End featuring the SIR VDSOL.  The front-end enables the embedding of custom SVGs for nouns and verbs, allowing eventual specialization of produced figures, better matching current domain conventions.}
-\label{Fig:Editor}
-\end{figure}
-
-Figure \ref{Fig:Editor} shows the standard SIR model parameterized to fit real data from the CDC's Influenza B infections for Health and Human Services Region 5 during the 2007-2008 flu season.
-
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/SIR-output.png}
-\caption{Output from the SIR Model in \amidol{}}
-\label{Fig:SIROut}
-\end{figure}
-
-\begin{figure}
-\includegraphics[width=\textwidth]{figs/Lotka-Volterra.png}
-\caption{Example Lotka-Volterra Model in \amidol{}.}
-\label{Fig:Lotka}
-\end{figure}
-
-Figure \ref{Fig:Lotka} shows the Lotka-Volterra model of population dynamics implemented in \amidol{} using the predator-prey palette of nouns and verbs.  This visual diagram is a recreation of semi-formal drawings a domain expert might draw, and meant to be more accessible than the ordinary differential equations which represent this system,
-
-\begin{eqnarray}
-  \frac{dx}{dt} &=& \alpha x - \beta x y\\
-  \frac{dy}{dt} &=& \delta x y - \gamma y
-\end{eqnarray}
-
-Where $x$ is the number of rabbits, and $y$ is the number of foxes.  The \amidol{} translates this drawing automatically into the IR, and from the IR into a SciPy and odeint based representation, resulting in the following executable code:
-
-\begin{lstlisting}[language=python]
-  from scipy.integrate import odeint
-import json
-import numpy as np
-import matplotlib.pyplot as plt
-
-# This is so that we can call "json.dumps" on Numpy arrays
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return json.JSONEncoder.default(self, obj)
-
-# User defined constants
-Example = 0.0
-
-# The ODE system
-def deriv_(y_, t_):
-    Bunnies, Foxes = y_
-    dBunnies_ = 0.0 + 0.66 * Bunnies - 1.0 * Bunnies * Foxes
-    dFoxes_ = 0.0 + 4.0 / 3.0 * Bunnies * Foxes - 1.0 * Foxes
-    return dBunnies_, dFoxes_
-
-# Boundary conditions and setup
-timeRange_ = [ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0,
-11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0,
-22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0,
-33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 40.0, 41.0, 42.0, 43.0,
-44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0, 52.0, 53.0, 54.0,
-55.0, 56.0, 57.0, 58.0, 59.0, 60.0, 61.0, 62.0, 63.0, 64.0, 65.0,
-66.0, 67.0, 68.0, 69.0, 70.0, 71.0, 72.0, 73.0, 74.0, 75.0, 76.0,
-77.0, 78.0, 79.0, 80.0, 81.0, 82.0, 83.0, 84.0, 85.0, 86.0, 87.0,
-88.0, 89.0, 90.0, 91.0, 92.0, 93.0, 94.0, 95.0, 96.0, 97.0, 98.0,
-99.0 ]
-y0_ = 5.0, 1.0
-output = odeint(deriv_, y0_, timeRange_).T
-
-
-
-print(json.dumps(output, cls=NumpyEncoder))
-\end{lstlisting}
-
-\begin{figure}
-  \includegraphics[width=\textwidth]{figs/bunnies.png}
-\caption{Output from the Lotka-Volterra in \amidol{}}
-\label{Fig:LKOut}
-\end{figure}
-
-Figure \ref{Fig:LKOut} shows the current output of the \amidol{} inference enginer, matching expectations for the Lotka-Volterra model as parameterized in this example.
-
-\subsection{Backend Architecture for IR and Inference Engine}
-
-The backend component interfaces with the UI via a local web server. The idea here is that every time the user interacts with the UI either to modify or to query the model, that information also gets relayed to the backend via a set of web endpoints. When the backend receives new information about the model from the UI, it parses this into some internal representation. This includes such tasks as parsing equations from user-inputted strings and checking that state variables being referred to actually exist. Queries submitted about a model follow a slightly longer path: after being parsed out and validated, the backend figures out how to transform the IR and the query into executable code using reward variables, executes this code, and returns the result back out to the user and eventual results database.
-
-Within the backend, the IR is stored in a graph format resembling what the user constructed in the UI. By maintaining some degree of similarity, we hope to make it simpler to translate results obtained in the backend back out into something end users can easily understand. Queries about models are translated into code artifacts targeting existing solver and simulation programs. We wish to avoid doing actual simulations within the system, instead focusing on intelligently compiling queries into programs that external solvers can run allowing code reuse, and allowing the backend to generate targets for existing, high performance, solver engines. In order to do this we still need to implement a minimum amount of symbolic algebra (e.g. detecting when a continuous rate  model is linear). For the time being, we’ve been targeting Python’s SciPy module as a backend to answer basic simulation questions such as: the the initial value problem for general systems as well as for continuous-time Markov chains.
-
-The backend is written in Scala, leveraging a set of libraries built on top of the Akka actor system for the web server, JSON processing, asynchronous computation, and eventually for the graph in which the IR and data will be stored. The advantages to using Scala include: deployable anywhere the JVM runs, large set of available libraries, and a functional outlook which lends itself well to compiler problems.
-
-\subsection{Integrating AMIDOL}
-
-\begin{figure}
-\includegraphics[width=\textwidth]{figs/QueryResult.png}
-\caption{Query Results returned from the AFI/IR backend to the VDSOL frontend displaying values over a defined set of instant-of-time rate reward variables.}
-\label{Fig:QueryResult}
-\end{figure}
-
-The JSON API which defines client/server interaction is the only channel by which tangible VDSOL models and the computational AFI/IR communicate. The UI itself doesn't hold any persistent model state which is not represented in a given VDSOL; it is precisely a view or translation of the AFI/IR. This property is what enables the list of integration concepts, and restful architecture.
-
-\section{Next Steps and Phase 2}
-
-The Phase 1 prototype for \amidol{} proves the core technologies and functionality required for success in this project are feasible, achievable, and provide the necessary functionality to support our vision for Phase 2.  Phase 2 will work on extending this base functionality and building on top of our current architecture.  During Phase 2 we will work with more complex models, including full models of H3N2 and H5N1 which include multiple geographic compartments, and the calculation of complex reward variables on these models which require a fully developed Design of Experiments interface as well as model composition.
-
-A large component of our Phase 2 progress will revolve around the use of the results database as a support for tying the results of solving reward variables back to the primitives present in the VDSOL.  A key lesson learned from Phase 1 was the importance of relating reward variables to elements in the VDSOL.  The current state of the art for reward variables involves their definition on model primitives such as state variables and events, which are elements of our IR and not a given VDSOL.  This is not ideal for our goals and desired outcomes which focus on expert interaction with the VDSOL while hiding details of the underlying model.  Our intention is to extend the definition of reward variables in Phase 2 such that we have equivalents for rate and impulse rewards which are instead defined more naturally over nouns and verbs.  We plan to do so by defining reward coupling points in an extension of our VDSOL which indicate what a measure on a noun or a verb will return.  This will allow rewards to be more naturally defined than they currently are both in our prototype and by other modeling tools, and will allow us to infer information on \textbf{structural types} of nouns and verbs, determine equivalences, and capture knowledge from domain experts when they tell us they believe nouns in two different models represent the same abstract quantity.
-
-We intend to collaborate with other performers in the ASKE program, especially TA1 performers, to identify natural ways to import diagrams and models extracted from primary sources, and translate them into \amidol{} models.  This will help show the expressive power of \amidol{}'s system of model definition, and the suitability of the \amidol{} backend and IR as a universal model translation, optimization, and representation layer.
-
-\bibliography{AMIDOL-MWS}
 
 \end{document}
 

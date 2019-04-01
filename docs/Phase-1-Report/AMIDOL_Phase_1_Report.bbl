@@ -1,10 +1,22 @@
 \begin{thebibliography}{10}
 
+\bibitem{ahnert2011odeint}
+Karsten Ahnert and Mario Mulansky.
+\newblock Odeint--solving ordinary differential equations in c++.
+\newblock In {\em AIP Conference Proceedings}, volume 1389, pages 1586--1589.
+  AIP, 2011.
+
 \bibitem{bailis2005mortality}
 Robert Bailis, Majid Ezzati, and Daniel~M Kammen.
 \newblock Mortality and greenhouse gas impacts of biomass and petroleum energy
   futures in africa.
 \newblock {\em Science}, 308(5718):98--103, 2005.
+
+\bibitem{brauer2012mathematical}
+Fred Brauer, Carlos Castillo-Chavez, and Carlos Castillo-Chavez.
+\newblock {\em Mathematical models in population biology and epidemiology},
+  volume~40.
+\newblock Springer, 2012.
 
 \bibitem{bruce2002foundations}
 Kim~B Bruce.
@@ -37,11 +49,6 @@ Daniel~D Deavours and William~H Sanders.
 \newblock In {\em Petri Nets and Performance Models, 1999. Proceedings. The 8th
   International Workshop on}, pages 124--133. IEEE, 1999.
 
-\bibitem{developers2013numpy}
-NumPy Developers.
-\newblock Numpy.
-\newblock {\em NumPy Numpy. Scipy Developers}, 2013.
-
 \bibitem{fisman2014early}
 David Fisman, Edwin Khoo, and Ashleigh Tuite.
 \newblock Early epidemic dynamics of the west african 2014 ebola outbreak:
@@ -55,6 +62,12 @@ Christophe Fraser, Christl~A Donnelly, Simon Cauchemez, William~P Hanage,
 \newblock Pandemic potential of a strain of influenza a (h1n1): early findings.
 \newblock {\em science}, 2009.
 
+\bibitem{freedman1980deterministic}
+Herbert~I Freedman.
+\newblock {\em Deterministic mathematical models in population ecology},
+  volume~57.
+\newblock Marcel Dekker Incorporated, 1980.
+
 \bibitem{freire1990technique}
 Roberto Freire.
 \newblock A technique for simulating composed san-based reward models.
@@ -65,6 +78,11 @@ Eric~L Haseltine and James~B Rawlings.
 \newblock Approximate simulation of coupled fast and slow reactions for
   stochastic chemical kinetics.
 \newblock {\em The Journal of chemical physics}, 117(15):6959--6969, 2002.
+
+\bibitem{hoppensteadt2006predator}
+Frank Hoppensteadt.
+\newblock Predator-prey model.
+\newblock {\em Scholarpedia}, 1(10):1563, 2006.
 
 \bibitem{howard2012dynamic}
 Ronald~A Howard.
@@ -98,10 +116,9 @@ James~M Murphy, David~MH Sexton, David~N Barnett, Gareth~S Jones, Mark~J Webb,
   climate change simulations.
 \newblock {\em Nature}, 430(7001):768, 2004.
 
-\bibitem{oliphant2006guide}
+\bibitem{oliphant2004scipy}
 Travis~E Oliphant.
-\newblock {\em A guide to NumPy}, volume~1.
-\newblock Trelgol Publishing USA, 2006.
+\newblock Scipy tutorial, 2004.
 
 \bibitem{olivier2011pysces}
 BG~Olivier.
