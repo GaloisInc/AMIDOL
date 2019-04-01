@@ -21,6 +21,8 @@ object Main extends App with Directives with ui.UiJsonSupport {
   // TODO: eventually, think about thread safety here (what happens if someone changes the model
   // while the backend is running?)
   object AppState {
+    var currentUiGraph: ui.Graph = ui.Graph(Map.empty, Map.empty)
+
     var currentModel: Model = Model(Map.empty, Map.empty)
     var currentGlobalConstants: Map[String, Double] = Map.empty   // TODO: these should be validated _before_ beingn written in
     var currentInitialConditions: Map[String, Double] = Map.empty // TODO: these should be validated _before_ beingn written in
@@ -43,12 +45,12 @@ object Main extends App with Directives with ui.UiJsonSupport {
       } ~
       pathPrefix("") {
         getFromDirectory(new java.io.File("src/main/resources/web").getCanonicalPath)
-      } /* ~
+      } ~
       pathPrefix("appstate") {
         path("model") {
-          complete(ui.convert.graphRepr.toUi(AppState.currentModel))
+          complete(AppState.currentUiGraph)
         }
-      } */
+      }
     } ~
     options {
       complete(
@@ -58,15 +60,16 @@ object Main extends App with Directives with ui.UiJsonSupport {
     post {
       path("appstate") {
         formField(
-          'graph.as[uinew.Graph],
+          'graph.as[ui.Graph],
           'globalVariables.as[Map[String,Double]]
-        ) { case (graph: uinew.Graph, globalVariables: Map[String,Double]) =>
+        ) { case (graph: ui.Graph, globalVariables: Map[String,Double]) =>
           complete {
-            uinew.convert.graphRepr.fromUi(graph) match {
+            graph.parse() match {
               case Success((parsed, initialConds)) =>
                 AppState.currentModel = parsed
                 AppState.currentGlobalConstants = globalVariables
                 AppState.currentInitialConditions = initialConds
+                AppState.currentUiGraph = graph
                 StatusCodes.Created -> s"Model has been updated"
 
               case Failure(f) =>

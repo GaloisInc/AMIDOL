@@ -17,10 +17,6 @@ case class Model(
 case class State(
   id: StateId,
   stateVariable: Variable,
-  
-  // Only for pruposes of recreating ui.Graph. TODO: should we remove?
-  view: String,
-  location: ui.Point
 )
 
 sealed trait Event
