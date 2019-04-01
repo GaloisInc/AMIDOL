@@ -1,0 +1,23 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{AMIDOL Architecture}{}% 2
+\BOOKMARK [1][-]{section.3}{AMIDOL VDSOL}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Structure of AMIDOL VDSOLs}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Composability of Atomic Models}{section.3}% 5
+\BOOKMARK [1][-]{section.4}{AMIDOL Intermediate Representation}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Language Properties}{section.4}% 7
+\BOOKMARK [1][-]{section.5}{AMIDOL Reward Variables}{}% 8
+\BOOKMARK [2][-]{subsection.5.1}{Rate Reward Variables}{section.5}% 9
+\BOOKMARK [2][-]{subsection.5.2}{Impulse Reward Variables}{section.5}% 10
+\BOOKMARK [2][-]{subsection.5.3}{Temporal Characteristics of Reward Variables}{section.5}% 11
+\BOOKMARK [2][-]{subsection.5.4}{Composed Reward Variables}{section.5}% 12
+\BOOKMARK [1][-]{section.6}{Design of Experiments and Results Database}{}% 13
+\BOOKMARK [1][-]{section.7}{AMIDOL Inference Engine}{}% 14
+\BOOKMARK [1][-]{section.8}{Domain Models}{}% 15
+\BOOKMARK [2][-]{subsection.8.1}{SIS/SIRS}{section.8}% 16
+\BOOKMARK [2][-]{subsection.8.2}{Artificial Chemistry and Intracellular Viral Infection}{section.8}% 17
+\BOOKMARK [2][-]{subsection.8.3}{HIV Transactivation Model}{section.8}% 18
+\BOOKMARK [1][-]{section.9}{Code Repositories and Current Builds}{}% 19
+\BOOKMARK [2][-]{subsection.9.1}{Front-End Architecture for VDSOLs}{section.9}% 20
+\BOOKMARK [2][-]{subsection.9.2}{Backend Architecture for IR and Inference Engine}{section.9}% 21
+\BOOKMARK [2][-]{subsection.9.3}{Integrating AMIDOL}{section.9}% 22
+\BOOKMARK [1][-]{section.10}{Next Steps and Phase 2}{}% 23
