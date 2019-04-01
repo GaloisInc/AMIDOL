@@ -18,10 +18,9 @@
 \BOOKMARK [2][-]{subsection.8.3}{Lotka-Volterra Model}{section.8}% 18
 \BOOKMARK [1][-]{section.9}{Code Repositories and Current Builds}{}% 19
 \BOOKMARK [2][-]{subsection.9.1}{Front-End Architecture}{section.9}% 20
-\BOOKMARK [2][-]{subsection.9.2}{A note on the results from the AMIDOL backend}{section.9}% 21
-\BOOKMARK [2][-]{subsection.9.3}{Backend Architecture for IR and Inference Engine}{section.9}% 22
-\BOOKMARK [2][-]{subsection.9.4}{Integrating AMIDOL}{section.9}% 23
-\BOOKMARK [1][-]{section.10}{Next Steps and Phase 2}{}% 24
-\BOOKMARK [1][-]{appendix.A}{Additional Domain Models}{}% 25
-\BOOKMARK [2][-]{subsection.A.1}{Artificial Chemistry and Intracellular Viral Infection}{appendix.A}% 26
-\BOOKMARK [2][-]{subsection.A.2}{HIV Transactivation Model}{appendix.A}% 27
+\BOOKMARK [2][-]{subsection.9.2}{Backend Architecture for IR and Inference Engine}{section.9}% 21
+\BOOKMARK [2][-]{subsection.9.3}{Integrating AMIDOL}{section.9}% 22
+\BOOKMARK [1][-]{section.10}{Next Steps and Phase 2}{}% 23
+\BOOKMARK [1][-]{appendix.A}{Additional Domain Models}{}% 24
+\BOOKMARK [2][-]{subsection.A.1}{Artificial Chemistry and Intracellular Viral Infection}{appendix.A}% 25
+\BOOKMARK [2][-]{subsection.A.2}{HIV Transactivation Model}{appendix.A}% 26

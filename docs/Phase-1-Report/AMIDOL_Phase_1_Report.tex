@@ -172,7 +172,9 @@ The Phase 1 Prototype of \amidol{} implements initial versions of all of these c
         }
 \end{lstlisting}
 
-Each noun or verb is given a \texttt{class name}, a \texttt{type} (either noun or verb), a \texttt{class definition} as a pointer to a model in the \amidol{} intermediate representation, an \texttt{icon} to represent the element visually in the editor, and a set of \texttt{input variables}, \texttt{output variables}, and user specifiable \texttt{parameters}.  These definitions create VDSOL elements in an object oriented fashion, declaring nouns and verbs as abstract data types with public, private, and protected methods.  The class as defined in the \amidol{} intermediate representation cannot by default be accessed by the outside world.  The declared set of input variables expose state variables of this intermediate representation as protected members which can only be accessed by a VDSOL object of the opposing type with the same arity, i.e. nouns may only be accessed by verbs and vice versa and the cardinality of the input variables of the accessed object must match the cardinality of the output variables of the other object.  In Phase 2 these conditions will be relaxed to allow multigraph compositions to provider richer modeling choices and capabilities.  The set of parameters provide public interfaces which the user can specify as constants or expressions to further define interdependencies in a complex system.
+Each noun or verb is given a \texttt{class name}, a \texttt{type} (either noun or verb), a \texttt{class definition} as a pointer to a model in the \amidol{} intermediate representation, an \texttt{icon} to represent the element visually in the editor, and a set of \texttt{input variables}, \texttt{output variables}, and user specifiable \texttt{parameters}.
+
+These definitions create VDSOL elements in an object oriented fashion, declaring nouns and verbs as abstract data types with public, private, and protected methods.  The class as defined in the \amidol{} intermediate representation cannot by default be accessed elements outside of the noun or verb itself, and the \texttt{input variables}, \texttt{output variables}, and \texttt{parameters} are used to expose state variables or events as public or protected members for certain well defined interactions.  The declared set of input variables expose state variables as protected members which can only be accessed by a VDSOL object of the opposite type, and with the same arity, i.e. nouns may only be accessed by verbs and vice versa and then only when cardinality of the input variables of the accessed object exactly match the cardinality of the output variables of the other object.  In Phase 2 these conditions will be relaxed to allow multigraph compositions to provider richer modeling choices and capabilities.  The set of parameters provide public interfaces which the user can specify as constants or expressions to further define interdependencies in a complex system.
 
 The goal of \amidol{}'s VDSOLs is to enable domain experts to define their models using an interface and visual language similar to the semi-formal diagrams they use today, but with the advantage that \amidol{}s VDSOLs have formal, executable, meaning.  VDSOLs provide a performable, reusable, system for scientists to use when attempting to derive insights relating to the complex systems they represent.  Figure \ref{Fig:Palettes} shows example palettes in \amidol{} which are implemented for the Phase 1 prototype.
 
@@ -197,6 +199,8 @@ The goal of \amidol{}'s VDSOLs is to enable domain experts to define their model
 \end{figure}
 
 \amidol{} is designed to be extended to support any domain through the use of palettes, and to allow researchers to draw diagrams using a visual language that they can modify, extend, and adapt to their needs.  Because these palettes are backed by a universal intermediate representation, they are compatible and comparable even across palettes allowing models developed in differing VDSOLs to be contrasted, analyzed, and even composed.
+
+In Phase 2 these capabilities will be explored with compartmental models for infectious diseases, composing models of populations with limited contact.
 
 \subsection{Structure of \amidol{} VDSOLs}
 
@@ -269,7 +273,7 @@ The Abstract Intermediate Representation (IR) for \amidol{} is meant to be a uni
 }}
 \end{lstlisting}
 
-The \amidol{} backend performs transformations on models defined in this IR allowing it to compose models via well structured transformations as shown in Figure \ref{Fig:AMIDOLBackend}.  In Phase 1 these transformations are limited to composition, and translation to a solver target.  In Phase 2 these transformations will be expanded to include performance optimizations, solution partitioning, and equivalence testing.  Even though we have not implemented the Model Composition editor for Phase 1, the backend composition operators have been implemented in our prototype as they form the basic operation needed to combine nouns, verbs, and reward variables into an executable model.  The design principles used for the backend focus on this concept of reusable operations which enable complex interactions and features.
+The \amidol{} backend performs transformations on models defined in this IR allowing it to act on models via well structured transformations as shown in Figure \ref{Fig:AMIDOLBackend}.  Even though we have not implemented the Model Composition editor for Phase 1, the backend composition operators have been implemented in our prototype as they form the basic operation needed to combine nouns, verbs, and reward variables into an executable model.  The design principles used for the backend focus on this concept of reusable operations which enable complex interactions and features.
 
 \begin{figure}
   \begin{eqnarray}
@@ -285,7 +289,7 @@ The \amidol{} backend performs transformations on models defined in this IR allo
 
 Currently the Phase 1 prototype implements only the \texttt{translate} and \texttt{compose} functionality shown in Figure \ref{Fig:AMIDOLBackend}, but in Phase 2 we will extend \amidol{} to account for all of this proposed functionality.  A core goal of \amidol{} is to use the intermediate representation to abstract away a lot of the details of target translations for solution, including necessary performance optimizations, conditions for solutions, and requirements of solution targets.
 
-The intermediate representation employed by \amidol{} have their roots in Markov models \cite{howard2012dynamic}, Generalized Stochastic Petri-nets with inhibitor arcs \cite{chiola1993generalized} which have been shown to be Turing complete, and stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic} which are extensions of Petri-nets that allow more compact model specification.  \amidol{} currently extends these concepts primarily by creating ways to link to the original ontology of nouns and verbs, and by allowing embedded reward structures to be linked to a graph-based results database which stores the outcomes of experiments and can be used for the construction of arbitrary measures on the underlying model to support inference needs.
+The intermediate representation employed by \amidol{} has its roots in Markov models \cite{howard2012dynamic}, Generalized Stochastic Petri-nets with inhibitor arcs \cite{chiola1993generalized} (which have been shown to be Turing complete), and stochastic activity networks \cite{movaghar1985performability,sanders2000stochastic} (an extension of Petri-nets that allow more compact model specification).  \amidol{} currently extends these concepts primarily by creating ways to link to the original ontology of nouns and verbs, and by allowing embedded reward structures to be linked to a graph-based results database which stores the outcomes of experiments and can be used for the construction of arbitrary measures on the underlying model to support inference needs.
 
 
 \subsection{Language Properties}
@@ -313,6 +317,8 @@ Informally the IR represents models defined in a given VDSOL using an formalism 
 \section{\amidol{} Reward Variables}
 
 The \amidol{} intermediate representation allows for the specification of reward variables or structures over a given model, and the composition of these structures with a model to produce composed models which can then be solved by the inference engine.  Given a model $M = (S, E, L, \Phi, \Lambda, \Delta)$ we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards). \cite{qureshi1996algorithms,deavours1999efficient,ciardo1996well,sanders1991reduced}
+
+In Phase 1 we have only implemented reward variables, as a performable discrete event solver is required to fully validate an implementation of impulse reward variables (whose solution is otherwise trivial for numerical methods).  During Phase 2 we will rapidly identify a discrete event solver as a backend target, and include impulse rewards as an early stage Phase 2 goal and deliverable.
 
 \subsection{Rate Reward Variables}
 
@@ -347,6 +353,8 @@ Time-averaged interval of time variables quantify accumulated reward over some i
 
 Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.
 
+For Phase 1 we have focused on instant of time variables.  During Phase 2 we will implement interval of time and steady state reward variables.  Steady state reward variables will make heavy use of our ability to perform transformations on the IR, as they represent an often wholly different solution target.
+
 \subsection{Composed Reward Variables}
 
 A key target of Phase 2 for \amidol{} will be extension of reward variables to allow composed rewards, which are expressions defined over other reward variables allowing us to construct a set of arbitrary measures on the set of atomic, and universal, measures of rate and impulse rewards. While individual reward variables form the basis for model evaluation, \amidol{} will support expressions defined over reward variables using basic arithmetic operations allowing reward variables to be composed via normal mathematical expressions.
@@ -371,7 +379,7 @@ Sensitivity, uncertainty, and correctness measures can easily be constructed in 
 
 The Phase 1 prototype of \amidol{} supports two solver targets for the intermediate representation PySCeS: the Python Simulator for Cellular Systems \cite{olivier2011pysces,olivier2005modelling}, an extendable toolkit for analyzing compartmental systems, and through the use of the SciPy odeint functionality to simulate an ordinary differential equation based representation of a model in the IR \cite{oliphant2004scipy,ahnert2011odeint}.  These targets were chosen both for reasons of validation, since they produce comparable output, but also as a proof of concept given their very different target languages.
 
-The PySCeS solver has its own internal language which is used to specify compartmental models.  \amidol{} supports this backend by providing a translation from the IR into the PySCeS specification language, and then invoking PySCeS on the translation.
+The PySCeS solver has its own internal language which is used to specify compartmental models.  \amidol{} supports this backend by providing a translation from the IR into the PySCeS specification language, and then invoking PySCeS on the translation.  We illustrate a translation here by showing the outputs of \amidol{} for the basic SIR model in PySCeS:
 
 \begin{verbatim}
 Modelname: tmp_model
@@ -398,7 +406,7 @@ Infected = 250.0
 Example = 0.0
 \end{verbatim}
 
-The SciPy odeint solver target is supported through a similar method by \amidol{}.  A translation is provided from the IR into a Python script which includes and invokes SciPy's odeint solver for ordinary differential equations.  The IR model is then represented directly as a system of ordinary differential equations for solution.
+The SciPy odeint solver target is supported through a similar method by \amidol{}.  A translation is provided from the IR into a Python script which includes and invokes SciPy's odeint solver for ordinary differential equations.  The IR model is then represented directly as a system of ordinary differential equations for solution.  We show here the same model previously generated for PySCeS as generated by \amidol{} for SciPy odeint:
 
 \begin{lstlisting}[language=python]
 from scipy.integrate import odeint
@@ -435,6 +443,8 @@ print(json.dumps(output, cls=NumpyEncoder))
 \end{lstlisting}
 
 \amidol{}'s backend inference engine is designed to support a wide range of inference techniques as build targets chosen by the intermediate representation based on the requirements of the reward variables being computed, and the limitations and requirements of the models being solved.  A model, for instance, which has general event distributions, cannot be solved by successive matrix multiplication; the distribution of a reward variable can likewise not be computed by solving the underlying system of differential equations.
+
+The strength of \amidol{} is this decoupling of modeling and representational concerns from the choice of executable implementation. \amidol{} removes these concerns from the domain expert, and automates these translations, allowing arbitrary modifications to be performed on the visual model, and rapid iteration of model structure, and parameters while exploring hypothesis, or comparing a model to actual data.  While \amidol{} doesn't prevent a user from making mistakes while modeling, it reduces the occurance of implementation details, and helps users to more rapidly design and prototype models by removing abstract concerns, and details such as choice of language, or unfamiliar requirements of solution methods.  While some work must be done to adapt \amidol{} to support a new solver target, once accomplished it can be leveraged for any VDSOL, allowing easy collaboration, and an ability to build on the work of others in a generalizable way.
 
 A key feature for Phase 2 of \amidol{} will be the use of multiple solvers and techniques on the same model to compute different reward variables where appropriate, with the results being fed into a results database.  This  backend architecture helps to ensure the performability of models designed in \amidol{}, and flexibility of solution technique helping researchers avoid the pitfall of being bound to a single target using hand coded models, which may or may not be performable.
 
@@ -499,8 +509,7 @@ As an example of a wholly different palette for a VDSOL, and to demonstrate the 
 
 \section{Code Repositories and Current Builds}
 
-The Phase 1 \amidol{} prototype is available, along with all source code in our repository under the \texttt{ir} directory with instructions on building and executing the current system.  Models can be designed in the current VDSOL editor, a javascript front-end.  The intermediate representation is implemented as a Scala project which compiles queries issued by users for a particular model they've created into code artifacts targeting different solver backends. Over time, we expect this system to also manipulate and compose datasets (from real-world observations as well as from the output of other simulations), and utilize the results database to save intermediate results and compare evaluations and models.
-
+The Phase 1 \amidol{} prototype is available, along with all source code in our repository with instructions on building and executing the current system.  Models can be designed in the current VDSOL editor, a javascript front-end.  The intermediate representation is implemented as a Scala project which compiles queries issued by users for a particular model they've created into code artifacts targeting different solver backends. Over time, we expect this system to also manipulate and compose datasets (from real-world observations as well as from the output of other simulations), and utilize the results database to save intermediate results and compare evaluations and models.
 
 \subsection{Front-End Architecture}
 
@@ -584,11 +593,11 @@ print(json.dumps(output, cls=NumpyEncoder))
 \label{Fig:LKOut}
 \end{figure}
 
-Figure \ref{Fig:LKOut} shows the current output of the \amidol{} inference enginer, matching expectations for the Lotka-Volterra model as parameterized in this example.
+Figure \ref{Fig:LKOut} shows the current output of the \amidol{} inference engine, matching expectations for the Lotka-Volterra model as parameterized in this example.
 
-\subsection{A note on the results from the \amidol{} backend}
+\paragraph{A note on the results from the \amidol{} backend}
 
-The Phase 1 prototype currently focuses on a proof of concept for the necessary core technologies of the \amidol{} framework.  During Phase 2 we will be building on the backend's capabilities...
+The Phase 1 prototype currently focuses on a proof of concept for the necessary core technologies of the \amidol{} framework.  During Phase 2 we will be building on the backend's capabilities by implementing a results database and design of experiments interface.  Part of this interface will include extensible plotting and visualization methods given a general form of results.  An early part of our Phase 2 effort will be spent defining a formal results schema and representation, and selecting an appropriate results database to store this schema.  Our design will focus, again, on generalizable techniques that apply to the abstract representations of models, but enable the user to interact with them only through knowledge of the higher level VDSOL concepts.
 
 \subsection{Backend Architecture for IR and Inference Engine}
 
@@ -614,6 +623,8 @@ We intend to collaborate with other performers in the ASKE program, especially T
 
 \appendix
 \section{Additional Domain Models}
+
+During the course of our work for Phase 1, and in preparation for Phase 2, we have begun identifying and specifying a number of additional models which will help us in our development goals, and in validating our implementations.  Those models are documented in this appendix, but not implemented in our Phase 1 prototype.
 
 \subsection{Artificial Chemistry and Intracellular Viral Infection}
 
