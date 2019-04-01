@@ -77,7 +77,7 @@ object Main extends App with Directives with ui.UiJsonSupport {
                 StatusCodes.Created -> s"Model has been updated"
 
               case Failure(f) =>
-                StatusCodes.BadRequest -> s"Couldn't parse model: ${f.toString}"
+                StatusCodes.BadRequest -> f.getMessage
             }
           }
         }

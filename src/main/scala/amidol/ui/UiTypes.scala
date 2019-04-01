@@ -1,9 +1,10 @@
 package amidol.ui
 
 import amidol._
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 import spray.json._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import collection.mutable.{HashMap, MultiMap, Set}
 
 /// The full set of shapes and lines in the UI
 case class Graph(
@@ -11,8 +12,26 @@ case class Graph(
   links: Map[String,Link]
 ) {
   def parse(): Try[(amidol.Model, Map[String, Double])] = Try {
-    val outgoingLinks = links.values.map(l => (l.from, StateId(l.to))).toMap
-    val incomingLinks = links.values.map(l => (l.to, StateId(l.from))).toMap
+    var outgoingLinks = new HashMap[String, Set[StateId]] with MultiMap[String, StateId]
+    var incomingLinks = new HashMap[String, Set[StateId]] with MultiMap[String, StateId]
+
+    links.values.foreach(l => outgoingLinks.addBinding(l.from, StateId(l.to)))
+    links.values.foreach(l => incomingLinks.addBinding(l.to, StateId(l.from)))
+
+    def getOutgoing(s: String): StateId = {
+      outgoingLinks.getOrElse(s, Set.empty).toList match {
+        case List(o) => o
+        case Nil => throw new Exception(s"No outgoing edge from '${nodes.get(s).map(_.label).getOrElse(s)}' verb")
+        case _ => throw new Exception(s"More than one outgoing edge from '${nodes.get(s).map(_.label).getOrElse(s)}' verb")
+      }
+    }
+    def getIncoming(s: String): StateId = {
+      incomingLinks.getOrElse(s, Set.empty).toList match {
+        case List(o) => o
+        case Nil => throw new Exception(s"No incoming edge to '${nodes.get(s).map(_.label).getOrElse(s)}' verb")
+        case _ => throw new Exception(s"More than one incoming edge to '${nodes.get(s).map(_.label).getOrElse(s)}' verb")
+      }
+    }
 
     val states = List.newBuilder[State]
     val events = List.newBuilder[Event]
@@ -22,26 +41,37 @@ case class Graph(
       props match {
         case NounProps(params) =>
           val paramMap = params.map { case Parameter(n,v) => n -> v.toDouble }.toMap
-          initialConditions += (label -> paramMap("Initial"))
+          initialConditions += (label -> paramMap.getOrElse(
+            "Initial",
+            throw new Exception(s"Failed to find required 'Initial' property for noun '$label'")
+          ))
           states += State(StateId(id), math.Variable(Symbol(label)))
         case VerbProps(verb_sort, params) =>
+          def equation(equation: String): math.Expr =
+            math.Expr(equation)
+              .transform(
+                s => Success(s),
+                e => Failure(throw new Exception(s"Invalid equation on verb '$label': ${e.getMessage}"))
+              )
+              .get
+
           val paramMap = params
-            .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> math.Expr(v).get }
+            .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> equation(v) }
             .toMap
           events += (verb_sort match {
             case Conserved(rate_template) =>
-              val rateExpr = math.Expr(rate_template).get.applySubstitution(paramMap)
-              amidol.Conserved(EventId(id), incomingLinks(id), outgoingLinks(id), rateExpr)
+              val rateExpr = equation(rate_template).applySubstitution(paramMap)
+              amidol.Conserved(EventId(id), getIncoming(id), getOutgoing(id), rateExpr)
             case Unconserved(rate_in_template, rate_out_template) =>
-              val rateInExpr = math.Expr(rate_in_template).get.applySubstitution(paramMap)
-              val rateOutExpr = math.Expr(rate_out_template).get.applySubstitution(paramMap)
-              amidol.Unconserved(EventId(id), incomingLinks(id), outgoingLinks(id), rateOutExpr, rateInExpr)
+              val rateInExpr = equation(rate_in_template).applySubstitution(paramMap)
+              val rateOutExpr = equation(rate_out_template).applySubstitution(paramMap)
+              amidol.Unconserved(EventId(id), getIncoming(id), getOutgoing(id), rateOutExpr, rateInExpr)
             case Source(rate_in_template) =>
-              val rateInExpr = math.Expr(rate_in_template).get.applySubstitution(paramMap)
-              amidol.Source(EventId(id), outgoingLinks(id), rateInExpr)
+              val rateInExpr = equation(rate_in_template).applySubstitution(paramMap)
+              amidol.Source(EventId(id), getOutgoing(id), rateInExpr)
             case Sink(rate_out_template) =>
-              val rateOutExpr = math.Expr(rate_out_template).get.applySubstitution(paramMap)
-              amidol.Sink(EventId(id), incomingLinks(id), rateOutExpr)
+              val rateOutExpr = equation(rate_out_template).applySubstitution(paramMap)
+              amidol.Sink(EventId(id), getIncoming(id), rateOutExpr)
           })
       }
     }
