@@ -24,7 +24,7 @@
 
 	var node_data_set, edge_data_set, network;
 	var global_vars = { Example : 0 };
-	var reward_vars = [ { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
+	var reward_vars = []// { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
 	var chosen_backend = "scipy"
  
 
@@ -203,7 +203,7 @@
 					_.mapObject(global_vars, (v, k) => vs.append(
 						$("<div><label>"+k+'</label><input value="'+v+'" onblur=""></input></div>')
 					))
-					// vs.append($("<button>").html("New").click((e) => UI.addGlobalVar() ))
+					vs.append($("<button>").html("<strike>New</strike>").click((e) => UI.addGlobalVar() ))
 				} else {
 					var thisNode = node_data_set.get(id)
 					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">⇐ back to global variables</p><h2>' + getOrElse(thisNode.label, "(no_name)") + "</h2>")
@@ -222,44 +222,59 @@
 					if (n.props.type == "noun") { return [n.id, n.label] } else { [] }
 				}), (a) => ! _.isEmpty(a))
 				var rv_names = ["Instant of Time", "Interval of Time", "Time Avg. Interval", "Steady State"]
+
+
+				// reward_vars = _.map(reward_vars, function(r){
+				// 	if ( ! _.isEmpty(nodeNames) && ! _.contains(nodeNames, r.opt1)) {
+				// 		r.opt1 = nodeNames[0][1]
+				// 	}
+				// 	return r
+				// }) 
+
 				rvs.append(_.map(reward_vars, function(r){
-					var did_find_rvar_name = false
-					var thing = $("<div>").change((e) => UI.updateRewardVar(e.target)).append([
+					return $("<div>").attr({class: "rv_element", rv_key: r.key}).change(
+						(e) => UI.updateRewardVar(r.key)
+					).append([
 						$("<h3>").attr({class: "key"}).html(r.key),
-						$("<select>").attr({class: "opt1"}).append(
-							_.map(nodeNames, function(n) { 
-								var opt = $("<option>").attr('value', n[1]).html(n[1])
-								if (r.opt1 == n[1]) { 
-									opt.attr('selected','selected') 
-									did_find_rvar_name = true
-								}
-								return opt
-							})
-						),
-						$("<select>").attr({class: "opt2"}).append(
-							_.map(rv_names, function(n, idx) { 
-								var opt = $("<option>").attr({'value': n}).html(n)
-								if (idx != 0) { opt.attr('disabled', 'disabled') }
-								return opt
-							})
+						$("<div>").append(
+							$("<select>").attr({class: "opt1"}).append(
+								_.map(nodeNames, function(n) { 
+									var opt = $("<option>").attr('value', n[1]).html(n[1])
+									if (r.opt1 == n[1]) {
+										opt.attr('selected','selected') 
+									}
+									return opt
+								})
+							)
 						),
 						$("<h4>").html("Range"),
-						$("<label>").html("Start"),
-						$("<input>").attr({class: "range_start", value: r.range.start, 'size': 5}),
-						$("<label>").html("Until"),
-						$("<input>").attr({class: "range_end", value: r.range.end, 'size': 5}),
-						$("<label>").html("Step"),
-						$("<input>").attr({class: "range_step", value: r.range.step, 'size': 5}),
-						$("<br />"),
+						$("<div>").append(
+							$("<select>").attr({class: "opt2"}).append(
+								_.map(rv_names, function(n, idx) { 
+									var opt = $("<option>").attr({'value': n}).html(n)
+									if (idx != 0) { opt.attr('disabled', 'disabled') }
+									return opt
+								})
+							),
+							$("<div>").append(
+								$("<div>").attr({class: "range_param"}).append(
+									$("<label>").html("Start"),
+									$("<input>").attr({class: "range_start", value: r.range.start, 'size': 5})
+								),
+								$("<div>").attr({class: "range_param"}).append(
+									$("<label>").html("Until"),
+									$("<input>").attr({class: "range_end", value: r.range.end, 'size': 5})
+								),
+								$("<div>").attr({class: "range_param"}).append(
+									$("<label>").html("Step"),
+									$("<input>").attr({class: "range_step", value: r.range.step, 'size': 5})
+								)
+							)
+						),
 						$("<button>").html("Delete").css({clear: "both"}).click(function(e){
 							UI.removeRewardVar(r.key)
 						})
 					])
-					if ( ! did_find_rvar_name) {
-						// Set "selected on UI element"
-						// Set the value to the reward var.
-					}
-					return thing
 				}))
 				rvs.append($("<button>").html("New").click((e) => UI.addRewardVar() ))
 			},
@@ -361,7 +376,7 @@
 				edge_data_set = new vis.DataSet(data.edges)
 
 				var container = document.getElementById('graph')
-				var network_data = { "nodes" : node_data_set, "edges" : edge_data_set}
+				var network_data = { "nodes" : node_data_set, "edges" : edge_data_set }
 				network = new vis.Network(container, network_data, options)
 
 				network.on("oncontext", UI.networkRightClick)
@@ -415,9 +430,19 @@
 			}
 		},
 
+		clearNetwork : function() {
+			if (_.isEmpty(node_data_set.get()) || confirm("Changing palettes will clear the drawing canvas.")) {
+				journal.past = []
+				journal.applyEventEffects( { type: "subtract", nodes: node_data_set.get(), edges: edge_data_set.get() } )
+				return true
+			} else { return false }
+		},
+
 		choosePalette: function(elem) {
 			chosenPalette = $(elem).val()
-			UI.render.palette(availablePalettes[chosenPalette])
+			if (UI.clearNetwork()) {
+				UI.render.palette(availablePalettes[chosenPalette])
+			}
 		},
 
 		makeNode : function(node, className) {
@@ -440,19 +465,19 @@
 			UI.setProp(idObj.id, key, val)
 		},
 
-		updateRewardVar : function(changedElem) {
-			parent = $(changedElem).parent()
+		updateRewardVar : function(rvKey) {
+			parent = $(".rv_element[rv_key='"+rvKey+"']")
 			var new_rv = {
 				key: parent.find(".key").html(),
-				opt1: parent.find(".opt1 option:selected").val(),
-				opt2: parent.find(".opt2 option:selected").val(),
+				opt1: parent.find(".opt1").val(),
+				opt2: parent.find(".opt2").val(),
 				range: {
 					start: parent.find(".range_start").val(),
 					end: parent.find(".range_end").val(),
 					step: parent.find(".range_step").val()
 				}
 			}
-			var old_rv = _.find(reward_vars, (v) => v.key == new_rv.key)
+			var old_rv = _.clone(_.find(reward_vars, (v) => v.key == new_rv.key))
 			var event = { type: "setRewardVar", key: new_rv.key, old: old_rv, new: new_rv }
 			journal.apply( event )
 		},
@@ -480,7 +505,7 @@
 		},
 
 		addGlobalVar : function() {
-			alert("TODO")
+			alert("Not supported yet.")
 		},
 
 		setProp: function(id, key, value) {
@@ -553,6 +578,7 @@
 			_.map(files, function(f){
 				if (f.type === "application/json") {
 					journal.future = []
+					UI.clearNetwork()
 					var reader = new FileReader()
 					reader.onload = function(e) {
 						var data = JSON.parse(e.target.result)
@@ -580,7 +606,7 @@
 		chartDataAcc: [],
 
 		submit : function(){
-			if (_.isEmpty(reward_vars)) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
+			if (_.isEmpty(reward_vars) || !_.isEmpty(_.find(reward_vars, (rv) => rv.opt1 == ""))) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
 
 			$.fancybox.open($("<img>").attr({src: "images/spinner.gif"}))
 			
@@ -633,8 +659,8 @@
 		getData : function(){
 			return {
 				graph: JSON.stringify({
-					nodes : node_data_set.getDataSet()._data,
-					links : edge_data_set.getDataSet()._data
+					nodes : node_data_set.get(),
+					links : edge_data_set.get()
 				}),
 				globalVariables: JSON.stringify(global_vars)
 			}
@@ -848,7 +874,7 @@
 		]
 		*/
 
-		journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
+		// journal.apply( { "type": "add", "nodes": sample_nodes, "edges": sample_edges } )
 
 
 		UI.render.palette(startingPalette)
@@ -939,9 +965,16 @@
 		padding: 1em;
 		box-sizing: border-box;
 	}
-	#rewardVars div:not(:last-child) {
+	#rewardVars .rv_element:not(:last-child) {
 		border-bottom: 1px solid #000;
 		margin-bottom: 1em;
+	}
+	.range_param {
+		display: inline-block;
+		padding: 1em;
+	}
+	.opt2 {
+		margin: 0px;
 	}
 	h2 {
 		font-size: 1.75em;
