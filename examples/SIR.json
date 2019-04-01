@@ -1,0 +1,172 @@
+{
+  "journal": [
+    {
+      "type": "add",
+      "nodes": [
+        {
+          "id": "1",
+          "label": "Susceptible",
+          "x": -350,
+          "y": 0,
+          "props": {
+            "className": "population",
+            "type": "noun",
+            "classDef": "population.air",
+            "icon": "images/person.svg",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "500"
+              }
+            ]
+          },
+          "image": "images/person.svg"
+        },
+        {
+          "id": "2",
+          "label": "Exposed",
+          "x": -175,
+          "y": 0,
+          "props": {
+            "className": "infect",
+            "type": "verb",
+            "classDef": "infect.air",
+            "icon": "images/virus.svg",
+            "verb_sort": {
+              "type": "conserved",
+              "rate_template": "beta * INPUT * OUTPUT / total_pop"
+            },
+            "parameters": [
+              {
+                "name": "beta",
+                "value": "0.413"
+              },
+              {
+                "name": "total_pop",
+                "value": "Susceptible + Infected + Recovered"
+              }
+            ]
+          },
+          "image": "images/virus.svg"
+        },
+        {
+          "id": "3",
+          "label": "Infected",
+          "x": 0,
+          "y": 0,
+          "props": {
+            "className": "patient",
+            "type": "noun",
+            "classDef": "patient.air",
+            "icon": "images/patient.svg",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "1"
+              }
+            ]
+          },
+          "image": "images/patient.svg"
+        },
+        {
+          "id": "4",
+          "label": "Cured",
+          "x": 175,
+          "y": 0,
+          "props": {
+            "className": "cure",
+            "type": "verb",
+            "classDef": "cure.air",
+            "icon": "images/cure.svg",
+            "verb_sort": {
+              "type": "conserved",
+              "rate_template": "gamma * INPUT"
+            },
+            "parameters": [
+              {
+                "name": "gamma",
+                "value": "0.333"
+              }
+            ]
+          },
+          "image": "images/cure.svg"
+        },
+        {
+          "id": "5",
+          "label": "Recovered",
+          "x": 350,
+          "y": 0,
+          "props": {
+            "className": "population",
+            "type": "noun",
+            "classDef": "population.air",
+            "icon": "images/person.svg",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "0"
+              }
+            ]
+          },
+          "image": "images/person.svg"
+        }
+      ],
+      "edges": [
+        {
+          "id": "a",
+          "from": "1",
+          "to": "2"
+        },
+        {
+          "id": "b",
+          "from": "2",
+          "to": "3"
+        },
+        {
+          "id": "c",
+          "from": "3",
+          "to": "4"
+        },
+        {
+          "id": "d",
+          "from": "4",
+          "to": "5"
+        }
+      ]
+    },
+    {
+      "type": "setProp",
+      "id": "1",
+      "key": "Initial",
+      "previous": "250",
+      "updated": "500"
+    },
+    {
+      "type": "setProp",
+      "id": "3",
+      "key": "Initial",
+      "previous": "250",
+      "updated": "1"
+    },
+    {
+      "type": "setProp",
+      "id": "5",
+      "key": "Initial",
+      "previous": "250",
+      "updated": "0"
+    }
+  ],
+  "reward_vars": [
+    {
+      "key": "Example",
+      "opt1": "Susceptible",
+      "opt2": "Instant of Time",
+      "range": {
+        "start": 0,
+        "end": 100,
+        "step": 5
+      }
+    }
+  ],
+  "global_vars": {}
+}
