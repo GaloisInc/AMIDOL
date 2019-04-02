@@ -133,37 +133,36 @@
           "to": "5"
         }
       ]
-    },
-    {
-      "type": "setProp",
-      "id": "1",
-      "key": "Initial",
-      "previous": "250",
-      "updated": "500"
-    },
-    {
-      "type": "setProp",
-      "id": "3",
-      "key": "Initial",
-      "previous": "250",
-      "updated": "1"
-    },
-    {
-      "type": "setProp",
-      "id": "5",
-      "key": "Initial",
-      "previous": "250",
-      "updated": "0"
     }
   ],
   "reward_vars": [
     {
-      "key": "Example",
+      "key": "Susceptible",
       "opt1": "Susceptible",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
-        "end": 100,
+        "end": 300,
+        "step": 5
+      }
+    },
+    {
+      "key": "Infected",
+      "opt1": "Infected",
+      "opt2": "Instant of Time",
+      "range": {
+        "start": 0,
+        "end": 300,
+        "step": 5
+      }
+    },
+    {
+      "key": "Recovered",
+      "opt1": "Recovered",
+      "opt2": "Instant of Time",
+      "range": {
+        "start": 0,
+        "end": 300,
         "step": 5
       }
     }

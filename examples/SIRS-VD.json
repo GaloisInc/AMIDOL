@@ -26,7 +26,7 @@
           "id": "1_birth",
           "label": "Susceptible Birth",
           "x": -350,
-          "y": 80,
+          "y": 100,
           "props": {
             "className": "birth",
             "type": "verb",
@@ -49,7 +49,7 @@
           "id": "1_death",
           "label": "Susceptible Death",
           "x": -350,
-          "y": -80,
+          "y": -100,
           "props": {
             "className": "death",
             "type": "verb",
@@ -118,7 +118,7 @@
           "id": "3_birth",
           "label": "Infected Birth",
           "x": 0,
-          "y": -95,
+          "y": -75,
           "props": {
             "className": "birth",
             "type": "verb",
@@ -141,7 +141,7 @@
           "id": "3_death",
           "label": "Infected Death",
           "x": 0,
-          "y": -255,
+          "y": -275,
           "props": {
             "className": "death",
             "type": "verb",
@@ -206,7 +206,7 @@
           "id": "5_birth",
           "label": "Recovered Birth",
           "x": 350,
-          "y": 80,
+          "y": 100,
           "props": {
             "className": "birth",
             "type": "verb",
@@ -229,7 +229,7 @@
           "id": "5_death",
           "label": "Recovered Death",
           "x": 350,
-          "y": -80,
+          "y": -100,
           "props": {
             "className": "death",
             "type": "verb",
@@ -252,7 +252,7 @@
           "id": "6",
           "label": "Time",
           "x": 0,
-          "y": 0,
+          "y": 40,
           "props": {
             "className": "cure",
             "type": "verb",
@@ -338,12 +338,32 @@
   ],
   "reward_vars": [
     {
-      "key": "Example",
+      "key": "Susceptible",
       "opt1": "Susceptible",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
-        "end": 100,
+        "end": 300,
+        "step": 5
+      }
+    },
+    {
+      "key": "Infected",
+      "opt1": "Infected",
+      "opt2": "Instant of Time",
+      "range": {
+        "start": 0,
+        "end": 300,
+        "step": 5
+      }
+    },
+    {
+      "key": "Recovered",
+      "opt1": "Recovered",
+      "opt2": "Instant of Time",
+      "range": {
+        "start": 0,
+        "end": 300,
         "step": 5
       }
     }

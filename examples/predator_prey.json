@@ -142,7 +142,7 @@
   ],
   "reward_vars": [
     {
-      "key": "Example",
+      "key": "Prey",
       "opt1": "Prey",
       "opt2": "Instant of Time",
       "range": {
@@ -150,7 +150,18 @@
         "end": 10,
         "step": 0.05
       }
+    },
+    {
+      "key": "Predator",
+      "opt1": "Predator",
+      "opt2": "Instant of Time",
+      "range": {
+        "start": 0,
+        "end": 10,
+        "step": 0.05
+      }
     }
+
   ],
   "global_vars": {}
 }
