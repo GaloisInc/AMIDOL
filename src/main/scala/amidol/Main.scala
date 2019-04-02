@@ -139,9 +139,9 @@ object Main extends App with Directives with ui.UiJsonSupport {
   val port = conf.getInt("amidol.port") // 80
   val bindingFuture = Http().bindAndHandle(route, address, port)
 
-  println(s"Server online at $address:$port/\nPress RETURN to stop...")
-  StdIn.readLine() // let it run until user presses return
-  bindingFuture
-    .flatMap(_.unbind()) // trigger unbinding from the port
-    .onComplete(_ => system.terminate()) // and shutdown when done
+//  println(s"Server online at $address:$port/\nPress RETURN to stop...")
+//  StdIn.readLine() // let it run until user presses return
+//  bindingFuture
+//    .flatMap(_.unbind()) // trigger unbinding from the port
+//    .onComplete(_ => system.terminate()) // and shutdown when done
 }
