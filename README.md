@@ -27,7 +27,7 @@ You'll need to:
 Once you have done all of this, build and run the system with: 
 
 ```sh
-$ git clone https://github.com/GaloisInc/AMIDOL.git && cd AMIDOl
+$ git clone https://github.com/GaloisInc/AMIDOL.git && cd AMIDOL
 AMIDOL$ sbt run 
 ```
 
