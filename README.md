@@ -33,6 +33,11 @@ AMIDOL$ sbt run
 
 This opens a back-end web server on http://localhost:8080/ . 
 
+Example models can be found in this repository under the `examples` directory. These are JSON 
+files meant to be loaded into the web browser UI, with the cloud-shaped upload button in the 
+upper-right. User-drawn models can also be downloaded with the adjacent download button.
+
+
 [1]: https://www.scala-sbt.org/download.html
 [2]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 [3]: https://www.python.org/downloads/
