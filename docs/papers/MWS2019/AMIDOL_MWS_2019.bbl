@@ -38,6 +38,11 @@ Daniel~D Deavours and William~H Sanders.
 \newblock In {\em Petri Nets and Performance Models, 1999. Proceedings. The 8th
   International Workshop on}, pages 124--133. IEEE, 1999.
 
+\bibitem{enright1975comparing}
+Wayne~H Enright, TE~Hull, and Bengt Lindberg.
+\newblock Comparing numerical methods for stiff systems of ode: s.
+\newblock {\em BIT Numerical Mathematics}, 15(1):10--48, 1975.
+
 \bibitem{fisman2014early}
 David Fisman, Edwin Khoo, and Ashleigh Tuite.
 \newblock Early epidemic dynamics of the west african 2014 ebola outbreak:
@@ -65,6 +70,14 @@ Ronald~A Howard.
 Kai Lampka and Markus Siegle.
 \newblock Symbolic composition within the m{\"o}bius framework.
 \newblock In {\em Proc. of the 2nd MMB Workshop}, pages 63--74, 2002.
+
+\bibitem{lattner2004llvm}
+Chris Lattner and Vikram Adve.
+\newblock Llvm: A compilation framework for lifelong program analysis \&
+  transformation.
+\newblock In {\em Proceedings of the international symposium on Code generation
+  and optimization: feedback-directed and runtime optimization}, page~75. IEEE
+  Computer Society, 2004.
 
 \bibitem{movaghar1985performability}
 Ali Movaghar.
