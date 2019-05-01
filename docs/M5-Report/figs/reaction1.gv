@@ -1,0 +1,3 @@
+digraph reactions {
+	A [image="molecule.png"];
+}
