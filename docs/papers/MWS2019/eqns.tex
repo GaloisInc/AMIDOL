@@ -1,0 +1,33 @@
+\documentclass[11pt]{article}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\bibliographystyle{plain}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+
+\begin{eqnarray}
+  \frac{d\ tat}{dt} &=& -dtt * tat\\
+  \frac{d\ nRNA}{dt} &=& (b + v * tat) / (k + tat) - ex * nRNA - dr * nRNA\\
+  \frac{d\ cRNA}{dt} &=& ex * nRNA - dr * cRNA\\
+  \frac{d\ P}{dt} &=& vp * cRNA / (kp + cRNA) - dp * P
+\end{eqnarray}
+
+\begin{eqnarray}
+  \frac{d\ LTR}{dt} &=& k_{deacetyl} pTEFb_a + k_{transact} pTEFb_a- k_{acetyl} (LTR)(pTEFb_d) - k_{transact} (LTR) (nRNA) (Tat)\\
+  \frac{d\ nRNA}{dt} &=& k_{basal} LTR + k_{transact} pTEFb_a - k_{export} nRNA - k_{transact} (LTR) (nRNA) (Tat) - d_{NUC} nRNA\\
+  \frac{d\ cRNA}{dt} &=& k_{export} nRNA - d_{CYT} cRNA\\
+  \frac{d\ GFP}{dt} &=& k1_{translate} cRNA - d_{GFP} GFP\\
+  \frac{d\ Tat}{dt} &=& k2_{translate} cRNA + k_{unbind} pTEFb_d + k_{transact} pTEFb_a - k_{bind} Tat - k_{transact} (LTR) (nRNA) (Tat) - d_{Tat} Tat\\
+  \frac{d\ pTEFb_d}{dt} &=& k_{bind} Tat + k_{deacetyl} pTEFb_a - k_{unbind} pTEFb_d - k_{acetyl} (LTR)(pTEFb_d)\\
+  \frac{d\ pTEFb_a}{dt} &=& k_{acetyl} (LTR)(pTEFb_d) + k_{transact} (LTR) (nRNA) (Tat)- k_{transact} pTEFb_a- k_{deacetyl} pTEFb_a\\
+\end{eqnarray}
+
+
+\end{document}
