@@ -1,0 +1,10 @@
+digraph reactions {
+	graph [bb="0,0,928,920"];
+	node [label="\N",
+		shape=plaintext
+	];
+	A	 [height=12.778,
+		label=<<TABLE><TR><TD><IMG SRC="molecule.png"/></TD></TR></TABLE>>,
+		pos="464,460",
+		width=12.889];
+}

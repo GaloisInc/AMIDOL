@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: AMIDOL_M6_Report.aux
+The style file: plain.bst
+Database file #1: AMIDOL-MWS.bib
+Repeated entry---line 427 of file AMIDOL-MWS.bib
+ : @article{sanders1991reduced
+ :                            ,
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "ciardo1994petri"
+Warning--empty journal in hack1976petri
+You've used 4 entries,
+            2118 wiz_defined-function locations,
+            524 strings with 4618 characters,
+and the built_in function-call counts, 1097 in all, are:
+= -- 107
+> -- 40
+< -- 1
++ -- 16
+- -- 12
+* -- 71
+:= -- 194
+add.period$ -- 12
+call.type$ -- 4
+change.case$ -- 17
+chr.to.int$ -- 0
+cite$ -- 5
+duplicate$ -- 44
+empty$ -- 92
+format.name$ -- 12
+if$ -- 221
+int.to.chr$ -- 0
+int.to.str$ -- 4
+missing$ -- 5
+newline$ -- 23
+num.names$ -- 8
+pop$ -- 19
+preamble$ -- 1
+purify$ -- 14
+quote$ -- 0
+skip$ -- 30
+stack$ -- 0
+substring$ -- 64
+swap$ -- 4
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 14
+warning$ -- 1
+while$ -- 12
+width$ -- 5
+write$ -- 44
+(There was 1 error message)
