@@ -1,0 +1,27 @@
+<div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="{{ site.baseurl }}">
+          {{ site.title }}
+        </a>
+      </h1>
+      <p class="lead">{{ site.tagline }}</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <a class="sidebar-nav-item" href="{{ site.baseurl }}">About</a>
+
+      {% if page.toc %}
+        <h4 style="color: white;">{{ page.title }}</h4>
+        <h4 style="font-weight: normal; color: white;">Contents</h4>
+
+      {% include toc.html html=content h_min=2 h_max=2%}
+      {% endif %}
+
+    </nav>
+
+    <p>&copy; {{ site.time | date: '%Y' }}. All rights reserved.</p>
+  </div>
+</div>
