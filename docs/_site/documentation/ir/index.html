@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      AMIDOL IR &middot; AMIDOL
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,400italic,700">  
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700">  
+  <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">  
+  
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" 
+        href="public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- MathJax -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body class="theme-base-09">
+
+    <div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="">
+          AMIDOL
+        </a>
+      </h1>
+      <p class="lead">Agile Metamodel Interface using Domain-specific Ontological Languages</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <a class="sidebar-nav-item" href="">About</a>
+
+      
+        <h4 style="color: white;">AMIDOL IR</h4>
+        <h4 style="font-weight: normal; color: white;">Contents</h4>
+
+      <ul>
+  <li><a href="#formal-definition">Formal Definition</a></li>
+  <li><a href="#practical-considerations">Practical Considerations</a></li>
+  <li><a href="#transformations">Transformations</a></li>
+  <li><a href="#turing-completeness">Turing Completeness</a></li>
+  <li><a href="#compactness-of-representation">Compactness of Representation</a></li>
+  <li><a href="#examples">Examples</a></li>
+</ul>
+
+      
+
+    </nav>
+
+    <p>&copy; 2019. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">AMIDOL IR</h1>
+  <span class="post-date"></span>
+  <h2 id="formal-definition">Formal Definition</h2>
+
+<p>Formally, the IR is a 5-tuple, <script type="math/tex">(S, E, L, \Phi, \Lambda, \Delta)</script> where:</p>
+<ul>
+  <li><script type="math/tex">S</script> is a finite set of state variables <script type="math/tex">\{s_0, s_1, \ldots, s_{n-1}\}</script> that take on values in <script type="math/tex">\mathbb{N}</script>.</li>
+  <li><script type="math/tex">E</script> is a finite set of events <script type="math/tex">\{e_0, e_1, \ldots, e_{m-1}\}</script> that may occur in the model.</li>
+  <li><script type="math/tex">L: S \mid E \rightarrow \mathbb{N}</script> is the event and state variable labeling function that maps elements of <script type="math/tex">S</script> and <script type="math/tex">E</script> into the original ontology.</li>
+  <li><script type="math/tex">\Phi: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow \{0, 1\}</script> is the event enabling predicate.</li>
+  <li><script type="math/tex">\Lambda: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow (0, \infty)</script> is the transition rate specification.</li>
+  <li><script type="math/tex">\Delta: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow N_0 \times N_1 \times \ldots \times N_{n-1}</script> is the state variable transition function specification.</li>
+</ul>
+
+<h3 id="state-variables">State Variables</h3>
+
+<p>Intuitively, state-variables make up the current state of the model, and measure the configuration and capabilities of all modeled components.  While state variables are defined as taking on values in <script type="math/tex">\mathbb{N}</script>, this does not restrict them from representing real numbers to arbitrary precision in modern computer hardware.  In practice, they are implemented as integers, and floating point numbers by the AMIDOL source code.</p>
+
+<h3 id="events">Events</h3>
+
+<h3 id="input-predicates">Input Predicates</h3>
+
+<h3 id="output-predicates">Output Predicates</h3>
+
+<h3 id="labels">Labels</h3>
+
+<h3 id="reward-variables">Reward Variables</h3>
+
+<h2 id="practical-considerations">Practical Considerations</h2>
+
+<h2 id="transformations">Transformations</h2>
+
+<h2 id="turing-completeness">Turing Completeness</h2>
+
+<h2 id="compactness-of-representation">Compactness of Representation</h2>
+
+<h2 id="examples">Examples</h2>
+
+</div>
+
+    </div>
+
+  </body>
+</html>
