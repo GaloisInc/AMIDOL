@@ -1,6 +1,6 @@
 ---
 title: About
-top: true
+toc: true
 ---
 
 ## Introduction
