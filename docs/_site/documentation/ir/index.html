@@ -16,9 +16,9 @@
   </title>
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/AMIDOL/public/css/poole.css">
-  <link rel="stylesheet" href="/AMIDOL/public/css/syntax.css">
-  <link rel="stylesheet" href="/AMIDOL/public/css/hyde.css">
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
 
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,400italic,700">  
@@ -32,8 +32,8 @@
 
   <!-- Icons -->
   <link rel="apple-touch-icon-precomposed" sizes="144x144" 
-        href="/AMIDOLpublic/apple-touch-icon-144-precomposed.png">
-  <link rel="shortcut icon" href="/AMIDOLpublic/favicon.ico">
+        href="public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="public/favicon.ico">
 
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
@@ -49,7 +49,7 @@
   <div class="container">
     <div class="sidebar-about">
       <h1>
-        <a href="http://localhost:4000/AMIDOL">
+        <a href="http://localhost:4000">
           AMIDOL
         </a>
       </h1>
@@ -139,7 +139,7 @@
 <h3 id="input-predicates">Input Predicates</h3>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"input_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"enabling_condition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="w">
+    </span><span class="s2">"enabling_condition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean_expression"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
@@ -184,6 +184,14 @@ term       ::= "(" expression ")" | term "*" expression | term "/" expression |
 atom       ::= identifier | literal
 identifier ::= sv_name | constant_name
 literal    ::= integer | float
+</code></pre></div></div>
+
+<p>Input predicates utilize boolean expressions, which are defined by the following syntax which builds on the syntax given above.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>boolean_expression ::= "(" boolean_expression ")" | "NOT" boolean_expression |
+                       boolean_expression "AND" boolean_expression |
+                       boolean_expression "OR" boolean_expression | boolean_term
+boolean_term ::= expression relation expression | "TRUE" | "FALSE"
 </code></pre></div></div>
 
 <h3 id="reward-variables">Reward Variables</h3>

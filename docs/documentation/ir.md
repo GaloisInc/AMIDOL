@@ -57,7 +57,7 @@ Currently in AMIDOL, all rates are considered exponential.  AMIDOL can be extend
 
 ```json
 { "input_predicate": {
-    "enabling_condition": "expression"
+    "enabling_condition": "boolean_expression"
   }
 }
 ```
@@ -105,6 +105,15 @@ term       ::= "(" expression ")" | term "*" expression | term "/" expression |
 atom       ::= identifier | literal
 identifier ::= sv_name | constant_name
 literal    ::= integer | float
+```
+
+Input predicates utilize boolean expressions, which are defined by the following syntax which builds on the syntax given above.
+
+```
+boolean_expression ::= "(" boolean_expression ")" | "NOT" boolean_expression |
+                       boolean_expression "AND" boolean_expression |
+                       boolean_expression "OR" boolean_expression | boolean_term
+boolean_term ::= expression relation expression | "TRUE" | "FALSE"
 ```
 
 ### Reward Variables
