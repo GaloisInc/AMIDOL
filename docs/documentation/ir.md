@@ -73,49 +73,121 @@ The transition function is specified as a partially defined state change vector
 }
 ```
 
+Output predicates define the state change vector associated with event firing through partial definition as a list of state variable names, followed by an expression $$e$$ indicating their change when the event is fired under the discrete interpretation of events.  Given an event with rate $$\mu$$ the continuous interpretation of event firing utilizes a scaled version of this expression given by $$\mu \cdot e$$.
+
+For example, the "infect" event of an SIR model would have rate $$\beta \frac{SI}{N}$$, and the partial state transition function [{"S": -1}, {"I": 1}].
+
 ### Labels
 
+Elements of the IR have labels associated with them, used to propagate domain knowledge from the formulation in a VDSOL to the mathematical elements of the IR.
+
+### Constants
+
+Constants in the IR allow the definition of identifiers which refer to literal values, mostly useful for setting model wide scaling factors, initial conditions, etc.
+
+```json
+{ "constant": {
+    "name": "string",
+    "value": "literal"
+  }
+}
+```
+
+## Expressions
+
+Expressions in AMIDOL are defined by a simple syntax over state variable names, constant names, and literal constants.
+
+```
+expression ::= term "+" expression | term "-" expression |
+               term
+term       ::= "(" expression ")" | term "*" expression | term "/" expression |
+               atom
+atom       ::= identifier | literal
+identifier ::= sv_name | constant_name
+literal    ::= integer | float
+```
+
 ### Reward Variables
+
+The AMIDOL IR allows the specifications of reward variables as a partial definition of a model, and the composition of these reward variables with other models to define measures of interest which can be solved by the executable translation of a total model in the IR.
+Given a model $$M = (S, E, L, \Phi, \Lambda, \Delta)$$ we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards).
+
+A rate reward is formally defined as a function $$\mathcal{R}: P(S, \mathbb{N}) \rightarrow \mathbb{R}$$ where $$q \in P(S, \mathbb{N})$$ is the reward accumulated when for each $$(s,n) \in q$$ the marking of the state variable $$s$$ is $$n$$.  Informally a rate reward variable $$x$$ accumulates a defined reward whenever a subset of the state variables take on prescribed values.
 
 ```json
 { "rate_reward": {
     "name": "string",
     "sv_name": "sv_name string",
+    "reward": "expression",
     "temporal_type": "instant_of_time"|"interval_of_time"|"time_averaged_interval_of_time"|"steady_state",
     "temporal_domain": ["float"]
   }  
 }
 ```
 
+The IR definition of a rate reward associates the identifier of a single state variable with a temporal type and time domain, and a reward expression.  The reward variable begins with an initial value of zero and functions as an accumulator, accumulating value equal to the evaluation of the reward expression as specified by the temporal type and time domain.
+
+An impulse reward is formally defined as a function $$\mathcal{I}: E \rightarrow \mathbb{R}$$ where $$e \in E, \mathcal{I}_e$$ is the reward for the completion of $$e$$.  Informally an impulse reward variable $$x$$ accumulates a defined reward whenever the event $$e$$ fires.
+
 ```json
 { "impulse_reward": {
     "name": "string",
     "ev_name": "ev_name string",
+    "reward": "expression",
     "temporal_type": "instant_of_time"|"interval_of_time"|"time_averaged_interval_of_time"|"steady_state",
     "temporal_domain": ["float"]
   }
 }
 ```
 
+The IR definition of an impulse reward associates the identifier of a single event with a temporal type and time domain, and a reward expression.  The reward variable begins with an initial value of zero and functions as an accumulator, accumulating value equal to the evaluation of the reward expression as specified by the temporal type and time domain.
+
+#### Temporal Characteristics of Reward Variables
+
+Both rate and impulse reward variables measure the behavior of a model $$M$$ with respect to time.  As such, a reward variable $$\theta$$ is declared as either an instant-of-time variable, an interval-of-time variable, a time-averaged interval-of-time variable, or a steady state variable.  An instant of time variable $$\Theta_t$$ is defined as:
+
+$$\theta_t = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{I}^{\nu}_t + \sum_{e \in E} \mathcal{I}(e) \cdot I_t^e\$$
+
+Intuitively a rate reward declared as an instant-of-time variable can be used to measure the value of a state variable precisely at time $$t$$, and an impulse reward declared as an instant-of-time variable can be used to measure whether a given event fired at precisely time $$t$$.  While the latter is not a particularly useful measure (as the probability of an event with a firing time drawn from a continuous distribution at time $$t$$ is 0) it is defined primarily for closure reasons, as well as extensions to discrete general distributions.
+
+An interval-of-time variable intuitively accumulates reward over some fixed interval of time $$[t, t+1]$$.  Given such a variable $$\theta_{[t, t+1]}$$ we formally define interval-of-time variables as:
+
+$$\theta_{[t,t+1]} = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{J}^{\nu}_{[t, t+1]} + \sum_{e \in E} \mathcal{I}(e)N^e_{[t,t+1]}$$
+
+where
+
+* $$J^{\nu}_{[t,t+1]}$$ is a random variable which represents the total time the model spent in a marking such that for each $$(s, n) \in \nu$$, the state variable $$s$$ has a value of $$n$$ during the period $$[t, t+1]$$.
+* $$I^e_{t\rightarrow\infty}$$ is a random variable which represents the number of times an event $$e$$ has fired during the period $$[t, t+1]$$.
+
+Time-averaged interval of time variables quantify accumulated reward over some interval of time.  Such a variable $$\theta'_{[t,t+1]}$$ is defined formally as:
+
+$$\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}$$
+
+Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.
+
+Composed rewards are defined with rewards that are a special type of expression, a reward variable expression.
+
 ```json
 { "composed_reward": {
     "name": "string",
-    "expression": "expression"
+    "reward": "rv_expression"
   }
 }
 ```
 
-### Constants
+Reward variable expressions differ from standard expressions in the AMIDOL IR in their identifier term, which can only refer to names of other reward variables.
 
-```json
-{ "constant": {
-    "name": "string",
-    "value": "expression"
-  }
-}
+```
+rv_expression ::= rv_term "+" rv_expression | rv_term "-" rv_expression |
+                  rv_term
+rv_term       ::= "(" rv_expression ")" | rv_term "*" rv_expression |
+                  rv_term "/" rv_expression |rv_atom
+rv_atom       ::= rv_identifier | literal
+rv_identifier ::= rate_reward_name | impulse_reward_name | composed_reward_name | constant_name
+literal       ::= integer | float
 ```
 
-## Expressions
+Composed rewards allow us to construct a set of arbitrary measures on the set of impulse and rate rewards.  Composed rewards need not be solved for during execution of a model, but can be computed after solving a model for the impulse and rate rewards contained in the reward expression for a composed reward variable.
 
 ## Practical Considerations
 
