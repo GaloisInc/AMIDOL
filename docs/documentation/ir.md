@@ -112,6 +112,8 @@ literal    ::= integer | float
 The AMIDOL IR allows the specifications of reward variables as a partial definition of a model, and the composition of these reward variables with other models to define measures of interest which can be solved by the executable translation of a total model in the IR.
 Given a model $$M = (S, E, L, \Phi, \Lambda, \Delta)$$ we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards).
 
+#### Rate Rewards
+
 A rate reward is formally defined as a function $$\mathcal{R}: P(S, \mathbb{N}) \rightarrow \mathbb{R}$$ where $$q \in P(S, \mathbb{N})$$ is the reward accumulated when for each $$(s,n) \in q$$ the marking of the state variable $$s$$ is $$n$$.  Informally a rate reward variable $$x$$ accumulates a defined reward whenever a subset of the state variables take on prescribed values.
 
 ```json
@@ -126,6 +128,8 @@ A rate reward is formally defined as a function $$\mathcal{R}: P(S, \mathbb{N}) 
 ```
 
 The IR definition of a rate reward associates the identifier of a single state variable with a temporal type and time domain, and a reward expression.  The reward variable begins with an initial value of zero and functions as an accumulator, accumulating value equal to the evaluation of the reward expression as specified by the temporal type and time domain.
+
+#### Impulse Rewards
 
 An impulse reward is formally defined as a function $$\mathcal{I}: E \rightarrow \mathbb{R}$$ where $$e \in E, \mathcal{I}_e$$ is the reward for the completion of $$e$$.  Informally an impulse reward variable $$x$$ accumulates a defined reward whenever the event $$e$$ fires.
 
@@ -164,6 +168,8 @@ Time-averaged interval of time variables quantify accumulated reward over some i
 $$\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}$$
 
 Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.
+
+#### Composed Rewards
 
 Composed rewards are defined with rewards that are a special type of expression, a reward variable expression.
 
