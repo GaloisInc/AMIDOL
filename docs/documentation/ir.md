@@ -75,7 +75,13 @@ The transition function is specified as a partially defined state change vector
 
 Output predicates define the state change vector associated with event firing through partial definition as a list of state variable names, followed by an expression $$e$$ indicating their change when the event is fired under the discrete interpretation of events.  Given an event with rate $$\mu$$ the continuous interpretation of event firing utilizes a scaled version of this expression given by $$\mu \cdot e$$.
 
-For example, the "infect" event of an SIR model would have rate $$\beta \frac{SI}{N}$$, and the partial state transition function [{"S": -1}, {"I": 1}].
+$$ \frac{dS}{dt} = -\frac{\beta IS}{N} $$
+
+$$ \frac{dI}{dt} = \frac{\beta IS}{N} - \gamma I $$
+
+$$ \frac{dR}{dt} = \gamma I $$
+
+For example, the "infect" event of an SIR model given above would have rate $$\beta \frac{SI}{N}$$, and the partial state transition function [{"S": -1}, {"I": 1}].
 
 ### Names of State Variables and Events
 
