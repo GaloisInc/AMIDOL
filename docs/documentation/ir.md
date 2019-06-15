@@ -68,7 +68,7 @@ The transition function is specified as a partially defined state change vector
 
 ```json
 { "output_predicate": {
-    "transition_function": [{"sv_name string" : "expression"}]
+    "transition_function": [{"sv_name": "string", "function": "expression"}]
   }
 }
 ```

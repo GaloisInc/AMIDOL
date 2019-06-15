@@ -18,6 +18,10 @@ The VDSOLs help achieve these goals by lowering the barrier for entry associated
 
 * [AMIDOL IR]({{ site.baseurl }}{% link documentation/ir.md %})
 
+## Examples
+
+* [SIR Family]({{ site.baseurl }}{% link examples/sir.md %})
+
 ## Building
 
 You'll need to:
@@ -33,18 +37,18 @@ You'll need to:
     then the `scipy` and `matplotlib` packages (by doing
     `pip3 install scipy matplotlib`) for the SciPy backends
 
-Once you have done all of this, build and run the system with: 
+Once you have done all of this, build and run the system with:
 
 ```sh
 $ git clone https://github.com/GaloisInc/AMIDOL.git && cd AMIDOL
-AMIDOL$ sbt run 
+AMIDOL$ sbt run
 ```
 
 This opens a back-end web server on http://localhost:8080/ . NOTE: This system was only meant for use/tested on
 Google Chrome. This version of the system does not support other browsers.
 
-Example models can be found in this repository under the `examples` directory. These are JSON 
-files meant to be loaded into the web browser UI, with the cloud-shaped upload button in the 
+Example models can be found in this repository under the `examples` directory. These are JSON
+files meant to be loaded into the web browser UI, with the cloud-shaped upload button in the
 upper-right. User-drawn models can also be downloaded with the adjacent download button.
 
 [1]: https://www.scala-sbt.org/download.html
