@@ -67,6 +67,7 @@
       <ul>
   <li><a href="#formal-definition">Formal Definition</a>
     <ul>
+      <li><a href="#names-of-state-variables-and-events">Names of State Variables and Events</a></li>
       <li><a href="#state-variables">State Variables</a></li>
       <li><a href="#events">Events</a></li>
       <li><a href="#labels">Labels</a></li>
@@ -121,6 +122,45 @@
 <p>Informally the IR represents a model using a universal and Turing-complete mathematical language using a formalism based on Generalized Stochastic Petri-nets with inhibitor arcs. Instead of inhibitor arcs, we utilize the more intuitive and compact method of allowing events to have input predicates <script type="math/tex">\Phi</script> which can be evaluated to determine if an event is enabled, and output predicates <script type="math/tex">\Delta</script> which define the side effects of event firing.</p>
 
 <p>Intuitively, the <em>marking</em> of a model in the IR given as <script type="math/tex">N_0 \times N_1 \times \ldots \times N_{n-1}</script> is the set values of each state variable.  We typically do not represent the entire marking when giving the definition of enabling conditions (input predicates), transition rates associated with an event, or state variable transition function (output predicates), and instead only indicate the markings on which an given input predicate depends, and those state variables whose values change when an event fires due to the output predicate, omitting the “don’t care” values.</p>
+
+<h3 id="names-of-state-variables-and-events">Names of State Variables and Events</h3>
+
+<p>In order to support composition via the operations of state sharing, and event sharing, the AMIDOL IR represents names of state variables and events as lists of strings.  The strings in this list must be unique to the individual state variable or event, or the model is invalid and an exception should be raised.  For example:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}},</span><span class="w">
+</span><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Infected"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Is a valid model, the strings in each name list are unique.  But the following example should have an exception raised:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}},</span><span class="w">
+</span><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>as the string “S” is shared by the name lists of both state variables.  Names are lists to allow for easy name resolution when composing two models.  Given the following Models:</p>
+
+<p><strong>Model A</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Model B</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Susceptible"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Composing A and B on <code class="highlighter-rouge">["S", "Susceptible"]</code> results in the model:</p>
+
+<p><strong>Model AcB</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Susceptible"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Any events in Model A which referred to “S” are treated as if they refer to the new shared state variable with name <code class="highlighter-rouge">["S", "Susceptible"]</code>.</p>
 
 <h3 id="state-variables">State Variables</h3>
 
