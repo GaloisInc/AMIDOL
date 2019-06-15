@@ -208,6 +208,8 @@ Composed rewards allow us to construct a set of arbitrary measures on the set of
 
 ## Transformations
 
+### Composition
+
 ## Turing Completeness
 
 ## Compactness of Representation
