@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      SIR Family of Models &middot; AMIDOL
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,400italic,700">  
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700">  
+  <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">  
+  
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" 
+        href="public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- MathJax -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body class="theme-base-09">
+
+    <div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="http://localhost:4000/AMIDOL/">
+          AMIDOL
+        </a>
+      </h1>
+      <p class="lead">Agile Metamodel Interface using Domain-specific Ontological Languages</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <a class="sidebar-nav-item" href="http://localhost:4000/AMIDOL/">Home</a>
+
+      
+        <h4 style="color: white;">SIR Family of Models</h4>
+        <h4 style="font-weight: normal; color: white;">Contents</h4>
+
+      <ul>
+  <li><a href="#general-methodology">General Methodology</a></li>
+  <li><a href="#sir">SIR</a></li>
+  <li><a href="#seir">SEIR</a></li>
+</ul>
+
+      
+
+    </nav>
+
+    <p>&copy; 2019. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">SIR Family of Models</h1>
+  <span class="post-date"></span>
+  <h2 id="general-methodology">General Methodology</h2>
+
+<h2 id="sir">SIR</h2>
+
+<script type="math/tex; mode=display">\frac{dS}{dt} = -\frac{\beta IS}{N}</script>
+
+<script type="math/tex; mode=display">\frac{dI}{dt} = \frac{\beta IS}{N} - \gamma I</script>
+
+<script type="math/tex; mode=display">\frac{dR}{dt} = \gamma I</script>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"model"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"SIR Model"</span><span class="p">],</span><span class="w">
+  </span><span class="s2">"state_variables"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"51999999"</span><span class="p">}},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"I"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">}},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"R"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"events"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="s2">"event"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"infect"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"rate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"beta * S * I / N"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"input_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"enabling_condition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(N &gt; 0) AND (beta * S * I / N &gt; 0)"</span><span class="p">},</span><span class="w">
+      </span><span class="s2">"output_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"transition_function"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="s2">"sv_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"S"</span><span class="p">,</span><span class="w"> </span><span class="s2">"function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-1"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"sv_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="s2">"function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">}]},</span><span class="w">
+    </span><span class="p">}},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="s2">"event"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"recover"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"rate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gamma * I"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"input_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"enabling_condition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(gamma * I &gt; 0)"</span><span class="p">},</span><span class="w">
+      </span><span class="s2">"output_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"transition_function"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="s2">"sv_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="s2">"function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-1"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"sv_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"R"</span><span class="p">,</span><span class="w"> </span><span class="s2">"function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">}]},</span><span class="w">
+    </span><span class="p">}}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"constants"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="s2">"constant"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"N"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"52000000"</span><span class="p">}},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"constant"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"beta"</span><span class="p">,</span><span class="w">   
+    </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.41333"</span><span class="p">}},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"constant"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gamma"</span><span class="p">,</span><span class="w"> </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.33333"</span><span class="p">}}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"rate_rewards"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="s2">"rate_reward"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cumulative Infected"</span><span class="p">,</span><span class="w"> </span><span class="s2">"sv_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"I"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"reward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="s2">"temporal_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"interval_of_time"</span><span class="p">,</span><span class="w"> </span><span class="s2">"temporal_domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"40, 100, 1"</span><span class="p">]}}],</span><span class="w">
+  </span><span class="s2">"impulse_rewards"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+  </span><span class="s2">"composed_rewards"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="seir">SEIR</h2>
+
+<script type="math/tex; mode=display">\frac{dS}{dt} = \mu N - \mu S -\frac{\beta IS}{N}</script>
+
+<script type="math/tex; mode=display">\frac{dE}{dt} = \frac{\beta IS}{N} - \mu E - \alpha E</script>
+
+<script type="math/tex; mode=display">\frac{dI}{dt} = \alpha E - \gamma I - \mu I</script>
+
+<script type="math/tex; mode=display">\frac{dR}{dt} = \gamma I - \mu R</script>
+
+</div>
+
+    </div>
+
+  </body>
+</html>

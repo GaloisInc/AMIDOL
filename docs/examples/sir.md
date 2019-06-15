@@ -4,6 +4,9 @@ title: SIR Family of Models
 toc: true
 ---
 
+## General Methodology
+
+
 ## SIR
 
 $$ \frac{dS}{dt} = -\frac{\beta IS}{N} $$
@@ -43,3 +46,13 @@ $$ \frac{dR}{dt} = \gamma I $$
   }
 }
 ```
+
+## SEIR
+
+$$ \frac{dS}{dt} = \mu N - \mu S -\frac{\beta IS}{N} $$
+
+$$ \frac{dE}{dt} = \frac{\beta IS}{N} - \mu E - \alpha E $$
+
+$$ \frac{dI}{dt} = \alpha E - \gamma I - \mu I$$
+
+$$ \frac{dR}{dt} = \gamma I - \mu R$$
