@@ -24,7 +24,7 @@ State variables are defined in the IR as objects which have a name, a set of sem
 
 ```json
 { "state_variable": {
-    "name": "string",
+    "name": ["string"],
     "labels": ["string"],
     "type": "sv_type",
     "initial_value": "expression"
@@ -40,7 +40,7 @@ Events are defined in the IR as objects which have a name, a set of semantic lab
 
 ```json
 { "event": {
-    "name": "string",
+    "name": ["string"],
     "labels": ["string"],
     "rate": "expression",
     "input_predicate": {},
@@ -53,7 +53,7 @@ Events can be interpreted in two ways: discrete and continuous.  In both cases e
 
 Currently in AMIDOL, all rates are considered exponential.  AMIDOL can be extended at a later date to account for general distributions.
 
-### Input Predicates
+#### Input Predicates
 
 ```json
 { "input_predicate": {
@@ -62,7 +62,7 @@ Currently in AMIDOL, all rates are considered exponential.  AMIDOL can be extend
 }
 ```
 
-### Output Predicates
+#### Output Predicates
 
 The transition function is specified as a partially defined state change vector
 
@@ -206,9 +206,19 @@ Composed rewards allow us to construct a set of arbitrary measures on the set of
 
 ## Practical Considerations
 
+### Partially Defined Models
+
+A model is considered partially defined, and thus unexecutable if:
+* It contains expressions which refer to `identifier`s or `rv_identifier`s which are undefined.
+* If it contains no state variables.
+
+A model without a reward variable is fully defined, but trivially so as it has a null solution.
+
 ## Transformations
 
 ### Composition
+
+
 
 ## Turing Completeness
 

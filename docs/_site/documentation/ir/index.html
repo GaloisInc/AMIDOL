@@ -69,8 +69,6 @@
     <ul>
       <li><a href="#state-variables">State Variables</a></li>
       <li><a href="#events">Events</a></li>
-      <li><a href="#input-predicates">Input Predicates</a></li>
-      <li><a href="#output-predicates">Output Predicates</a></li>
       <li><a href="#labels">Labels</a></li>
       <li><a href="#constants">Constants</a></li>
     </ul>
@@ -80,7 +78,11 @@
       <li><a href="#reward-variables">Reward Variables</a></li>
     </ul>
   </li>
-  <li><a href="#practical-considerations">Practical Considerations</a></li>
+  <li><a href="#practical-considerations">Practical Considerations</a>
+    <ul>
+      <li><a href="#partially-defined-models">Partially Defined Models</a></li>
+    </ul>
+  </li>
   <li><a href="#transformations">Transformations</a>
     <ul>
       <li><a href="#composition">Composition</a></li>
@@ -125,7 +127,7 @@
 <p>State variables are defined in the IR as objects which have a name, a set of semantic labels, a state variable type (such as int or float), and an initial value given as an expression.</p>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
     </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
     </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sv_type"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="w">
@@ -140,7 +142,7 @@
 <p>Events are defined in the IR as objects which have a name, a set of semantic labels, a rate given as an expression, and an input predicate and output predicate, defined either as objects, or undefined.  In the cases where the input predicate is undefined, it is interpreted as being always true.  In the case where the output predicate is undefined, the event is interpreted as having no effect on the state of the model when it fires.</p>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"event"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
     </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
     </span><span class="s2">"rate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"input_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
@@ -153,7 +155,7 @@
 
 <p>Currently in AMIDOL, all rates are considered exponential.  AMIDOL can be extended at a later date to account for general distributions.</p>
 
-<h3 id="input-predicates">Input Predicates</h3>
+<h4 id="input-predicates">Input Predicates</h4>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"input_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="s2">"enabling_condition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean_expression"</span><span class="w">
@@ -161,7 +163,7 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
 
-<h3 id="output-predicates">Output Predicates</h3>
+<h4 id="output-predicates">Output Predicates</h4>
 
 <p>The transition function is specified as a partially defined state change vector</p>
 
@@ -298,6 +300,16 @@ literal       ::= integer | float
 <p>Composed rewards allow us to construct a set of arbitrary measures on the set of impulse and rate rewards.  Composed rewards need not be solved for during execution of a model, but can be computed after solving a model for the impulse and rate rewards contained in the reward expression for a composed reward variable.</p>
 
 <h2 id="practical-considerations">Practical Considerations</h2>
+
+<h3 id="partially-defined-models">Partially Defined Models</h3>
+
+<p>A model is considered partially defined, and thus unexecutable if:</p>
+<ul>
+  <li>It contains expressions which refer to <code class="highlighter-rouge">identifier</code>s or <code class="highlighter-rouge">rv_identifier</code>s which are undefined.</li>
+  <li>If it contains no state variables.</li>
+</ul>
+
+<p>A model without a reward variable is fully defined, but trivially so as it has a null solution.</p>
 
 <h2 id="transformations">Transformations</h2>
 
