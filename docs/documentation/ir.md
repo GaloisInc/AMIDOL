@@ -18,50 +18,6 @@ Informally the IR represents a model using a universal and Turing-complete mathe
 
 Intuitively, the *marking* of a model in the IR given as $$N_0 \times N_1 \times \ldots \times N_{n-1}$$ is the set values of each state variable.  We typically do not represent the entire marking when giving the definition of enabling conditions (input predicates), transition rates associated with an event, or state variable transition function (output predicates), and instead only indicate the markings on which an given input predicate depends, and those state variables whose values change when an event fires due to the output predicate, omitting the "don't care" values.
 
-### Names of State Variables and Events
-
-In order to support composition via the operations of state sharing, and event sharing, the AMIDOL IR represents names of state variables and events as lists of strings.  The strings in this list must be unique to the individual state variable or event, or the model is invalid and an exception should be raised.  For example:
-
-```json
-{ "state_variable": { "name": ["S"], "labels": [], "type": "int",
-    "initial_value": "0"}},
-{ "state_variable": { "name": ["I", "Infected"], "labels": [], "type": "int",
-    "initial_value": "0"}}
-```
-
-Is a valid model, the strings in each name list are unique.  But the following example should have an exception raised:
-
-```json
-{ "state_variable": { "name": ["S"], "labels": [], "type": "int",
-    "initial_value": "0"}},
-{ "state_variable": { "name": ["I", "S"], "labels": [], "type": "int",
-    "initial_value": "0"}}
-```
-
-as the string "S" is shared by the name lists of both state variables.  Names are lists to allow for easy name resolution when composing two models.  Given the following Models:
-
-**Model A**
-```json
-{ "state_variable": { "name": ["S"], "labels": [], "type": "int",
-    "initial_value": "0"}}
-```
-
-**Model B**
-```json
-{ "state_variable": { "name": ["Susceptible"], "labels": [], "type": "int",
-    "initial_value": "0"}}
-```
-
-Composing A and B on `["S", "Susceptible"]` results in the model:
-
-**Model AcB**
-```json
-{ "state_variable": { "name": ["S", "Susceptible"], "labels": [], "type": "int",
-    "initial_value": "0"}}
-```
-
-Any events in Model A which referred to "S" are treated as if they refer to the new shared state variable with name `["S", "Susceptible"]`.
-
 ### State Variables
 
 State variables are defined in the IR as objects which have a name, a set of semantic labels, a state variable type (such as int or float), and an initial value given as an expression.  
@@ -120,6 +76,50 @@ The transition function is specified as a partially defined state change vector
 Output predicates define the state change vector associated with event firing through partial definition as a list of state variable names, followed by an expression $$e$$ indicating their change when the event is fired under the discrete interpretation of events.  Given an event with rate $$\mu$$ the continuous interpretation of event firing utilizes a scaled version of this expression given by $$\mu \cdot e$$.
 
 For example, the "infect" event of an SIR model would have rate $$\beta \frac{SI}{N}$$, and the partial state transition function [{"S": -1}, {"I": 1}].
+
+### Names of State Variables and Events
+
+In order to support composition via the operations of state sharing, and event sharing, the AMIDOL IR represents names of state variables and events as lists of strings.  The strings in this list must be unique to the individual state variable or event, or the model is invalid and an exception should be raised.  For example:
+
+```json
+{ "state_variable": { "name": ["S"], "labels": [], "type": "int",
+    "initial_value": "0"}},
+{ "state_variable": { "name": ["I", "Infected"], "labels": [], "type": "int",
+    "initial_value": "0"}}
+```
+
+Is a valid model, the strings in each name list are unique.  But the following example should have an exception raised:
+
+```json
+{ "state_variable": { "name": ["S"], "labels": [], "type": "int",
+    "initial_value": "0"}},
+{ "state_variable": { "name": ["I", "S"], "labels": [], "type": "int",
+    "initial_value": "0"}}
+```
+
+as the string "S" is shared by the name lists of both state variables.  Names are lists to allow for easy name resolution when composing two models.  Given the following Models:
+
+**Model A**
+```json
+{ "state_variable": { "name": ["S"], "labels": [], "type": "int",
+    "initial_value": "0"}}
+```
+
+**Model B**
+```json
+{ "state_variable": { "name": ["Susceptible"], "labels": [], "type": "int",
+    "initial_value": "0"}}
+```
+
+Composing A and B on `["S", "Susceptible"]` results in the model:
+
+**Model AcB**
+```json
+{ "state_variable": { "name": ["S", "Susceptible"], "labels": [], "type": "int",
+    "initial_value": "0"}}
+```
+
+Any events in Model A which referred to "S" are treated as if they refer to the new shared state variable with name `["S", "Susceptible"]`.
 
 ### Labels
 
