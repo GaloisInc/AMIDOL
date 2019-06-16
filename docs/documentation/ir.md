@@ -228,6 +228,22 @@ $$\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}$$
 
 Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.
 
+#### Practical considerations of temporal domains
+
+Given a rate or impulse reward with temporal type and domain:
+
+```json
+{ "temporal_type": "instant_of_time"|"interval_of_time"|"time_averaged_interval_of_time"|"steady_state",
+"temporal_domain": ["float"]
+}
+```
+
+The temporal domain is interpreted as follows:
+
+* **Instant of time** - a list of times to sample the reward.  For a list $$[t_0, \ldots, t_{n-1}]$$ we create $$n$$ separate instant of time reward variables which all accumulate exactly one observation at the specified time.
+* **Interval of time** and **Time averaged interval of time** - the list should include exactly three values, $$[t_0, t_{n-1}, s]$$.  A single accumulator is created which accumulates rewards $$\frac{t_{n-1} - t_0}{s}$$ times at points $$t_0, (t_0 + s), (t_0 + 2s), \ldots$$.
+* **Steady state** - the list should include exactly one value, which is an estimate of when the system reaches steady state.  A single accumulator is created to store the appropriate reward.
+
 #### Composed Rewards
 
 Composed rewards are defined with rewards that are a special type of expression, a reward variable expression.

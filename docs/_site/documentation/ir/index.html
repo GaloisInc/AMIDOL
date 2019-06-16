@@ -321,6 +321,23 @@ Given a model <script type="math/tex">M = (S, E, L, \Phi, \Lambda, \Delta)</scri
 
 <p>Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.</p>
 
+<h4 id="practical-considerations-of-temporal-domains">Practical considerations of temporal domains</h4>
+
+<p>Given a rate or impulse reward with temporal type and domain:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"temporal_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"instant_of_time"</span><span class="err">|</span><span class="s2">"interval_of_time"</span><span class="err">|</span><span class="s2">"time_averaged_interval_of_time"</span><span class="err">|</span><span class="s2">"steady_state"</span><span class="p">,</span><span class="w">
+</span><span class="s2">"temporal_domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"float"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The temporal domain is interpreted as follows:</p>
+
+<ul>
+  <li><strong>Instant of time</strong> - a list of times to sample the reward.  For a list <script type="math/tex">[t_0, \ldots, t_{n-1}]</script> we create <script type="math/tex">n</script> separate instant of time reward variables which all accumulate exactly one observation at the specified time.</li>
+  <li><strong>Interval of time</strong> and <strong>Time averaged interval of time</strong> - the list should include exactly three values, <script type="math/tex">[t_0, t_{n-1}, s]</script>.  A single accumulator is created which accumulates rewards <script type="math/tex">\frac{t_{n-1} - t_0}{s}</script> times at points <script type="math/tex">t_0, (t_0 + s), (t_0 + 2s), \ldots</script>.</li>
+  <li><strong>Steady state</strong> - the list should include exactly one value, which is an estimate of when the system reaches steady state.  A single accumulator is created to store the appropriate reward.</li>
+</ul>
+
 <h4 id="composed-rewards">Composed Rewards</h4>
 
 <p>Composed rewards are defined with rewards that are a special type of expression, a reward variable expression.</p>

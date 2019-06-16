@@ -17,6 +17,7 @@ The VDSOLs help achieve these goals by lowering the barrier for entry associated
 ## Documentation
 
 * [AMIDOL IR]({{ site.baseurl }}{% link documentation/ir.md %})
+* [W3 Meeting Notes]({{ site.baseurl }}{% link W3Collaboration/Summer-2019.md %})
 
 ## Examples
 
