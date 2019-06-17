@@ -17,3 +17,7 @@ toc: true
 * [Delphi](https://ml4ai.github.io/delphi/)
   * [GrFN Spec](https://ml4ai.github.io/delphi/grfn_spec.html)
 * [Automates](https://ml4ai.github.io/automates/)
+
+## Julia Microframeworks
+* [Julia DiffEq Biological](https://github.com/JuliaDiffEq/DiffEqBiological.jl)
+* [Modeling Toolkit](https://github.com/JuliaDiffEq/ModelingToolkit.jl)
