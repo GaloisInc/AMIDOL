@@ -23,6 +23,10 @@ The VDSOLs help achieve these goals by lowering the barrier for entry associated
 
 * [SIR Family]({{ site.baseurl }}{% link examples/sir.md %})
 
+## Resources
+
+* * [Readling List]({{ site.baseurl }}{% link documentation/reading-list.md %})
+
 ## Building
 
 You'll need to:
