@@ -25,7 +25,7 @@ The VDSOLs help achieve these goals by lowering the barrier for entry associated
 
 ## Resources
 
-* * [Readling List]({{ site.baseurl }}{% link documentation/reading-list.md %})
+* [Readling List]({{ site.baseurl }}{% link documentation/reading-list.md %})
 
 ## Building
 
