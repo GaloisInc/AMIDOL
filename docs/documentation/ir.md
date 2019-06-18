@@ -157,6 +157,8 @@ identifier ::= sv_name | constant_name
 literal    ::= integer | float
 ```
 
+#### Boolean Expressions
+
 Input predicates utilize boolean expressions, which are defined by the following syntax which builds on the syntax given above.
 
 ```
@@ -166,12 +168,12 @@ boolean_expression ::= "(" boolean_expression ")" | "NOT" boolean_expression |
 boolean_term ::= expression relation expression | "TRUE" | "FALSE"
 ```
 
-### Reward Variables
+## Reward Variables
 
 The AMIDOL IR allows the specifications of reward variables as a partial definition of a model, and the composition of these reward variables with other models to define measures of interest which can be solved by the executable translation of a total model in the IR.
 Given a model $$M = (S, E, L, \Phi, \Lambda, \Delta)$$ we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards).
 
-#### Rate Rewards
+### Rate Rewards
 
 A rate reward is formally defined as a function $$\mathcal{R}: P(S, \mathbb{N}) \rightarrow \mathbb{R}$$ where $$q \in P(S, \mathbb{N})$$ is the reward accumulated when for each $$(s,n) \in q$$ the marking of the state variable $$s$$ is $$n$$.  Informally a rate reward variable $$x$$ accumulates a defined reward whenever a subset of the state variables take on prescribed values.
 
@@ -188,7 +190,7 @@ A rate reward is formally defined as a function $$\mathcal{R}: P(S, \mathbb{N}) 
 
 The IR definition of a rate reward associates the identifier of a single state variable with a temporal type and time domain, and a reward expression.  The reward variable begins with an initial value of zero and functions as an accumulator, accumulating value equal to the evaluation of the reward expression as specified by the temporal type and time domain.
 
-#### Impulse Rewards
+### Impulse Rewards
 
 An impulse reward is formally defined as a function $$\mathcal{I}: E \rightarrow \mathbb{R}$$ where $$e \in E, \mathcal{I}_e$$ is the reward for the completion of $$e$$.  Informally an impulse reward variable $$x$$ accumulates a defined reward whenever the event $$e$$ fires.
 
@@ -205,7 +207,7 @@ An impulse reward is formally defined as a function $$\mathcal{I}: E \rightarrow
 
 The IR definition of an impulse reward associates the identifier of a single event with a temporal type and time domain, and a reward expression.  The reward variable begins with an initial value of zero and functions as an accumulator, accumulating value equal to the evaluation of the reward expression as specified by the temporal type and time domain.
 
-#### Temporal Characteristics of Reward Variables
+### Temporal Characteristics of Reward Variables
 
 Both rate and impulse reward variables measure the behavior of a model $$M$$ with respect to time.  As such, a reward variable $$\theta$$ is declared as either an instant-of-time variable, an interval-of-time variable, a time-averaged interval-of-time variable, or a steady state variable.  An instant of time variable $$\Theta_t$$ is defined as:
 
@@ -244,7 +246,7 @@ The temporal domain is interpreted as follows:
 * **Interval of time** and **Time averaged interval of time** - the list should include exactly three values, $$[t_0, t_{n-1}, s]$$.  A single accumulator is created which accumulates rewards $$\frac{t_{n-1} - t_0}{s}$$ times at points $$t_0, (t_0 + s), (t_0 + 2s), \ldots$$.
 * **Steady state** - the list should include exactly one value, which is an estimate of when the system reaches steady state.  A single accumulator is created to store the appropriate reward.
 
-#### Composed Rewards
+### Composed Rewards
 
 Composed rewards are defined with rewards that are a special type of expression, a reward variable expression.
 
@@ -255,6 +257,8 @@ Composed rewards are defined with rewards that are a special type of expression,
   }
 }
 ```
+
+### Reward Expressions
 
 Reward variable expressions differ from standard expressions in the AMIDOL IR in their identifier term, which can only refer to names of other reward variables.
 

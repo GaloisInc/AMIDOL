@@ -67,6 +67,8 @@
       <ul>
   <li><a href="#some-vdsol-targets">Some VDSOL Targets</a></li>
   <li><a href="#targets-between-the-ir-and-vdsol">Targets “between” the IR and VDSOL</a></li>
+  <li><a href="#agent-based-models">Agent Based Models</a></li>
+  <li><a href="#other-solvers">Other solvers</a></li>
 </ul>
 
       
@@ -108,6 +110,35 @@
 <ul>
   <li>Compartments are identified in the left hand side of the equations.  <script type="math/tex">\frac{dX}{dt}</script> implies a compartment <script type="math/tex">X</script> exists.</li>
   <li>Right hand sides are lists of additive events.  <script type="math/tex">\frac{dX}{dt} = -\alpha X + \rho Y</script> gives us two transitions, one which removes from <script type="math/tex">X</script> at rate <script type="math/tex">-\alpha X</script> with predicate <script type="math/tex">X \neq 0</script> and one which adds to <script type="math/tex">X</script> at rate <script type="math/tex">\rho Y</script> and predicate <script type="math/tex">Y \neq 0</script>.</li>
+</ul>
+
+<h2 id="agent-based-models">Agent Based Models</h2>
+
+<ul>
+  <li>Implement a good agent based modeling framework.</li>
+</ul>
+
+<h2 id="other-solvers">Other solvers</h2>
+<ul>
+  <li>AMIDOL reasoning on dimensional analysis</li>
+  <li>Math on types and sub-types
+    <ul>
+      <li>Do types have an inheritance relationship?  Sub-typing ontology?</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="favor-for-clayton">Favor for Clayton</h1>
+<ul>
+  <li>Would like an example which pushes on the current GrFN scheme</li>
+  <li>Four versions of SIR model
+    <ul>
+      <li>ABM solution</li>
+      <li>DES solution</li>
+      <li>ODE hand solution</li>
+      <li>ODE black-box solution</li>
+    </ul>
+  </li>
 </ul>
 
 </div>

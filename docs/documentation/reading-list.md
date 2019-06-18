@@ -21,3 +21,7 @@ toc: true
 ## Julia Microframeworks
 * [Julia DiffEq Biological](https://github.com/JuliaDiffEq/DiffEqBiological.jl)
 * [Modeling Toolkit](https://github.com/JuliaDiffEq/ModelingToolkit.jl)
+
+## Grounding with SNOMED
+* [SNOMED International SNOMED CT Browser](https://browser.ihtsdotools.org/)
+  * Clinical terms browser
