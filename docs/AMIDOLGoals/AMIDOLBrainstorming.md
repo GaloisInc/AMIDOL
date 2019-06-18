@@ -30,3 +30,16 @@ Some observations:
 ## Agent Based Models
 
 * Implement a good agent based modeling framework.
+
+## Other solvers
+* AMIDOL reasoning on dimensional analysis
+* Math on types and sub-types
+  * Do types have an inheritance relationship?  Sub-typing ontology?
+
+# Favor for Clayton
+* Would like an example which pushes on the current GrFN scheme
+* Four versions of SIR model
+  * ABM solution
+  * DES solution
+  * ODE hand solution
+  * ODE black-box solution
