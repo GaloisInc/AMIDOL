@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      AMIDOL Brainstorming &middot; AMIDOL
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,400italic,700">  
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700">  
+  <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">  
+  
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" 
+        href="public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- MathJax -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body class="theme-base-09">
+
+    <div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="http://localhost:4000/AMIDOL/">
+          AMIDOL
+        </a>
+      </h1>
+      <p class="lead">Agile Metamodel Interface using Domain-specific Ontological Languages</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <a class="sidebar-nav-item" href="http://localhost:4000/AMIDOL/">Home</a>
+
+      
+        <h4 style="color: white;">AMIDOL Brainstorming</h4>
+        <h4 style="font-weight: normal; color: white;">Contents</h4>
+
+      <ul>
+  <li><a href="#some-vdsol-targets">Some VDSOL Targets</a></li>
+  <li><a href="#targets-between-the-ir-and-vdsol">Targets “between” the IR and VDSOL</a></li>
+</ul>
+
+      
+
+    </nav>
+
+    <p>&copy; 2019. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">AMIDOL Brainstorming</h1>
+  <span class="post-date"></span>
+  <h2 id="some-vdsol-targets">Some VDSOL Targets</h2>
+<ul>
+  <li>Stochastic Chemical</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A + C -&gt; C + D [alpha]
+... etc ...
+</code></pre></div></div>
+
+<h2 id="targets-between-the-ir-and-vdsol">Targets “between” the IR and VDSOL</h2>
+<ul>
+  <li>Equations - can we take an ODE of a compartmental model and synthesize graphical representations and IR?</li>
+</ul>
+
+<p>Given the SIR model:</p>
+
+<script type="math/tex; mode=display">\frac{dS}{dt} = -\frac{\beta IS}{N}</script>
+
+<script type="math/tex; mode=display">\frac{dI}{dt} = \frac{\beta IS}{N} - \gamma I</script>
+
+<script type="math/tex; mode=display">\frac{dR}{dt} = \gamma I</script>
+
+<p>Some observations:</p>
+<ul>
+  <li>Compartments are identified in the left hand side of the equations.  <script type="math/tex">\frac{dX}{dt}</script> implies a compartment <script type="math/tex">X</script> exists.</li>
+  <li>Right hand sides are lists of additive events.  <script type="math/tex">\frac{dX}{dt} = -\alpha X + \rho Y</script> gives us two transitions, one which removes from <script type="math/tex">X</script> at rate <script type="math/tex">-\alpha X</script> with predicate <script type="math/tex">X \neq 0</script> and one which adds to <script type="math/tex">X</script> at rate <script type="math/tex">\rho Y</script> and predicate <script type="math/tex">Y \neq 0</script>.</li>
+</ul>
+
+</div>
+
+    </div>
+
+  </body>
+</html>

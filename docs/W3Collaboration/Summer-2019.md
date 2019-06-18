@@ -4,6 +4,11 @@ title: W3 Collaboration - Summer 2019 Meeting
 toc: true
 ---
 
+## Meeting Notes
+
+* [Day 1 W3 Meeting Notes]({% link W3Collaboration/2019-06-17-W3-Day1-Notes.md %})
+* [Day 2 W3 Meeting Notes]({% link W3Collaboration/2019-06-18-W3-Day2-Notes.md %})
+
 ## Questions from GTRI
 
 1. Does the user have parameters, functions, and variables to choose from or is it completely arbitrary? If arbitrary, how do you compare two models using your IR?
