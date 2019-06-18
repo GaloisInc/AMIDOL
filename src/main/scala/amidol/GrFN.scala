@@ -2,6 +2,7 @@ package amidol
 
 
 object GrFN {
+  // https://ml4ai.github.io/delphi/grfn_spec.html#function-loop-plate-specification
 
   type string = String
   case class source_code_file_path(path: String)
@@ -138,10 +139,10 @@ object GrFN {
     variable: variable_name,
     index: integer
   ) extends index_range_value with function_reference_spec_io   // typo!
-  // ...and: varaible_name
+  // ...and: variable_name
   case class index_range(start: Either[integer, index_range_value], end: Either[integer, index_range_value])
 
-  case class loop_condition() // I DON'T KNOW WHAT THIS IS!!!!!!
+  case class loop_condition() // This currently has no definition in the spec!
 
   case class function_loop_plate_spec(
     name: function_name,
