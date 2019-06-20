@@ -8,6 +8,7 @@ toc: true
 
 * [Day 1 W3 Meeting Notes]({{ site.baseurl }}{% link W3Collaboration/2019-06-17-W3-Day1-Notes.md %})
 * [Day 2 W3 Meeting Notes]({{ site.baseurl }}{% link W3Collaboration/2019-06-18-W3-Day2-Notes.md %})
+* [Day 3 W3 Meeting Notes]({{ site.baseurl }}{% link W3Collaboration/2019-06-19-W3-Day3-Notes.md %})
 
 ## Questions from GTRI
 

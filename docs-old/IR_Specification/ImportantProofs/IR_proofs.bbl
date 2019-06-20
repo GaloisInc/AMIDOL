@@ -1,0 +1,21 @@
+\begin{thebibliography}{1}
+
+\bibitem{ciardo1994petri}
+Gianfranco Ciardo.
+\newblock Petri nets with marking-dependent arc cardinality: Properties and
+  analysis.
+\newblock In {\em International Conference on Application and Theory of Petri
+  Nets}, pages 179--198. Springer, 1994.
+
+\bibitem{mavaddat1988urisc}
+Farhad Mavaddat and Behrooz Parhami.
+\newblock Urisc: the ultimate reduced instruction set computer.
+\newblock {\em International Journal of Electrical Engineering Education},
+  25(4):327--334, 1988.
+
+\bibitem{reisig2012petri}
+Wolfgang Reisig.
+\newblock {\em Petri nets: an introduction}, volume~4.
+\newblock Springer Science \& Business Media, 2012.
+
+\end{thebibliography}
