@@ -8,7 +8,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import scala.concurrent.{ExecutionContext, Future}
-
+/*
 object SciPyIntegrate extends ContinuousInitialValue {
  
   val name: String = "SciPyIntegrate"
@@ -222,3 +222,4 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
     )))
   }
 }
+*/

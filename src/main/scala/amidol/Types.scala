@@ -19,30 +19,16 @@ case class State(
   stateVariable: Variable,
 )
 
-sealed trait Event
-case class Conserved(
+case class Event(
   id: EventId,
-  source: StateId,
-  target: StateId,
-  rate: Expr
-) extends Event
+  rate: Expr[Double],
+  input_predicate: Option[InputPredicate],
+  output_predicate: Option[OutputPredicate],
+)
 
-case class Unconserved(
-  id: EventId,
-  source: StateId,
-  target: StateId,
-  rateOut: Expr,
-  rateIn: Expr
-) extends Event
-
-case class Source(
-  id: EventId,
-  target: StateId,
-  rateIn: Expr
-) extends Event
-
-case class Sink(
-  id: EventId,
-  source: StateId,
-  rateOut: Expr
-) extends Event
+case class InputPredicate(
+  enabling_condition: Expr[Boolean]
+)
+case class OutputPredicate(
+  transition_function: Map[StateId, Expr[Double]]
+)

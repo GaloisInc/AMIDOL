@@ -5,7 +5,7 @@ import scala.util.{Failure, Success, Try}
 import spray.json._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import collection.mutable.{HashMap, MultiMap, Set}
-
+/*
 /// The full set of shapes and lines in the UI
 case class Graph(
   nodes: Map[String,Node],
@@ -229,4 +229,4 @@ trait UiJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val nodeFormat = jsonFormat6(Node.apply)
   implicit val graphFormat = jsonFormat2(Graph.apply)
 }
-
+*/

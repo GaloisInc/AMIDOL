@@ -19,7 +19,7 @@ import java.nio.file.Paths
 
 import com.typesafe.config.ConfigFactory
 
-object Main extends App with Directives with ui.UiJsonSupport {
+object Main extends App with Directives /* with ui.UiJsonSupport */ {
 
   val conf = ConfigFactory.load();
 
@@ -28,7 +28,7 @@ object Main extends App with Directives with ui.UiJsonSupport {
   // TODO: eventually, think about thread safety here (what happens if someone changes the model
   // while the backend is running?)
   object AppState {
-    var currentUiGraph: ui.Graph = ui.Graph(Map.empty, Map.empty)
+   // var currentUiGraph: ui.Graph = ui.Graph(Map.empty, Map.empty)
 
     var currentModel: Model = Model(Map.empty, Map.empty)
     var currentGlobalConstants: Map[String, Double] = Map.empty   // TODO: these should be validated _before_ being written in
@@ -53,18 +53,18 @@ object Main extends App with Directives with ui.UiJsonSupport {
       } ~
       pathPrefix("") {
         getFromDirectory(new java.io.File("src/main/resources/web").getCanonicalPath)
-      } ~
-      pathPrefix("appstate") {
-        path("model") {
-          complete(AppState.currentUiGraph)
-        }
-      }
+      } // ~
+ //     pathPrefix("appstate") {
+ //       path("model") {
+ //         complete(AppState.currentUiGraph)
+ //       }
+ //     }
     } ~
     options {
       complete(
         Success("Yay")
       )
-    } ~
+    }/* ~
     post {
       path("appstate") {
         formField(
@@ -85,7 +85,7 @@ object Main extends App with Directives with ui.UiJsonSupport {
             }
           }
         }
-      } ~
+      } /* ~
       pathPrefix("backends") {
         pathPrefix("scipy") {
           path("integrate") {
@@ -130,8 +130,8 @@ object Main extends App with Directives with ui.UiJsonSupport {
             }
           }
         }
-      }
-    }
+      } */
+    } */
   }
 
   // Start the server
@@ -139,9 +139,9 @@ object Main extends App with Directives with ui.UiJsonSupport {
   val port = conf.getInt("amidol.port") // 80
   val bindingFuture = Http().bindAndHandle(route, address, port)
 
-//  println(s"Server online at $address:$port/\nPress RETURN to stop...")
-//  StdIn.readLine() // let it run until user presses return
-//  bindingFuture
-//    .flatMap(_.unbind()) // trigger unbinding from the port
-//    .onComplete(_ => system.terminate()) // and shutdown when done
+  println(s"Server online at $address:$port/\nPress RETURN to stop...")
+  StdIn.readLine() // let it run until user presses return
+  bindingFuture
+    .flatMap(_.unbind()) // trigger unbinding from the port
+    .onComplete(_ => system.terminate()) // and shutdown when done
 }
