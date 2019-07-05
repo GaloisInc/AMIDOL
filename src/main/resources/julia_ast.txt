@@ -1,0 +1,51 @@
+(:block,
+  (:function, (:call, :main, :β, :γ, :μ), (:block,
+      (:macrocall, Symbol("@grounding"), nothing, (:block,
+          (:call, :(=>), :S, (:call, :Noun, :Susceptible, (:kw, :ontology, :Snowmed))),
+          (:call, :(=>), :I, (:call, :Noun, :Infectious, (:kw, :ontology, :ICD9))),
+          (:call, :(=>), :R, (:call, :Noun, :Recovered, (:kw, :ontology, :ICD9))),
+          (:call, :(=>), :λ₁, (:call, :Verb, :infection)),
+          (:call, :(=>), :λ₂, (:call, :Verb, :recovery)),
+          (:call, :(=>), :λ₃, (:call, :Verb, :loss_of_immunity))
+        )),
+      (:macrocall, Symbol("@reaction"), nothing, (:tuple, (:block,
+            (:tuple, :λ₁, (:call, :+, :S, (:->, :I, (:block,
+                    (:call, :*, 2, :I)
+                  )))),
+            (:tuple, :λ₂, (:->, :I, (:block,
+                  :R
+                ))),
+            (:tuple, :λ₃, (:->, :R, (:block,
+                  :S
+                )))
+          ), :λ₁, :λ₂, :λ₃)),
+      (:(=), :Δ, (:vect, (:->, (:tuple, :S, :I), (:block,
+              (:tuple, (:call, :-, :S, 1), (:call, :+, :I, 1))
+            )), (:->, (:tuple, :I, :R), (:block,
+              (:tuple, (:call, :-, :I, 1), (:call, :+, :R, 1))
+            )), (:->, (:tuple, :R, :S), (:block,
+              (:tuple, (:call, :-, :R, 1), (:call, :+, :S, 1))
+            )))),
+      (:(=), :ϕ, (:vect, (:->, (:tuple, :S, :I), (:block,
+              (:&&, (:call, :>, :x, 0), (:call, :>, :I, 0))
+            )), (:->, :I, (:block,
+              (:call, :>, :x, 0)
+            )), (:->, :R, (:block,
+              (:call, :>, :x, 0)
+            )))),
+      (:(=), :Λ, (:vect, (:(=), (:call, :λ₁, :S, :I), (:block,
+              (:(=), :n, (:call, :+, :S, :I, :R)),
+              (:call, :/, (:call, :*, :β, :S, :I), :n)
+            )), (:(=), (:call, :λ₂, :I), (:block,
+              (:call, :*, :γ, :I)
+            )), (:(=), (:call, :λ₃, :R), (:block,
+              (:call, :*, :μ, :R)
+            )))),
+      (:(=), :m, (:call, (:., :Petri, (:quote, #QuoteNode
+              :Model
+            )), :g, :Δ, :ϕ, :Λ)),
+      (:(=), :d, (:call, :convert, :ODEProblem, :m)),
+      (:(=), :soln, (:call, :solve, :m)),
+      (:(=), :soln, (:call, :solve, :d))
+    ))
+)

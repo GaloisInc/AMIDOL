@@ -90,7 +90,7 @@ package object math {
   case object EQ extends ComparisionOp
   case object LT extends ComparisionOp
 
-  object Expr extends JavaTokenParsers with PackratParsers {
+  object Expr extends AmidolParser {
 
     // Simple arithmetic grammar with a packrat parser (cuz it's fast and I like my left recursion)
     val (predicateParser: PackratParser[Expr[Boolean]], arithmeticParser: PackratParser[Expr[Double]]) = {
@@ -138,13 +138,6 @@ package object math {
         )
 
       (disj, term) 
-    }
-
-    private def runParser[A](parser: PackratParser[A], input: String): Try[A] = parseAll(parser, input) match {
-      case Success(matched, _) => scala.util.Success(matched)
-      case Failure(msg, in) => scala.util.Failure(new Exception(s"Failed at ${in.pos}: $msg\n\n${in.pos.longString}"))
-      case Error(msg, in) => scala.util.Failure(new Exception(s"Errored at ${in.pos}: $msg\n\n${in.pos.longString}"))
-      case _ => scala.util.Failure(new Exception("Parser failed in an unexpected way"))
     }
 
     // Parse an arithmetic expression from a string

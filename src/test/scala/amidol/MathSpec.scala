@@ -28,8 +28,7 @@ class MathSpec extends FlatSpec with Matchers {
     Expr.expression("-x/-(y + 1/3)").get   shouldEqual Mult(Negate('x),Inverse(Negate(Plus('y,Mult(1.0,Inverse(3.0))))))
   }
 
-
-  "Expr.expressionessions" should "evaluate correctly" in {
+  "Expressions" should "evaluate correctly" in {
     Expr.expression("--1").get.eval()                                     shouldEqual 1
     Expr.expression("1 + 2/5").get.eval()                                 shouldEqual 1.4 
     Expr.expression("1*(8 + 9)/2 - 9").get.eval()                         shouldEqual (-0.5)
