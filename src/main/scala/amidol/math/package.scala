@@ -96,10 +96,10 @@ package object math {
     val (predicateParser: PackratParser[Expr[Boolean]], arithmeticParser: PackratParser[Expr[Double]]) = {
   
       lazy val booleanAtom: PackratParser[Expr[Boolean]] =
-        ( "true"                        ^^ { _ => Literal(true) }
-        | "false"                       ^^ { _ => Literal(false) }
+        ( ("true" | "TRUE")             ^^ { _ => Literal(true) }
+        | ("false" | "FALSE")           ^^ { _ => Literal(false) }
         | "(" ~> disj <~ ")"
-        | "!" ~> booleanAtom            ^^ { b => Not(b) }
+        | ("!" | "NOT") ~> booleanAtom  ^^ { b => Not(b) }
         )
 
       lazy val doubleAtom: PackratParser[Expr[Double]] =
@@ -128,12 +128,12 @@ package object math {
         )
 
       lazy val conj: PackratParser[Expr[Boolean]] =
-        ( conj ~ ("&" | "&&") ~ comp   ^^ { case (l ~ _ ~ r) => And(l, r) }
+        ( conj ~ ("&" | "&&" | "AND") ~ comp   ^^ { case (l ~ _ ~ r) => And(l, r) }
         | comp
         )
 
       lazy val disj: PackratParser[Expr[Boolean]] =
-        ( disj ~ ("|" | "||") ~ conj   ^^ { case (l ~ _ ~ r) => Or(l, r) }
+        ( disj ~ ("|" | "||" | "OR") ~ conj   ^^ { case (l ~ _ ~ r) => Or(l, r) }
         | conj
         )
 

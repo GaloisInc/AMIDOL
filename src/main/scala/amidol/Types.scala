@@ -17,6 +17,7 @@ case class Model(
 case class State(
   id: StateId,
   stateVariable: Variable,
+  description: Option[String],
 )
 
 case class Event(
@@ -24,6 +25,7 @@ case class Event(
   rate: Expr[Double],
   input_predicate: Option[InputPredicate],
   output_predicate: Option[OutputPredicate],
+  description: Option[String],
 )
 
 case class InputPredicate(
