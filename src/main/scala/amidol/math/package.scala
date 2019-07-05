@@ -3,6 +3,8 @@ package amidol
 import scala.util.parsing.combinator._
 import scala.util.parsing.input._
 import scala.util._
+import spray.json._
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 
 package object math {
 
@@ -90,7 +92,7 @@ package object math {
   case object EQ extends ComparisionOp
   case object LT extends ComparisionOp
 
-  object Expr extends AmidolParser {
+  object Expr extends AmidolParser with SprayJsonSupport with DefaultJsonProtocol {
 
     // Simple arithmetic grammar with a packrat parser (cuz it's fast and I like my left recursion)
     val (predicateParser: PackratParser[Expr[Boolean]], arithmeticParser: PackratParser[Expr[Double]]) = {
@@ -103,10 +105,10 @@ package object math {
         )
 
       lazy val doubleAtom: PackratParser[Expr[Double]] =
-        ( floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
+        ( "-" ~> doubleAtom             ^^ { e => Negate(e) }
+        | floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
         | raw"(?U)\p{L}[\p{L}_]*".r     ^^ { v => Variable(Symbol(v))  }
         | "(" ~> term <~ ")"
-        | "-" ~> doubleAtom             ^^ { e => Negate(e) }
         )
 
       lazy val factor: PackratParser[Expr[Double]] =
@@ -161,17 +163,17 @@ package object math {
       val p = expr.precedence
       def wrap(s: String): String = if (precedence > expr.precedence) { "(" + s + ")" } else { s }
       expr match {
-        case Or(l,r)            => wrap(l.prettyPrint(p) + " || " + r.prettyPrint(p+1))
-        case And(l,r)           => wrap(l.prettyPrint(p) + " && " + r.prettyPrint(p+1))
+        case Or(l,r)            => wrap(l.prettyPrint(p) + " OR " + r.prettyPrint(p+1))
+        case And(l,r)           => wrap(l.prettyPrint(p) + " AND " + r.prettyPrint(p+1))
         case Comparision(l,GT,r)=> wrap(l.prettyPrint(p) + " > " + r.prettyPrint(p+1))
         case Comparision(l,EQ,r)=> wrap(l.prettyPrint(p) + " == " + r.prettyPrint(p+1))
-        case Comparision(l,LT,r)=> wrap(l.prettyPrint(p) + " M " + r.prettyPrint(p+1))
+        case Comparision(l,LT,r)=> wrap(l.prettyPrint(p) + " < " + r.prettyPrint(p+1))
         case Plus(l,Negate(r))  => wrap(l.prettyPrint(p) + " - " + r.prettyPrint(p+1))
         case Plus(l,r)          => wrap(l.prettyPrint(p) + " + " + r.prettyPrint(p+1))
         case Mult(l,Inverse(r)) => wrap(l.prettyPrint(p) + " / " + r.prettyPrint(p+1))
         case Mult(l,r)          => wrap(l.prettyPrint(p) + " * " + r.prettyPrint(p+1))
         case Negate(x)          => wrap("-" + x.prettyPrint(p))
-        case Not(x)             => wrap("!" + x.prettyPrint(p))
+        case Not(x)             => wrap("NOT " + x.prettyPrint(p))
         case x: Inverse         => Mult(Literal(1), x).prettyPrint(precedence)
         case Variable(s)        => s.name
         case Literal(d)         => d.toString
@@ -179,4 +181,28 @@ package object math {
     }
 
   }
+
+  implicit object arithmeticSupport extends RootJsonFormat[Expr[Double]] {
+    def write(e: Expr[Double]) = JsString(e.prettyPrint())
+    def read(json: JsValue) = json match {
+      case JsString(s) =>
+        Expr.expression(s) match {
+          case Success(s) => s
+          case Failure(f) => throw DeserializationException("Invalid arithmetic equation: " + f.toString)
+        }
+      case _ => throw DeserializationException("Invalid arithmetic format: " + json)
+    }
+  }
+  implicit object predicateSupport extends RootJsonFormat[Expr[Boolean]] {
+    def write(e: Expr[Boolean]) = JsString(e.prettyPrint())
+    def read(json: JsValue) = json match {
+      case JsString(s) =>
+        Expr.predicate(s) match {
+          case Success(s) => s
+          case Failure(f) => throw DeserializationException("Invalid predicate equation: " + f.toString)
+        }
+      case _ => throw DeserializationException("Invalid predicate format: " + json)
+    }
+  }
+
 }

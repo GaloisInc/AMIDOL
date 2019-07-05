@@ -99,7 +99,6 @@ trait ExtractOps { expr: JuliaSExpr =>
         val events = (rates, inputPredicates, outputPredicates).zipped
           .map { case ((eventId, rate), inputPred, outputPred) =>
             eventId -> Event(
-              eventId,
               rate,
               input_predicate = Some(inputPred),
               output_predicate = Some(outputPred),
@@ -148,7 +147,7 @@ trait ExtractOps { expr: JuliaSExpr =>
         nounOrVerb match {
           case "Noun" =>
             val id = StateId(name)
-            Left(id -> State(id, math.Variable(Symbol(name)), Some(description)))
+            Left(id -> State(math.Variable(Symbol(name)), Some(description)))
           case "Verb" =>
             val id = EventId(name)
             Right(id -> description)
