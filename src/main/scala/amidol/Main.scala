@@ -7,7 +7,6 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives
 import akka.stream.ActorMaterializer
 import amidol.backends._
-
 import scala.io.StdIn
 import scala.util._
 
@@ -28,11 +27,11 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
   // TODO: eventually, think about thread safety here (what happens if someone changes the model
   // while the backend is running?)
   object AppState {
-   // var currentUiGraph: ui.Graph = ui.Graph(Map.empty, Map.empty)
-
-    var currentModel: Model = Model(Map.empty, Map.empty)
-    var currentGlobalConstants: Map[String, Double] = Map.empty   // TODO: these should be validated _before_ being written in
-    var currentInitialConditions: Map[String, Double] = Map.empty // TODO: these should be validated _before_ being written in
+    var currentModel: Model = Model(
+      states = Map.empty,
+      events = Map.empty,
+      constants = Map.empty,
+    )
 
     val requestId: AtomicLong = new AtomicLong()
   }
@@ -52,12 +51,11 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
         getFromResource("web/graph.html")
       } ~
       pathPrefix("") {
-        getFromDirectory(new java.io.File("src/main/resources/web").getCanonicalPath)
+        getFromResourceDirectory("web")
       } ~
       pathPrefix("appstate") {
         path("model") {
           complete(AppState.currentModel)
-          // complete(AppState.currentUiGraph)
         }
       }
     } ~
@@ -80,7 +78,7 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
          // uploadedFile("txt") {
          //   case (metadata, file) =>
          //     println("file received " + file.length() );
-         //     complete("hahahah")
+         //     complete("Model received")
          // }
           formField(
             'julia.as[String]
@@ -99,44 +97,31 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
           }
         }
       }
-    }
-    /* ~
+    } ~
     post {
       path("appstate") {
-        formField(
-          'graph.as[ui.Graph],
-          'globalVariables.as[Map[String,Double]]
-        ) { case (graph: ui.Graph, globalVariables: Map[String,Double]) =>
+        formField('model.as[Model]) { case model: Model =>
           complete {
-            graph.parse() match {
-              case Success((parsed, initialConds)) =>
-                AppState.currentModel = parsed
-                AppState.currentGlobalConstants = globalVariables
-                AppState.currentInitialConditions = initialConds
-                AppState.currentUiGraph = graph
-                StatusCodes.Created -> s"Model has been updated"
-
-              case Failure(f) =>
-                StatusCodes.BadRequest -> f.getMessage
-            }
+            AppState.currentModel = model
+            StatusCodes.Created -> s"Model has been updated"
           }
         }
-      } /* ~
+      } ~
       pathPrefix("backends") {
         pathPrefix("scipy") {
           path("integrate") {
-            entity(as[SciPyIntegrate.Inputs]) { inputs =>
+            import SciPyIntegrate._
+            
+            entity(as[Inputs]) { inputs =>
               complete(
-                StatusCodes.OK -> SciPyIntegrate.routeComplete(
+                StatusCodes.OK -> routeComplete(
                   AppState.currentModel,
-                  AppState.currentGlobalConstants,
-                  AppState.currentInitialConditions,
                   inputs,
                   AppState.requestId.incrementAndGet()
                 )
               )
             }
-          } ~
+          } /* ~
           path("cmtc-equilibrium") {
             entity(as[SciPyLinearSteadyState.Inputs]) { inputs =>
               complete(
@@ -149,8 +134,8 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
                 )
               )
             }
-          }
-        } ~
+          } */
+        } /* ~
         pathPrefix("pysces") {
           path("integrate") {
             entity(as[PySCeS.Inputs]) { inputs =>
@@ -165,9 +150,9 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
               )
             }
           }
-        }
-      } */
-    } */
+        } */
+      }
+    }
   }
 
   // Start the server

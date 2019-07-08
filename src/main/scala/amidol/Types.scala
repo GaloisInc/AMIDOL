@@ -11,13 +11,15 @@ case class EventId(id: String) extends AnyVal
 
 case class Model(
   states: Map[StateId, State],
-  events: Map[EventId, Event]
+  events: Map[EventId, Event],
+  constants: Map[Variable, Double],
 )
 object Model extends ModelJsonSupport
 
 case class State(
-  stateVariable: Variable,
+  state_variable: Variable,
   description: Option[String],
+  initial_value: Expr[Double], 
 )
 
 case class Event(
@@ -33,6 +35,9 @@ case class InputPredicate(
 case class OutputPredicate(
   transition_function: Map[StateId, Expr[Double]]
 )
+object OutputPredicate {
+  def empty = OutputPredicate(Map.empty)
+}
 
 
 /* How should we render into JSON models?
@@ -95,7 +100,7 @@ trait ModelJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val outputPredFormat = jsonFormat1(OutputPredicate.apply)
   implicit val inputPredFormat = jsonFormat1(InputPredicate.apply)
 
-  implicit val stateFormat = jsonFormat2(State.apply)
+  implicit val stateFormat = jsonFormat3(State.apply)
   implicit val eventFormat = jsonFormat4(Event.apply)
-  implicit val modelFormat = jsonFormat2(Model.apply)
+  implicit val modelFormat = jsonFormat3(Model.apply)
 }

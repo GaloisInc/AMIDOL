@@ -110,6 +110,7 @@ trait ExtractOps { expr: JuliaSExpr =>
         Model(
           states,
           events,
+          constants = Map.empty,
         )
 
     case _ => throw new JuliaExtractException(
@@ -147,7 +148,11 @@ trait ExtractOps { expr: JuliaSExpr =>
         nounOrVerb match {
           case "Noun" =>
             val id = StateId(name)
-            Left(id -> State(math.Variable(Symbol(name)), Some(description)))
+            Left(id -> State(
+              state_variable = math.Variable(Symbol(name)),
+              description = Some(description),
+              initial_value = 0.0,
+            ))
           case "Verb" =>
             val id = EventId(name)
             Right(id -> description)

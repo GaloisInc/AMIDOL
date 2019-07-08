@@ -5,6 +5,7 @@ import spray.json._
 import scala.concurrent.{ExecutionContext, Future}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 
+
 package object backends {
 
   trait Backend {
@@ -32,8 +33,6 @@ package object backends {
     /** Run the backend */
     def run(
       model: Model,
-      constants: Map[String, Double],
-      boundary:  Map[String, Double],
       inputs: Inputs,
       requestId: Long
     )(implicit
@@ -42,8 +41,6 @@ package object backends {
 
     final def routeComplete(
       model: Model, 
-      constants: Map[String, Double],
-      boundary:  Map[String, Double],
       inputs: Inputs,
       requestId: Long
     )(implicit
@@ -51,7 +48,7 @@ package object backends {
     ): Future[Option[Outputs]] =
       Future(applicable(model)).flatMap { isApplicable: Boolean =>
         if (isApplicable) {
-          run(model, constants, boundary, inputs, requestId).map {
+          run(model, inputs, requestId).map {
             case Success(outputs) => Some(outputs)
             case Failure(err) =>
               println(s"Failed to run ${name} backend: ${err.getMessage}")
@@ -90,7 +87,6 @@ package object backends {
     case class Inputs()
 
     case class Equilibrium(
-      variables: Map[String, Double],
       stable: Option[Boolean]
     )
     case class Outputs(
@@ -98,7 +94,7 @@ package object backends {
     )
 
     implicit val inputsFormat: RootJsonFormat[Inputs] = jsonFormat0(() => Inputs.apply())
-    implicit val equilibriumFormat: RootJsonFormat[Equilibrium] = jsonFormat2(Equilibrium.apply)
+    implicit val equilibriumFormat: RootJsonFormat[Equilibrium] = jsonFormat1(Equilibrium.apply)
     implicit val outputsFormat: RootJsonFormat[Outputs] = jsonFormat1(Outputs.apply)
   }
 }
