@@ -53,18 +53,54 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
       } ~
       pathPrefix("") {
         getFromDirectory(new java.io.File("src/main/resources/web").getCanonicalPath)
-      } // ~
- //     pathPrefix("appstate") {
- //       path("model") {
- //         complete(AppState.currentUiGraph)
- //       }
- //     }
+      } ~
+      pathPrefix("appstate") {
+        path("model") {
+          complete(AppState.currentModel)
+          // complete(AppState.currentUiGraph)
+        }
+      }
     } ~
     options {
       complete(
         Success("Yay")
       )
-    }/* ~
+    } ~
+    post  {
+      path("appstate") {
+        formField(
+          'model.as[Model]
+        ) { case model: Model =>
+          complete {
+            AppState.currentModel = model
+            StatusCodes.Created -> s"Model has been updated"
+          }
+        } ~
+        path("julia") {
+         // uploadedFile("txt") {
+         //   case (metadata, file) =>
+         //     println("file received " + file.length() );
+         //     complete("hahahah")
+         // }
+          formField(
+            'julia.as[String]
+          ) { case juliaSourceCode: String =>
+           
+            complete {
+              JuliaSExpr(juliaSourceCode).flatMap(sexpr => Try(sexpr.extractModel())) match {
+                case Success(model) =>
+                  AppState.currentModel = model
+                  StatusCodes.Created -> s"Model has been updated"
+              
+                case Failure(f) =>
+                  StatusCodes.BadRequest -> f.getMessage
+              }
+            }
+          }
+        }
+      }
+    }
+    /* ~
     post {
       path("appstate") {
         formField(
