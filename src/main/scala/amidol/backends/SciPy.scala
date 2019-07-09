@@ -44,8 +44,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
           throw new Exception("Don't know how to handle input predicates yet")
         }
 
-        val outputEffects = outputPredicate.getOrElse(OutputPredicate.empty)
-        for ((stateId, effect) <- outputEffects.transition_function) {
+        for ((stateId, effect) <- outputPredicate.transition_function) {
           builder += stateId -> math.Mult(rate, effect)
         }
       }

@@ -101,7 +101,7 @@ trait ExtractOps { expr: JuliaSExpr =>
             eventId -> Event(
               rate,
               input_predicate = Some(inputPred),
-              output_predicate = Some(outputPred),
+              output_predicate = outputPred,
               description = eventDescrs.get(eventId)
             )
           }

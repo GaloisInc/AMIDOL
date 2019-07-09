@@ -24,9 +24,9 @@ case class State(
 
 case class Event(
   rate: Expr[Double], // always exponential for now
-  input_predicate: Option[InputPredicate],
-  output_predicate: Option[OutputPredicate],
-  description: Option[String],
+  input_predicate: Option[InputPredicate] = None,
+  output_predicate: OutputPredicate = OutputPredicate.empty,
+  description: Option[String] = None,
 )
 
 case class InputPredicate(
