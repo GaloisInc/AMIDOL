@@ -66,9 +66,7 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
     } ~
     post  {
       path("appstate") {
-        formField(
-          'model.as[Model]
-        ) { case model: Model =>
+        formField('model.as[Model]) { case model: Model =>
           complete {
             AppState.currentModel = model
             StatusCodes.Created -> s"Model has been updated"
@@ -94,16 +92,6 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
                   StatusCodes.BadRequest -> f.getMessage
               }
             }
-          }
-        }
-      }
-    } ~
-    post {
-      path("appstate") {
-        formField('model.as[Model]) { case model: Model =>
-          complete {
-            AppState.currentModel = model
-            StatusCodes.Created -> s"Model has been updated"
           }
         }
       } ~
