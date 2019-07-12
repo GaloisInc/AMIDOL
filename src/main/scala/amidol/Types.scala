@@ -13,8 +13,75 @@ case class Model(
   states: Map[StateId, State],
   events: Map[EventId, Event],
   constants: Map[Variable, Double],
-)
-object Model extends ModelJsonSupport
+) {
+
+  def ++(other: Model) = Model(
+    states ++ other.states,
+    events ++ other.events,
+    constants ++ other.constants,
+  )
+
+  def mapIds(
+    stateIdFunc: StateId => StateId,
+    eventIdFunc: EventId => EventId,
+    variableFunc: Variable => Variable,
+  ): Model = {
+    val newStates = states
+      .map { case (sid, State(sv, desc, init)) =>
+        val newSid = stateIdFunc(sid)
+        val newSv = variableFunc(sv)
+        val newInit = init.mapVariables(variableFunc)
+        newSid -> State(newSv, desc, newInit)
+      }
+
+    val newEvents = events
+      .map { case (eid, Event(rate, ipOpt, OutputPredicate(tf), desc)) =>
+        val newEid = eventIdFunc(eid)
+        val newRate = rate.mapVariables(variableFunc)
+        val newIp = ipOpt.map { case InputPredicate(ec) =>
+          InputPredicate(ec.mapVariables(variableFunc))
+        }
+        val newTf = tf.map { case (sid, eff) =>
+          val newSid = stateIdFunc(sid)
+          val newEff = eff.mapVariables(variableFunc)
+          newSid -> newEff
+        }
+        newEid -> Event(newRate, newIp, OutputPredicate(newTf), desc)
+      }
+
+    val newConstants = constants
+      .map { case (v, d) =>
+        variableFunc(v) -> d
+      }
+
+    Model(newStates, newEvents, newConstants)
+  }
+}
+object Model extends ModelJsonSupport {
+
+  val empty = Model(Map.empty, Map.empty, Map.empty)
+
+  def composeModels[K: Ordering](
+    models: Map[K, Model],                      // models to compose
+    shared: List[((K, StateId), (K, StateId))], // states shared amongst submodels
+  ): Model = {
+    val sharedMap = shared.toMap
+    
+    def stateIdFunc(k: K)(stateId: StateId): StateId = {
+      sharedMap.get(k -> stateId) match {
+        case None => StateId(s"${k}_${stateId.id}")
+        case Some((k2, stateId2)) => StateId(s"${k2}_${stateId2.id}")
+      }
+    }
+    def eventIdFunc(k: K)(eventId: EventId): EventId = EventId(s"${k}_${eventId.id}")
+    def variableFunc(k: K)(v: Variable): Variable = Variable(Symbol(s"${k}_${v.s.name}"))
+
+    models
+      .iterator
+      .map { case (k,m) => m.mapIds(stateIdFunc(k), eventIdFunc(k), variableFunc(k)) }
+      .foldLeft(Model.empty)(_ ++ _)
+  }
+}
 
 case class State(
   state_variable: Variable,
