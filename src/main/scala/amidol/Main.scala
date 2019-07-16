@@ -27,11 +27,8 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
   // TODO: eventually, think about thread safety here (what happens if someone changes the model
   // while the backend is running?)
   object AppState {
-    var currentModel: Model = Model(
-      states = Map.empty,
-      events = Map.empty,
-      constants = Map.empty,
-    )
+    var currentModel: Model = Model.empty
+    var palette: Map[String, Model] = Map.empty
 
     val requestId: AtomicLong = new AtomicLong()
   }
@@ -70,6 +67,16 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
           complete {
             AppState.currentModel = model
             StatusCodes.Created -> s"Model has been updated"
+          }
+        } ~
+        formField('uiModel.as[ui.Graph]) { case graph: ui.Graph =>
+          complete {
+            graph.parse(AppState.palette).map { model =>
+              AppState.currentModel = model
+            } match {
+              case Success(_) => StatusCodes.Created -> s"Model has been updated"
+              case Failure(f) => StatusCodes.BadRequest -> f.getMessage
+            }
           }
         } ~
         path("julia") {
