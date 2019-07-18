@@ -36,7 +36,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
     // Set up the system of differential equations 
     val states: List[State] = model.states.values.toList
     val derivatives: Map[StateId, math.Expr[Double]] = {
-      val builder = Map.newBuilder[StateId, math.Expr[Double]]
+      val builder = collection.mutable.Map.empty[StateId, math.Expr[Double]]
 
       for ((_,  Event(rate, inputPredicate, outputPredicate, _)) <- model.events) {
 
@@ -45,11 +45,15 @@ object SciPyIntegrate extends ContinuousInitialValue {
         }
 
         for ((stateId, effect) <- outputPredicate.transition_function) {
-          builder += stateId -> math.Mult(rate, effect)
+          val term = math.Mult(rate, effect)
+          builder(stateId) = builder.get(stateId) match {
+            case None => term
+            case Some(existing) => math.Plus(term, existing)
+          }
         }
       }
 
-      builder.result()
+      builder.toMap
     }
 
     // Pretty printing

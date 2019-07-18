@@ -185,6 +185,7 @@ package object math {
   implicit object arithmeticSupport extends RootJsonFormat[Expr[Double]] {
     def write(e: Expr[Double]) = JsString(e.prettyPrint())
     def read(json: JsValue) = json match {
+      case JsNumber(v) => Literal(v.toDouble)
       case JsString(s) =>
         Expr.expression(s) match {
           case Success(s) => s
@@ -196,6 +197,8 @@ package object math {
   implicit object predicateSupport extends RootJsonFormat[Expr[Boolean]] {
     def write(e: Expr[Boolean]) = JsString(e.prettyPrint())
     def read(json: JsValue) = json match {
+      case JsTrue => Literal(true)
+      case JsFalse => Literal(false)
       case JsString(s) =>
         Expr.predicate(s) match {
           case Success(s) => s

@@ -624,7 +624,7 @@
 						"initialTime": parseFloat(rv.range.start),
 						"finalTime": parseFloat(rv.range.end),
 						"stepSize": parseFloat(rv.range.step),
-						"savePlot": null
+						"savePlot": "plot" + rv.opt1 + ".png" 
 					}
 					if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
 						alert("Sampling the range you defined will require more memory than this system can spare right now.")
@@ -666,8 +666,8 @@
 				graph: JSON.stringify({
 					nodes : node_data_set.getDataSet()._data,
 					links : edge_data_set.getDataSet()._data
-				}),
-				globalVariables: JSON.stringify(global_vars)
+				}) /*,
+				globalVariables: JSON.stringify(global_vars) */
 			}
 		}
 	}

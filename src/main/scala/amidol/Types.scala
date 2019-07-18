@@ -74,7 +74,12 @@ object Model extends ModelJsonSupport {
       }
     }
     def eventIdFunc(k: K)(eventId: EventId): EventId = EventId(s"${k}_${eventId.id}")
-    def variableFunc(k: K)(v: Variable): Variable = Variable(Symbol(s"${k}_${v.s.name}"))
+    def variableFunc(k: K)(v: Variable): Variable = {
+      sharedMap.get(k -> StateId(v.s.name)) match  {
+        case None => Variable(Symbol(s"${k}_${v.s.name}"))
+        case Some((k2, stateId2)) => Variable(Symbol(s"${k2}_${stateId2.id}"))
+      }
+    }
 
     models
       .iterator

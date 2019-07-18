@@ -45,22 +45,26 @@ case class Graph(
       )
  
       val constants = props.parameters
-        .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> v }
+        .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> v.asConstant.get.d }
         .toMap
 
-      models += id -> paletteModel.copy(constants = constants ++ paletteModel.constants)
+      models += ("n" + id) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
      
       if (props.`type` == "verb") {
         
         val nounFrom = getIncoming(id)
-        shared += (((id, amidol.StateId(props.inState)), (nounFrom, amidol.StateId(nodes(nounFrom).props.outState))))
+        shared += ((("n" + id, amidol.StateId(props.inState)), ("n" + nounFrom, amidol.StateId(nodes(nounFrom).props.outState))))
         
         val nounTo = getOutgoing(id)
-        shared += (((id, amidol.StateId(props.outState)), (nounTo, amidol.StateId(nodes(nounTo).props.inState))))
+        shared += ((("n" + id, amidol.StateId(props.outState)), ("n" + nounTo, amidol.StateId(nodes(nounTo).props.inState))))
       }
     }
 
-    amidol.Model.composeModels(models.result(), shared.result())
+    println("To compose: " + models.result())
+    println("To share: " + shared.result())
+    val out = amidol.Model.composeModels(models.result(), shared.result())
+    println("Out: " + out)
+    out
   }
 }
 object Graph extends UiJsonSupport
@@ -78,8 +82,9 @@ object Node extends UiJsonSupport
 
 case class NodeProps (
   className: String,            // name of model in palette
+  classDef: String,             // name of model in palette
   parameters:  Seq[Parameter],
-  `type`: String,                 // verb or noun
+  `type`: String,              // verb or noun
   inState: String,  // stateid
   outState: String, // stateid
 )
@@ -87,7 +92,7 @@ object NodeProps extends UiJsonSupport
 
 case class Parameter(
   name: String,
-  value: Double 
+  value: math.Expr[Double], 
 )
 object Parameter extends UiJsonSupport
 
@@ -101,7 +106,7 @@ object Link extends UiJsonSupport
 
 trait UiJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val parameterFormat = jsonFormat2(Parameter.apply)
-  implicit val nodePropsFormat = jsonFormat5(NodeProps.apply)
+  implicit val nodePropsFormat = jsonFormat6(NodeProps.apply)
   implicit val linkFormat = jsonFormat3(Link.apply)
   implicit val nodeFormat = jsonFormat6(Node.apply)
   implicit val graphFormat = jsonFormat2(Graph.apply)

@@ -7,7 +7,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives
 import akka.stream.ActorMaterializer
 import amidol.backends._
-import scala.io.StdIn
+import scala.io.{Source, StdIn}
 import scala.util._
 
 import spray.json._
@@ -28,7 +28,12 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
   // while the backend is running?)
   object AppState {
     var currentModel: Model = Model.empty
-    var palette: Map[String, Model] = Map.empty
+    var palette: Map[String, Model] = List("cure", "population", "infect", "patient")
+      .map { name: String =>
+        val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
+        name -> modelSource.parseJson.convertTo[Model]
+      }
+      .toMap
 
     val requestId: AtomicLong = new AtomicLong()
   }
@@ -62,20 +67,23 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
       )
     } ~
     post  {
-      path("appstate") {
+      pathPrefix("appstate") {
         formField('model.as[Model]) { case model: Model =>
           complete {
             AppState.currentModel = model
             StatusCodes.Created -> s"Model has been updated"
           }
         } ~
-        formField('uiModel.as[ui.Graph]) { case graph: ui.Graph =>
-          complete {
-            graph.parse(AppState.palette).map { model =>
-              AppState.currentModel = model
-            } match {
-              case Success(_) => StatusCodes.Created -> s"Model has been updated"
-              case Failure(f) => StatusCodes.BadRequest -> f.getMessage
+        path("uiModel") {
+          formField('graph.as[ui.Graph]) { case graph: ui.Graph =>
+            complete {
+              println(s"Graph: $graph")
+              graph.parse(AppState.palette).map { model =>
+                AppState.currentModel = model
+              } match {
+                case Success(_) => StatusCodes.Created -> s"Model has been updated"
+                case Failure(f) => StatusCodes.BadRequest -> f.getMessage
+              }
             }
           }
         } ~
