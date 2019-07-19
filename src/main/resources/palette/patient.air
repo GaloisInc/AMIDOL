@@ -1,0 +1,14 @@
+
+{
+  "states": {
+    "P": {
+      "state_variable": "P",
+      "decription": "Patient",
+      "initial_value": "Initial"
+    }
+  },
+  "events": {},
+  "constants": {
+    "Initial": 0  
+  }
+}

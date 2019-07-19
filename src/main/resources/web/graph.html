@@ -624,7 +624,7 @@
 						"initialTime": parseFloat(rv.range.start),
 						"finalTime": parseFloat(rv.range.end),
 						"stepSize": parseFloat(rv.range.step),
-						"savePlot": "plot" + rv.opt1 + ".png" 
+						"savePlot": null
 					}
 					if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
 						alert("Sampling the range you defined will require more memory than this system can spare right now.")
