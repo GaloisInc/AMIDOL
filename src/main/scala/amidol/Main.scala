@@ -111,6 +111,13 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
         }
       } ~
       pathPrefix("backends") {
+       // pathPrefix("julia") {
+       //   path("gillespie") {
+       //     import JuliaGillespie._
+
+
+       //   }
+       // } ~
         pathPrefix("scipy") {
           path("integrate") {
             import SciPyIntegrate._

@@ -37,12 +37,18 @@ case class Graph(
 
     val models = Map.newBuilder[String, Model]
     val shared = List.newBuilder[((String, StateId), (String, StateId))] 
-    
+    val variableRename = Map.newBuilder[String, String]
+
     for (Node(id, image, label, props, x, y) <- nodes.values) {
       val paletteModel = paletteModels.getOrElse(
         props.className,
         throw new Exception(s"No model called '${props.className}' found in palette")
       )
+
+      // When we have a noun, try to give the state variable a good name
+      if (props.`type` == "noun" && props.inState == props.outState) {
+        variableRename += s"n${id}_${props.inState}" -> label
+      }
  
       val constants = props.parameters
         .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> v.asConstant.get.d }
@@ -60,11 +66,13 @@ case class Graph(
       }
     }
 
+    val rename = variableRename.result().map { case (k,v) => math.Variable(Symbol(k)) -> math.Variable(Symbol(v)) }
+
     println("To compose: " + models.result())
     println("To share: " + shared.result())
     val out = amidol.Model.composeModels(models.result(), shared.result())
     println("Out: " + out)
-    out
+    out.mapIds(identity, identity, v => rename.getOrElse(v,v))
   }
 }
 object Graph extends UiJsonSupport
