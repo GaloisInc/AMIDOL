@@ -68,10 +68,7 @@ case class Graph(
 
     val rename = variableRename.result().map { case (k,v) => math.Variable(Symbol(k)) -> math.Variable(Symbol(v)) }
 
-    println("To compose: " + models.result())
-    println("To share: " + shared.result())
     val out = amidol.Model.composeModels(models.result(), shared.result())
-    println("Out: " + out)
     out.mapIds(identity, identity, v => rename.getOrElse(v,v))
   }
 }

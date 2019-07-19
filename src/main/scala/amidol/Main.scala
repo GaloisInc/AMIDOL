@@ -77,7 +77,6 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
         path("uiModel") {
           formField('graph.as[ui.Graph]) { case graph: ui.Graph =>
             complete {
-              println(s"Graph: $graph")
               graph.parse(AppState.palette).map { model =>
                 AppState.currentModel = model
               } match {
@@ -111,13 +110,21 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
         }
       } ~
       pathPrefix("backends") {
-       // pathPrefix("julia") {
-       //   path("gillespie") {
-       //     import JuliaGillespie._
+        pathPrefix("julia") {
+          path("integrate") {
+            import JuliaGillespie._
 
-
-       //   }
-       // } ~
+            entity(as[Inputs]) { inputs =>
+              complete(
+                StatusCodes.OK -> routeComplete(
+                  AppState.currentModel,
+                  inputs,
+                  AppState.requestId.incrementAndGet()
+                )
+              )
+            }
+          }
+        } ~
         pathPrefix("scipy") {
           path("integrate") {
             import SciPyIntegrate._
