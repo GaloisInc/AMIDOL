@@ -35,7 +35,8 @@ case class Graph(
       }
     }
 
-    val models = Map.newBuilder[String, Model]
+    val verbs = Map.newBuilder[String, Model]
+    val nouns = Map.newBuilder[String, Model]
     val shared = List.newBuilder[((String, StateId), (String, StateId))] 
     val variableRename = Map.newBuilder[String, String]
 
@@ -45,16 +46,18 @@ case class Graph(
         throw new Exception(s"No model called '${props.className}' found in palette")
       )
 
-      // When we have a noun, try to give the state variable a good name
-      if (props.`type` == "noun" && props.inState == props.outState) {
-        variableRename += s"n${id}_${props.inState}" -> label
-      }
- 
       val constants = props.parameters
         .map { case Parameter(n,v) => math.Variable(Symbol(n)) -> v.asConstant.get.d }
         .toMap
 
-      models += ("n" + id) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
+      // When we have a noun, try to give the state variable a good name
+      if (props.`type` == "noun" && props.inState == props.outState) {
+        variableRename += s"n${id}_${props.inState}" -> label
+      
+        nouns += ("n" + id) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
+      } else {
+        verbs += ("n" + id) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
+      }
      
       if (props.`type` == "verb") {
         
@@ -68,8 +71,9 @@ case class Graph(
 
     val rename = variableRename.result().map { case (k,v) => math.Variable(Symbol(k)) -> math.Variable(Symbol(v)) }
 
-    val out = amidol.Model.composeModels(models.result(), shared.result())
-    out.mapIds(identity, identity, v => rename.getOrElse(v,v))
+    amidol.Model
+      .composeModels(verbs.result() ++ nouns.result(), shared.result())
+      .mapIds(identity, identity, v => rename.getOrElse(v,v))
   }
 }
 object Graph extends UiJsonSupport

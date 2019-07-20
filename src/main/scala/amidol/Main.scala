@@ -28,7 +28,11 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
   // while the backend is running?)
   object AppState {
     var currentModel: Model = Model.empty
-    var palette: Map[String, Model] = List("cure", "population", "infect", "patient")
+    var palette: Map[String, Model] = List(
+        "cure", "population", "infect", "patient",
+        "population_vital_dynamics", "patient_vital_dynamics", "time",
+        "predator", "prey", "hunting"
+      )
       .map { name: String =>
         val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
         name -> modelSource.parseJson.convertTo[Model]

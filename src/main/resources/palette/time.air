@@ -1,0 +1,28 @@
+{
+  "states": {
+    "INPUT": {
+      "state_variable": "INPUT",
+      "decription": "Recovered",
+      "initial_value": "0"
+    },
+    "OUTPUT": {
+      "state_variable": "OUTPUT",
+      "decription": "Susceptible",
+      "initial_value": "0"
+    }
+  },
+  "events": {
+    "cure": {
+      "rate": "eta * INPUT",
+      "output_predicate": {
+        "transition_function": {
+          "INPUT": "-1",
+          "OUTPUT": "1"
+        }
+      }
+    }
+  },
+  "constants": {
+    "eta": 0.002
+  }
+}

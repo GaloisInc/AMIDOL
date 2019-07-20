@@ -123,10 +123,8 @@ object JuliaGillespie extends ContinuousInitialValue {
         Try(s"julia tmp_scripts/${requestId}_tmp_script.jl".!!) // blocks until script returns
       }
 
-      _ = println("Ran")
       // Parse the output back out
       (nestedArrsTransposed, times) <- Try(outputArrs.parseJson.convertTo[(Seq[Seq[Double]], Seq[Double])])
-      _ = println("Parsed")
       nestedArrs = nestedArrsTransposed.transpose
 
     } yield Outputs(

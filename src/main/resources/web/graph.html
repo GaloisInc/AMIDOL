@@ -695,10 +695,6 @@
 				"type": "verb",
 				"classDef": "infect.air",
 				"icon": "images/virus.svg",
-				"verb_sort": {
-					"type": "conserved",
-					"rate_template": "beta * INPUT * OUTPUT / total_pop"
-				},
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
 					{"name": "total_pop", "value": "Susceptible + Infected + Recovered"}
@@ -709,25 +705,21 @@
 				"type": "verb",
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
-				"verb_sort": {
-					"type": "conserved",
-					"rate_template": "gamma * INPUT"
-				},
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
 		},
 		"SIRS-VD": {
 			"population": {
-				"className": "population",
+				"className": "population_vital_dynamics",
 				"type": "noun",
-				"classDef": "population.air",
+				"classDef": "population_vital_dynamics.air",
 				"icon": "images/person.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
 			}, 
 			"patient" : {
-				"className": "patient",
+				"className": "patient_vital_dynamics",
 				"type": "noun",
-				"classDef": "patient.air",
+				"classDef": "patient_vital_dynamics.air",
 				"icon": "images/patient.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
 			}, 
@@ -736,10 +728,6 @@
 				"type": "verb",
 				"classDef": "infect.air",
 				"icon": "images/virus.svg",
-				"verb_sort": {
-					"type": "conserved",
-					"rate_template": "beta * INPUT * OUTPUT / total_pop"
-				},
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
 					{"name": "total_pop", "value": "Susceptible + Infected + Recovered"}
@@ -750,47 +738,13 @@
 				"type": "verb",
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
-				"verb_sort": {
-					"type": "conserved",
-					"rate_template": "gamma * INPUT"
-				},
 				"parameters": [{"name": "gamma", "value": "0.333"}]
-			},
-			"birth": {
-				"className": "birth",
-				"type": "verb",
-				"classDef": "birth.air",
-				"icon": "images/birth.svg",
-				"verb_sort": {
-					"type": "source",
-					"rate_in_template": "mu * OUTPUT"
-				},
-				"parameters": [
-					{"name": "mu", "value": "0.00007"}
-				]
-			},
-			"death": {
-				"className": "death",
-				"type": "verb",
-				"classDef": "death.air",
-				"icon": "images/death.svg",
-				"verb_sort": {
-					"type": "sink",
-					"rate_out_template": "nu * INPUT"
-				},
-				"parameters": [
-					{"name": "nu", "value": "0.00002"}
-				]
 			},
       "time": {
         "className": "time",
 				"type": "verb",
 				"classDef": "time.air",
 				"icon": "images/time.svg",
-				"verb_sort": {
-					"type": "conserved",
-					"rate_template": "eta * INPUT"
-				},
 				"parameters": [
 					{"name": "eta", "value": "0.002"}
 				]

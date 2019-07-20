@@ -4,29 +4,6 @@
       "type": "add",
       "nodes": [
         {
-          "id": "1",
-          "label": "Breeding",
-          "x": -175,
-          "y": -175,
-          "props": {
-            "className": "breeding",
-            "type": "verb",
-            "classDef": "breeding.air",
-            "icon": "images/breeding.svg",
-            "verb_sort": {
-              "type": "source",
-              "rate_in_template": "alpha * OUTPUT"
-            },
-            "parameters": [
-              {
-                "name": "alpha",
-                "value": "0.66"
-              }
-            ]
-          },
-          "image": "images/breeding.svg"
-        },
-        {
           "id": "2",
           "label": "Prey",
           "x": -175,
@@ -34,6 +11,8 @@
           "props": {
             "className": "prey",
             "type": "noun",
+            "inState": "P",
+            "outState": "P",
             "classDef": "prey.air",
             "icon": "images/prey.svg",
             "parameters": [
@@ -55,11 +34,8 @@
             "type": "verb",
             "classDef": "hunting.air",
             "icon": "images/hunting.svg",
-            "verb_sort": {
-              "type": "unconserved",
-              "rate_in_template": "beta * INPUT * OUTPUT",
-              "rate_out_template": "delta * INPUT * OUTPUT"
-            },
+            "inState": "INPUT",
+            "outState": "OUTPUT",
             "parameters": [
               {
                 "name": "beta",
@@ -81,6 +57,8 @@
           "props": {
             "className": "predator",
             "type": "noun",
+            "inState": "P",
+            "outState": "P",
             "classDef": "predator.air",
             "icon": "images/predator.svg",
             "parameters": [
@@ -91,37 +69,9 @@
             ]
           },
           "image": "images/predator.svg"
-        },
-        {
-          "id": "5",
-          "label": "Death",
-          "x": 175,
-          "y": 175,
-          "props": {
-            "className": "death",
-            "type": "verb",
-            "classDef": "death.air",
-            "icon": "images/death.svg",
-            "verb_sort": {
-              "type": "sink",
-              "rate_out_template": "gamma * INPUT"
-            },
-            "parameters": [
-              {
-                "name": "gamma",
-                "value": "1"
-              }
-            ]
-          },
-          "image": "images/death.svg"
         }
       ],
       "edges": [
-        {
-          "id": "a",
-          "from": "1",
-          "to": "2"
-        },
         {
           "id": "b",
           "from": "2",
@@ -131,11 +81,6 @@
           "id": "c",
           "from": "3",
           "to": "4"
-        },
-        {
-          "id": "d",
-          "from": "4",
-          "to": "5"
         }
       ]
     }
