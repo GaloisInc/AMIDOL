@@ -11,6 +11,8 @@
           "props": {
             "className": "population",
             "type": "noun",
+            "inState": "P",
+            "outState": "P",
             "classDef": "population.air",
             "icon": "images/person.svg",
             "parameters": [
@@ -30,12 +32,10 @@
           "props": {
             "className": "infect",
             "type": "verb",
+            "inState": "INPUT",
+            "outState": "OUTPUT",
             "classDef": "infect.air",
             "icon": "images/virus.svg",
-            "verb_sort": {
-              "type": "conserved",
-              "rate_template": "beta * INPUT * OUTPUT / total_pop"
-            },
             "parameters": [
               {
                 "name": "beta",
@@ -43,7 +43,7 @@
               },
               {
                 "name": "total_pop",
-                "value": "Susceptible + Infected + Recovered"
+                "value": "501"
               }
             ]
           },
@@ -57,6 +57,8 @@
           "props": {
             "className": "patient",
             "type": "noun",
+            "inState": "P",
+            "outState": "P",
             "classDef": "patient.air",
             "icon": "images/patient.svg",
             "parameters": [
@@ -76,12 +78,10 @@
           "props": {
             "className": "cure",
             "type": "verb",
+            "inState": "INPUT",
+            "outState": "OUTPUT",
             "classDef": "cure.air",
             "icon": "images/cure.svg",
-            "verb_sort": {
-              "type": "conserved",
-              "rate_template": "gamma * INPUT"
-            },
             "parameters": [
               {
                 "name": "gamma",
@@ -99,6 +99,8 @@
           "props": {
             "className": "population",
             "type": "noun",
+            "inState": "P",
+            "outState": "P",
             "classDef": "population.air",
             "icon": "images/person.svg",
             "parameters": [
