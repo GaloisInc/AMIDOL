@@ -35,8 +35,8 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
     // Set up the system of differential equations 
     val states: List[State] = model.states.values.toList
-    val derivatives: Map[StateId, math.Expr[Double]] = {
-      val builder = collection.mutable.Map.empty[StateId, math.Expr[Double]]
+    val derivatives: Map[StateId, Python] = {
+      val builder = collection.mutable.Map.empty[StateId, String]
 
       for ((_,  Event(rate, inputPredicate, outputPredicate, _)) <- model.events) {
 
@@ -47,8 +47,12 @@ object SciPyIntegrate extends ContinuousInitialValue {
         for ((stateId, effect) <- outputPredicate.transition_function) {
           val term = math.Mult(rate, effect)
           builder(stateId) = builder.get(stateId) match {
-            case None => term
-            case Some(existing) => math.Plus(term, existing)
+            case None => term.prettyPrint()
+            case Some(existing) =>
+              inputPredicate match {
+                case None => s"${term.prettyPrint()} + $existing"
+                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0) + $existing"
+              }
           }
         }
       }
@@ -58,7 +62,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
     // Pretty printing
     val stateVarsStr   = states.map(s => s.state_variable.prettyPrint())
-    val derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).state_variable.prettyPrint()}_ = ${ie._2.prettyPrint()}") 
+    val derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).state_variable.prettyPrint()}_ = ${ie._2}") 
     val initialCondStr = states.map(s => s.initial_value.prettyPrint())
     val constantsStr   = model.constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
     val writeImageFile = inputs.savePlot

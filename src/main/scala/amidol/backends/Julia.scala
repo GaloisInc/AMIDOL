@@ -52,15 +52,23 @@ object JuliaGillespie extends ContinuousInitialValue {
         .transition_function
         .map { case (sId, expr) =>
           val state = mappedModel.states(sId).state_variable
-          s"  integrator.${state.prettyPrint()} += (${expr.prettyPrint()})"
+          s"integrator.${state.prettyPrint()} += (${expr.prettyPrint()})"
         }
         .toList
+
+      val effectsCombined: Julia = event.input_predicate match {
+        case None => "  " + effects.mkString("\n  ")
+        case Some(InputPredicate(enabler)) =>
+          s"""  if ${enabler.prettyPrint()}
+             |    ${effects.mkString("\n    ")}
+             |  end""".stripMargin
+      }
 
       s"""
        |# Stuff for ${eventId.id}
        |rate_${eventId.id}(u,p,t) = ${event.rate.prettyPrint()}
        |function event_${eventId.id}!(integrator)
-       |${effects.mkString("\n")}
+       |${effectsCombined}
        |end
        |""".stripMargin
     }
