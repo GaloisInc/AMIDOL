@@ -11,8 +11,7 @@
           "props": {
             "className": "population",
             "type": "noun",
-            "inState": "P",
-            "outState": "P",
+            "sharedStates": ["P","P"],
             "classDef": "population.air",
             "icon": "images/person.svg",
             "parameters": [
@@ -32,8 +31,7 @@
           "props": {
             "className": "infect",
             "type": "verb",
-            "inState": "INPUT",
-            "outState": "OUTPUT",
+            "sharedStates": ["INPUT","OUTPUT"],
             "classDef": "infect.air",
             "icon": "images/virus.svg",
             "parameters": [
@@ -57,8 +55,7 @@
           "props": {
             "className": "patient",
             "type": "noun",
-            "inState": "P",
-            "outState": "P",
+            "sharedStates": ["P","P"],
             "classDef": "patient.air",
             "icon": "images/patient.svg",
             "parameters": [
@@ -78,8 +75,7 @@
           "props": {
             "className": "cure",
             "type": "verb",
-            "inState": "INPUT",
-            "outState": "OUTPUT",
+            "sharedStates": ["INPUT","OUTPUT"],
             "classDef": "cure.air",
             "icon": "images/cure.svg",
             "parameters": [
@@ -99,8 +95,7 @@
           "props": {
             "className": "population",
             "type": "noun",
-            "inState": "P",
-            "outState": "P",
+            "sharedStates": ["P","P"],
             "classDef": "population.air",
             "icon": "images/person.svg",
             "parameters": [

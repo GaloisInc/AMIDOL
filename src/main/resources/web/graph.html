@@ -679,6 +679,7 @@
 			"population": {
 				"className": "population",
 				"type": "noun",
+        "sharedStates": ["P", "P"],
 				"classDef": "population.air",
 				"icon": "images/person.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
@@ -686,6 +687,7 @@
 			"patient" : {
 				"className": "patient",
 				"type": "noun",
+        "sharedStates": ["P", "P"],
 				"classDef": "patient.air",
 				"icon": "images/patient.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
@@ -693,6 +695,7 @@
 			"infect": {
 				"className": "infect",
 				"type": "verb",
+        "sharedStates": ["INPUT", "OUTPUT"],
 				"classDef": "infect.air",
 				"icon": "images/virus.svg",
 				"parameters": [
@@ -703,6 +706,7 @@
 			"cure": {
 				"className": "cure",
 				"type": "verb",
+        "sharedStates": ["INPUT", "OUTPUT"],
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
@@ -712,6 +716,7 @@
 			"population": {
 				"className": "population_vital_dynamics",
 				"type": "noun",
+        "sharedStates": ["P", "P"],
 				"classDef": "population_vital_dynamics.air",
 				"icon": "images/person.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
@@ -719,6 +724,7 @@
 			"patient" : {
 				"className": "patient_vital_dynamics",
 				"type": "noun",
+        "sharedStates": ["P", "P"],
 				"classDef": "patient_vital_dynamics.air",
 				"icon": "images/patient.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
@@ -726,6 +732,7 @@
 			"infect": {
 				"className": "infect",
 				"type": "verb",
+        "sharedStates": ["INPUT", "OUTPUT"],
 				"classDef": "infect.air",
 				"icon": "images/virus.svg",
 				"parameters": [
@@ -736,6 +743,7 @@
 			"cure": {
 				"className": "cure",
 				"type": "verb",
+        "sharedStates": ["INPUT", "OUTPUT"],
 				"classDef": "cure.air",
 				"icon": "images/cure.svg",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
@@ -743,6 +751,7 @@
       "time": {
         "className": "time",
 				"type": "verb",
+        "sharedStates": ["INPUT", "OUTPUT"],
 				"classDef": "time.air",
 				"icon": "images/time.svg",
 				"parameters": [
@@ -755,6 +764,7 @@
 			"predator": {
 				"className": "predator",
 				"type": "noun",
+        "sharedStates": ["P", "P"],
 				"classDef": "predator.air",
 				"icon": "images/predator.svg",
 				"parameters": [{"name": "Initial", "value": "0.9"}]
@@ -762,6 +772,7 @@
 			"prey" : {
 				"className": "prey",
 				"type": "noun",
+        "sharedStates": ["P", "P"],
 				"classDef": "prey.air",
 				"icon": "images/prey.svg",
 				"parameters": [{"name": "Initial", "value": "0.9"}]
@@ -769,6 +780,7 @@
 			"hunting": {
 				"className": "hunting",
 				"type": "verb",
+        "sharedStates": ["INPUT", "OUTPUT"],
 				"classDef": "hunting.air",
 				"icon": "images/hunting.svg",
 				"verb_sort": {
@@ -779,31 +791,7 @@
 				"parameters": [
 					{"name": "beta", "value": "1.33"},
 					{"name": "delta", "value": "1"}
-				]
-			},
-			"breeding": {
-				"className": "breeding",
-				"type": "verb",
-				"classDef": "breeding.air",
-				"icon": "images/breeding.svg",
-				"verb_sort": {
-					"type": "source",
-					"rate_in_template": "alpha * OUTPUT"
-				},
-				"parameters": [{"name": "alpha", "value": "0.66"}]
-			},
-			"death": {
-				"className": "death",
-				"type": "verb",
-				"classDef": "death.air",
-				"icon": "images/death.svg",
-				"verb_sort": {
-					"type": "sink",
-					"rate_out_template": "gamma * INPUT"
-				},
-				"parameters": [
-					{"name": "gamma", "value": "1"}
-				]
+				]	
 			}
 		}
 	}

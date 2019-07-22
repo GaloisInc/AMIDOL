@@ -12,6 +12,8 @@ case class Graph(
   links: Map[String,Link]
 )  {
   def parse(paletteModels: Map[String, amidol.Model]): Try[amidol.Model] = Try {
+    val nounIds = nodes.keys.zipWithIndex.toMap
+
     var outgoingLinks = new HashMap[String, Set[String]] with MultiMap[String, String]
     var incomingLinks = new HashMap[String, Set[String]] with MultiMap[String, String]
     
@@ -51,21 +53,21 @@ case class Graph(
         .toMap
 
       // When we have a noun, try to give the state variable a good name
-      if (props.`type` == "noun" && props.inState == props.outState) {
-        variableRename += s"n${id}_${props.inState}" -> label
+      if (props.`type` == "noun" && props.sharedStates.length > 0 && props.sharedStates.distinct.length == 1) {
+        variableRename += s"n${nounIds(id)}_${props.sharedStates(0)}" -> label
       
-        nouns += ("n" + id) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
+        nouns += ("n" + nounIds(id)) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
       } else {
-        verbs += ("n" + id) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
+        verbs += ("n" + nounIds(id)) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
       }
      
       if (props.`type` == "verb") {
         
         val nounFrom = getIncoming(id)
-        shared += ((("n" + id, amidol.StateId(props.inState)), ("n" + nounFrom, amidol.StateId(nodes(nounFrom).props.outState))))
+        shared += ((("n" + nounIds(id), amidol.StateId(props.sharedStates(0))), ("n" + nounIds(nounFrom), amidol.StateId(nodes(nounFrom).props.sharedStates(1)))))
         
         val nounTo = getOutgoing(id)
-        shared += ((("n" + id, amidol.StateId(props.outState)), ("n" + nounTo, amidol.StateId(nodes(nounTo).props.inState))))
+        shared += ((("n" + nounIds(id), amidol.StateId(props.sharedStates(1))), ("n" + nounIds(nounTo), amidol.StateId(nodes(nounTo).props.sharedStates(0)))))
       }
     }
 
@@ -94,8 +96,8 @@ case class NodeProps (
   classDef: String,             // name of model in palette
   parameters:  Seq[Parameter],
   `type`: String,              // verb or noun
-  inState: String,  // stateid
-  outState: String, // stateid
+  sharedStates: Array[String]  // For now, this is be: `[ <shared state for incoming arrows>
+                               //                       , <shared state for outgoing arrows> ]
 )
 object NodeProps extends UiJsonSupport
 
@@ -115,7 +117,7 @@ object Link extends UiJsonSupport
 
 trait UiJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val parameterFormat = jsonFormat2(Parameter.apply)
-  implicit val nodePropsFormat = jsonFormat6(NodeProps.apply)
+  implicit val nodePropsFormat = jsonFormat5(NodeProps.apply)
   implicit val linkFormat = jsonFormat3(Link.apply)
   implicit val nodeFormat = jsonFormat6(Node.apply)
   implicit val graphFormat = jsonFormat2(Graph.apply)
