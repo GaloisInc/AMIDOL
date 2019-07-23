@@ -113,7 +113,7 @@
           "x": 0,
           "y": 40,
           "props": {
-            "className": "cure",
+            "className": "time",
             "type": "verb",
             "sharedStates": ["INPUT","OUTPUT"],
             "classDef": "time.air",
