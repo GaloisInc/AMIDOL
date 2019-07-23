@@ -62,7 +62,7 @@ object Model extends ModelJsonSupport {
   val empty = Model(Map.empty, Map.empty, Map.empty)
 
   def composeModels[K: Ordering](
-    models: Map[K, Model],                      // models to compose
+    models: List[(K, Model)],                      // models to compose
     shared: List[((K, StateId), (K, StateId))], // states shared amongst submodels
   ): Model = {
     val sharedMap = shared.toMap
@@ -84,7 +84,10 @@ object Model extends ModelJsonSupport {
     models
       .iterator
       .map { case (k,m) => m.mapIds(stateIdFunc(k), eventIdFunc(k), variableFunc(k)) }
-      .foldLeft(Model.empty)(_ ++ _)
+      .foldLeft(Model.empty)((x,y) => {
+        println(s"ADDING\n 1. $x\n 2. $y\n => ${x ++ y}")
+        x ++ y
+      })
   }
 }
 

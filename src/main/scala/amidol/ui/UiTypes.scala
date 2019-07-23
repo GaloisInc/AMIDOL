@@ -73,8 +73,12 @@ case class Graph(
 
     val rename = variableRename.result().map { case (k,v) => math.Variable(Symbol(k)) -> math.Variable(Symbol(v)) }
 
+    println("NOUNS =======\n " + nouns.result())
+    println("VERBS =======\n" + verbs.result())
+    println("SHARED =======\n" + shared.result())
+    println("SUM =========\n" + (nouns.result().toList ++ verbs.result().toList).mkString("\n"))
     amidol.Model
-      .composeModels(verbs.result() ++ nouns.result(), shared.result())
+      .composeModels(verbs.result().toList ++ nouns.result().toList, shared.result())
       .mapIds(identity, identity, v => rename.getOrElse(v,v))
   }
 }
