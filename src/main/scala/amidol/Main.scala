@@ -118,6 +118,7 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
           path("integrate") {
             import JuliaGillespie._
 
+            println("Received request")
             entity(as[Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> routeComplete(

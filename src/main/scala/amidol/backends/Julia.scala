@@ -27,6 +27,7 @@ object JuliaGillespie extends ContinuousInitialValue {
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
+    val now = System.nanoTime
 
     // Start by mapping all the constant and state variable names
     val constantsIdx: Map[math.Variable, Int] = model.constants.keys.zipWithIndex.map(kv => (kv._1, kv._2 + 1)).toMap
@@ -104,23 +105,27 @@ object JuliaGillespie extends ContinuousInitialValue {
          |using DiffEqMonteCarlo
          |using JSON
          |
-         |${mappedModel.events.keys.map(eId => getRateEvent(eId)).mkString("\n")}
+         |function compute()
+         |  ${mappedModel.events.keys.map(eId => getRateEvent(eId)).mkString("\n  ")}
          |
-         |p = $intialConstArray
-         |u0 = $initialCondArray
-         |tspan = (${inputs.initialTime}, ${inputs.finalTime})
-         |jump_prob = JumpProblem(
-         |  DiscreteProblem(u0, tspan, p),
-         |  Direct(),
-         |  ${model.events.keys.map(eId => s"ConstantRateJump(rate_${eId.id}, event_${eId.id}!)").mkString(",\n  ")}
-         |)
-         |monte_prob = MonteCarloProblem(jump_prob)
-         |sol_monte = solve(monte_prob, num_monte=100)
-         |summ = EnsembleSummary(sol_monte)
+         |  p = $intialConstArray
+         |  u0 = $initialCondArray
+         |  tspan = (${inputs.initialTime}, ${inputs.finalTime})
+         |  jump_prob = JumpProblem(
+         |    DiscreteProblem(u0, tspan, p),
+         |    Direct(),
+         |    ${model.events.keys.map(eId => s"ConstantRateJump(rate_${eId.id}, event_${eId.id}!)").mkString(",\n    ")}
+         |  )
+         |  monte_prob = MonteCarloProblem(jump_prob)
+         |  sol_monte = solve(monte_prob, num_monte=1000)
+         |  summ = EnsembleSummary(sol_monte)
          |
-         |$writeImageFile
+         |  $writeImageFile
          |
-         |JSON.print((summ.u, summ.t))
+         |  JSON.print((summ.u, summ.t))
+         |end
+         |
+         |compute()
          |""".stripMargin
 
     // Run the code

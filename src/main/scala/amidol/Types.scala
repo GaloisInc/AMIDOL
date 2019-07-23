@@ -84,10 +84,7 @@ object Model extends ModelJsonSupport {
     models
       .iterator
       .map { case (k,m) => m.mapIds(stateIdFunc(k), eventIdFunc(k), variableFunc(k)) }
-      .foldLeft(Model.empty)((x,y) => {
-        println(s"ADDING\n 1. $x\n 2. $y\n => ${x ++ y}")
-        x ++ y
-      })
+      .foldLeft(Model.empty)(_ ++ _)
   }
 }
 
