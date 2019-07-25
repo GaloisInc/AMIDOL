@@ -90,6 +90,24 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
             }
           }
         } ~
+        pathPrefix("palette") {
+          path("put") {
+            formField('name.as[String], 'model.as[Model]) { case (name: String, model: Model) =>
+              complete {
+                AppState.palette += (name -> model)
+                StatusCodes.Created -> s"Palette has been updated"
+              }
+            }
+          } ~
+          path("remove") {
+            formField('name.as[String]) { case name: String =>
+              complete {
+                AppState.palette -= name
+                StatusCodes.OK -> s"Palette has been removed"
+              }
+            }
+          }
+        } ~
         path("julia") {
          // uploadedFile("txt") {
          //   case (metadata, file) =>

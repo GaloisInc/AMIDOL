@@ -115,11 +115,22 @@ case class Link(
 )
 object Link extends UiJsonSupport
 
+case class Palette(
+  className: String,
+  `type`: String,
+  sharedStates: Array[String],
+  classDef: String,
+  icon: String,
+  parameters:  Seq[Parameter]
+)
+object Palette extends UiJsonSupport
+
 trait UiJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val parameterFormat = jsonFormat2(Parameter.apply)
   implicit val nodePropsFormat = jsonFormat5(NodeProps.apply)
   implicit val linkFormat = jsonFormat3(Link.apply)
   implicit val nodeFormat = jsonFormat6(Node.apply)
   implicit val graphFormat = jsonFormat2(Graph.apply)
+  implicit val paletteFormat = jsonFormat6(Palette.apply)
 }
 
