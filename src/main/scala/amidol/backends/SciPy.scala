@@ -22,58 +22,53 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
   override def run(
     model: Model,
-    constants: Map[String, Double],
-    boundary:  Map[String, Double],
     inputs: Inputs,
     requestId: Long
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
-    for {
-      constants <- Try(constants.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
-      boundary  <- Try(boundary.map { case (k,v) => math.Expr(k).flatMap(_.asVariable).get -> v })
-    
-      timeRange: Seq[Double] = Range.BigDecimal(
-        start = inputs.initialTime,
-        end = inputs.finalTime,
-        step = inputs.stepSize
-      ).map(_.toDouble)
+    val timeRange: Seq[Double] = Range.BigDecimal(
+      start = inputs.initialTime,
+      end = inputs.finalTime,
+      step = inputs.stepSize
+    ).map(_.toDouble)
 
-      // Set up the system of differential equations 
-      stateVars: List[StateId] = model.states.keys.toList
-      derivatives: Map[StateId, math.Expr] = {
-        var builder = Map.empty[StateId, math.Expr]
+    // Set up the system of differential equations 
+    val states: List[State] = model.states.values.toList
+    val derivatives: Map[StateId, Python] = {
+      val builder = collection.mutable.Map.empty[StateId, String]
 
-        for ((_, verb) <- model.events) {
-          verb match {
-            case Conserved(_, src, tgt, expr) =>
-              builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(expr))
-              builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             expr )
+      for ((_,  Event(rate, inputPredicate, outputPredicate, _)) <- model.events) {
 
-            case Unconserved(_, src, tgt, exprOut, exprIn) =>
-              builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(exprOut))
-              builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             exprIn )
-
-            case Source(_, tgt, exprIn) =>
-              builder += tgt -> math.Plus(builder.getOrElse(tgt, 0.0),             exprIn )
-
-            case Sink(_, src, exprOut) =>
-              builder += src -> math.Plus(builder.getOrElse(src, 0.0), math.Negate(exprOut))
-          }
+        if (inputPredicate != None) {
+          throw new Exception("Don't know how to handle input predicates yet")
         }
 
-        builder
+        for ((stateId, effect) <- outputPredicate.transition_function) {
+          val term = math.Mult(rate, effect)
+          builder(stateId) = builder.get(stateId) match {
+            case None => term.prettyPrint()
+            case Some(existing) =>
+              inputPredicate match {
+                case None => s"${term.prettyPrint()} + $existing"
+                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0) + $existing"
+              }
+          }
+        }
       }
 
-      // Pretty printing
-      stateVarsStr   = stateVars.map(i => model.states(i).stateVariable.prettyPrint())
-      derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).stateVariable.prettyPrint()}_ = ${ie._2.prettyPrint()}") 
-      initialCondStr = stateVars.map(i => boundary(model.states(i).stateVariable))
-      constantsStr   = constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
-      writeImageFile = inputs.savePlot
+      builder.toMap
+    }
 
-      // Python code
-      plottingCode: Python = if (inputs.savePlot.isEmpty) "" else s"""
+    // Pretty printing
+    val stateVarsStr   = states.map(s => s.state_variable.prettyPrint())
+    val derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).state_variable.prettyPrint()}_ = ${ie._2}") 
+    val initialCondStr = states.map(s => s.initial_value.prettyPrint())
+    val constantsStr   = model.constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
+    val writeImageFile = inputs.savePlot
+
+    // Python code
+    val plottingCode: Python = if (inputs.savePlot.isEmpty) "" else s"""
          |# How to plot
          |plt.title("SciPyIntegrate solution to continuous IVP", fontsize=12)
          |plt.xlabel("Time", fontsize=10)
@@ -83,7 +78,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |
          |""".stripMargin
 
-      pythonCode: Python = s"""
+    val pythonCode: Python = s"""
          |from scipy.integrate import odeint
          |import json
          |import numpy as np
@@ -115,7 +110,8 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |print(json.dumps(output, cls=NumpyEncoder))
          |""".stripMargin
 
-      // Run the code
+    // Run the code
+    for {
       outputArrs <- {
         Files.write(Paths.get("tmp_scripts", s"${requestId}_tmp_script.py"), pythonCode.getBytes)
         println(s"Running `python3 tmp_scripts/${requestId}_tmp_script.py`...")
@@ -131,7 +127,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
     )
   }
 }
-
+/*
 object SciPyLinearSteadyState extends ContinuousSteadyState {
 
   val name: String = "SciPyLinearSteadyState"
@@ -155,8 +151,8 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
   ): Future[Try[Outputs]] = Future {
 
     // Extract the system
-    val eqns: Map[math.Variable, math.Expr] = {
-      var builder: Map[StateId, math.Expr] = model.states.keys.map(_ -> (0: math.Expr)).toMap
+    val eqns: Map[math.Variable, math.Expr[Double]] = {
+      var builder: Map[StateId, math.Expr[Double]] = model.states.keys.map(_ -> (0: math.Expr[Double])).toMap
 
       for ((_, verb) <- model.events) {
         verb match {
@@ -222,3 +218,4 @@ object SciPyLinearSteadyState extends ContinuousSteadyState {
     )))
   }
 }
+*/

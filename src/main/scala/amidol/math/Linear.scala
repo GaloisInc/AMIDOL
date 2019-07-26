@@ -8,40 +8,40 @@ import scala.collection.mutable.WrappedArray
 // Dense representation of linear system
 case class LinearSystem(
   variables: WrappedArray[Variable],      // dimension: N
-  coefficients: WrappedArray[Array[Expr]] // dimensions: N x N
+  coefficients: WrappedArray[Array[Expr[Double]]] // dimensions: N x N
 )
 
 object Linear {
 
   // Decompose an expression into its immediate terms
-  def immediateTerms(e: Expr): Seq[Expr] = e match {
+  def immediateTerms(e: Expr[Double]): Seq[Expr[Double]] = e match {
     case Plus(x, y) => immediateTerms(x) ++ immediateTerms(y)
     case factor => Seq(factor)
   }
   
   // Decompose an expression into its immediate factors
-  def immediateFactors(e: Expr): Seq[Expr] = e match {
+  def immediateFactors(e: Expr[Double]): Seq[Expr[Double]] = e match {
     case Mult(x, y) => immediateFactors(x) ++ immediateFactors(y)
     case atom => Seq(atom)
   }
 
   // TODO: make this try to normalize the system before giving up
-  def fromEquations(equations: Map[Variable, Expr]): Option[LinearSystem] = {
+  def fromEquations(equations: Map[Variable, Expr[Double]]): Option[LinearSystem] = {
     
     // Checks if the expression contains any variables that are not constants
-    def isConstant: Expr => Boolean = {
+    def isConstant: Expr[Double] => Boolean = {
       case Plus(lhs, rhs) => isConstant(lhs) && isConstant(rhs) 
       case Mult(lhs, rhs) => isConstant(lhs) && isConstant(rhs)
       case Negate(e) => isConstant(e)
       case Inverse(e) => isConstant(e)
       case v: Variable => !equations.contains(v)
-      case _: Literal => true
+      case _: Literal[Double] => true
     }
 
     // Linear equations
-    val decomposed: Map[Variable, Map[Variable, Expr]] = 
+    val decomposed: Map[Variable, Map[Variable, Expr[Double]]] = 
       equations.mapValues { case expr =>
-        val linearTerms: Seq[(Variable, Expr)] = for {
+        val linearTerms: Seq[(Variable, Expr[Double])] = for {
           term <- immediateTerms(expr)
           factors = immediateFactors(term)
           (theVars, theRest) = factors.partition {
@@ -53,7 +53,7 @@ object Linear {
             case List(v: Variable) => v
             case _ => return None
           }
-        } yield (theVar, theRest.foldLeft[Expr](1)(Mult(_,_)))
+        } yield (theVar, theRest.foldLeft[Expr[Double]](1)(Mult(_,_)))
 
         linearTerms.toMap
       }
@@ -61,7 +61,7 @@ object Linear {
     // Pick an order for variables and make the matrix
     val variables: Array[Variable] = equations.keys.toArray
     val dim = variables.length
-    val coefficients: Array[Array[Expr]] = Array.tabulate(dim, dim) { (i: Int, j: Int) =>
+    val coefficients: Array[Array[Expr[Double]]] = Array.tabulate(dim, dim) { (i: Int, j: Int) =>
       decomposed
         .getOrElse(variables(i), Map())
         .getOrElse(variables(j), 0)

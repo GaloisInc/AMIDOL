@@ -1,0 +1,54 @@
+{
+  "states": {
+    "S": {
+      "state_variable": "S",
+      "description": "Susceptible",
+      "initial_value": "499"
+    },
+    "I": {
+      "state_variable": "I",
+      "description": "Infectious",
+      "initial_value": "1"
+    },
+    "R": {
+      "state_variable": "R",
+      "description": "Recovered",
+      "initial_value": "0"
+    }
+  },
+  "events": {
+    "infect": {
+      "rate": "β * Susceptible * Infectious / N",
+      "output_predicate": {
+        "transition_function": {
+          "S": "-1",
+          "I": "1"
+        }
+      }
+    },
+    "cure": {
+      "rate": "γ * Infectious",
+      "output_predicate": {
+        "transition_function": {
+          "I": "-1",
+          "R": "1"
+        }
+      }
+    },
+    "vulnerable": {
+      "rate": "μ * Recovered",
+      "output_predicate": {
+        "transition_function": {
+          "R": "-1",
+          "S": "1"
+        }
+      }
+    }
+  },
+  "constants": {
+    "β": 2,
+    "γ": 1,
+    "μ": 5
+  }
+}
+

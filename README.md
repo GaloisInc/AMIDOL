@@ -24,6 +24,10 @@ You'll need to:
     then the `scipy` and `matplotlib` packages (by doing
     `pip3 install scipy matplotlib`) for the SciPy backends
 
+  * install [Julia][5] and then install `JSON`, `DiffEqBiological`,
+    `DifferentialEquations`, `Plots`, and `DiffEqMonteCarlo` (this is done from
+    the Julia REPL running `import Pkg; Pkg.add("<pkg-to-install>")`)
+
 Once you have done all of this, build and run the system with: 
 
 ```sh
@@ -43,3 +47,4 @@ upper-right. User-drawn models can also be downloaded with the adjacent download
 [2]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 [3]: https://www.python.org/downloads/
 [4]: https://pip.pypa.io/en/stable/installing/
+[5]: https://julialang.org/
