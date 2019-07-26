@@ -19,7 +19,7 @@ The VDSOLs help achieve these goals by lowering the barrier for entry associated
 * [AMIDOL IR]({{ site.baseurl }}{% link documentation/ir.md %})
 * [W3 Meeting Notes]({{ site.baseurl }}{% link W3Collaboration/Summer-2019.md %})
 * [AMIDOL Brainstorming]({{ site.baseurl }}{% link AMIDOLGoals/AMIDOLBrainstorming.md %})
-* [AMIDOL Ontology]({{ site.baseurl }}{% link Ontology/AMIDOLBrainstorming.md %})
+* [AMIDOL Ontology]({{ site.baseurl }}{% link Ontology/OntologyMaster.md %})
 
 ## Examples
 
