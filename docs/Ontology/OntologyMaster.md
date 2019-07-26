@@ -4,8 +4,6 @@ title: AMIDOL Ontology
 toc: true
 ---
 
-# AMIDOL Ontology
-
 The AMIDOL Ontology system supports operations which modify the VDSOL palettes used to generate formulations, supporting extracted models with grounding, and automatically generated models with grounding.
 
 ## Definitions
@@ -92,3 +90,8 @@ Work flow:
     * Find Virus infection template model
     * Generate new H3N2 Recovery model based on this grounding with appropriate types.
     * Embed grounded model elements in the new VDSOL object.
+  * What to do when there is no template.
+  * Build an Ebola AST.
+
+* Questions about the Ontology
+  * Query SQLite database?  Or navigate Snomed?
