@@ -73,3 +73,22 @@ The AMIDOL Ontology system supports operations which modify the VDSOL palettes u
     ))
 )
 ```
+
+Work flow:
+* We should be able to automatically:
+  * Detect the "Susceptible" grounding
+    * Pair with existing non-template model by checking type and IR equivalence.
+  * Detect the "Infectious" grounding
+    * Pair with existing non-template model by checking type and IR equivalence.
+  * Detect the "Recovered" grounding
+    * Pair with existing non-template model by checking type and IR equivalence.
+  * Detect "H3N2 Infection" grounding
+    * Fail to find existing non-template model for grounding.
+    * Find Virus infection template model
+    * Generate new H3N2 Infection model based on this grounding with appropriate types.
+    * Embed grounded model elements in the new VDSOL object.
+  * Detect "H3N2 Recovery" grounding
+    * Fail to find existing non-template model for grounding.
+    * Find Virus infection template model
+    * Generate new H3N2 Recovery model based on this grounding with appropriate types.
+    * Embed grounded model elements in the new VDSOL object.
