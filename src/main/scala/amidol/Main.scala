@@ -10,10 +10,12 @@ import akka.stream.ActorMaterializer
 import amidol.backends._
 import scala.io.{Source, StdIn}
 import scala.util._
+import scala.collection.concurrent
 
 import spray.json._
 
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.ConcurrentHashMap
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -40,7 +42,10 @@ object Main extends App with Directives {
       }
       .toMap
 
-    var dataTraces: Map[String, (Vector[Double], Vector[Double])] = Map.empty
+    val dataTraces: concurrent.Map[String, (Vector[Double], Vector[Double])] = {
+      import scala.collection.JavaConverters._
+      new ConcurrentHashMap().asScala
+    }
     val requestId: AtomicLong = new AtomicLong()
   }
 
@@ -111,6 +116,13 @@ object Main extends App with Directives {
                 StatusCodes.OK -> "Data trace has been removed"
               }
             }
+          } ~
+          path("get") {
+            formField('name.as[String]) { case name: String =>
+              complete {
+                StatusCodes.OK -> AppState.dataTraces.get(name)
+              }
+            }
           }
         } ~
         pathPrefix("palette") {
@@ -127,6 +139,13 @@ object Main extends App with Directives {
               complete {
                 AppState.palette -= name
                 StatusCodes.OK -> s"Palette has been removed"
+              }
+            }
+          } ~
+          path("get") {
+            formField('name.as[String]) { case name: String =>
+              complete {
+                StatusCodes.OK -> AppState.palette.get(name)
               }
             }
           }

@@ -8,6 +8,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import scala.concurrent.{ExecutionContext, Future}
+import java.text.SimpleDateFormat
+import java.util.Date
 
 object SciPyIntegrate extends ContinuousInitialValue {
  
@@ -27,11 +29,11 @@ object SciPyIntegrate extends ContinuousInitialValue {
   )(implicit
     ec: ExecutionContext
   ): Future[Try[Outputs]] = Future {
-    val timeRange: Seq[Double] = Range.BigDecimal(
+    val timeRange: Vector[Double] = Range.BigDecimal(
       start = inputs.initialTime,
       end = inputs.finalTime,
       step = inputs.stepSize
-    ).map(_.toDouble)
+    ).map(_.toDouble).toVector
 
     // Set up the system of differential equations 
     val states: List[State] = model.states.values.toList
@@ -119,12 +121,19 @@ object SciPyIntegrate extends ContinuousInitialValue {
       }
 
       // Parse the output back out
-      nestedArrs <- Try(outputArrs.parseJson.convertTo[Seq[Seq[Double]]])
+      nestedArrs <- Try(outputArrs.parseJson.convertTo[Seq[Vector[Double]]])
 
-    } yield Outputs(
-      variables = (stateVarsStr zip nestedArrs).toMap,
-      times = timeRange
-    )
+    } yield {
+      val traces = stateVarsStr zip nestedArrs
+      val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
+      Main.AppState.dataTraces ++= traces.map { case (traceName, traceData) =>
+        s"${date}_${traceName}_scipy_${requestId}" -> (timeRange, traceData)
+      }
+      Outputs(
+        variables = traces.toMap,
+        times = timeRange
+      )
+    }
   }
 }
 /*
