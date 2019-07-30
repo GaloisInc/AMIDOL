@@ -118,12 +118,22 @@ object Main extends App with Directives {
             }
           } ~
           path("get") {
-            formField('name.as[String]) { case name: String =>
+            formField('names.as[List[String]]) { case names =>
               complete {
-                StatusCodes.OK -> AppState.dataTraces.get(name)
+                StatusCodes.OK -> names
+                  .map { name => (name, AppState.dataTraces.get(name)) }
+                  .collect { case (name, Some((label, series))) => (name, label, series) }
+              }
+            }
+          } ~
+          path("list") {
+            formField('limit.as[Long]) { case limit: Long =>
+              complete {
+                StatusCodes.OK -> AppState.dataTraces.keys.take(limit.toInt) // limit.fold(Int.MaxValue)(_.toInt))
               }
             }
           }
+
         } ~
         pathPrefix("palette") {
           path("put") {
