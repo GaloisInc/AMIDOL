@@ -5,20 +5,23 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.stream.ActorMaterializer
 import amidol.backends._
 import scala.io.{Source, StdIn}
 import scala.util._
+import scala.collection.concurrent
 
 import spray.json._
 
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.ConcurrentHashMap
 import java.nio.file.Files
 import java.nio.file.Paths
 
 import com.typesafe.config.ConfigFactory
 
-object Main extends App with Directives /* with ui.UiJsonSupport */ {
+object Main extends App with Directives {
 
   val conf = ConfigFactory.load();
 
@@ -39,6 +42,10 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
       }
       .toMap
 
+    val dataTraces: concurrent.Map[String, (Vector[Double], Vector[Double])] = {
+      import scala.collection.JavaConverters._
+      new ConcurrentHashMap().asScala
+    }
     val requestId: AtomicLong = new AtomicLong()
   }
 
@@ -46,7 +53,6 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
-
 
   // Set up the folder for temporary files
   Files.createDirectories(Paths.get("tmp_scripts"))
@@ -86,6 +92,70 @@ object Main extends App with Directives /* with ui.UiJsonSupport */ {
               } match {
                 case Success(_) => StatusCodes.Created -> s"Model has been updated"
                 case Failure(f) => StatusCodes.BadRequest -> f.getMessage
+              }
+            }
+          }
+        } ~
+        pathPrefix("data-traces") {
+          import SprayJsonSupport._
+          import DefaultJsonProtocol._
+
+          path("put") {
+            formField('name.as[String], 'time.as[Vector[Double]], 'data.as[Vector[Double]]) {
+              case (name: String, time: Vector[Double], trace: Vector[Double]) =>
+                complete {
+                  AppState.dataTraces += (name -> (time, trace))
+                  StatusCodes.Created -> s"Data trace has been added"
+                }
+            }
+          } ~
+          path("remove") {
+            formField('name.as[String]) { case name: String =>
+              complete {
+                AppState.dataTraces -= name
+                StatusCodes.OK -> "Data trace has been removed"
+              }
+            }
+          } ~
+          path("get") {
+            formField('names.as[List[String]]) { case names =>
+              complete {
+                StatusCodes.OK -> names
+                  .map { name => (name, AppState.dataTraces.get(name)) }
+                  .collect { case (name, Some((label, series))) => (name, label, series) }
+              }
+            }
+          } ~
+          path("list") {
+            formField('limit.as[Long]) { case limit: Long =>
+              complete {
+                StatusCodes.OK -> AppState.dataTraces.keys.take(limit.toInt) // limit.fold(Int.MaxValue)(_.toInt))
+              }
+            }
+          }
+
+        } ~
+        pathPrefix("palette") {
+          path("put") {
+            formField('name.as[String], 'model.as[Model]) { case (name: String, model: Model) =>
+              complete {
+                AppState.palette += (name -> model)
+                StatusCodes.Created -> s"Palette has been updated"
+              }
+            }
+          } ~
+          path("remove") {
+            formField('name.as[String]) { case name: String =>
+              complete {
+                AppState.palette -= name
+                StatusCodes.OK -> s"Palette has been removed"
+              }
+            }
+          } ~
+          path("get") {
+            formField('name.as[String]) { case name: String =>
+              complete {
+                StatusCodes.OK -> AppState.palette.get(name)
               }
             }
           }

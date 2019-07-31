@@ -189,9 +189,20 @@
 
 			palette : function(palette) {
 				$("#palette .paletteItem").remove()
-				$("#palette").append(_.map(Object.values(palette), function(p){
-					return $("<img />").attr({src: p.icon, classname: p.className}).attr("onclick", "UI.selectPaletteNode(this)").addClass("paletteItem").addClass(p.type)
-				}))
+				$("#palette")
+          .append(_.map(Object.values(palette), function(p){
+					  return $("<img />")
+              .attr({src: p.icon, classname: p.className})
+              .attr("onclick", "UI.selectPaletteNode(this)")
+              .addClass("paletteItem")
+              .addClass(p.type)
+				  }))
+          .append(
+            $("<img />")
+              .attr({src: "images/plus.png"})
+              .attr("onclick", "UI.paletteEditor.show()")
+              .addClass("paletteItem")
+          )
 				if ($(".selected").length == 0) { $(".paletteItem").first().addClass("selected") }
 			},
 
@@ -430,6 +441,64 @@
 				// $("#graph").on("mousemove", null)	// Cannot use network 'dragging' event?
 			}
 		},
+
+    paletteEditor: {
+      show: function() {
+        // Update the palette dropdown before showing
+        $("#palette-element-selector").empty()
+        $("#palette-element-selector").append($("<option>").attr({ value: "" }).text("None"))
+        $("#palette-element-selector").append(_.map(_.keys(availablePalettes[chosenPalette]), (key) => $("<option>").attr({ value: key }).text(key)))
+
+        $("#paletteEditor").show()
+      },
+
+      hide: function() {
+        $("#paletteEditor").hide()
+      },
+
+      loadTemplate: function(toEditName) {
+        var toEdit = availablePalettes[chosenPalette][toEditName]
+        if (toEdit) {
+          $("#palette-element-name").val(toEditName)
+          $("#palette-element-type").val(toEdit.type)
+          $("#palette-element-class").val(toEdit.className)
+          $("#palette-element-icon").val(toEdit.icon)
+          $("#palette-element-shared").val(toEdit.sharedStates.join(", "))
+        }
+      },
+
+      submitPaletteElement: function() {
+        var paletteEditor = $("#paletteEditor")
+
+        // Get values from all fields
+        // TODO: validate the data we get
+        // TODO: support _all_ fields (including parameters)
+        var name = $("#palette-element-name").val()
+        var type = $("#palette-element-type").val()
+        var cls = $("#palette-element-class").val()
+        var icon = $("#palette-element-icon").val()
+        var shared = _.map($("#palette-element-shared").val().split(","), st => st.trim())
+
+        // Set the palette element
+        var paletteElement = availablePalettes[chosenPalette][name]
+        paletteElement.className = cls
+        paletteElement.type = type
+        paletteElement.classDef = cls + ".air"
+        paletteElement.icon = icon
+        paletteElement.sharedStates = shared
+        paletteElement.parameters = paletteElement.parameters || []
+
+        // Re-render and clean up
+				UI.render.palette(availablePalettes[chosenPalette])
+
+        $("#paletteEditor").hide()
+        $("#palette-element-name").val("")
+        $("#palette-element-type").val("noun")
+        $("#palette-element-class").val("")
+        $("#palette-element-icon").val("")
+        $("#palette-element-shared").val("")
+      }
+    },
 
 		clearNetwork : function() {
 			if (_.isEmpty(node_data_set.get()) || confirm("Changing palettes will clear the drawing canvas.")) {
@@ -946,14 +1015,78 @@
 	h4 {
 		font-size: 1.1em;
 	}
+  button {
+    background-color: white;
+  }
 	.resultChart {
 		width: 80%;
 		height: 80%
 	}
 
+  #paletteEditor {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 80px;
+    background-color: lightgray;
+    border: 1px solid gray;
+    border-radius: 15px;
+    padding: 10px;
+    z-index: 1;
+  }
+
+
 </style></head>
 <body>
 	<div id="results" style="display: none;"></div>
+	<div id="paletteEditor" style="display: none;">
+    <h3>Palette element editor</h3>
+
+    Start from (or edit) an existing element:
+    <select id="palette-element-selector"
+            name="template"
+            style='width: 100%'
+            onchange="UI.paletteEditor.loadTemplate(this.value)">
+    </select>
+    <br/>
+
+    <table style='width: 100%'>
+      <tr>
+        <td>Name:</td>
+        <td><input id="palette-element-name" type="text" name="name" style='width: 100%'/></td>
+      </tr>
+
+      <tr>
+        <td>Type:</td>
+        <td>
+          <select id="palette-element-type" name="type" style='width: 100%'>
+            <option value="noun">Noun</option>
+            <option value="verb">Verb</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Class name:</td>
+        <td><input id="palette-element-class" type="text" name="class name" style='width: 100%'/></td>
+      </tr>
+
+      <tr>
+        <td>Icon name:</td>
+        <td><input id="palette-element-icon" type="text" name="icon name" style='width: 100%'/></td>
+      </tr>
+
+      <tr>
+        <td>Shared states (enter comma-delimited):</td>
+        <td><input id="palette-element-shared" type="text" name="shared states" style='width: 100%'/></td>
+      </tr>
+    </table>
+
+    <center>
+      <button onclick="UI.paletteEditor.hide()">Cancel</button>
+      <button onclick="UI.paletteEditor.submitPaletteElement()">Save changes</button>
+    </center>
+  </div>
 	<div id="palette">
 		<div id="paletteChooser">
 			<select onchange="UI.choosePalette(this)"></select>

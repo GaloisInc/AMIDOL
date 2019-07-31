@@ -8,6 +8,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import scala.concurrent.{ExecutionContext, Future}
+import java.text.SimpleDateFormat
+import java.util.Date
 
 object JuliaGillespie extends ContinuousInitialValue {
  
@@ -137,12 +139,18 @@ object JuliaGillespie extends ContinuousInitialValue {
       }
 
       // Parse the output back out
-      (nestedArrsTransposed, times) <- Try(outputArrs.parseJson.convertTo[(Seq[Seq[Double]], Seq[Double])])
+      (nestedArrsTransposed, times) <- Try(outputArrs.parseJson.convertTo[(Vector[Vector[Double]], Vector[Double])])
       nestedArrs = nestedArrsTransposed.transpose
-
-    } yield Outputs(
-      variables = (stateVarsStr zip nestedArrs).toMap,
-      times = times
-    )
+    } yield {
+      val traces = stateVarsStr zip nestedArrs
+      val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
+      Main.AppState.dataTraces ++= traces.map { case (traceName, traceData) =>
+        s"${date}_${traceName}_julia_${requestId}" -> (times, traceData)
+      }
+      Outputs(
+        variables = traces.toMap,
+        times = times
+      )
+    }
   }
 }

@@ -1,0 +1,296 @@
+<!doctype html>
+<meta charset="utf-8">
+  <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="vis-4.21.0.min.js"></script>
+  <script type="text/javascript" src="underscore-1.9.1.min.js"></script>
+  <link rel="stylesheet" href="vis-4.21.0.min.css" type="text/css" />
+
+  <script type="text/javascript" src="jquery.fancybox.min.js"></script>
+  <link rel="stylesheet" href="jquery.fancybox.min.css" type="text/css" />
+
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="skeleton.css">
+
+  <link rel="stylesheet" href="chartist.min.css" type="text/css" />
+  <script type="text/javascript" src="chartist.min.js"></script>
+  <script type="text/javascript" src="chartist-plugin-axistitle.min.js"></script>
+  
+<script type="text/javascript">
+  var data_traces = []
+  var possible_data_trace_names = []
+
+  $.postJSON = function(url, data, callback) {
+    return jQuery.ajax({
+      'type': 'POST',
+      'url': url,
+      'contentType': 'application/json',
+      'data': JSON.stringify(data),
+      'dataType': 'json',
+      'success': callback
+    });
+  };
+
+
+  var UI = {
+    upload: function() {
+        var fileInput = $("#data-trace-file")[0]
+        var nameInput = $("#data-trace-name")[0]
+
+        var file = fileInput.files[0]
+        var name = nameInput.value
+
+        var reader = new FileReader()
+        reader.onload = function() {
+          var data = JSON.parse(reader.result)
+          var payload = {
+            name: name,
+            data: JSON.stringify(data.data),
+            time: JSON.stringify(data.time)
+          }
+          $.post("/appstate/data-traces/put", payload, function (resp) {
+            UI.renderDataTraces()
+            // fileInput.files = []
+            nameInput.value = ""
+            alert("Data source " + name + " has been uploaded")
+          })
+        };
+        reader.readAsText(file)
+    },
+
+    updatePossibleTraceNames: function(onComplete) {
+      $.post("/appstate/data-traces/list", { limit: 100 }, function (resp) {
+        possible_data_trace_names = resp
+        onComplete()
+      })
+    },
+
+    renderDataTraces: function () {
+      UI.updatePossibleTraceNames(function () {
+        var dts = $("#modelList")
+        dts.empty()
+
+        dts.append(_.map(data_traces, function(d){
+          return $("<div>").attr({class: "dt_element", dt_key: d.key}).append([
+            'Name: ' + d.key + '. ',
+            $("<select>").append(
+                _.map(possible_data_trace_names, function(n) { 
+                  var option = $("<option>").attr('value', n).html(n)
+                  if (d.traceData == n) {
+                    option.attr('selected','selected')
+                  }
+                  return option
+                })
+            ).on('change', function (e) {
+              var valueSelected = this.value;
+              data_traces = _.map(data_traces, function(x) {
+                var newData = (x.key == d.key) ? valueSelected : x.traceData;
+                return {
+                  key: x.key,
+                  traceData: newData
+                }
+              })
+            }), 
+            ' ',
+            $("<button>").html("Delete").css({clear: "both"}).click(function(e){
+              data_traces = _.filter(data_traces, (x) => x.key != d.key)
+              UI.renderDataTraces()
+            })
+          ])
+        }))
+        dts.append($("<button>").html("New").click(function (e) {
+          var traceName = prompt("Name your new trace:")
+          if (traceName) {
+            data_traces.push({ key: traceName, traceData: possible_data_trace_names[0] })
+            UI.renderDataTraces()
+          }
+        }))
+      })
+    },
+
+    fancyCharts : function(chartsData) {
+      $.fancybox.destroy()
+      console.log("data: " + JSON.stringify(chartsData))
+      var chartIdPrefix = "chart-"
+      var charts = _.map(chartsData, function(i, idx) {
+        return $("<div>").attr({id: chartIdPrefix + idx, class: "resultChart"})
+      })
+      $("#results").append(charts)
+      $.fancybox.open(charts, {
+        helpers : { 
+          title : { type : 'inside' }
+        },
+        loop : true,
+        afterClose: function() { $("#results").empty() },
+        beforeShow: function() {
+          // Creating the Chartist objects are in the `beforeShow` function because they were not rendering properly when fancybox changed slides. (all elements in the graph were rendered at a single point)
+          _.map(chartsData, function(singleChartData, idx){
+            var pluginOpts = {
+              chartPadding: { top: 20, right: 0, bottom: 20, left: 0 },
+              plugins: [ Chartist.plugins.ctAxisTitle({
+                axisX: {
+                  axisTitle: singleChartData.title,
+                  axisClass: "ct-axis-title",
+                  offset: { x: 0, y: 40 },
+                  textAnchor: "middle"
+                },
+                axisY: {}
+              })]
+            }
+            new Chartist.Line("#" + chartIdPrefix + idx, singleChartData, pluginOpts)
+          })
+        }
+      })
+    }
+  }
+
+  $(function () {
+    UI.renderDataTraces()
+    $("#plot-models").click(function () {
+      var trace_names = JSON.stringify(_.map(data_traces, (dt) => dt.traceData))
+      $.post("/appstate/data-traces/get", { names: trace_names }, function (resp) {
+        var labels = undefined
+        var series = []
+        _.map(resp, function (data) {
+          labels = labels || data[1]
+          series.push(data[2])
+        })
+        
+        UI.fancyCharts([ {
+            title: "Comparision",
+            labels: labels,
+            series: series
+          } ]
+        )
+      })
+    })
+  })
+
+</script>
+
+<style type="text/css">
+  html, body, #graph {
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  #header {
+    text-align: center;
+  }
+  #graph {
+    float:left;
+    width: 75%;
+    /*border: 5px solid gray;*/
+  }
+  #palette img {
+    margin: 5px;
+    padding: 5px;
+    height: 50px;
+    border: 5px solid white;
+  }
+  .vis-manipulation {
+    outline: 1px solid gray;
+    width: 99.9% !important; /* Ugly UI hack! */
+  }
+  .vis-close {
+    display: none !important;
+  }
+  .verb {
+    fill: gray;
+  }
+  #palette img.selected {
+    border-color: lightblue;
+  }
+  #palette img.right {
+    margin-top: 1em;
+    height: 25px;
+  }
+  #palette .right{
+    float: right;
+  }
+  #exec_button {
+    margin: 22px 0px 22px 22px;
+  }
+  #exec_chooser {
+    margin: 22px 0px 22px 0px;
+  }
+  #paletteChooser{
+    margin: 1.5em 1.5em 0em 1.5em;
+    float: left;
+  }
+  #palette img.disabled {
+    opacity: 0.25;
+  }
+  #variables {
+    height: 100%;
+    width: 25%;
+    border-color: green;
+    float: right;
+  }
+  #localVars {
+    width: 100%;
+    height: 45%;
+    outline: 1px solid gray;
+    overflow: scroll;
+    padding: 1em;
+    box-sizing: border-box;
+  }
+  #localVars p {
+    /*text-decoration: underline;*/
+  }
+  #rewardVars {
+    width: 100%;
+    height: 45%;
+    outline: 1px solid gray;
+    overflow: scroll;
+    padding: 1em;
+    box-sizing: border-box;
+  }
+  #rewardVars .rv_element:not(:last-child) {
+    border-bottom: 1px solid #000;
+    margin-bottom: 1em;
+  }
+  .range_param {
+    display: inline-block;
+    padding: 1em;
+  }
+  .opt2 {
+    margin: 0px;
+  }
+  h2 {
+    font-size: 1.75em;
+  }
+  h3 {
+    font-size: 1.5em;
+  }
+  h4 {
+    font-size: 1.1em;
+  }
+  .resultChart {
+    width: 80%;
+    height: 80%
+  }
+
+</style>
+<body>
+  <div id="results" style="display: none;"></div>
+  <div style="padding: 1em">
+    <h3>Models to compare</h3>
+    <div style="padding: 1em">
+      <div id='modelList'>
+
+      </div>
+      <button id="plot-models">Plot the comparision</button>
+    </div>
+  
+    <h3>Upload a new data set</h3>
+    <div style="padding: 1em">
+      Name: <input type="text" id="data-trace-name" name="trace-name" /><br>
+      Data: <input type="file" id="data-trace-file" name="trace-file" /><br>
+      <button onclick="UI.upload()">Upload trace</button>
+    </div>
+  </div>
+</body>
