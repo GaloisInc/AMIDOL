@@ -101,7 +101,7 @@ object Main extends App with Directives {
           import DefaultJsonProtocol._
 
           path("put") {
-            formField('name.as[String], 'time.as[Vector[Double]], 'trace.as[Vector[Double]]) {
+            formField('name.as[String], 'time.as[Vector[Double]], 'data.as[Vector[Double]]) {
               case (name: String, time: Vector[Double], trace: Vector[Double]) =>
                 complete {
                   AppState.dataTraces += (name -> (time, trace))
