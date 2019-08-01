@@ -140,7 +140,7 @@
 
 In this report we discuss recent extensions to \amidol{}'s framework
 which seek to extend \amidol{}'s Abstract Knowledge Layer and
-Formulation and Paletter generation capabilities, and briefly discuss
+Formulation and Palette generation capabilities, and briefly discuss
 extensions to \amidol{}'s ability to work with additional intermediate
 representations at the Structured Knowledge Layer, and support for
 additional backends for its Executable Knowledge Layer.
@@ -170,20 +170,29 @@ metamodeling process.
 \end{definition}
 
 The primary mechanism used for formulations in \amidol{} are Visual
-Domain Specific Ontological Languages (VDSOLs).  A VDSOL is defined by
+Domain Specific Ontological Languages (VDSOLs).  VDSOLs attempt to
+leverage the semi-formal diagrams domain scientists use when
+describing and documenting systems; pairing them with formal
+mathematical and executable meaning.  To accomplish this, a VDSOL is defined by
 a Formulation Palette,
 
 \begin{definition}{Formulation Palette}
   A formulation palette is a set $P = \{ p_0, p_1, \ldots\}$ of
-  palette elements.
+  palette elements which can be used to construct a semi-formal
+  diagram with underlying mathematical and executable meaning.
 \end{definition}
+
+Palettes form the core of the definition of a VDSOL and consist of
+the valid symbols which can be used to instantiate concrete occurances
+of a given palette element.
 
 \begin{definition}{Palette Element}
   A palette element is a type which can be instantiated in a
   formulation as a concrete occurance of the element.  These instance
   elements must have unique names, and can be connected with arcs to
   define structured co-spans of instance elements which can be
-  compiled into \amidol{}'s intermediate representation.
+  compiled into \amidol{}'s intermediate representation, providing
+  formal mathematical meaning for a diagram expressed in a VDSOL.
 
   A palette element is defined by the combination of a palette
   template $T$, and a definition in \amidol{}'s intermediate
@@ -191,8 +200,14 @@ a Formulation Palette,
 
   An instance element is a palette element, combined with a unique
   identifier $N$ and a set of parameters and constants $C$, $(T, R, N,
-  C)$.
+  C)$.  The set of parameters and constants are used to override
+  generic parameters and constants within a palette element,
+  specializing it to a particular modeling case where necessary.
 \end{definition}
+
+Palette templates are abstract palette elements which have recently
+been added to \amidol{} in order to support palette extenstion, both
+automatically and manually.
 
 \begin{definition}{Palette Template}
   A palette template is a category defined by an input set, output
@@ -201,6 +216,11 @@ a Formulation Palette,
   compatible \amidol{} IR models whose input and output cardinality
   and typing match, making them interchangable.
 \end{definition}
+
+Palette templates cannot be instantiated as a concrete instance
+element, but they can be subclassed by a palette element.  Much like
+abstract classes or methods in object oriented programming, palette
+templates lack \emph{implementation}, in this case a paired IR representation.
 
 A Formulation in \amidol{} is a set of palette element instances
 composed together by a set of relations, $A \rightarrow B$ such that
@@ -255,7 +275,8 @@ the following:
 and generating an abstract syntax tree like that shown in Figure
 \ref{Fig:Reaction}.  This abstract syntax tree can then be used to
 generate a model in the \amidol{} IR, representing each reactant with
-a state variable, and constructing events from the equations.
+a state variable, and constructing events from the identified equation
+nodes.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{tree.png}
@@ -276,13 +297,20 @@ gamma,              I --> R
 \section{Formulations from Models}
 
 In order to support a joint demo with GTRI and the University of
-Arizona, we have also been focusing on developing methods which allow
+Arizona, and the Knowledge Extraction workflow of moving up the stack,
+we have also been developing methods which allow
 us to automatically generate formulations in a visual language from
 models at the Structured Knowledge Layer.  To support this, we have
 constructed a new module for \amidol{} which is able to translate
-Julia abstract syntax trees into
+Julia abstract syntax trees, like that shown in Figure \ref{Fig:JuliaAST}, into
 \amidol{}'s IR.  These models are combined with grounding information
 to perform the novel process of Formulation Inference in \amidol{}.
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{AST.png}
+  \caption{Julia Abstract Syntact Tree for SIR Model}
+  \label{Fig:JuliaAST}
+\end{figure}
 
 \subsection{Formulation Inference}
 
@@ -307,40 +335,119 @@ templates as annotations.  In this example the ``Virus (organism)''
 node has been annotated with the palette template for a viral
 infection verb.
 
+For this example, assume we have a Julia AST representing the
+infection process, which has been transformed into \amidol{}'s IR,
+along with the attached grounding ``Influenza A virus subtype
+H3N2v''.  Formulation inference executes a search on a specified
+ontology, in this case SNOMED CT, and walks the parent relationships
+from those nodes which match the grounding, searching for a palette
+template.  If a palette template is found, we check the category of
+the template against an inferred category from the IR representation
+of our code by constructing a \emph{model dependency graph}.
+
+\begin{definition}{Model Dependency Graph}
+  A model dependency graph of a model $M$ is defined as a labeled
+  graph $G_M = (V,A,L)$ where $V$ is the set of vertices composed of
+  three subsets $V_S \cup V_E \cup V_{\Theta}$, $A$ is a set of arcs
+  connecting two vertices such that arcs connect elements of the
+  subset $V_S$ to $V_E$, or vice versa, or connect an element of
+  $V_{\Theta}$ to $V_S \cup V_E$, and $L$ is a set of labels applied
+  to elements of $A$ from the set $\{\Phi, \Lambda, \Delta,
+  \Theta\}$.  The model dependence graph contains $v_i \in V_S$ for
+  every state variable in the model, $v_j \in V_E$ for each event
+  in the model, and $v_k \in V_{\Theta}$ for each measure defined in
+  the model.
+
+  Arcs in $A$ are defined such that, if an event $e_j$ has enabling
+  conditions that depend on state $s_i$, an arc labeled $\Phi$ exists
+  from $v_i \rightarrow v_j$; if an event $e_j$ has a state dependent
+  rate defined in terms of $s_i$, an arc labeled $\Lambda$ exists
+  from $v_i \rightarrow v_j$; if an event $e_j$ has a state transition
+  function defined in terms of $s_i$ and whose firing results in $s_i'
+  < s_i$, an arc labeled $\Delta$ exists from $v_i \rightarrow v_j$
+  and if the firing results in $s_i' > s_i$, an arc labeled $\Delta$
+  exists from $v_j \rightarrow v_i$.  Finally if a measure $\Theta_k$
+  exists and is defined over $s_i$, an arc labeled $\Theta$ exists
+  from $v_k \rightarrow v_i$, and if the measure is defined over
+  $e_j$, an arc labeled $\Theta$ exists
+  from $v_k \rightarrow v_j$.
+\end{definition}
+
+The model dependence graph is used to infer the category of a model,
+and checked against any template found in the ontology search.  On a
+successful matching to a template, the IR is used to infer a new
+palette element which is added to the VDSOL palette, and can be
+instantiated into new instance elements.
+
+If a template is not found, a generic template is created from the
+inferred category, and flagged
+for user attention and resolution.
+
 \section{The SNOMED Ontologies}
 
+In order to support our goals for the demo, and \amidol{}'s new
+formulation inference capabilities, we have implemented an ontology
+ingestion pipeline for \amidol{}, and uploaded the SNOMED CT
+ontology.  The SNOMED ontology consists of 466,612 concepts organized
+as a directed acyclic graph, with parent/child relationships
+represented.  Terms in the ontology have a maximum of 3,762 children,
+each, and 36 parents.  We annotated this ontology with palette
+templates for the SIR model palette.
+
 \section{Examples}
+
+The following examples demonstrate the behavior of \amidol{} when
+performing palette inference from grounding.  In all of the following
+examples, our goal was to find the palette template annotated at the
+node for ``Virus (organism)''.  Figure
+\ref{Fig:H1N1Grounding} shows the process of ontology search for a
+template beginning with the grounding ``Influenza A (H1N1)''.  Each
+green node represents a separate matching term, using substring
+matching.  \amidol{} proceeded to follow all parent relationships, and
+displayed all annotated nodes in red, successfully recovering the
+palette template.
 
 \begin{figure}
   \begin{center}
     \includegraphics[width=\textwidth]{H1N1.png}
   \end{center}
   \caption{Ontology search for viral template from grounding
-    ``Influenza A (H1N1''}
+    ``Influenza A (H1N1)''}
+  \label{Fig:H1N1Grounding}
 \end{figure}
+
+Figure \ref{Fig:H3N2Grounding} shows the results from searching on the
+grounding ``H3N2''.  Note the results are quite different than those
+presented in Figure \ref{Fig:ontology1}, as far more nodes matched the
+term search, requiring a larger search of the ontology to find
+potential palette templates.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{H3N2map.png}
   \caption{Ontology search for viral template from grounding ``H3N2''}
+  \label{Fig:H3N2Grounding}
 \end{figure}
+
+Figure \ref{EbolaGrounding} shows the same process for the grounding
+``Ebola'', also recovering the viral template.
 
 \begin{figure}
   \includegraphics[width=\textwidth]{Ebolamap.png}
-  \caption{Ontology search for viral template from grounding ``Ebola''}
+  \caption{Ontology search for viral template from grounding
+    ``Ebola''}
+  \label{Fig:EbolaGrounding}
 \end{figure}
 
-  * Updated Diagram
-  * Formulation vs. Model vs. Implementation
-    * Formulation paradigm
-    * Formulation languages
-  * Julia AST -> IR
-  * Snomed Ontology Summary
-  * Palette Generation from Templates
-    * Category Theory
-    * Templating
-    * Snomed and Palette Generation
+Our initial experiments have been successful, and suggest the
+suitability for this algorithm for formulation inference using
+human-in-the-loop teaming with \amidol{}.
 
 \section{Other Recent AMIDOL Extensions}
+
+In addition to the major extensions described above, we have also
+extended \amidol{} to support new back-end solvers for the Executable
+Knowledge Layer, including agent-based models in Julia and Python, and
+ODE-based solvers in Julia.
 
 \section{Resources, web sites, etc.}
 

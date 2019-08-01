@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  31 JUL 2019 17:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  1 AUG 2019 11:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -495,7 +495,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 244.
+nput line 264.
  (./equation.lark
 
 Package Fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -503,51 +503,64 @@ Make it at least 13.59999pt.
 We now make it that large for the rest of the document.
 This may cause the page layout to be inconsistent, however.
 
-[2])
-<tree.png, id=90, 2200.22pt x 1287.81125pt>
+[2]) [3]
+<tree.png, id=128, 2200.22pt x 1287.81125pt>
 File: tree.png Graphic file (type png)
 <use tree.png>
-Package pdftex.def Info: tree.png  used on input line 261.
+Package pdftex.def Info: tree.png  used on input line 282.
 (pdftex.def)             Requested size: 469.75502pt x 274.94829pt.
- [3]
+<AST.png, id=131, 710.655pt x 592.2125pt>
+File: AST.png Graphic file (type png)
+<use AST.png>
+Package pdftex.def Info: AST.png  used on input line 310.
+(pdftex.def)             Requested size: 469.75502pt x 391.47592pt.
 <H3N2vmap.png, id=132, 2478.25874pt x 248.93pt>
 File: H3N2vmap.png Graphic file (type png)
 <use H3N2vmap.png>
-Package pdftex.def Info: H3N2vmap.png  used on input line 294.
+Package pdftex.def Info: H3N2vmap.png  used on input line 322.
 (pdftex.def)             Requested size: 469.75502pt x 47.18323pt.
-<H1N1.png, id=134, 2526.43875pt x 546.04pt>
+ [4 <./tree.png>] [5 <./AST.png> <./H3N2vmap.png>] [6]
+<H1N1.png, id=158, 2526.43875pt x 546.04pt>
 File: H1N1.png Graphic file (type png)
 <use H1N1.png>
-Package pdftex.def Info: H1N1.png  used on input line 316.
+Package pdftex.def Info: H1N1.png  used on input line 412.
 (pdftex.def)             Requested size: 469.75502pt x 101.52406pt.
- [4 <./tree.png> <./H3N2vmap.png>]
-<H3N2map.png, id=143, 4844.0975pt x 2468.22125pt>
+<H3N2map.png, id=161, 4844.0975pt x 2468.22125pt>
 File: H3N2map.png Graphic file (type png)
 <use H3N2map.png>
-Package pdftex.def Info: H3N2map.png  used on input line 323.
+Package pdftex.def Info: H3N2map.png  used on input line 426.
 (pdftex.def)             Requested size: 469.75502pt x 239.34184pt.
-<Ebolamap.png, id=144, 4988.6375pt x 2275.50125pt>
+
+
+LaTeX Warning: Reference `EbolaGrounding' on page 7 undefined on input line 431
+.
+
+<Ebolamap.png, id=162, 4988.6375pt x 2275.50125pt>
 File: Ebolamap.png Graphic file (type png)
 <use Ebolamap.png>
-Package pdftex.def Info: Ebolamap.png  used on input line 328.
+Package pdftex.def Info: Ebolamap.png  used on input line 435.
 (pdftex.def)             Requested size: 469.75502pt x 214.2652pt.
-
+[7 <./H1N1.png> <./H3N2map.png>]
 No file AMIDOL_M7_Report.bbl.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 351.
-[5 <./H1N1.png> <./H3N2map.png>] [6 <./Ebolamap.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 351.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 458.
+[8 <./Ebolamap.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 458.
  (./AMIDOL_M7_Report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 351.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 351.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 458.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 458.
 Package rerunfilecheck Info: File `AMIDOL_M7_Report.out' has not changed.
 (rerunfilecheck)             Checksum: 91B935828DED4737017770511006B31F;588.
+
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 10070 strings out of 492616
- 146015 string characters out of 6129482
- 329534 words of memory out of 5000000
- 13781 multiletter control sequences out of 15000+600000
- 12588 words of font info for 48 fonts, out of 8000000 for 9000
+ 10086 strings out of 492616
+ 146223 string characters out of 6129482
+ 347888 words of memory out of 5000000
+ 13791 multiletter control sequences out of 15000+600000
+ 12934 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  42i,12n,43p,824b,1833s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
@@ -561,12 +574,14 @@ ocal/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/loc
 al/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/
 texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/tex
 live/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
-ive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texli
-ve/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on AMIDOL_M7_Report.pdf (6 pages, 2742317 bytes).
+ive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texliv
+e/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive
+/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/
+2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on AMIDOL_M7_Report.pdf (8 pages, 2939576 bytes).
 PDF statistics:
- 221 PDF objects out of 1000 (max. 8388607)
- 189 compressed objects within 2 object streams
- 81 named destinations out of 1000 (max. 500000)
- 106 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 249 PDF objects out of 1000 (max. 8388607)
+ 210 compressed objects within 3 object streams
+ 85 named destinations out of 1000 (max. 500000)
+ 111 words of extra memory for PDF output out of 10000 (max. 10000000)
 
