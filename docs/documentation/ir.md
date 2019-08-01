@@ -211,7 +211,7 @@ The IR definition of an impulse reward associates the identifier of a single eve
 
 Both rate and impulse reward variables measure the behavior of a model $$M$$ with respect to time.  As such, a reward variable $$\theta$$ is declared as either an instant-of-time variable, an interval-of-time variable, a time-averaged interval-of-time variable, or a steady state variable.  An instant of time variable $$\Theta_t$$ is defined as:
 
-$$\theta_t = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{I}^{\nu}_t + \sum_{e \in E} \mathcal{I}(e) \cdot I_t^e\$$
+$$\theta_t = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{I}^{\nu}_t + \sum_{e \in E} \mathcal{I}(e) \cdot I_t^e$$
 
 Intuitively a rate reward declared as an instant-of-time variable can be used to measure the value of a state variable precisely at time $$t$$, and an impulse reward declared as an instant-of-time variable can be used to measure whether a given event fired at precisely time $$t$$.  While the latter is not a particularly useful measure (as the probability of an event with a firing time drawn from a continuous distribution at time $$t$$ is 0) it is defined primarily for closure reasons, as well as extensions to discrete general distributions.
 
