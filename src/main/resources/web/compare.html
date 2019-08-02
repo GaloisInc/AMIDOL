@@ -13,10 +13,8 @@
   <link rel="stylesheet" href="normalize.css">
   <link rel="stylesheet" href="skeleton.css">
 
-  <link rel="stylesheet" href="chartist.min.css" type="text/css" />
-  <script type="text/javascript" src="chartist.min.js"></script>
-  <script type="text/javascript" src="chartist-plugin-axistitle.min.js"></script>
-  
+  <script src="plotly-latest.min.js"></script>
+
 <script type="text/javascript">
   var data_traces = []
   var possible_data_trace_names = []
@@ -107,41 +105,6 @@
           }
         }))
       })
-    },
-
-    fancyCharts : function(chartsData) {
-      $.fancybox.destroy()
-      console.log("data: " + JSON.stringify(chartsData))
-      var chartIdPrefix = "chart-"
-      var charts = _.map(chartsData, function(i, idx) {
-        return $("<div>").attr({id: chartIdPrefix + idx, class: "resultChart"})
-      })
-      $("#results").append(charts)
-      $.fancybox.open(charts, {
-        helpers : { 
-          title : { type : 'inside' }
-        },
-        loop : true,
-        afterClose: function() { $("#results").empty() },
-        beforeShow: function() {
-          // Creating the Chartist objects are in the `beforeShow` function because they were not rendering properly when fancybox changed slides. (all elements in the graph were rendered at a single point)
-          _.map(chartsData, function(singleChartData, idx){
-            var pluginOpts = {
-              chartPadding: { top: 20, right: 0, bottom: 20, left: 0 },
-              plugins: [ Chartist.plugins.ctAxisTitle({
-                axisX: {
-                  axisTitle: singleChartData.title,
-                  axisClass: "ct-axis-title",
-                  offset: { x: 0, y: 40 },
-                  textAnchor: "middle"
-                },
-                axisY: {}
-              })]
-            }
-            new Chartist.Line("#" + chartIdPrefix + idx, singleChartData, pluginOpts)
-          })
-        }
-      })
     }
   }
 
@@ -150,19 +113,30 @@
     $("#plot-models").click(function () {
       var trace_names = JSON.stringify(_.map(data_traces, (dt) => dt.traceData))
       $.post("/appstate/data-traces/get", { names: trace_names }, function (resp) {
-        var labels = undefined
-        var series = []
+        var datas = []
         _.map(resp, function (data) {
-          labels = labels || data[1]
-          series.push(data[2])
-        })
-        
-        UI.fancyCharts([ {
-            title: "Comparision",
-            labels: labels,
-            series: series
-          } ]
-        )
+					datas.push({
+				    name: data[0],
+						x: data[1],
+						y: data[2],
+						mode: 'lines+markers'
+					})
+				})
+
+				var layout = {
+				  height: 500
+				}
+				var config = {
+				  toImageButtonOptions: {
+            format: 'svg', // one of png, svg, jpeg, webp
+            filename: 'comparision',
+            height: 500,
+            width: 700,
+            scale: 1
+          },
+				  responsive: true
+				}
+				Plotly.newPlot("comparision-plot", datas, layout, config);
       })
     })
   })
@@ -285,12 +259,15 @@
       </div>
       <button id="plot-models">Plot the comparision</button>
     </div>
-  
+
     <h3>Upload a new data set</h3>
     <div style="padding: 1em">
       Name: <input type="text" id="data-trace-name" name="trace-name" /><br>
       Data: <input type="file" id="data-trace-file" name="trace-file" /><br>
       <button onclick="UI.upload()">Upload trace</button>
     </div>
+
+		<h3>Comparision plot</h3>
+    <div id="comparision-plot"></div>
   </div>
 </body>
