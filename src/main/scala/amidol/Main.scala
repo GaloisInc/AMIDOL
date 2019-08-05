@@ -24,6 +24,7 @@ import com.typesafe.config.ConfigFactory
 object Main extends App with Directives {
 
   val conf = ConfigFactory.load();
+  OntologyDb // Initialize db
 
   // Mutable app state
   //
