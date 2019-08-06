@@ -39,22 +39,26 @@
         var file = fileInput.files[0]
         var name = nameInput.value
 
-        var reader = new FileReader()
-        reader.onload = function() {
-          var data = JSON.parse(reader.result)
-          var payload = {
-            name: name,
-            data: JSON.stringify(data.data),
-            time: JSON.stringify(data.time)
-          }
-          $.post("/appstate/data-traces/put", payload, function (resp) {
-            UI.renderDataTraces()
-            // fileInput.files = []
-            nameInput.value = ""
-            alert("Data source " + name + " has been uploaded")
-          })
-        };
-        reader.readAsText(file)
+				if (file && name) {
+          var reader = new FileReader()
+          reader.onload = function() {
+            var data = JSON.parse(reader.result)
+            var payload = {
+              name: name,
+              data: JSON.stringify(data.data),
+              time: JSON.stringify(data.time)
+            }
+            $.post("/appstate/data-traces/put", payload, function (resp) {
+              UI.renderDataTraces()
+              // fileInput.files = []
+              nameInput.value = ""
+              alert("Data source " + name + " has been uploaded")
+            })
+          };
+          reader.readAsText(file)
+				} else {
+          alert("You need to enter a file and data trace name!")
+				}
     },
 
     updatePossibleTraceNames: function(onComplete) {
@@ -105,6 +109,10 @@
           }
         }))
       })
+    },
+
+    closePlot: function() {
+      $("#results").hide();
     }
   }
 
@@ -124,7 +132,7 @@
 				})
 
 				var layout = {
-				  height: 500
+				  title: "Comparision"
 				}
 				var config = {
 				  toImageButtonOptions: {
@@ -136,6 +144,7 @@
           },
 				  responsive: true
 				}
+				$("#results").show();
 				Plotly.newPlot("comparision-plot", datas, layout, config);
       })
     })
@@ -243,14 +252,42 @@
   h4 {
     font-size: 1.1em;
   }
+  button {
+    background-color: white;
+  }
   .resultChart {
     width: 80%;
     height: 80%
   }
 
+  #results {
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 80px;
+    bottom: 80px;
+    background-color: lightgray;
+    border: 1px solid gray;
+    border-radius: 15px;
+    padding: 10px;
+    z-index: 1;
+  }
+  #comparision-plot {
+    position: absolute;
+		top: 20px;
+		bottom: 20px;
+		left: 20px;
+		right: 20px;
+	}
+
 </style>
 <body>
-  <div id="results" style="display: none;"></div>
+  <div id="results" style="display: none;">
+    <div id="comparision-plot"></div>
+		<center>
+      <button onclick="UI.closePlot()" style="position: absolute; bottom: 0">Close</button>
+    </center>
+	</div>
   <div style="padding: 1em">
     <h3>Models to compare</h3>
     <div style="padding: 1em">
@@ -266,8 +303,5 @@
       Data: <input type="file" id="data-trace-file" name="trace-file" /><br>
       <button onclick="UI.upload()">Upload trace</button>
     </div>
-
-		<h3>Comparision plot</h3>
-    <div id="comparision-plot"></div>
   </div>
 </body>
