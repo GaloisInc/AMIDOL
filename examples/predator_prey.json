@@ -12,7 +12,6 @@
             "className": "prey",
             "type": "noun",
             "sharedStates": ["P","P"],
-            "classDef": "prey.air",
             "icon": "images/prey.svg",
             "parameters": [
               {
@@ -31,7 +30,6 @@
           "props": {
             "className": "hunting",
             "type": "verb",
-            "classDef": "hunting.air",
             "icon": "images/hunting.svg",
             "sharedStates": ["INPUT","OUTPUT"],
             "parameters": [
@@ -56,7 +54,6 @@
             "className": "predator",
             "type": "noun",
             "sharedStates": ["P","P"],
-            "classDef": "predator.air",
             "icon": "images/predator.svg",
             "parameters": [
               {

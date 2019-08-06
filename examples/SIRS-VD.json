@@ -12,7 +12,6 @@
             "className": "population_vital_dynamics",
             "type": "noun",
             "sharedStates": ["P","P"],
-            "classDef": "population_vital_dynamics.air",
             "icon": "images/person.svg",
             "parameters": [
               {
@@ -32,7 +31,6 @@
             "className": "infect",
             "type": "verb",
             "sharedStates": ["INPUT","OUTPUT"],
-            "classDef": "infect.air",
             "icon": "images/virus.svg",
             "parameters": [
               {
@@ -56,7 +54,6 @@
             "className": "patient_vital_dynamics",
             "type": "noun",
             "sharedStates": ["P","P"],
-            "classDef": "patient_vital_dynamics.air",
             "icon": "images/patient.svg",
             "parameters": [
               {
@@ -76,7 +73,6 @@
             "className": "cure",
             "type": "verb",
             "sharedStates": ["INPUT","OUTPUT"],
-            "classDef": "cure.air",
             "icon": "images/cure.svg",
             "parameters": [
               {
@@ -96,7 +92,6 @@
             "className": "population_vital_dynamics",
             "type": "noun",
             "sharedStates": ["P","P"],
-            "classDef": "population_vital_dynamics.air",
             "icon": "images/person.svg",
             "parameters": [
               {
@@ -116,7 +111,6 @@
             "className": "time",
             "type": "verb",
             "sharedStates": ["INPUT","OUTPUT"],
-            "classDef": "time.air",
             "icon": "images/time.svg",
             "parameters": [
               {

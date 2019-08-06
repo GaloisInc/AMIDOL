@@ -93,7 +93,6 @@ object Node extends UiJsonSupport
 
 case class NodeProps (
   className: String,            // name of model in palette
-  classDef: String,             // name of model in palette
   parameters:  Seq[Parameter],
   `type`: String,              // verb or noun
   sharedStates: Array[String]  // For now, this is be: `[ <shared state for incoming arrows>
@@ -119,7 +118,6 @@ case class Palette(
   className: String,
   `type`: String,
   sharedStates: Array[String],
-  classDef: String,
   icon: String,
   parameters:  Seq[Parameter]
 )

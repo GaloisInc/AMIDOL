@@ -26,7 +26,7 @@
 	var global_vars = { Example : 0 };
 	var reward_vars = []// { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
 	var chosen_backend = "scipy"
- 
+
 
 	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
 
@@ -79,7 +79,7 @@
 		},
 
 
-		// Purpose: cause UI side effects... and nothing else. 
+		// Purpose: cause UI side effects... and nothing else.
 		// Always call last, after setting the relevant shared states.
 		applyEventEffects : function(event) {
 			switch (event.type) {
@@ -241,7 +241,7 @@
 				// 		r.opt1 = nodeNames[0][1]
 				// 	}
 				// 	return r
-				// }) 
+				// })
 
 				rvs.append(_.map(reward_vars, function(r){
 					return $("<div>").attr({class: "rv_element", rv_key: r.key}).change(
@@ -250,10 +250,10 @@
 						$("<h3>").attr({class: "key"}).html(r.key),
 						$("<div>").append(
 							$("<select>").attr({class: "opt1"}).append(
-								_.map(nodeNames, function(n) { 
+								_.map(nodeNames, function(n) {
 									var opt = $("<option>").attr('value', n[1]).html(n[1])
 									if (r.opt1 == n[1]) {
-										opt.attr('selected','selected') 
+										opt.attr('selected','selected')
 									}
 									return opt
 								})
@@ -262,7 +262,7 @@
 						$("<h4>").html("Range"),
 						$("<div>").append(
 							$("<select>").attr({class: "opt2"}).append(
-								_.map(rv_names, function(n, idx) { 
+								_.map(rv_names, function(n, idx) {
 									var opt = $("<option>").attr({'value': n}).html(n)
 									if (idx != 0) { opt.attr('disabled', 'disabled') }
 									return opt
@@ -299,7 +299,7 @@
 				})
 				$("#results").append(charts)
 				$.fancybox.open(charts, {
-					helpers : { 
+					helpers : {
 						title : { type : 'inside' }
 					},
 					loop : true,
@@ -368,17 +368,17 @@
 						// 	callback() // returns the editing bar to its normal state
 						// },
 						deleteNode: function(dataIds, callback) {
-							journal.apply( { 
-								"type": "subtract", 
-								"nodes": node_data_set.get(dataIds.nodes), 
+							journal.apply( {
+								"type": "subtract",
+								"nodes": node_data_set.get(dataIds.nodes),
 								"edges": edge_data_set.get(dataIds.edges)
 							} )
 						},
 						deleteEdge: function(dataIds, callback) {
-							journal.apply( { 
-								"type": "subtract", 
-								"nodes": node_data_set.get(dataIds.nodes), 
-								"edges": edge_data_set.get(dataIds.edges) 
+							journal.apply( {
+								"type": "subtract",
+								"nodes": node_data_set.get(dataIds.nodes),
+								"edges": edge_data_set.get(dataIds.edges)
 							} )
 						}
 					}
@@ -402,7 +402,7 @@
 						} else {
 							if (! isUnused) { alert("That name is already used.") }
 						}
-					} 
+					}
 					// else { if (_.size(e.edges) == 1) {
 					// 	var newName = prompt("New edge name:")
 					// 	if (newName !== null) {
@@ -483,7 +483,6 @@
         var paletteElement = availablePalettes[chosenPalette][name]
         paletteElement.className = cls
         paletteElement.type = type
-        paletteElement.classDef = cls + ".air"
         paletteElement.icon = icon
         paletteElement.sharedStates = shared
         paletteElement.parameters = paletteElement.parameters || []
@@ -516,7 +515,7 @@
 		},
 
 		makeNode : function(node, className) {
-			if ( ! node.hasOwnProperty("id")) { 
+			if ( ! node.hasOwnProperty("id")) {
 				function randomUuid() {
 					return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 						var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
@@ -555,10 +554,10 @@
 		addRewardVar : function() {
 			var name = prompt("Name your new reward variable:")
 			if (name != undefined && ! _.contains(_.pluck(reward_vars, "id"), name )) {
-				var new_rv = { 
-					key: name, 
+				var new_rv = {
+					key: name,
 					opt1: getOrElse(_.find(node_data_set.get(), (n) => n.props.type == "noun"), {label: ""}).label,
-					opt2: "Instant of Time", 
+					opt2: "Instant of Time",
 					range: { start: 0, end: 100, step: 5 }
 				}
 				var event = { type: "setRewardVar", key: new_rv.key, old: null, new: new_rv }
@@ -749,23 +748,20 @@
 				"className": "population",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "population.air",
 				"icon": "images/person.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"patient" : {
 				"className": "patient",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "patient.air",
 				"icon": "images/patient.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"infect": {
 				"className": "infect",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "infect.air",
 				"icon": "images/virus.svg",
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
@@ -776,7 +772,6 @@
 				"className": "cure",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "cure.air",
 				"icon": "images/cure.svg",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
@@ -786,23 +781,20 @@
 				"className": "population_vital_dynamics",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "population_vital_dynamics.air",
 				"icon": "images/person.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"patient" : {
 				"className": "patient_vital_dynamics",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "patient_vital_dynamics.air",
 				"icon": "images/patient.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"infect": {
 				"className": "infect",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "infect.air",
 				"icon": "images/virus.svg",
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
@@ -813,7 +805,6 @@
 				"className": "cure",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "cure.air",
 				"icon": "images/cure.svg",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			},
@@ -821,7 +812,6 @@
         "className": "time",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "time.air",
 				"icon": "images/time.svg",
 				"parameters": [
 					{"name": "eta", "value": "0.002"}
@@ -834,23 +824,20 @@
 				"className": "predator",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "predator.air",
 				"icon": "images/predator.svg",
 				"parameters": [{"name": "Initial", "value": "0.9"}]
-			}, 
+			},
 			"prey" : {
 				"className": "prey",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "prey.air",
 				"icon": "images/prey.svg",
 				"parameters": [{"name": "Initial", "value": "0.9"}]
-			}, 
+			},
 			"hunting": {
 				"className": "hunting",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "hunting.air",
 				"icon": "images/hunting.svg",
 				"verb_sort": {
 					"type": "unconserved",
@@ -876,7 +863,7 @@
 		UI.render.network()
 
 		var sample_nodes = [
-			UI.makeNode({id: "1", label: "Susceptible", x: -350, y: 0}, "population"), 
+			UI.makeNode({id: "1", label: "Susceptible", x: -350, y: 0}, "population"),
 			UI.makeNode({id: "2", label: "Exposed", x: -175, y: 0}, "infect"),
 			UI.makeNode({id: "3", label: "Infected", x: -0, y: 0}, "patient"),
 			UI.makeNode({id: "4", label: "Cured", x: 175, y: 0}, "cure"),
@@ -890,7 +877,7 @@
 		]
 		/*
 		var sample_nodes = [
-			UI.makeNode({id: "1", label: "Breeding", x: -175, y: -175}, "breeding"), 
+			UI.makeNode({id: "1", label: "Breeding", x: -175, y: -175}, "breeding"),
 			UI.makeNode({id: "2", label: "Prey", x: -175, y: 0}, "prey"),
 			UI.makeNode({id: "3", label: "Hunting", x: -0, y: 0}, "hunting"),
 			UI.makeNode({id: "4", label: "Predator", x: 175, y: 0}, "predator"),
