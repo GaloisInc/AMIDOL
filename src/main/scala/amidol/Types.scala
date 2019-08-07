@@ -176,3 +176,16 @@ trait ModelJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val eventFormat = jsonFormat4(Event.apply)
   implicit val modelFormat = jsonFormat3(Model.apply)
 }
+
+// Full description of a palette element
+case class PaletteItem(
+  className: String,
+  `type`: String,
+  sharedStates: Array[String],
+  icon: String,
+  backingModel: amidol.Model,   // parameters = backingModel.constants
+)
+object PaletteItem extends SprayJsonSupport with DefaultJsonProtocol {
+  implicit val paletteFormat = jsonFormat5(PaletteItem.apply)
+}
+

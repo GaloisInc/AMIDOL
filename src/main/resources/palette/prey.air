@@ -1,23 +1,29 @@
 {
-  "states": {
-    "P": {
-      "state_variable": "P",
-      "decription": "Prey",
-      "initial_value": "Initial"
-    }
-  },
-  "events": {
-    "breeding": {
-      "rate": "alpha * P",
-      "output_predicate": {
-        "transition_function": {
-          "P": "1"
+  "className": "prey",
+  "type": "noun",
+  "sharedStates": ["P","P"],
+  "icon": "images/prey.svg",
+  "backingModel": {
+    "states": {
+      "P": {
+        "state_variable": "P",
+        "decription": "Prey",
+        "initial_value": "Initial"
+      }
+    },
+    "events": {
+      "breeding": {
+        "rate": "alpha * P",
+        "output_predicate": {
+          "transition_function": {
+            "P": "1"
+          }
         }
       }
+    },
+    "constants": {
+      "Initial": 0,
+      "alpha": 0.66
     }
-  },
-  "constants": {
-    "Initial": 0,
-    "alpha": 0.66
   }
 }

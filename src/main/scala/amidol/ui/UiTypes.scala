@@ -16,7 +16,7 @@ case class Graph(
 
     var outgoingLinks = new HashMap[String, Set[String]] with MultiMap[String, String]
     var incomingLinks = new HashMap[String, Set[String]] with MultiMap[String, String]
-    
+
     links.values.foreach { case Link(_, from, to) =>
       outgoingLinks.addBinding(from, to)
       incomingLinks.addBinding(to, from)
@@ -39,7 +39,7 @@ case class Graph(
 
     val verbs = Map.newBuilder[String, Model]
     val nouns = Map.newBuilder[String, Model]
-    val shared = List.newBuilder[((String, StateId), (String, StateId))] 
+    val shared = List.newBuilder[((String, StateId), (String, StateId))]
     val variableRename = Map.newBuilder[String, String]
 
     for (Node(id, image, label, props, x, y) <- nodes.values) {
@@ -55,17 +55,17 @@ case class Graph(
       // When we have a noun, try to give the state variable a good name
       if (props.`type` == "noun" && props.sharedStates.length > 0 && props.sharedStates.distinct.length == 1) {
         variableRename += s"n${nounIds(id)}_${props.sharedStates(0)}" -> label
-      
+
         nouns += ("n" + nounIds(id)) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
       } else {
         verbs += ("n" + nounIds(id)) -> paletteModel.copy(constants = paletteModel.constants ++ constants)
       }
-     
+
       if (props.`type` == "verb") {
-        
+
         val nounFrom = getIncoming(id)
         shared += ((("n" + nounIds(id), amidol.StateId(props.sharedStates(0))), ("n" + nounIds(nounFrom), amidol.StateId(nodes(nounFrom).props.sharedStates(1)))))
-        
+
         val nounTo = getOutgoing(id)
         shared += ((("n" + nounIds(id), amidol.StateId(props.sharedStates(1))), ("n" + nounIds(nounTo), amidol.StateId(nodes(nounTo).props.sharedStates(0)))))
       }
@@ -102,7 +102,7 @@ object NodeProps extends UiJsonSupport
 
 case class Parameter(
   name: String,
-  value: math.Expr[Double], 
+  value: math.Expr[Double],
 )
 object Parameter extends UiJsonSupport
 
@@ -114,21 +114,29 @@ case class Link(
 )
 object Link extends UiJsonSupport
 
-case class Palette(
-  className: String,
-  `type`: String,
-  sharedStates: Array[String],
-  icon: String,
-  parameters:  Seq[Parameter]
+case class PaletteItem(
+  className: String,           // this is how we link to the backend
+  `type`: String,              // do we need this???
+  icon: String,                // for display purposes only
+  parameters: Seq[Parameter],  // default off the backing model
 )
-object Palette extends UiJsonSupport
+object PaletteItem extends UiJsonSupport {
+  def fromBackend(p: amidol.PaletteItem): PaletteItem = PaletteItem(
+    p.className,
+    p.`type`,
+    p.icon,
+    p.backingModel.constants
+      .map { case (v, d) => Parameter(v.s.name, math.Literal(d)) }
+      .toSeq,
+  )
+}
 
 trait UiJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val parameterFormat = jsonFormat2(Parameter.apply)
-  implicit val nodePropsFormat = jsonFormat5(NodeProps.apply)
+  implicit val nodePropsFormat = jsonFormat4(NodeProps.apply)
   implicit val linkFormat = jsonFormat3(Link.apply)
   implicit val nodeFormat = jsonFormat6(Node.apply)
   implicit val graphFormat = jsonFormat2(Graph.apply)
-  implicit val paletteFormat = jsonFormat6(Palette.apply)
+  implicit val paletteFormat = jsonFormat4(PaletteItem.apply)
 }
 
