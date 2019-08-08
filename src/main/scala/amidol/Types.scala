@@ -66,7 +66,7 @@ object Model extends ModelJsonSupport {
     shared: List[((K, StateId), (K, StateId))], // states shared amongst submodels
   ): Model = {
     val sharedMap = shared.toMap
-    
+
     def stateIdFunc(k: K)(stateId: StateId): StateId = {
       sharedMap.get(k -> stateId) match {
         case None => StateId(s"${k}_${stateId.id}")
@@ -175,17 +175,17 @@ trait ModelJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val stateFormat = jsonFormat3(State.apply)
   implicit val eventFormat = jsonFormat4(Event.apply)
   implicit val modelFormat = jsonFormat3(Model.apply)
+  implicit val paletteFormat = jsonFormat5(PaletteItem.apply)
 }
 
 // Full description of a palette element
 case class PaletteItem(
   className: String,
   `type`: String,
-  sharedStates: Array[String],
+  sharedStates: Array[StateId],        // For now, this is be: `[ <shared state for incoming arrows>
+                                       //                       , <shared state for outgoing arrows> ]
   icon: String,
   backingModel: amidol.Model,   // parameters = backingModel.constants
 )
-object PaletteItem extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val paletteFormat = jsonFormat5(PaletteItem.apply)
-}
+object PaletteItem extends ModelJsonSupport
 

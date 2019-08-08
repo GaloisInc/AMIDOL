@@ -92,7 +92,7 @@ object Main extends App with Directives {
         path("uiModel") {
           formField('graph.as[ui.Graph]) { case graph: ui.Graph =>
             complete {
-              graph.parse(AppState.paletteItems.mapValues(_.backingModel)).map { model =>
+              graph.parse(AppState.paletteItems).map { model =>
                 AppState.currentModel = model
               } match {
                 case Success(_) => StatusCodes.Created -> s"Model has been updated"
@@ -161,6 +161,16 @@ object Main extends App with Directives {
             formField('name.as[String]) { case name: String =>
               complete {
                 StatusCodes.OK -> AppState.paletteItems.get(name)
+              }
+            }
+          } ~
+          path("list") {
+            formField('limit.as[Int].?) { case limit: Option[Int] =>
+              complete {
+                StatusCodes.OK -> {
+                  val values = AppState.paletteItems.values
+                  limit.fold(values)(values.take(_))
+                }
               }
             }
           }

@@ -742,6 +742,7 @@
 
 
 	var chosenPalette = "SIR"
+	var paletteItems = { }
 	var availablePalettes = {
 		"SIR" : {
 			"population": {
@@ -839,11 +840,6 @@
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
 				"icon": "images/hunting.svg",
-				"verb_sort": {
-					"type": "unconserved",
-					"rate_in_template": "beta * INPUT * OUTPUT",
-					"rate_out_template": "delta * INPUT * OUTPUT"
-				},
 				"parameters": [
 					{"name": "beta", "value": "1.33"},
 					{"name": "delta", "value": "1"}
@@ -898,6 +894,12 @@
 		UI.render.localVars(null)
 		UI.render.rewardVars()
 		UI.updateButtonStates()
+
+
+			//		$.post("/palette/list", {}, function (data) {
+			//					console.log("Response: " + JSON.stringify(data))
+			//		})
+
 	})
 
 </script>
