@@ -6,11 +6,13 @@ import scala.sys.addShutdownHook
 
 import java.io.{Closeable, File}
 import java.lang.AutoCloseable
-import java.sql._
+import java.sql.{DriverManager, Statement, ResultSet}
 import java.util.concurrent.atomic.AtomicReference
 
 import akka.actor.ActorSystem
 import akka.stream.Materializer
+
+import spray.json._
 
 object OntologyDb {
 
@@ -35,4 +37,25 @@ object OntologyDb {
   }
   println(s"Loaded SNOMED database ($snomedSize records)")
 
+  // A record in the SNOMED DB
+  case class SnomedRecord(
+    id: Int,
+    code: Int,
+    terms: Array[String],
+    children: Array[Int],
+    parents: Array[Int],
+    annotations: String,
+  )
+  object SnomedRecord {
+    def readOffResultSet(rs: ResultSet): SnomedRecord = {
+      SnomedRecord(
+        id = rs.getInt(1),
+        code = rs.getInt(2),
+        terms = rs.getString(3).split(';'),
+        children = rs.getString(4).split(',').map(_.toInt),
+        parents = rs.getString(5).split(',').map(_.toInt),
+        annotations = rs.getString(6),
+      )
+    }
+  }
 }
