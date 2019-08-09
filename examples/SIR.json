@@ -10,9 +10,6 @@
           "y": 0,
           "props": {
             "className": "population",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/person.svg",
             "parameters": [
               {
                 "name": "Initial",
@@ -29,9 +26,6 @@
           "y": 0,
           "props": {
             "className": "infect",
-            "type": "verb",
-            "sharedStates": ["INPUT","OUTPUT"],
-            "icon": "images/virus.svg",
             "parameters": [
               {
                 "name": "beta",
@@ -52,9 +46,6 @@
           "y": 0,
           "props": {
             "className": "patient",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/patient.svg",
             "parameters": [
               {
                 "name": "Initial",
@@ -90,9 +81,6 @@
           "y": 0,
           "props": {
             "className": "population",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/person.svg",
             "parameters": [
               {
                 "name": "Initial",

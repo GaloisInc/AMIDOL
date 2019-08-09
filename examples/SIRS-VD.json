@@ -10,9 +10,6 @@
           "y": 0,
           "props": {
             "className": "population_vital_dynamics",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/person.svg",
             "parameters": [
               {
                 "name": "Initial",
@@ -29,9 +26,6 @@
           "y": -175,
           "props": {
             "className": "infect",
-            "type": "verb",
-            "sharedStates": ["INPUT","OUTPUT"],
-            "icon": "images/virus.svg",
             "parameters": [
               {
                 "name": "beta",
@@ -52,9 +46,6 @@
           "y": -175,
           "props": {
             "className": "patient_vital_dynamics",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/patient.svg",
             "parameters": [
               {
                 "name": "Initial",
@@ -71,9 +62,6 @@
           "y": -175,
           "props": {
             "className": "cure",
-            "type": "verb",
-            "sharedStates": ["INPUT","OUTPUT"],
-            "icon": "images/cure.svg",
             "parameters": [
               {
                 "name": "gamma",
@@ -90,9 +78,6 @@
           "y": 0,
           "props": {
             "className": "population_vital_dynamics",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/person.svg",
             "parameters": [
               {
                 "name": "Initial",
@@ -109,9 +94,6 @@
           "y": 40,
           "props": {
             "className": "time",
-            "type": "verb",
-            "sharedStates": ["INPUT","OUTPUT"],
-            "icon": "images/time.svg",
             "parameters": [
               {
                 "name": "eta",

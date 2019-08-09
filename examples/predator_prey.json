@@ -10,9 +10,6 @@
           "y": 0,
           "props": {
             "className": "prey",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/prey.svg",
             "parameters": [
               {
                 "name": "Initial",
@@ -29,9 +26,6 @@
           "y": 0,
           "props": {
             "className": "hunting",
-            "type": "verb",
-            "icon": "images/hunting.svg",
-            "sharedStates": ["INPUT","OUTPUT"],
             "parameters": [
               {
                 "name": "beta",
@@ -52,9 +46,6 @@
           "y": 0,
           "props": {
             "className": "predator",
-            "type": "noun",
-            "sharedStates": ["P","P"],
-            "icon": "images/predator.svg",
             "parameters": [
               {
                 "name": "Initial",
