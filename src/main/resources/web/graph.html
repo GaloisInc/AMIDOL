@@ -26,7 +26,7 @@
 	var global_vars = { Example : 0 };
 	var reward_vars = []// { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
 	var chosen_backend = "scipy"
- 
+
 
 	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
 
@@ -79,7 +79,7 @@
 		},
 
 
-		// Purpose: cause UI side effects... and nothing else. 
+		// Purpose: cause UI side effects... and nothing else.
 		// Always call last, after setting the relevant shared states.
 		applyEventEffects : function(event) {
 			switch (event.type) {
@@ -187,10 +187,11 @@
 
 		render: {
 
-			palette : function(palette) {
+			palette : function(items) {
 				$("#palette .paletteItem").remove()
 				$("#palette")
-          .append(_.map(Object.values(palette), function(p){
+          .append(_.map(items, function(item){
+				    var p = paletteItems[item]
 					  return $("<img />")
               .attr({src: p.icon, classname: p.className})
               .attr("onclick", "UI.selectPaletteNode(this)")
@@ -231,7 +232,7 @@
 				rvs.empty()
 				rvs.append("<h2>Reward Variables:</h2>")
 				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
-					if (n.props.type == "noun") { return [n.id, n.label] } else { [] }
+					if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
 				}), (a) => ! _.isEmpty(a))
 				var rv_names = ["Instant of Time", "Interval of Time", "Time Avg. Interval", "Steady State"]
 
@@ -241,7 +242,7 @@
 				// 		r.opt1 = nodeNames[0][1]
 				// 	}
 				// 	return r
-				// }) 
+				// })
 
 				rvs.append(_.map(reward_vars, function(r){
 					return $("<div>").attr({class: "rv_element", rv_key: r.key}).change(
@@ -250,10 +251,10 @@
 						$("<h3>").attr({class: "key"}).html(r.key),
 						$("<div>").append(
 							$("<select>").attr({class: "opt1"}).append(
-								_.map(nodeNames, function(n) { 
+								_.map(nodeNames, function(n) {
 									var opt = $("<option>").attr('value', n[1]).html(n[1])
 									if (r.opt1 == n[1]) {
-										opt.attr('selected','selected') 
+										opt.attr('selected','selected')
 									}
 									return opt
 								})
@@ -262,7 +263,7 @@
 						$("<h4>").html("Range"),
 						$("<div>").append(
 							$("<select>").attr({class: "opt2"}).append(
-								_.map(rv_names, function(n, idx) { 
+								_.map(rv_names, function(n, idx) {
 									var opt = $("<option>").attr({'value': n}).html(n)
 									if (idx != 0) { opt.attr('disabled', 'disabled') }
 									return opt
@@ -299,7 +300,7 @@
 				})
 				$("#results").append(charts)
 				$.fancybox.open(charts, {
-					helpers : { 
+					helpers : {
 						title : { type : 'inside' }
 					},
 					loop : true,
@@ -322,6 +323,13 @@
 							new Chartist.Line("#" + chartIdPrefix + idx, singleChartData, pluginOpts)
 						})
 					}
+				})
+			},
+
+      iconRedraw : function() {
+				_.forEach(node_data_set.getIds(), function(id) {
+					var className = node_data_set.get(id).props.className
+				  node_data_set.update({ id: id, image: paletteItems[className].icon })
 				})
 			},
 
@@ -353,8 +361,10 @@
 						},
 						addEdge: function(edge, callback){
 							// edge.label = prompt("Edge label:")
-							var fromType = get(node_data_set.get(edge.from), ['props', 'type'])
-							var toType = get(node_data_set.get(edge.to), ['props', 'type'])
+							var fromClass = get(node_data_set.get(edge.from), ['props', 'className'])
+							var toClass = get(node_data_set.get(edge.to), ['props', 'className'])
+				      var fromType = fromClass && get(paletteItems, [fromClass, 'type'])
+				      var toType = toClass && get(paletteItems, [toClass, 'type'])
 							if (fromType !== toType) {
 								journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
 							} else {
@@ -368,17 +378,17 @@
 						// 	callback() // returns the editing bar to its normal state
 						// },
 						deleteNode: function(dataIds, callback) {
-							journal.apply( { 
-								"type": "subtract", 
-								"nodes": node_data_set.get(dataIds.nodes), 
+							journal.apply( {
+								"type": "subtract",
+								"nodes": node_data_set.get(dataIds.nodes),
 								"edges": edge_data_set.get(dataIds.edges)
 							} )
 						},
 						deleteEdge: function(dataIds, callback) {
-							journal.apply( { 
-								"type": "subtract", 
-								"nodes": node_data_set.get(dataIds.nodes), 
-								"edges": edge_data_set.get(dataIds.edges) 
+							journal.apply( {
+								"type": "subtract",
+								"nodes": node_data_set.get(dataIds.nodes),
+								"edges": edge_data_set.get(dataIds.edges)
 							} )
 						}
 					}
@@ -402,7 +412,7 @@
 						} else {
 							if (! isUnused) { alert("That name is already used.") }
 						}
-					} 
+					}
 					// else { if (_.size(e.edges) == 1) {
 					// 	var newName = prompt("New edge name:")
 					// 	if (newName !== null) {
@@ -447,7 +457,7 @@
         // Update the palette dropdown before showing
         $("#palette-element-selector").empty()
         $("#palette-element-selector").append($("<option>").attr({ value: "" }).text("None"))
-        $("#palette-element-selector").append(_.map(_.keys(availablePalettes[chosenPalette]), (key) => $("<option>").attr({ value: key }).text(key)))
+        $("#palette-element-selector").append(_.map(availablePalettes[chosenPalette], (key) => $("<option>").attr({ value: key }).text(key)))
 
         $("#paletteEditor").show()
       },
@@ -457,13 +467,13 @@
       },
 
       loadTemplate: function(toEditName) {
-        var toEdit = availablePalettes[chosenPalette][toEditName]
+        var toEdit = paletteItems[toEditName]
         if (toEdit) {
-          $("#palette-element-name").val(toEditName)
+          $("#palette-element-name").val(toEdit.className)
           $("#palette-element-type").val(toEdit.type)
-          $("#palette-element-class").val(toEdit.className)
           $("#palette-element-icon").val(toEdit.icon)
           $("#palette-element-shared").val(toEdit.sharedStates.join(", "))
+				  $("#palette-element-model").val(JSON.stringify(toEdit.backingModel, null, 2))
         }
       },
 
@@ -475,21 +485,29 @@
         // TODO: support _all_ fields (including parameters)
         var name = $("#palette-element-name").val()
         var type = $("#palette-element-type").val()
-        var cls = $("#palette-element-class").val()
         var icon = $("#palette-element-icon").val()
         var shared = _.map($("#palette-element-shared").val().split(","), st => st.trim())
+				var model = JSON.parse($("#palette-element-model").val())
 
         // Set the palette element
-        var paletteElement = availablePalettes[chosenPalette][name]
-        paletteElement.className = cls
-        paletteElement.type = type
-        paletteElement.classDef = cls + ".air"
-        paletteElement.icon = icon
-        paletteElement.sharedStates = shared
-        paletteElement.parameters = paletteElement.parameters || []
+				var paletteElement = {
+				  className: name,
+				  type: type,
+					icon: icon,
+					sharedStates: shared,
+					backingModel: model,
+				}
+
+				// Detect new!
+				if (!paletteItems[name]) {
+					availablePalettes[chosenPalette].push(name)
+				}
+				paletteItems[name] = paletteElement
+				$.post("/appstate/palette/put", { name: name, palette: JSON.stringify(paletteElement) })
 
         // Re-render and clean up
 				UI.render.palette(availablePalettes[chosenPalette])
+				UI.render.iconRedraw()
 
         $("#paletteEditor").hide()
         $("#palette-element-name").val("")
@@ -497,6 +515,7 @@
         $("#palette-element-class").val("")
         $("#palette-element-icon").val("")
         $("#palette-element-shared").val("")
+				$("#palette-element-model").val("")
       }
     },
 
@@ -516,7 +535,7 @@
 		},
 
 		makeNode : function(node, className) {
-			if ( ! node.hasOwnProperty("id")) { 
+			if ( ! node.hasOwnProperty("id")) {
 				function randomUuid() {
 					return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 						var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
@@ -525,8 +544,18 @@
 				}
 				node.id = randomUuid()
 			}
-			node.props = _.clone(availablePalettes[chosenPalette][className])
-			node.image = node.props.icon
+			var paletteItem = paletteItems[className]
+			var parameters = _.map(_.pairs(paletteItem.backingModel.constants), function(e) {
+				return {
+				  name: e[0],
+				  value: e[1].toString()
+				}
+			})
+			node.props = {
+				"className":  _.clone(paletteItem.className),
+				"parameters":  _.clone(parameters)
+			}
+			node.image = paletteItem.icon
 			return node
 		},
 
@@ -555,10 +584,10 @@
 		addRewardVar : function() {
 			var name = prompt("Name your new reward variable:")
 			if (name != undefined && ! _.contains(_.pluck(reward_vars, "id"), name )) {
-				var new_rv = { 
-					key: name, 
-					opt1: getOrElse(_.find(node_data_set.get(), (n) => n.props.type == "noun"), {label: ""}).label,
-					opt2: "Instant of Time", 
+				var new_rv = {
+					key: name,
+					opt1: getOrElse(_.find(node_data_set.get(), (n) => get(paletteItems, [n.props.className, 'type']) == "noun"), {label: ""}).label,
+					opt2: "Instant of Time",
 					range: { start: 0, end: 100, step: 5 }
 				}
 				var event = { type: "setRewardVar", key: new_rv.key, old: null, new: new_rv }
@@ -601,7 +630,7 @@
 			var event = {type: "renameNode", id: nodeId, from: existing.label, to: newName}
 			journal.apply(event)
 		},
-		
+
 		updateButtonStates : function() {
 			if (_.isEmpty(journal.past)) {
 				$("#undo_button").addClass("disabled")
@@ -666,6 +695,7 @@
 						while ( ! $("#redo_button").hasClass("disabled"))
 						UI.render.rewardVars()
 						UI.render.localVars()
+				    UI.render.iconRedraw()
 					}
 					reader.readAsText(f)
 				}
@@ -741,31 +771,60 @@
 		}
 	}
 
+  var palette = {
+    update : function(onComplete) {
+			$.post("/appstate/palette/list", {}, function (data) {
+        paletteItems = { }
+		    _.forEach(data, function(item) {
+			    paletteItems[item.className] = item
+		    })
+				if (onComplete) onComplete()
+			})
+    }
+	}
 
+	var paletteItems = { }      // loaded from server dynamically
 	var chosenPalette = "SIR"
 	var availablePalettes = {
+		"SIR" : [
+				"population",
+				"patient",
+				"infect",
+				"cure",
+		],
+		"SIRS-VD": [
+				"population_vital_dynamics",
+				"patient_vital_dynamics",
+				"infect",
+				"cure",
+				"time",
+		],
+		"predator_prey" : [
+				"predator",
+				"prey",
+				"hunting",
+		],
+  }
+	/* var availablePalettes = {
 		"SIR" : {
 			"population": {
 				"className": "population",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "population.air",
 				"icon": "images/person.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"patient" : {
 				"className": "patient",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "patient.air",
 				"icon": "images/patient.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"infect": {
 				"className": "infect",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "infect.air",
 				"icon": "images/virus.svg",
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
@@ -776,7 +835,6 @@
 				"className": "cure",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "cure.air",
 				"icon": "images/cure.svg",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			}
@@ -786,23 +844,20 @@
 				"className": "population_vital_dynamics",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "population_vital_dynamics.air",
 				"icon": "images/person.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"patient" : {
 				"className": "patient_vital_dynamics",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "patient_vital_dynamics.air",
 				"icon": "images/patient.svg",
 				"parameters": [{"name": "Initial", "value": "250"}]
-			}, 
+			},
 			"infect": {
 				"className": "infect",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "infect.air",
 				"icon": "images/virus.svg",
 				"parameters": [
 					{"name": "beta", "value": "0.413"},
@@ -813,7 +868,6 @@
 				"className": "cure",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "cure.air",
 				"icon": "images/cure.svg",
 				"parameters": [{"name": "gamma", "value": "0.333"}]
 			},
@@ -821,7 +875,6 @@
         "className": "time",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "time.air",
 				"icon": "images/time.svg",
 				"parameters": [
 					{"name": "eta", "value": "0.002"}
@@ -834,49 +887,42 @@
 				"className": "predator",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "predator.air",
 				"icon": "images/predator.svg",
 				"parameters": [{"name": "Initial", "value": "0.9"}]
-			}, 
+			},
 			"prey" : {
 				"className": "prey",
 				"type": "noun",
         "sharedStates": ["P", "P"],
-				"classDef": "prey.air",
 				"icon": "images/prey.svg",
 				"parameters": [{"name": "Initial", "value": "0.9"}]
-			}, 
+			},
 			"hunting": {
 				"className": "hunting",
 				"type": "verb",
         "sharedStates": ["INPUT", "OUTPUT"],
-				"classDef": "hunting.air",
 				"icon": "images/hunting.svg",
-				"verb_sort": {
-					"type": "unconserved",
-					"rate_in_template": "beta * INPUT * OUTPUT",
-					"rate_out_template": "delta * INPUT * OUTPUT"
-				},
 				"parameters": [
 					{"name": "beta", "value": "1.33"},
 					{"name": "delta", "value": "1"}
 				]	
 			}
 		}
-	}
+	} */
 
 
 
-	$(function(){
+	$(function(){ palette.update(function () {
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
 
-		var startingPalette = availablePalettes[chosenPalette]
+
+    var startingPalette =  availablePalettes[chosenPalette]
 		$("#paletteChooser select").append(_.map(_.keys(availablePalettes), (k) => $("<option>").html(k)))
 
 		UI.render.network()
 
 		var sample_nodes = [
-			UI.makeNode({id: "1", label: "Susceptible", x: -350, y: 0}, "population"), 
+			UI.makeNode({id: "1", label: "Susceptible", x: -350, y: 0}, "population"),
 			UI.makeNode({id: "2", label: "Exposed", x: -175, y: 0}, "infect"),
 			UI.makeNode({id: "3", label: "Infected", x: -0, y: 0}, "patient"),
 			UI.makeNode({id: "4", label: "Cured", x: 175, y: 0}, "cure"),
@@ -890,7 +936,7 @@
 		]
 		/*
 		var sample_nodes = [
-			UI.makeNode({id: "1", label: "Breeding", x: -175, y: -175}, "breeding"), 
+			UI.makeNode({id: "1", label: "Breeding", x: -175, y: -175}, "breeding"),
 			UI.makeNode({id: "2", label: "Prey", x: -175, y: 0}, "prey"),
 			UI.makeNode({id: "3", label: "Hunting", x: -0, y: 0}, "hunting"),
 			UI.makeNode({id: "4", label: "Predator", x: 175, y: 0}, "predator"),
@@ -911,7 +957,8 @@
 		UI.render.localVars(null)
 		UI.render.rewardVars()
 		UI.updateButtonStates()
-	})
+
+	}) })
 
 </script>
 
@@ -1067,11 +1114,6 @@
       </tr>
 
       <tr>
-        <td>Class name:</td>
-        <td><input id="palette-element-class" type="text" name="class name" style='width: 100%'/></td>
-      </tr>
-
-      <tr>
         <td>Icon name:</td>
         <td><input id="palette-element-icon" type="text" name="icon name" style='width: 100%'/></td>
       </tr>
@@ -1079,6 +1121,11 @@
       <tr>
         <td>Shared states (enter comma-delimited):</td>
         <td><input id="palette-element-shared" type="text" name="shared states" style='width: 100%'/></td>
+      </tr>
+
+      <tr>
+        <td>Backend model (enter JSON):</td>
+				<td><textarea id="palette-element-model" type="text" name="backend model" style='width: 100%; resize: vertical'></textarea></td>
       </tr>
     </table>
 

@@ -24,6 +24,7 @@ import com.typesafe.config.ConfigFactory
 object Main extends App with Directives {
 
   val conf = ConfigFactory.load();
+  OntologyDb // Initialize db
 
   // Mutable app state
   //
@@ -31,14 +32,18 @@ object Main extends App with Directives {
   // while the backend is running?)
   object AppState {
     var currentModel: Model = Model.empty
-    var palette: Map[String, Model] = List(
+    var paletteItems: Map[String, PaletteItem] = List(
         "cure", "population", "infect", "patient",
         "population_vital_dynamics", "patient_vital_dynamics", "time",
         "predator", "prey", "hunting"
       )
       .map { name: String =>
         val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
-        name -> modelSource.parseJson.convertTo[Model]
+        name -> Try(modelSource.parseJson.convertTo[PaletteItem]).recoverWith {
+          case err =>
+            println(s"Failure in $name")
+            Failure(err)
+        }.get
       }
       .toMap
 
@@ -87,7 +92,7 @@ object Main extends App with Directives {
         path("uiModel") {
           formField('graph.as[ui.Graph]) { case graph: ui.Graph =>
             complete {
-              graph.parse(AppState.palette).map { model =>
+              graph.parse(AppState.paletteItems).map { model =>
                 AppState.currentModel = model
               } match {
                 case Success(_) => StatusCodes.Created -> s"Model has been updated"
@@ -137,9 +142,9 @@ object Main extends App with Directives {
         } ~
         pathPrefix("palette") {
           path("put") {
-            formField('name.as[String], 'model.as[Model]) { case (name: String, model: Model) =>
+            formField('name.as[String], 'palette.as[PaletteItem]) { case (name: String, p: PaletteItem) =>
               complete {
-                AppState.palette += (name -> model)
+                AppState.paletteItems += (name -> p)
                 StatusCodes.Created -> s"Palette has been updated"
               }
             }
@@ -147,7 +152,7 @@ object Main extends App with Directives {
           path("remove") {
             formField('name.as[String]) { case name: String =>
               complete {
-                AppState.palette -= name
+                AppState.paletteItems -= name
                 StatusCodes.OK -> s"Palette has been removed"
               }
             }
@@ -155,7 +160,17 @@ object Main extends App with Directives {
           path("get") {
             formField('name.as[String]) { case name: String =>
               complete {
-                StatusCodes.OK -> AppState.palette.get(name)
+                StatusCodes.OK -> AppState.paletteItems.get(name)
+              }
+            }
+          } ~
+          path("list") {
+            formField('limit.as[Int].?) { case limit: Option[Int] =>
+              complete {
+                StatusCodes.OK -> {
+                  val values = AppState.paletteItems.values
+                  limit.fold(values)(values.take(_))
+                }
               }
             }
           }

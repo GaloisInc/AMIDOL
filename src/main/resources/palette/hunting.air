@@ -1,30 +1,36 @@
 {
-  "states": {
-    "INPUT": {
-      "state_variable": "INPUT",
-      "decription": "Infected",
-      "initial_value": "0"
+  "className": "hunting",
+  "type": "verb",
+  "sharedStates": ["INPUT", "OUTPUT"],
+  "icon": "images/hunting.svg",
+  "backingModel": {
+    "states": {
+      "INPUT": {
+        "state_variable": "INPUT",
+        "decription": "Infected",
+        "initial_value": "0"
+      },
+      "OUTPUT": {
+        "state_variable": "OUTPUT",
+        "decription": "Recovered",
+        "initial_value": "0"
+      }
     },
-    "OUTPUT": {
-      "state_variable": "OUTPUT",
-      "decription": "Recovered",
-      "initial_value": "0"
-    }
-  },
-  "events": {
-    "cure": {
-      "rate": "INPUT * OUTPUT",
-      "output_predicate": {
-        "transition_function": {
-          "INPUT": "-beta",
-          "OUTPUT": "delta"
+    "events": {
+      "cure": {
+        "rate": "INPUT * OUTPUT",
+        "output_predicate": {
+          "transition_function": {
+            "INPUT": "-beta",
+            "OUTPUT": "delta"
+          }
         }
       }
+    },
+    "constants": {
+      "beta": 1.33,
+    	"delta": 1
     }
-  },
-  "constants": {
-    "beta": 1.33,
-		"delta": 1
   }
 }
 

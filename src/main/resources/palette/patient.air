@@ -1,13 +1,19 @@
 {
-  "states": {
-    "P": {
-      "state_variable": "P",
-      "decription": "Patient",
-      "initial_value": "Initial"
+  "className": "patient",
+  "type": "noun",
+  "sharedStates": ["P","P"],
+  "icon": "images/patient.svg",
+  "backingModel": {
+    "states": {
+      "P": {
+        "state_variable": "P",
+        "decription": "Patient",
+        "initial_value": "Initial"
+      }
+    },
+    "events": {},
+    "constants": {
+      "Initial": 0  
     }
-  },
-  "events": {},
-  "constants": {
-    "Initial": 0  
   }
 }

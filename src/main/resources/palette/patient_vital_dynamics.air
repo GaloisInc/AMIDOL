@@ -1,32 +1,38 @@
 {
-  "states": {
-    "P": {
-      "state_variable": "P",
-      "decription": "Patient",
-      "initial_value": "Initial"
-    }
-  },
-  "events": {
-    "birth": {
-      "rate": "nu_birth * P",
-      "output_predicate": {
-        "transition_function": {
-          "P": "1"
+  "className": "patient_vital_dynamics",
+  "type": "noun",
+  "sharedStates": ["P", "P"],
+  "icon": "images/patient.svg",
+  "backingModel": {
+  	"states": {
+      "P": {
+        "state_variable": "P",
+        "decription": "Patient",
+        "initial_value": "Initial"
+      }
+    },
+    "events": {
+      "birth": {
+        "rate": "nu_birth * P",
+        "output_predicate": {
+          "transition_function": {
+            "P": "1"
+          }
+        }
+      },
+      "death": {
+        "rate": "nu_death * P",
+        "output_predicate": {
+          "transition_function": {
+            "P": "-1"
+          }
         }
       }
     },
-    "death": {
-      "rate": "nu_death * P",
-      "output_predicate": {
-        "transition_function": {
-          "P": "-1"
-        }
-      }
+    "constants": {
+      "Initial": 0,
+      "nu_death": 0.00002,
+      "nu_birth": 0.00007
     }
-  },
-  "constants": {
-    "Initial": 0,
-    "nu_death": 0.00002,
-    "nu_birth": 0.00007
   }
 }

@@ -1,28 +1,34 @@
 {
-  "states": {
-    "INPUT": {
-      "state_variable": "INPUT",
-      "decription": "Recovered",
-      "initial_value": "0"
+  "className": "time",
+  "type": "verb",
+  "sharedStates": ["INPUT", "OUTPUT"],
+  "icon": "images/time.svg",
+  "backingModel": {
+    "states": {
+      "INPUT": {
+        "state_variable": "INPUT",
+        "decription": "Recovered",
+        "initial_value": "0"
+      },
+      "OUTPUT": {
+        "state_variable": "OUTPUT",
+        "decription": "Susceptible",
+        "initial_value": "0"
+      }
     },
-    "OUTPUT": {
-      "state_variable": "OUTPUT",
-      "decription": "Susceptible",
-      "initial_value": "0"
-    }
-  },
-  "events": {
-    "cure": {
-      "rate": "eta * INPUT",
-      "output_predicate": {
-        "transition_function": {
-          "INPUT": "-1",
-          "OUTPUT": "1"
+    "events": {
+      "cure": {
+        "rate": "eta * INPUT",
+        "output_predicate": {
+          "transition_function": {
+            "INPUT": "-1",
+            "OUTPUT": "1"
+          }
         }
       }
+    },
+    "constants": {
+      "eta": 0.002
     }
-  },
-  "constants": {
-    "eta": 0.002
   }
 }

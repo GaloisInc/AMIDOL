@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
       "-unchecked",
       "-feature",
       "-deprecation",
-      
+
       "-language:implicitConversions"
     ),
     libraryDependencies ++= Seq(
@@ -23,7 +23,9 @@ lazy val root = (project in file("."))
       "com.typesafe.akka"      %% "akka-http"                % "10.1.7",
       "com.typesafe.akka"      %% "akka-http-spray-json"     % "10.1.7",
 
-      "com.typesafe"           % "config"                    % "1.3.1"
+      "com.typesafe"           % "config"                    % "1.3.1",
+
+      "org.xerial"                 % "sqlite-jdbc"           % "3.28.0"
     )
   )
 

@@ -1,23 +1,29 @@
 {
-  "states": {
-    "P": {
-      "state_variable": "P",
-      "decription": "Predator",
-      "initial_value": "Initial"
-    }
-  },
-  "events": {
-    "competition": {
-      "rate": "gamma * P",
-      "output_predicate": {
-        "transition_function": {
-          "P": "-1"
+  "className": "predator",
+  "type": "noun",
+  "sharedStates": ["P","P"],
+  "icon": "images/predator.svg",
+  "backingModel": {
+    "states": {
+      "P": {
+        "state_variable": "P",
+        "decription": "Predator",
+        "initial_value": "Initial"
+      }
+    },
+    "events": {
+      "competition": {
+        "rate": "gamma * P",
+        "output_predicate": {
+          "transition_function": {
+            "P": "-1"
+          }
         }
       }
+    },
+    "constants": {
+      "Initial": 0,
+      "gamma": 1
     }
-  },
-  "constants": {
-    "Initial": 0,
-    "gamma": 1
   }
 }
