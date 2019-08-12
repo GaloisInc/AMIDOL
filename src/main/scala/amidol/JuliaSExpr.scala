@@ -63,6 +63,13 @@ trait ExtractOps { expr: JuliaSExpr =>
         ))
       )) => (body).extractBody()
 
+    case
+      SNested(List(
+        SAtom("function"),
+        SNested(List(SAtom("call"), SAtom("main"), SAtom("β"), SAtom("γ"), SAtom("μ"))),
+        body @ SNested(SAtom("block") :: _)
+      )) => (body).extractBody()
+
     case _ => throw new JuliaExtractException(
       "main function definition",
       expr

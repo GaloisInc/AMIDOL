@@ -3,5 +3,9 @@
 target
 project/target
 
+.bloop
+.metals
+project/.bloop
+
 # Various tmp files
 tmp_scripts
