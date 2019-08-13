@@ -696,7 +696,7 @@
 						UI.updateButtonStates()
 					}
 					reader.onloadend = function(e) {
-						do {  }
+						do { $("#redo_button").click() }
 						while ( ! $("#redo_button").hasClass("disabled"))
 						UI.render.rewardVars()
 						UI.render.localVars()
