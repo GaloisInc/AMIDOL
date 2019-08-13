@@ -1,4 +1,4 @@
-function main(β, γ, μ)
+function main(β, γ, μ, n)
     @grounding begin
         S => Noun(Susceptible, ontology=Snowmed)
         I => Noun(Infectious, ontology=ICD9)
@@ -25,13 +25,13 @@ function main(β, γ, μ)
     ]
 
     ϕ = [
-        (S, I) -> x > 0 && I > 0,
-        (I) -> x > 0,
-        (R) -> x > 0,
+        (S, I) -> S > 0 && I > 0,
+        (I) -> I > 0,
+        (R) -> R > 0,
     ]
 
     Λ = [
-        λ₁(S,I) = begin β*S*I/+(S,I,R) end,
+        λ₁(S,I) = begin β*S*I/n end,
         λ₂(I) = begin γ*I end,
         λ₃(R) = begin μ*R end
     ]

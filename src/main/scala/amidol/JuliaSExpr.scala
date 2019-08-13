@@ -58,17 +58,27 @@ trait ExtractOps { expr: JuliaSExpr =>
       SNested(List(SAtom("block"),
         SNested(List(
           SAtom("function"),
-          SNested(List(SAtom("call"), SAtom("main"), SAtom("β"), SAtom("γ"), SAtom("μ"))),
+          SNested(SAtom("call") :: SAtom("main") :: params),
           body @ SNested(SAtom("block") :: _)
         ))
-      )) => (body).extractBody()
+      )) =>
+      val parsedParams = params.map {
+        case SAtom(p) => p
+        case p => throw new JuliaExtractException("bad parameter", p)
+      }
+      (body).extractBody(parsedParams)
 
     case
       SNested(List(
         SAtom("function"),
-        SNested(List(SAtom("call"), SAtom("main"), SAtom("β"), SAtom("γ"), SAtom("μ"))),
+        SNested(SAtom("call") :: SAtom("main") :: params),
         body @ SNested(SAtom("block") :: _)
-      )) => (body).extractBody()
+      )) =>
+      val parsedParams = params.map {
+        case SAtom(p) => p
+        case p => throw new JuliaExtractException("bad parameter", p)
+      }
+      (body).extractBody(parsedParams)
 
     case _ => throw new JuliaExtractException(
       "main function definition",
@@ -76,7 +86,8 @@ trait ExtractOps { expr: JuliaSExpr =>
     )
   }
 
-  def extractBody(): Model = expr match {
+
+  def extractBody(parsedParams: List[String]): Model = expr match {
     case
       SNested(
         SAtom("block") ::
@@ -117,7 +128,7 @@ trait ExtractOps { expr: JuliaSExpr =>
         Model(
           states,
           events,
-          constants = Map.empty,
+          constants = parsedParams.map(p => math.Variable(Symbol(p)) -> 0.0).toMap,
         )
 
     case _ => throw new JuliaExtractException(

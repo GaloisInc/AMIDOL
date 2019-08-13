@@ -42,10 +42,6 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
       for ((_,  Event(rate, inputPredicate, outputPredicate, _)) <- model.events) {
 
-        if (inputPredicate != None) {
-          throw new Exception("Don't know how to handle input predicates yet")
-        }
-
         for ((stateId, effect) <- outputPredicate.transition_function) {
           val term = math.Mult(rate, effect)
           builder(stateId) = builder.get(stateId) match {

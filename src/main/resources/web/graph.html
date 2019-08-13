@@ -17,8 +17,6 @@
 	<link rel="stylesheet" href="chartist.min.css" type="text/css" />
 	<script type="text/javascript" src="chartist.min.js"></script>
 	<script type="text/javascript" src="chartist-plugin-axistitle.min.js"></script>
-	
-
 
 <script type="text/javascript">
 
@@ -49,7 +47,7 @@
 		});
 	};
 
-	
+
 
 	var journal = {
 		past : [],
@@ -122,6 +120,7 @@
 					reward_vars = new_rvs
 					UI.render.rewardVars()
 					break
+			//	case "setAllNodesEdges":
 				default:
 					console.log("Unknown event in applyEventEffects: " + JSON.stringify(event))
 					break
@@ -188,6 +187,12 @@
 		render: {
 
 			palette : function(items) {
+				// Redraw dropdown
+				$("#paletteChooser select option").remove();
+				$("#paletteChooser select").append(_.map(_.keys(availablePalettes), (k) => $("<option>").html(k)));
+				$("#paletteChooser select").val(chosenPalette);
+
+				// Redraww actual palette
 				$("#palette .paletteItem").remove()
 				$("#palette")
           .append(_.map(items, function(item){
@@ -691,7 +696,7 @@
 						UI.updateButtonStates()
 					}
 					reader.onloadend = function(e) {
-						do { $("#redo_button").click() }
+						do {  }
 						while ( ! $("#redo_button").hasClass("disabled"))
 						UI.render.rewardVars()
 						UI.render.localVars()
@@ -700,9 +705,52 @@
 					reader.readAsText(f)
 				}
 			})
+		},
+
+    uploadJuliaSrc : function(event) {
+			var file = event.target.files[0];
+			if (file) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+						var payload = {
+							name: "julia_model",
+							juliaSourceCode: e.target.result
+						};
+						$.post("/appstate/loadJuliaModel", payload, function(res) {
+						var nodes = _.values(res.nodes)
+						var links = _.values(res.links)
+						journal.future.push({
+							type: "add",
+							nodes: _.map(nodes, function (node) {
+								node.image = "images/unknown.png";
+								return node;
+							}),
+							edges: links
+						});
+						availablePalettes["julia_model"] = _.map(nodes, function (n) {
+							return n.props.className;
+						});
+						chosenPalette = "julia_model";
+						global_vars = []
+						reward_vars = []
+						palette.update(function () {
+							$("#redo_button").click()
+							UI.updateButtonStates()
+							UI.render.rewardVars()
+							UI.render.localVars()
+							UI.render.iconRedraw()
+							UI.render.palette(availablePalettes[chosenPalette])
+							network.setOptions({ physics: true })
+							setTimeout(function() {
+								network.setOptions({ physics: false })
+							}, 1000)
+						})
+					});
+				};
+				reader.readAsText(file);
+			}
 		}
 	}
-
 
 	var IR = {
 
@@ -805,119 +853,14 @@
 				"hunting",
 		],
   }
-	/* var availablePalettes = {
-		"SIR" : {
-			"population": {
-				"className": "population",
-				"type": "noun",
-        "sharedStates": ["P", "P"],
-				"icon": "images/person.svg",
-				"parameters": [{"name": "Initial", "value": "250"}]
-			},
-			"patient" : {
-				"className": "patient",
-				"type": "noun",
-        "sharedStates": ["P", "P"],
-				"icon": "images/patient.svg",
-				"parameters": [{"name": "Initial", "value": "250"}]
-			},
-			"infect": {
-				"className": "infect",
-				"type": "verb",
-        "sharedStates": ["INPUT", "OUTPUT"],
-				"icon": "images/virus.svg",
-				"parameters": [
-					{"name": "beta", "value": "0.413"},
-					{"name": "total_pop", "value": "Susceptible + Infected + Recovered"}
-				]
-			},
-			"cure": {
-				"className": "cure",
-				"type": "verb",
-        "sharedStates": ["INPUT", "OUTPUT"],
-				"icon": "images/cure.svg",
-				"parameters": [{"name": "gamma", "value": "0.333"}]
-			}
-		},
-		"SIRS-VD": {
-			"population": {
-				"className": "population_vital_dynamics",
-				"type": "noun",
-        "sharedStates": ["P", "P"],
-				"icon": "images/person.svg",
-				"parameters": [{"name": "Initial", "value": "250"}]
-			},
-			"patient" : {
-				"className": "patient_vital_dynamics",
-				"type": "noun",
-        "sharedStates": ["P", "P"],
-				"icon": "images/patient.svg",
-				"parameters": [{"name": "Initial", "value": "250"}]
-			},
-			"infect": {
-				"className": "infect",
-				"type": "verb",
-        "sharedStates": ["INPUT", "OUTPUT"],
-				"icon": "images/virus.svg",
-				"parameters": [
-					{"name": "beta", "value": "0.413"},
-					{"name": "total_pop", "value": "Susceptible + Infected + Recovered"}
-				]
-			},
-			"cure": {
-				"className": "cure",
-				"type": "verb",
-        "sharedStates": ["INPUT", "OUTPUT"],
-				"icon": "images/cure.svg",
-				"parameters": [{"name": "gamma", "value": "0.333"}]
-			},
-      "time": {
-        "className": "time",
-				"type": "verb",
-        "sharedStates": ["INPUT", "OUTPUT"],
-				"icon": "images/time.svg",
-				"parameters": [
-					{"name": "eta", "value": "0.002"}
-				]
-
-      }
-		},
-		"predator_prey" : {
-			"predator": {
-				"className": "predator",
-				"type": "noun",
-        "sharedStates": ["P", "P"],
-				"icon": "images/predator.svg",
-				"parameters": [{"name": "Initial", "value": "0.9"}]
-			},
-			"prey" : {
-				"className": "prey",
-				"type": "noun",
-        "sharedStates": ["P", "P"],
-				"icon": "images/prey.svg",
-				"parameters": [{"name": "Initial", "value": "0.9"}]
-			},
-			"hunting": {
-				"className": "hunting",
-				"type": "verb",
-        "sharedStates": ["INPUT", "OUTPUT"],
-				"icon": "images/hunting.svg",
-				"parameters": [
-					{"name": "beta", "value": "1.33"},
-					{"name": "delta", "value": "1"}
-				]	
-			}
-		}
-	} */
-
 
 
 	$(function(){ palette.update(function () {
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
+		document.getElementById('choose-julia-upload').addEventListener('change', UI.uploadJuliaSrc, false)
 
 
     var startingPalette =  availablePalettes[chosenPalette]
-		$("#paletteChooser select").append(_.map(_.keys(availablePalettes), (k) => $("<option>").html(k)))
 
 		UI.render.network()
 
@@ -997,14 +940,14 @@
 	#palette img.selected {
 		border-color: lightblue;
 	}
-	#palette img.right {
+	#palette img.right, #palette input.right {
 		margin-top: 1em;
 		height: 25px;
 	}
 	#palette .right{
 		float: right;
 	}
-	#exec_button {
+	#exec_button, #upload_julia_button {
 		margin: 22px 0px 22px 22px;
 	}
 	#exec_chooser {
@@ -1144,11 +1087,13 @@
 			<option value="julia">Julia</option>
 		</select>
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
+		<button id="upload_julia_button" class="right" onclick="document.getElementById('choose-julia-upload').click()">Load Julia code</button>
 		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />
 		<img id="undo_button" class="right" src="images/undo.png" onclick="journal.undo()" />
 		<img id="upload" class="right" src="images/upload.png" onclick="document.getElementById('choose-upload').click()" />
 		<img id="download" class="right" src="images/download.png" onclick="UI.download()" />
 		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
+		<input type="file" class="right" id="choose-julia-upload" name="files[]" style="display: none;" />
 	</div>
 	<div id="graph"></div>
 	<div id="variables" class="compensate-for-scrollbar">

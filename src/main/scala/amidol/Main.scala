@@ -101,6 +101,21 @@ object Main extends App with Directives {
             }
           }
         } ~
+        path("loadJuliaModel") {
+          import SprayJsonSupport._
+          import DefaultJsonProtocol._
+
+          formFields('juliaSourceCode, 'name) { case (juliaSrc, name) =>
+            complete {
+              JuliaExtract.extractFromSource(juliaSrc, name) match {
+                case Failure(f) => StatusCodes.BadRequest -> f.getMessage()
+                case Success((uiGraph, newPalElems)) =>
+                  AppState.paletteItems ++= newPalElems
+                  StatusCodes.Created -> uiGraph
+              }
+            }
+          }
+        } ~
         pathPrefix("data-traces") {
           import SprayJsonSupport._
           import DefaultJsonProtocol._
@@ -184,7 +199,7 @@ object Main extends App with Directives {
           formField(
             'julia.as[String]
           ) { case juliaSourceCode: String =>
-           
+
             complete {
               JuliaSExpr(juliaSourceCode).flatMap(sexpr => Try(sexpr.extractModel())) match {
                 case Success(model) =>

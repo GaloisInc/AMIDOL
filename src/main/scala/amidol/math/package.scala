@@ -163,8 +163,8 @@ package object math {
       val p = expr.precedence
       def wrap(s: String): String = if (precedence > expr.precedence) { "(" + s + ")" } else { s }
       expr match {
-        case Or(l,r)            => wrap(l.prettyPrint(p) + " OR " + r.prettyPrint(p+1))
-        case And(l,r)           => wrap(l.prettyPrint(p) + " AND " + r.prettyPrint(p+1))
+        case Or(l,r)            => wrap(l.prettyPrint(p) + " or " + r.prettyPrint(p+1))
+        case And(l,r)           => wrap(l.prettyPrint(p) + " and " + r.prettyPrint(p+1))
         case Comparision(l,GT,r)=> wrap(l.prettyPrint(p) + " > " + r.prettyPrint(p+1))
         case Comparision(l,EQ,r)=> wrap(l.prettyPrint(p) + " == " + r.prettyPrint(p+1))
         case Comparision(l,LT,r)=> wrap(l.prettyPrint(p) + " < " + r.prettyPrint(p+1))
@@ -173,10 +173,25 @@ package object math {
         case Mult(l,Inverse(r)) => wrap(l.prettyPrint(p) + " / " + r.prettyPrint(p+1))
         case Mult(l,r)          => wrap(l.prettyPrint(p) + " * " + r.prettyPrint(p+1))
         case Negate(x)          => wrap("-" + x.prettyPrint(p))
-        case Not(x)             => wrap("NOT " + x.prettyPrint(p))
+        case Not(x)             => wrap("not " + x.prettyPrint(p))
         case x: Inverse         => Mult(Literal(1), x).prettyPrint(precedence)
         case Variable(s)        => s.name
         case Literal(d)         => d.toString
+      }
+    }
+
+    def variables(): Set[Variable] = {
+      expr match {
+        case Or(l,r) => l.variables() ++ r.variables()
+        case And(l,r) => l.variables() ++ r.variables()
+        case Comparision(l,_,r) => l.variables() ++ r.variables()
+        case Plus(l,r) => l.variables() ++ r.variables()
+        case Mult(l,r) => l.variables() ++ r.variables()
+        case Negate(l) => l.variables()
+        case Not(l) => l.variables()
+        case Inverse(l) => l.variables()
+        case v: Variable => Set(v)
+        case l: Literal[_] => Set.empty
       }
     }
 

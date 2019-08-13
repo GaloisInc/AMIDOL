@@ -21,9 +21,9 @@ object JuliaExtract {
       val printer = new PrintWriter(file)
       printer.print(juliaSource.trim())
       printer.close()
+      file.deleteOnExit()
       file.getAbsolutePath()
     }
-    println(fullSourceFilePath)
 
     // Extract the AST
     val ast: String = Process(command = Seq(
@@ -33,19 +33,32 @@ object JuliaExtract {
 
     // Turn it into a model
     val model: Model = sexprAst.extractModel()
-    
+
+    var nounCount = 0L
+    def nextNounId() = {
+      nounCount += 1
+      nounCount
+    }
     val paletteItemsNouns = model.states.map { case (sid, st) =>
       sid -> PaletteItem(
-        className = s"${name}_state-${sid.id}_${Random.nextInt()}",
+        className = s"${name}_state${sid.id}_${nextNounId()}",
         `type` = "noun",
         sharedStates = Array[StateId](sid, sid),
-        icon = "images/unknown.svg",
+        icon = "images/unknown.png",
         backingModel = Model(
-          states = Map(sid -> st),
+          states = Map(sid -> st.copy(
+            initial_value = math.Variable('Initial)
+          )),
           events = Map.empty,
-          constants = model.constants,
+          constants = Map(math.Variable('Initial) -> 0.0),
         )
       )
+    }
+
+    var verbCount = 0L
+    def nextVerbId() = {
+      verbCount += 1
+      verbCount
     }
     val paletteItemsVerbs = model.events.map { case (eid, ev) =>
       val (in, out) = ev.output_predicate.transition_function.toList match {
@@ -53,23 +66,29 @@ object JuliaExtract {
         case List((s1: StateId, _),              (s2: StateId, _)) => (s2, s1)
         case _  => throw JuliaExtractionError(s"Not sure how to extract event ${ev}")
       }
+
+      val variablesUsed: Set[math.Variable] =
+        ev.input_predicate.fold(Set.empty[math.Variable])(_.enabling_condition.variables()) ++
+        ev.output_predicate.transition_function.values.map(_.variables()).fold(Set.empty[math.Variable])(_ ++ _) ++
+        ev.rate.variables()
+
       eid -> PaletteItem(
-        className = s"${name}_event-${eid.id}_${Random.nextInt()}",
+        className = s"${name}_event${eid.id}_${nextVerbId()}",
         `type` = "verb",
         sharedStates = Array[StateId](in, out),
-        icon = "images/unknown.svg",
+        icon = "images/unknown.png",
         backingModel = Model(
           states = Map(
             in -> model.states(in),
             out -> model.states(out),
           ),
           events = Map(eid -> ev),
-          constants = model.constants,
+          constants = model.constants.filterKeys(variablesUsed.contains(_)),
         )
       )
     }
 
-    val paletteItems = 
+    val paletteItems =
       paletteItemsNouns.map { case (sid, pi) => sid.id -> pi } ++
       paletteItemsVerbs.map { case (eid, pi) => eid.id -> pi }
 
@@ -88,12 +107,20 @@ object JuliaExtract {
           y = Random.nextLong() % 100
         )
       },
-      links = paletteItemsVerbs.values.map { case pi =>
-        val id = UUID.randomUUID().toString()
-        id -> ui.Link(
-          id = id,
-          from = pi.sharedStates(0).id,
-          to = pi.sharedStates(1).id,
+      links = paletteItemsVerbs.iterator.flatMap { case (eid, pi) =>
+        val id1 = UUID.randomUUID().toString()
+        val id2 = UUID.randomUUID().toString()
+        List(
+          id1 -> ui.Link(
+            id = id1,
+            from = pi.sharedStates(0).id,
+            to = eid.id,
+          ),
+          id2 -> ui.Link(
+            id = id2,
+            from = eid.id,
+            to = pi.sharedStates(1).id,
+          )
         )
       }.toMap
     )
