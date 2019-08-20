@@ -111,6 +111,7 @@ object OntologyDb {
     searchMatch: SnomedRecord => Boolean,
     haltOnMatch: Boolean,
     limit: Long,
+    deadline: Deadline,
     createSearchDotImage: Option[String]
   ): Vector[SnomedRecord] = {
 
@@ -145,7 +146,7 @@ object OntologyDb {
 
     // The search
     var searchLeft = limit
-    while (searchLeft > 0 & todo.hasNext) {
+    while (searchLeft > 0 && todo.hasNext && deadline.hasTimeLeft()) {
       searchLeft -= 1
       val id = todo.next()
       val record = getRecord(id).getOrElse {
@@ -178,6 +179,11 @@ object OntologyDb {
       }
     }
 
+    while (todo.hasNext) {
+      val id = todo.next()
+      visitor.visitAborted(s"id$id")
+    }
+
     dotfile.zip(createSearchDotImage).foreach {
       case (dotFileVisitor, imageFileName) =>
         dotFileVisitor.closeDotFile()
@@ -196,6 +202,7 @@ sealed trait GraphVisitor { self =>
   def visitStartingPoint(id: String): Unit
   def visitEdge(fromId: String, toId: String): Unit
   def visitEndingPoint(id: String): Unit
+  def visitAborted(id: String): Unit
 
   final def +(other: GraphVisitor): GraphVisitor = new GraphVisitor {
     def visitStartingPoint(id: String): Unit = {
@@ -212,6 +219,11 @@ sealed trait GraphVisitor { self =>
       self.visitEndingPoint(id)
       other.visitEndingPoint(id)
     }
+
+    def visitAborted(id: String): Unit = {
+      self.visitAborted(id)
+      other.visitAborted(id)
+    }
   }
 }
 object GraphVisitor {
@@ -221,6 +233,7 @@ object GraphVisitor {
     def visitStartingPoint(_id: String): Unit = ()
     def visitEdge(_fromId: String, _toId: String): Unit = ()
     def visitEndingPoint(_id: String): Unit = ()
+    def visitAborted(id: String): Unit = ()
   }
 }
 
@@ -237,6 +250,9 @@ case class DotFileVisitor(file: File, name: String) extends GraphVisitor {
 
   def visitEndingPoint(id: String): Unit =
     pw.println(s"  $id [style=filled,fillcolor=red];")
+
+  def visitAborted(id: String): Unit =
+    pw.println(s"  $id [shape=diamond];")
 
   def addTooltip(id: String, tooltip: String): Unit =
     pw.println(s"  $id [tooltip=$tooltip];")

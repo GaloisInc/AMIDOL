@@ -11,6 +11,7 @@ import amidol.backends._
 import scala.io.{Source, StdIn}
 import scala.util._
 import scala.collection.concurrent
+import scala.concurrent.duration._
 
 import spray.json._
 
@@ -20,6 +21,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 import com.typesafe.config.ConfigFactory
+import java.io.File
 
 object Main extends App with Directives {
 
@@ -73,6 +75,24 @@ object Main extends App with Directives {
       pathPrefix("appstate") {
         path("model") {
           complete(AppState.currentModel)
+        }
+      } ~
+      pathPrefix("ontology") {
+        path("search") {
+          parameters('term.as[String], 'limit.as[Long].?, 'seconds.as[Long].?) {
+            case (term: String, limitOpt: Option[Long], secondsOpt: Option[Long]) =>
+              val tempSvg = File.createTempFile("search", ".svg")
+              tempSvg.deleteOnExit()
+              OntologyDb.searchForFirst(
+                searchTerm = term,
+                searchMatch = _.annotations.nonEmpty,
+                haltOnMatch = false,
+                limit = limitOpt.getOrElse(Long.MaxValue),
+                deadline = secondsOpt.fold(1.day)(_.seconds).fromNow,
+                createSearchDotImage = Some(tempSvg.getAbsolutePath()),
+              )
+              getFromFile(tempSvg)
+          }
         }
       }
     } ~
