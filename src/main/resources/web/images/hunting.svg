@@ -10,6 +10,8 @@
    version="1.1"
    x="0px"
    y="0px"
+	 height="100"
+	 width="100"
    viewBox="0 0 100 92.316"
    enable-background="new 0 0 100 92.316"
    xml:space="preserve"
