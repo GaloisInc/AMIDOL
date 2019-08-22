@@ -70,13 +70,14 @@
 
     renderDataTraces: function () {
       UI.updatePossibleTraceNames(function () {
-        var dts = $("#modelList")
-        dts.empty()
+        var dts = $("#modelTable")
+        $(".dt_element").remove()
 
         dts.append(_.map(data_traces, function(d){
-          return $("<div>").attr({class: "dt_element", dt_key: d.key}).append([
-            'Name: ' + d.key + '. ',
-            $("<select>").append(
+          return $("<tr>").attr({class: "dt_element", dt_key: d.key}).append([
+				    $("<td>").text(d.key),
+				    $("<td>").append(
+				      $("<select>").append(
                 _.map(possible_data_trace_names, function(n) { 
                   var option = $("<option>").attr('value', n).html(n)
                   if (d.traceData == n) {
@@ -84,36 +85,40 @@
                   }
                   return option
                 })
-            ).on('change', function (e) {
-              var valueSelected = this.value;
-              data_traces = _.map(data_traces, function(x) {
-                var newData = (x.key == d.key) ? valueSelected : x.traceData;
-                return {
-                  key: x.key,
-                  traceData: newData
-                }
+              ).on('change', function (e) {
+                var valueSelected = this.value;
+                data_traces = _.map(data_traces, function(x) {
+                  var newData = (x.key == d.key) ? valueSelected : x.traceData;
+                  return {
+                    key: x.key,
+                    traceData: newData
+                  }
+                })
               })
-            }), 
-            ' ',
-            $("<button>").html("Delete").css({clear: "both"}).click(function(e){
-              data_traces = _.filter(data_traces, (x) => x.key != d.key)
-              UI.renderDataTraces()
-            })
+				    ),
+				    $("<td>").append(
+				      $("<button>").html("Delete").css({clear: "both"}).click(function(e){
+                data_traces = _.filter(data_traces, (x) => x.key != d.key)
+                UI.renderDataTraces()
+              })
+				    )
           ])
         }))
-        dts.append($("<button>").html("New").click(function (e) {
-          var traceName = prompt("Name your new trace:")
-          if (traceName) {
-            data_traces.push({ key: traceName, traceData: possible_data_trace_names[0] })
-            UI.renderDataTraces()
-          }
-        }))
-      })
+			})
     },
 
     closePlot: function() {
       $("#results").hide();
-    }
+    },
+
+
+    addTrace: function() {
+      var traceName = prompt("Name your new trace:")
+      if (traceName) {
+        data_traces.push({ key: traceName, traceData: possible_data_trace_names[0] })
+        UI.renderDataTraces()
+      }
+		},
   }
 
   $(function () {
@@ -291,9 +296,14 @@
   <div style="padding: 1em">
     <h3>Models to compare</h3>
     <div style="padding: 1em">
-      <div id='modelList'>
-
-      </div>
+      <table id='modelTable' style="width:100%">
+        <tr class="header">
+          <th>Name</th>
+					<th>Data traces</th>
+					<th></th>
+				</tr>
+      </table>
+			<button id="add-model" onclick="UI.addTrace()">Add to comparision</button><br>
       <button id="plot-models">Plot the comparision</button>
     </div>
 
