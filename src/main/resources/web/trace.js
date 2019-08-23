@@ -58,8 +58,6 @@ function addTraces(trace1, trace2) {
 	}
 
   return {
-    name: trace1.name + " + " + trace2.name,
-    mode: trace1.mode || trace2.mode,
     x: x3,
     y: y3,
 	}
