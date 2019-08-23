@@ -170,5 +170,6 @@
       }
     }
   ],
-  "global_vars": {}
+  "global_vars": {},
+	"chosen_palette": "SIRS-VD"
 }

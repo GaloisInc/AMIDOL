@@ -524,17 +524,20 @@
       }
     },
 
-		clearNetwork : function() {
-			if (_.isEmpty(node_data_set.get()) || confirm("Changing palettes will clear the drawing canvas.")) {
+		// Remove all nodes in the network drawn (but they are still accessible through history)
+		clearNetwork : function(reason) {
+			if (_.isEmpty(node_data_set.get()) || confirm(reason)) {
 				journal.past = []
 				journal.applyEventEffects( { type: "subtract", nodes: node_data_set.get(), edges: edge_data_set.get() } )
 				return true
-			} else { return false }
+			} else {
+				return false
+			}
 		},
 
 		choosePalette: function(elem) {
 			chosenPalette = $(elem).val()
-			if (UI.clearNetwork()) {
+			if (UI.clearNetwork("Changing palettes will clear the drawing canvas.")) {
 				UI.render.palette(availablePalettes[chosenPalette])
 			}
 		},
@@ -672,6 +675,7 @@
 				journal: journal.past,
 				reward_vars: reward_vars,
 				global_vars: global_vars,
+				chosen_palette: chosenPalette,
 			}
 			var blob = new Blob([JSON.stringify(data)], {type: "application/json"})
 			var a = document.createElement('a')
@@ -684,20 +688,22 @@
 		upload : function(event) {
 			var files = event.target.files
 			_.map(files, function(f){
-				if (f.type === "application/json") {
+				if (f.type === "application/json" &&
+				    UI.clearNetwork("Loading up a model will clear the drawing canvas.")) {
 					journal.future = []
-					UI.clearNetwork()
 					var reader = new FileReader()
 					reader.onload = function(e) {
 						var data = JSON.parse(e.target.result)
 						journal.future = journal.future.concat(data.journal)
-						global_vars = data.global_vars
-						reward_vars = data.reward_vars
+						global_vars = data.global_vars;
+						reward_vars = data.reward_vars;
+						chosenPalette = data.chosen_palette;
 						UI.updateButtonStates()
 					}
 					reader.onloadend = function(e) {
 						do { $("#redo_button").click() }
 						while ( ! $("#redo_button").hasClass("disabled"))
+						UI.render.palette(availablePalettes[chosenPalette])
 						UI.render.rewardVars()
 						UI.render.localVars()
 				    UI.render.iconRedraw()
@@ -709,7 +715,7 @@
 
     uploadJuliaSrc : function(event) {
 			var file = event.target.files[0];
-			if (file) {
+			if (file && UI.clearNetwork("Loading up a Julia model will clear the drawing canvas.")) {
 				var reader = new FileReader();
 				reader.onload = function (e) {
 						var payload = {
@@ -717,7 +723,7 @@
 							juliaSourceCode: e.target.result
 						};
 						$.post("/appstate/loadJuliaModel", payload, function(res) {
-						var nodes = _.values(res.nodes)
+				    var nodes = _.values(res.nodes)
 						var links = _.values(res.links)
 						journal.future.push({
 							type: "add",
