@@ -14,7 +14,7 @@ package object math {
     val precedence: Int
     def eval(vals: Map[Symbol, Double] = Map()): A
     def mapVariables(func: Variable => Expr[Double]): Expr[A]
- 
+
     final def renameVariables(renamer: Renamer[Variable, Variable]): Expr[A] = 
       mapVariables(renamer.getOrInsert(_))
 
@@ -23,7 +23,7 @@ package object math {
 
     def asVariable: Try[Variable] =
       scala.util.Failure(throw new Exception(s"Expression ${this.prettyPrint()} is not a variable"))
-      
+
     def asConstant: Try[Literal[A]] =
       scala.util.Failure(throw new Exception(s"Expression ${this.prettyPrint()} is not a constant"))
   }
@@ -75,15 +75,15 @@ package object math {
   case class Variable(s: Symbol) extends Expr[Double] {
     val precedence: Int = Int.MaxValue
     def eval(vals: Map[Symbol, Double] = Map()) = vals.getOrElse(s, throw new Exception(s"Unbound variable $s"))
-    def mapVariables(func: Variable => Expr[Double]) = func(this) 
-    
+    def mapVariables(func: Variable => Expr[Double]) = func(this)
+
     override def asVariable: Try[Variable] = scala.util.Success(this)
   }
   case class Literal[A](d: A) extends Expr[A] {
     val precedence: Int = Int.MaxValue
     def eval(vals: Map[Symbol, Double] = Map()) = d
-    def mapVariables(func: Variable => Expr[Double]) = Literal(d) 
-    
+    def mapVariables(func: Variable => Expr[Double]) = Literal(d)
+
     override def asConstant: Try[Literal[A]] = scala.util.Success(this)
   }
 
@@ -130,21 +130,21 @@ package object math {
         )
 
       lazy val conj: PackratParser[Expr[Boolean]] =
-        ( conj ~ ("&" | "&&" | "AND") ~ comp   ^^ { case (l ~ _ ~ r) => And(l, r) }
+        ( conj ~ ("&" | "&&" | "AND" | "and") ~ comp ^^ { case (l ~ _ ~ r) => And(l, r) }
         | comp
         )
 
       lazy val disj: PackratParser[Expr[Boolean]] =
-        ( disj ~ ("|" | "||" | "OR") ~ conj   ^^ { case (l ~ _ ~ r) => Or(l, r) }
+        ( disj ~ ("|" | "||" | "OR" | "or") ~ conj   ^^ { case (l ~ _ ~ r) => Or(l, r) }
         | conj
         )
 
-      (disj, term) 
+      (disj, term)
     }
 
     // Parse an arithmetic expression from a string
     def expression(input: String): Try[Expr[Double]] = runParser(arithmeticParser, input)
-    
+
     // Parse a predicate expression from a string
     def predicate(input: String): Try[Expr[Boolean]] = runParser(predicateParser, input)
 
