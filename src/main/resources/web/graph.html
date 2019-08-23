@@ -427,7 +427,7 @@
 					if (data.nodes.length == 1) {
 						UI.render.localVars(data.nodes[0])
 						$("#palette img.selected").removeClass("selected");
-						$("#palette img[classname='" + node_data_set.get(data.nodes[0]).label + "']").addClass("selected");
+						$("#palette img[classname='" + node_data_set.get(data.nodes[0]).props.className + "']").addClass("selected");
 					}
 				})
 				network.on("deselectNode", function(data){
