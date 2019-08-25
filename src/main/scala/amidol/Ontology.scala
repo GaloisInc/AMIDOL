@@ -194,6 +194,43 @@ object OntologyDb {
 
     found.result()
   }
+
+
+  /** Do an expensive traversal that covers all of the SNOMED db.
+   *  This should give us a rough order of magnitude for the worst case
+   *  performance of palette search.
+   *
+   *  At time of writing, time elapsed is around 10-15s
+   */
+  def testTraversalPerformance(): Unit = {
+    val start = Deadline.now
+
+    object todo {
+      private val visitedIds: mutable.Set[Int] = mutable.Set.empty
+      private val todoIds: mutable.Queue[Int] = mutable.Queue.empty
+
+      def enqueue(id: Int): Unit = if (visitedIds.add(id)) todoIds.enqueue(id)
+      def next(): Int = todoIds.dequeue()
+      def hasNext: Boolean = todoIds.nonEmpty
+      def size: Int = visitedIds.size
+    }
+
+    todo.enqueue(379244) // random ID (that is in the DB)
+
+    while (todo.hasNext) {
+      val rec = getRecord(todo.next()).get
+      for (c <- rec.children) {
+        todo.enqueue(c)
+      }
+      for (c <- rec.parents) {
+        todo.enqueue(c)
+      }
+    }
+
+    println(s"Total time elapsed: ${(Deadline.now - start).toMillis}ms")
+    println(s"Total records visited: ${todo.size}")
+  }
+
 }
 
 
