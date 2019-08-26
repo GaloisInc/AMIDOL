@@ -201,7 +201,7 @@
 					.append(_.map(items, function(item){
 						var p = paletteItems[item]
 						return $("<img />")
-							.attr({src: p.icon, classname: p.className})
+							.attr({src: p.image, classname: p.className})
 							.attr("onclick", "UI.selectPaletteNode(this)")
 							.attr("ondblclick", "UI.paletteEditor.show('" + item + "')")
 							.addClass("paletteItem")
@@ -332,7 +332,7 @@
 			iconRedraw : function() {
 				_.forEach(node_data_set.getIds(), function(id) {
 					var className = node_data_set.get(id).props.className
-					node_data_set.update({ id: id, image: paletteItems[className].icon })
+					node_data_set.update({ id: id, image: paletteItems[className].image })
 				})
 			},
 
@@ -480,6 +480,7 @@
 				$("#palette-element-type").val("noun")
 				$("#palette-element-class").val("")
 				$("#palette-element-icon").val("")
+				$("#palette-element-color").val("")
 				$("#palette-element-shared").val("")
 				$("#palette-element-model").val("")
 			},
@@ -491,6 +492,7 @@
 					$("#palette-element-name").val(toEdit.className)
 					$("#palette-element-type").val(toEdit.type)
 					$("#palette-element-icon").val(toEdit.icon)
+					$("#palette-element-color").val(toEdit.color)
 					$("#palette-element-shared").val(toEdit.sharedStates.join(", "))
 					$("#palette-element-model").val(JSON.stringify(toEdit.backingModel, null, 2))
 				}
@@ -520,6 +522,7 @@
 						$("#palette-element-type").val("noun")
 						$("#palette-element-class").val("")
 						$("#palette-element-icon").val("")
+						$("#palette-element-color").val("")
 						$("#palette-element-shared").val("")
 						$("#palette-element-model").val("")
 						UI.paletteEditor.updateSaveButton("")
@@ -539,6 +542,7 @@
 				}
 				var type = $("#palette-element-type").val()
 				var icon = $("#palette-element-icon").val()
+				var color = $("#palette-element-color").val()
 				var shared = _.map(
 					$("#palette-element-shared").val().split(","),
 					function (st) { return st.trim() }
@@ -550,40 +554,45 @@
 					return;
 				}
 
-				// Set the palette element
-				var paletteElement = {
-					className: name,
-					type: type,
-					icon: icon,
-					sharedStates: shared,
-					backingModel: model,
-				}
+				refillSvg(icon, color).done(function(image) {
+					// Set the palette element
+					var paletteElement = {
+						className: name,
+						type: type,
+						icon: icon,
+						color: color,
+						image: image,
+						sharedStates: shared,
+						backingModel: model,
+					}
 
-				$.post("/appstate/palette/put", { name: name, palette: JSON.stringify(paletteElement) })
-					.fail(function (err) {
-						alert("Failed to register new palette element.\n\n(" + err.responseText + ")");
-					})
-					.done(function () {
+					$.post("/appstate/palette/put", { name: name, palette: JSON.stringify(paletteElement) })
+						.fail(function (err) {
+							alert("Failed to register new palette element.\n\n(" + err.responseText + ")");
+						})
+						.done(function () {
 
-						// Detect new!
-						if (!paletteItems[name]) {
-							availablePalettes[chosenPalette].push(name)
-						}
-						paletteItems[name] = paletteElement
+							// Detect new!
+							if (!paletteItems[name]) {
+								availablePalettes[chosenPalette].push(name)
+							}
+							paletteItems[name] = paletteElement
 
-						// Re-render and clean up
-						UI.render.palette(availablePalettes[chosenPalette])
-						UI.render.iconRedraw()
+							// Re-render and clean up
+							UI.render.palette(availablePalettes[chosenPalette])
+							UI.render.iconRedraw()
 
-						$("#paletteEditor").hide()
-						$("#palette-element-name").val("")
-						$("#palette-element-type").val("noun")
-						$("#palette-element-class").val("")
-						$("#palette-element-icon").val("")
-						$("#palette-element-shared").val("")
-						$("#palette-element-model").val("")
-						UI.paletteEditor.updateSaveButton("")
-					});
+							$("#paletteEditor").hide()
+							$("#palette-element-name").val("")
+							$("#palette-element-type").val("noun")
+							$("#palette-element-class").val("")
+							$("#palette-element-icon").val("")
+							$("#palette-element-color").val("")
+							$("#palette-element-shared").val("")
+							$("#palette-element-model").val("")
+							UI.paletteEditor.updateSaveButton("")
+						});
+				});
 			}
 		},
 
@@ -626,7 +635,7 @@
 				"className":	_.clone(paletteItem.className),
 				"parameters":  _.clone(parameters)
 			}
-			node.image = paletteItem.icon
+			node.image = paletteItem.imagee
 			return node
 		},
 
@@ -890,21 +899,29 @@
 
 	var palette = {
 		update : function(onComplete) {
-			$.post("/appstate/palette/list", {}, function (data) {
-				paletteItems = { }
-				_.forEach(data, function(item) {
-					paletteItems[item.className] = item
+			$.post("/appstate/palette/list", {})
+				.then(function (data) {
+					paletteItems = { }
+					var remaining = data.length - 1;
+					return $.when.apply($, _.map(data, function(item) {
+						return refillSvg(item.icon, item.color).then(function (image) {
+							item.image = image
+							paletteItems[item.className] = item
+						})
+					}))
 				})
-				availablePalettes = _.mapObject(availablePalettes, function (pal) {
-					return _.filter(
-						pal,
-						function(name) { return paletteItems.hasOwnProperty(name); }
-					)
+				.done(function () {
+					availablePalettes = _.mapObject(availablePalettes, function (pal) {
+						return _.filter(
+							pal,
+							function(name) { return paletteItems.hasOwnProperty(name); }
+						)
+					})
+					if (onComplete) onComplete()
 				})
-				if (onComplete) onComplete()
-			})
 		}
 	}
+
 
 	var paletteItems = { }			// loaded from server dynamically
 	var chosenPalette = "SIR"
@@ -1107,8 +1124,23 @@
 			</tr>
 
 			<tr>
-				<td>Icon name:</td>
-				<td><input id="palette-element-icon" type="text" name="icon name" style='width: 100%'/></td>
+				<td>Icon:</td>
+				<td>
+					<select id="palette-element-icon" name="icon name" style='width: calc(100% - 70px)'>
+						<option value="images/birth.svg">Birth</option>
+						<option value="images/breeding.svg">Breeding</option>
+						<option value="images/cure.svg">Cure</option>
+						<option value="images/death.svg">Death</option>
+						<option value="images/hunting.svg">Hunting</option>
+						<option value="images/patient.svg">Patient</option>
+						<option value="images/person.svg">Person</option>
+						<option value="images/predator.svg">Predator</option>
+						<option value="images/prey.svg">Prey</option>
+						<option value="images/time.svg">Time</option>
+						<option value="images/virus.svg">Virus</option>
+					</select>
+					<input id="palette-element-color" type="color" name="icon color" style='width: 60px'/>
+				</td>
 			</tr>
 
 			<tr>

@@ -175,7 +175,7 @@ trait ModelJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val stateFormat = jsonFormat3(State.apply)
   implicit val eventFormat = jsonFormat4(Event.apply)
   implicit val modelFormat = jsonFormat3(Model.apply)
-  implicit val paletteFormat = jsonFormat5(PaletteItem.apply)
+  implicit val paletteFormat = jsonFormat6(PaletteItem.apply)
 }
 
 // Full description of a palette element
@@ -185,6 +185,7 @@ case class PaletteItem(
   sharedStates: Array[StateId],        // For now, this is be: `[ <shared state for incoming arrows>
                                        //                       , <shared state for outgoing arrows> ]
   icon: String,
+  color: Option[String],
   backingModel: amidol.Model,   // parameters = backingModel.constants
 )
 object PaletteItem extends ModelJsonSupport

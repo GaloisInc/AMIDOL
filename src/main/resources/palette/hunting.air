@@ -3,6 +3,7 @@
   "type": "verb",
   "sharedStates": ["INPUT", "OUTPUT"],
   "icon": "images/hunting.svg",
+  "color": "#fec22f",
   "backingModel": {
     "states": {
       "INPUT": {

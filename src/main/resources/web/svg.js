@@ -3,9 +3,11 @@
  *
  *  NB: the URL _can_ be already itself a data-url
  */
-function refillSvg(svgSrc, newColour, onComplete) {
-  $.get(svgSrc, function(response) {
-    // We expect a `SVGSVGElement`
+function refillSvg(svgSrc, newColour) {
+  return $.get(svgSrc).then(function(response) {
+    if (svgSrc == "images/unknown.png") return svgSrc;
+
+		// We expect a `SVGSVGElement`
 		var theSvg = response.rootElement;
 
     // Rough jQuery to re-fill anything that already had a fill
@@ -17,7 +19,27 @@ function refillSvg(svgSrc, newColour, onComplete) {
 
     // Turn the SVG into a string, then encode that
     var theString = new XMLSerializer().serializeToString(theSvg);
-    onComplete("data:image/svg+xml;base64," + window.btoa(theString));
+    return "data:image/svg+xml;base64," + window.btoa(theString);
 	})
 }
 
+
+/** Given the URL for an SVG, return its fill colors.
+ */
+function svgColors(svgSrc, onComplete) {
+  $.get(svgSrc, function(response) {
+    if (svgSrc == "images/unknown.png") return [];
+    // We expect a `SVGSVGElement`
+		var theSvg = response.rootElement;
+
+    // Rough jQuery to find anything that already had a fill
+    var fills = []
+		$(theSvg).find('*').each(function (index, elem) {
+				if (elem.style && elem.style.fill) {
+          fills.push(elem.style.fill);
+				}
+		});
+
+    onComplete(fills);
+	})
+}

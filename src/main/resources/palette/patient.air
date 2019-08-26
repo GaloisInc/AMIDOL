@@ -3,6 +3,7 @@
   "type": "noun",
   "sharedStates": ["P","P"],
   "icon": "images/patient.svg",
+  "color": "#3677bc",
   "backingModel": {
     "states": {
       "P": {

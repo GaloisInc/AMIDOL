@@ -45,6 +45,7 @@ object JuliaExtract {
         `type` = "noun",
         sharedStates = Array[StateId](sid, sid),
         icon = "images/unknown.png",
+        color = None,
         backingModel = Model(
           states = Map(sid -> st.copy(
             initial_value = math.Variable('Initial)
@@ -77,6 +78,7 @@ object JuliaExtract {
         `type` = "verb",
         sharedStates = Array[StateId](in, out),
         icon = "images/unknown.png",
+        color = None,
         backingModel = Model(
           states = Map(
             in -> model.states(in),
