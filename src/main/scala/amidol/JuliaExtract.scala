@@ -3,10 +3,12 @@ package amidol
 import scala.sys.process.Process
 import scala.util.{Try, Failure, Success}
 import scala.util.Random
+import scala.concurrent.duration._
 
 import java.io.File
 import java.io.PrintWriter
 import java.util.UUID
+import amidol.OntologyDb.SnomedRecord
 
 object JuliaExtract {
 
@@ -14,6 +16,8 @@ object JuliaExtract {
     juliaSource: String,
     name: String,
   ): Try[(ui.Graph, Map[String, PaletteItem])] = Try {
+
+    println("Extracting Julia model...")
 
     // A file located here has the Julia source in it
     val fullSourceFilePath: String = {
@@ -40,12 +44,32 @@ object JuliaExtract {
       nounCount
     }
     val paletteItemsNouns = model.states.map { case (sid, st) =>
+      val groundingOpt = st.description match {
+        case None => None
+        case Some(desc) =>
+          val done = OntologyDb
+            .searchForFirst(
+              searchTerm = desc,
+              searchMatch = _.annotations.nonEmpty,
+              haltOnMatch = true,
+              limit = 500L,
+              deadline = 10.seconds.fromNow
+            )
+            .flatMap { record: SnomedRecord =>
+              OntologyAnnotation.getForName(record.annotations)
+                .filter(_.itemType == ItemType.Noun)
+                .map(a => (a.colorRange.sample(desc.hashCode), a.svgImageSrc))
+            }
+            .headOption
+          done
+      }
+
       sid -> PaletteItem(
         className = s"${name}_state${sid.id}_${nextNounId()}",
         `type` = "noun",
         sharedStates = Array[StateId](sid, sid),
-        icon = "images/unknown.png",
-        color = None,
+        icon = groundingOpt.fold("images/unknown.png")(_._2),
+        color = groundingOpt.map(_._1.render),
         backingModel = Model(
           states = Map(sid -> st.copy(
             initial_value = math.Variable('Initial)
@@ -62,6 +86,26 @@ object JuliaExtract {
       verbCount
     }
     val paletteItemsVerbs = model.events.map { case (eid, ev) =>
+
+      val groundingOpt = ev.description match {
+        case None => None
+        case Some(desc) =>
+          OntologyDb
+            .searchForFirst(
+              searchTerm = desc,
+              searchMatch = _.annotations.nonEmpty,
+              haltOnMatch = true,
+              limit = 500L,
+              deadline = 10.seconds.fromNow
+            )
+            .flatMap { record: SnomedRecord =>
+              OntologyAnnotation.getForName(record.annotations)
+                .filter(_.itemType == ItemType.Verb(1,1))
+                .map(a => (a.colorRange.sample(desc.hashCode), a.svgImageSrc))
+            }
+            .headOption
+      }
+
       val (in, out) = ev.output_predicate.transition_function.toList match {
         case List((s1: StateId, _: math.Negate), (s2: StateId, _)) => (s1, s2)
         case List((s1: StateId, _),              (s2: StateId, _)) => (s2, s1)
@@ -77,8 +121,8 @@ object JuliaExtract {
         className = s"${name}_event${eid.id}_${nextVerbId()}",
         `type` = "verb",
         sharedStates = Array[StateId](in, out),
-        icon = "images/unknown.png",
-        color = None,
+        icon = groundingOpt.fold("images/unknown.png")(_._2),
+        color = groundingOpt.map(_._1.render),
         backingModel = Model(
           states = Map(
             in -> model.states(in),
@@ -126,6 +170,7 @@ object JuliaExtract {
         )
       }.toMap
     )
+    println("Done.")
 
     (
       uiGraph,

@@ -1,9 +1,9 @@
 function main(β, γ, μ, n)
     @grounding begin
-        S => Noun(Susceptible, ontology=Snowmed)
-        I => Noun(Infectious, ontology=ICD9)
-        R => Noun(Recovered, ontology=ICD9)
-        λ₁ => Verb(infection)
+        S => Noun(person)
+        I => Noun(infectious)
+        R => Noun(person)
+        λ₁ => Verb(H3N2)
         λ₂ => Verb(recovery)
         λ₃ => Verb(loss_of_immunity)
     end

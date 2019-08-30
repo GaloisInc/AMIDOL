@@ -32,10 +32,10 @@ object OntologyAnnotation extends DefaultJsonProtocol {
   implicit val ontologyAnnotationFormat = jsonFormat3(OntologyAnnotation.apply)
 
   /** Go look on disk for an annotation with a given name */
-  def getForName(name: String): Option[OntologyAnnotation] = {
-    val src = Source.fromResource(s"annotations/$name.template").getLines.mkString("\n")
-    Try(src.parseJson.convertTo[OntologyAnnotation]).toOption
-  }
+  def getForName(name: String): Option[OntologyAnnotation] = Try({
+    val src = Source.fromResource(s"annotations/$name").getLines.mkString("\n")
+    src.parseJson.convertTo[OntologyAnnotation]
+  }).toOption
 }
 
 /** RGB color gradient range */
@@ -55,7 +55,7 @@ case class Color(
   green: Long,
   blue: Long,
 ) {
-  def render: String = f"#$red%.2f$green%.2f$blue%.2f"
+  def render: String = f"#$red%02x$green%02x$blue%02x"
 
   def +(other: Color) = Color(
     this.red + other.red,

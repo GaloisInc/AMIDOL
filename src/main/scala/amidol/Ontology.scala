@@ -109,10 +109,10 @@ object OntologyDb {
   def searchForFirst(
     searchTerm: String,
     searchMatch: SnomedRecord => Boolean,
-    haltOnMatch: Boolean,
-    limit: Long,
-    deadline: Deadline,
-    createSearchDotImage: Option[String]
+    haltOnMatch: Boolean = true,
+    limit: Long = Long.MaxValue,
+    deadline: Deadline = 1.day.fromNow,
+    createSearchDotImage: Option[String] = None
   ): Vector[SnomedRecord] = {
 
     val dotfile = createSearchDotImage.map { _ =>

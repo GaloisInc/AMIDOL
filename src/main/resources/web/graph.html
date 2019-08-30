@@ -233,7 +233,7 @@
 			rewardVars : function() {
 				var rvs = $("#rewardVars")
 				rvs.empty()
-				rvs.append("<h2>Reward Variables:</h2>")
+				rvs.append("<h2>Measures:</h2>")
 				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
 					if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
 				}), (a) => ! _.isEmpty(a))
@@ -487,6 +487,7 @@
 
 			loadTemplate: function(toEditName) {
 				var toEdit = paletteItems[toEditName]
+				console.log(toEdit)
 				if (toEdit) {
 					UI.paletteEditor.updateSaveButton(toEdit.className);
 					$("#palette-element-name").val(toEdit.className)

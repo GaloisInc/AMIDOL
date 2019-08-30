@@ -11,10 +11,7 @@
       "red": 54
     }
   },
-  "itemType": {
-    "inputCount": 1,
-    "outputType": 1
-  },
+  "itemType": "Noun",
   "svgImageSrc": "images/person.svg"
 }
 
