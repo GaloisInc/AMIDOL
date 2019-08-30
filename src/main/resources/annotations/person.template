@@ -1,0 +1,20 @@
+{
+  "colorRange": {
+    "end": {
+      "blue": 186,
+      "green": 153,
+      "red": 54
+    },
+    "start": {
+      "blue": 186,
+      "green": 54,
+      "red": 54
+    }
+  },
+  "itemType": {
+    "inputCount": 1,
+    "outputType": 1
+  },
+  "svgImageSrc": "images/person.svg"
+}
+
