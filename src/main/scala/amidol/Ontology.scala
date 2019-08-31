@@ -78,7 +78,7 @@ object OntologyDb {
 
   /** Search for records that include a certain search term in their terms */
   def getWithTerm(searchTerm: String, limit: Long): Vector[SnomedRecord] =
-    withPreparedStatement("SELECT * FROM snomed WHERE terms LIKE ? LIMIT ?") {
+    withPreparedStatement("SELECT * FROM snomed WHERE terms LIKE ? ORDER BY LENGTH(terms) LIMIT ?") {
       prepared =>
         prepared.setString(1, "%" + searchTerm + "%")
         prepared.setLong(2, limit)

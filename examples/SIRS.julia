@@ -1,10 +1,10 @@
 function main(β, γ, μ, n)
     @grounding begin
         S => Noun(person)
-        I => Noun(infectious)
+        I => Noun(patient)
         R => Noun(person)
         λ₁ => Verb(H3N2)
-        λ₂ => Verb(recovery)
+        λ₂ => Verb(treatment)
         λ₃ => Verb(loss_of_immunity)
     end
 

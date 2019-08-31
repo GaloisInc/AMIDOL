@@ -51,28 +51,28 @@ case class ColorRange(
 
 /** Represents a single RGB color */
 case class Color(
-  red: Long,
-  green: Long,
-  blue: Long,
+  hue: Long,         // 0-255
+  saturation: Long,  // percentage
+  luminosity: Long,  // percentage
 ) {
-  def render: String = f"#$red%02x$green%02x$blue%02x"
+  def render: String = s"hsl($hue, $saturation%, $luminosity%)"
 
   def +(other: Color) = Color(
-    this.red + other.red,
-    this.green + other.green,
-    this.blue + other.blue,
+    this.hue + other.hue,
+    this.saturation + other.saturation,
+    this.luminosity + other.luminosity,
   )
 
   def -(other: Color) = Color(
-    this.red - other.red,
-    this.green - other.green,
-    this.blue - other.blue,
+    this.hue - other.hue,
+    this.saturation - other.saturation,
+    this.luminosity - other.luminosity,
   )
 
   def *(scalar: Double) = Color(
-    (this.red * scalar).toLong,
-    (this.green * scalar).toLong,
-    (this.blue * scalar).toLong,
+    (this.hue * scalar).toLong,
+    (this.saturation * scalar).toLong,
+    (this.luminosity * scalar).toLong,
   )
 }
 
