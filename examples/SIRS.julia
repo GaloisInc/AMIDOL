@@ -3,7 +3,7 @@ function main(β, γ, μ, n)
         S => Noun(person)
         I => Noun(patient)
         R => Noun(person)
-        λ₁ => Verb(H3N2)
+        λ₁ => Verb(h3n2)
         λ₂ => Verb(treatment)
         λ₃ => Verb(loss_of_immunity)
     end

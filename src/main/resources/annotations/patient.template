@@ -1,12 +1,12 @@
 {
   "colorRange": {
     "end": {
-      "hue": 210,
-      "saturation": 100,
-      "luminosity": 50
+      "hue": 141,
+      "saturation": 50,
+      "luminosity": 40
     },
     "start": {
-      "hue": 210,
+      "hue": 212,
       "saturation": 100,
       "luminosity": 75
     }

@@ -44,8 +44,14 @@ case class ColorRange(
   end: Color,
 ) {
   def sample(seed: Long): Color = {
-    val position: Double = (Math.abs(seed) % 17).toDouble / 17.0;
-    (end - start) * position + start
+    val s1: Double = (Math.abs(seed) % 76).toDouble / 76.0;
+    val s2: Double = (Math.abs(seed) % 37).toDouble / 37.0;
+    val s3: Double = (Math.abs(seed) % 21).toDouble / 21.0;
+    Color(
+      ((end.hue - start.hue) * s1 + start.hue).toLong,
+      ((end.saturation - start.saturation) * s2 + start.saturation).toLong,
+      ((end.luminosity - start.luminosity) * s2 + start.luminosity).toLong,
+    )
   }
 }
 

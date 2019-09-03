@@ -1,14 +1,14 @@
 {
   "colorRange": {
     "end": {
-      "hue": 40,
-      "saturation": 100,
+      "hue": 43,
+      "saturation": 50,
       "luminosity": 40
     },
     "start": {
-      "hue": 40,
+      "hue": 85,
       "saturation": 100,
-      "luminosity": 60
+      "luminosity": 75
     }
   },
   "itemType": {
