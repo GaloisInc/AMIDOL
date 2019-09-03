@@ -43,26 +43,34 @@ object JuliaExtract {
       nounCount += 1
       nounCount
     }
-    val paletteItemsNouns = model.states.map { case (sid, st) =>
-      val groundingOpt = st.description match {
-        case None => None
-        case Some(desc) =>
-          val done = OntologyDb
-            .searchForFirst(
-              searchTerm = desc,
-              searchMatch = _.annotations.nonEmpty,
-              haltOnMatch = true,
-              limit = 500L,
-              deadline = 10.seconds.fromNow
-            )
-            .flatMap { record: SnomedRecord =>
-              OntologyAnnotation.getForName(record.annotations)
-                .filter(_.itemType == ItemType.Noun)
-                .map(a => (a.colorRange.sample(desc.hashCode), a.svgImageSrc))
-            }
-            .headOption
-          done
+
+    def ontologySearch(
+      description: Option[String],
+      predicate: OntologyAnnotation => Boolean,
+    ): Option[(Color, String)] = {
+      description.flatMap { desc: String =>
+        OntologyDb
+          .searchForFirst(
+            searchTerm = desc,
+            searchMatch = _.annotations.nonEmpty,
+            haltOnMatch = true,
+            limit = 500L,
+            deadline = 10.seconds.fromNow
+          )
+          .flatMap { record: SnomedRecord =>
+            OntologyAnnotation.getForName(record.annotations)
+              .filter(predicate)
+              .map(a => (a.colorRange.sample(desc.hashCode), a.svgImageSrc))
+          }
+          .headOption
       }
+    }
+
+    val paletteItemsNouns = model.states.map { case (sid, st) =>
+      val groundingOpt = ontologySearch(
+        st.description,
+        _.itemType == ItemType.Noun,
+      )
 
       sid -> PaletteItem(
         className = s"${name}_state${sid.id}_${nextNounId()}",
@@ -87,24 +95,10 @@ object JuliaExtract {
     }
     val paletteItemsVerbs = model.events.map { case (eid, ev) =>
 
-      val groundingOpt = ev.description match {
-        case None => None
-        case Some(desc) =>
-          OntologyDb
-            .searchForFirst(
-              searchTerm = desc,
-              searchMatch = _.annotations.nonEmpty,
-              haltOnMatch = true,
-              limit = 500L,
-              deadline = 10.seconds.fromNow
-            )
-            .flatMap { record: SnomedRecord =>
-              OntologyAnnotation.getForName(record.annotations)
-                .filter(_.itemType == ItemType.Verb(1,1))
-                .map(a => (a.colorRange.sample(desc.hashCode), a.svgImageSrc))
-            }
-            .headOption
-      }
+      val groundingOpt = ontologySearch(
+        ev.description,
+        _.itemType == ItemType.Verb(1,1),
+      )
 
       val (in, out) = ev.output_predicate.transition_function.toList match {
         case List((s1: StateId, _: math.Negate), (s2: StateId, _)) => (s1, s2)
