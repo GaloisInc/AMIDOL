@@ -1005,7 +1005,7 @@
 	}
 	#palette img.right, #palette input.right {
 		margin-top: 1em;
-		height: 25px;
+		height: 40px;
 	}
 	#palette .right{
 		float: right;
@@ -1186,10 +1186,10 @@
 		</select>
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
 		<button id="upload_julia_button" class="right" onclick="document.getElementById('choose-julia-upload').click()">Load Julia code</button>
-		<img id="redo_button" class="right" src="images/redo.png" onclick="journal.redo()" />
-		<img id="undo_button" class="right" src="images/undo.png" onclick="journal.undo()" />
-		<img id="upload" class="right" src="images/upload.png" onclick="document.getElementById('choose-upload').click()" />
-		<img id="download" class="right" src="images/download.png" onclick="UI.download()" />
+		<img id="redo_button" title="Redo" class="right" src="images/redo.png" onclick="journal.redo()" />
+		<img id="undo_button" title="Undo" class="right" src="images/undo.png" onclick="journal.undo()" />
+		<img id="upload" title="Load model file" class="right" src="images/load_model.jpg" onclick="document.getElementById('choose-upload').click()" />
+		<img id="download" title="Save model file" class="right" src="images/save_model.jpeg" onclick="UI.download()" />
 		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
 		<input type="file" class="right" id="choose-julia-upload" name="files[]" style="display: none;" />
 	</div>
