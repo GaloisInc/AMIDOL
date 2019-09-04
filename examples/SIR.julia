@@ -1,0 +1,36 @@
+function main(β, γ, n)
+    @grounding begin
+        S => Noun(person)
+        I => Noun(patient)
+        R => Noun(person)
+        λ₁ => Verb(H1N1)
+        λ₂ => Verb(cure)
+    end
+
+    @variables S, I, R, β, γ, n
+
+    Δ = [
+        (S~S-1, I~I+1),
+        (I~I-1, R~R+1),
+    ]
+
+    ϕ = [
+        S > 0 && I > 0,
+        I > 0,
+    ]
+
+    Λ = [
+        β*S*I/n,
+        γ*I,
+    ]
+
+    # generate discrete petri model
+    m = Petri.Model([S, I, R], Δ, ϕ, Λ)
+
+    # create instance of petri model with initial conditions
+    p = Petri.Problem(m, (500, 7, 0, 0.78, 0.5, 507), 150)
+
+    # discrete solution
+    soln = Petri.solve(p)
+end
+
