@@ -5,7 +5,7 @@
       "nodes": [
         {
           "id": "1",
-          "label": "Susceptible",
+          "label": "S",
           "x": -350,
           "y": 0,
           "props": {
@@ -21,7 +21,7 @@
         },
         {
           "id": "2",
-          "label": "Exposed",
+          "label": "infect1",
           "x": -175,
           "y": 0,
           "props": {
@@ -41,7 +41,7 @@
         },
 				{
           "id": "6",
-          "label": "Exposed",
+          "label": "infect2",
           "x": -175,
           "y": -175,
           "props": {
@@ -61,7 +61,7 @@
         },
         {
           "id": "3",
-          "label": "Infected",
+          "label": "I1",
           "x": 0,
           "y": 0,
           "props": {
@@ -77,7 +77,7 @@
         },
 				{
           "id": "7",
-          "label": "Infected2",
+          "label": "I2",
           "x": 0,
           "y": -175,
           "props": {
@@ -93,7 +93,7 @@
         },
         {
           "id": "4",
-          "label": "Cured",
+          "label": "recover1",
           "x": 175,
           "y": 0,
           "props": {
@@ -112,7 +112,7 @@
         },
         {
           "id": "5",
-          "label": "Recovered",
+          "label": "R1",
           "x": 350,
           "y": 0,
           "props": {

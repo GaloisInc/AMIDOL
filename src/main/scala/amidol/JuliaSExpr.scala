@@ -118,7 +118,6 @@ trait ExtractOps { expr: JuliaSExpr =>
         ))) ::
         _
       ) =>
-        println("Extracting")
         val (states, eventDescrs) = grounding.extractGrounding()
         val outputPredicates: Seq[OutputPredicate] = delta.extractDeltas()
         val inputPredicates: Seq[InputPredicate] = phi.extractPhis()

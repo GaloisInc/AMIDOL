@@ -1,14 +1,14 @@
 {
   "colorRange": {
     "end": {
-      "hue": 141,
-      "saturation": 50,
-      "luminosity": 40
+      "hue": 150,
+      "saturation": 55,
+      "luminosity": 48
     },
     "start": {
-      "hue": 212,
-      "saturation": 100,
-      "luminosity": 75
+      "hue": 150,
+      "saturation": 55,
+      "luminosity": 48
     }
   },
   "itemType": "Noun",

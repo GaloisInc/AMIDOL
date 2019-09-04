@@ -89,7 +89,7 @@ object JuliaExtract {
         `type` = "noun",
         sharedStates = Array[StateId](sid, sid),
         icon = groundingOpt.fold("images/unknown.png")(_._2),
-        color = groundingOpt.map(_._1.renderRGB),
+        color = None,
         backingModel = Model(
           states = Map(sid -> st.copy(
             initial_value = math.Variable('Initial)
@@ -128,7 +128,7 @@ object JuliaExtract {
         `type` = "verb",
         sharedStates = Array[StateId](in, out),
         icon = groundingOpt.fold("images/unknown.png")(_._2),
-        color = groundingOpt.map(_._1.renderRGB),
+        color = None,
         backingModel = Model(
           states = Map(
             in -> model.states(in),
