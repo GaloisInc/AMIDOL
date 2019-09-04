@@ -30,10 +30,22 @@ object JuliaExtract {
     }
 
     // Extract the AST
-    val ast: String = Process(command = Seq(
-      "julia", "scripts/dump_julia_ast.julia", fullSourceFilePath
-    )).!!
-    val sexprAst: JuliaSExpr = JuliaSExpr(ast).get
+    val ast: String =
+      Try {
+        Process(command = Seq(
+          "julia", "scripts/dump_julia_ast.julia", fullSourceFilePath
+        )).!!
+      }
+      .getOrElse(throw new Exception(
+        "Julia AST could not be serialized (is your code well formed?)"
+      ))
+
+    val sexprAst: JuliaSExpr = JuliaSExpr(ast) match {
+      case Success(ast) => ast
+      case Failure(err) => throw new Exception(
+        s"Julia S-expression AST could not be parsed (${err.getMessage})"
+      )
+    }
 
     // Turn it into a model
     val model: Model = sexprAst.extractModel()
@@ -77,13 +89,13 @@ object JuliaExtract {
         `type` = "noun",
         sharedStates = Array[StateId](sid, sid),
         icon = groundingOpt.fold("images/unknown.png")(_._2),
-        color = groundingOpt.map(_._1.render),
+        color = groundingOpt.map(_._1.renderRGB),
         backingModel = Model(
           states = Map(sid -> st.copy(
             initial_value = math.Variable('Initial)
           )),
           events = Map.empty,
-          constants = Map(math.Variable('Initial) -> 0.0),
+          constants = Map(math.Variable('Initial) -> st.initial_value.asConstant.get.d),
         )
       )
     }
@@ -116,7 +128,7 @@ object JuliaExtract {
         `type` = "verb",
         sharedStates = Array[StateId](in, out),
         icon = groundingOpt.fold("images/unknown.png")(_._2),
-        color = groundingOpt.map(_._1.render),
+        color = groundingOpt.map(_._1.renderRGB),
         backingModel = Model(
           states = Map(
             in -> model.states(in),

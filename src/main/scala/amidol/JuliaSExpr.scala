@@ -29,7 +29,7 @@ object JuliaSExpr extends AmidolParser {
     | "(" ~> repsep(sexpr, ",") <~ ")"  ^^ { a => SNested(a) }        // nested expression
     | "Symbol(" ~> stringLiteral <~ ")" ^^ { s => mkSSymbol(s) }      // Symbol literal
     | "nothing"                         ^^ { _ => SNothing }          // "nothing" literal
-    | wholeNumber                       ^^ { n => SNum(n.toDouble) }  // number literal
+    | floatingPointNumber               ^^ { n => SNum(n.toDouble) }  // number literal
     )
 
   private def mkSSymbol(rawStr: String): SSymbol =
@@ -92,55 +92,78 @@ trait ExtractOps { expr: JuliaSExpr =>
       SNested(
         SAtom("block") ::
         SNested(List(SAtom("macrocall"), SSymbol("@grounding"), SNothing, grounding)) ::
-        SNested(List(SAtom("macrocall"), SSymbol("@reaction"), SNothing, reaction)) ::
+        SNested(List(
+          SAtom("macrocall"),
+          SSymbol("@variables"),
+          SNothing,
+          SNested(SAtom("tuple") ::  variables)
+        )) ::
         SNested(List(SAtom("(=)"), SAtom("Δ"), delta)) ::
         SNested(List(SAtom("(=)"), SAtom("ϕ"), phi)) ::
         SNested(List(SAtom("(=)"), SAtom("Λ"), lambda)) ::
         SNested(List(SAtom("(=)"), SAtom(_), SNested(List(
           SAtom("call"),
           SNested(List(SAtom("."), SAtom("Petri"), SNested(List(SAtom("quote"), SQuote(SAtom("Model")))))),
-          SAtom("g"),
+          _,
           SAtom("Δ"),
           SAtom("ϕ"),
           SAtom("Λ")
         )))) ::
+        SNested(List(SAtom("(=)"), SAtom(_), SNested(
+          SAtom("call") ::
+          SNested(List(SAtom("."), SAtom("Petri"), SNested(List(SAtom("quote"), SQuote(SAtom("Problem")))))) ::
+          _ ::
+          SNested(SAtom("tuple") :: initial) ::
+          _
+        ))) ::
         _
       ) =>
+        println("Extracting")
         val (states, eventDescrs) = grounding.extractGrounding()
         val outputPredicates: Seq[OutputPredicate] = delta.extractDeltas()
         val inputPredicates: Seq[InputPredicate] = phi.extractPhis()
-        val rates: Seq[(EventId,math.Expr[Double])] = lambda.extractLambdas()
+        val rates: Seq[math.Expr[Double]] = lambda.extractLambdas()
 
         assert(rates.length == inputPredicates.length)
         assert(outputPredicates.length == inputPredicates.length)
+        assert(eventDescrs.length == inputPredicates.length)
 
-        val events = (rates, inputPredicates, outputPredicates).zipped
-          .map { case ((eventId, rate), inputPred, outputPred) =>
+        assert(variables.length == initial.length)
+
+        val initials = (variables zip initial).map { case (v, i) =>
+          v.extractVariable() -> i.extractMathExpr()
+        }.toMap
+
+        val events = ((eventDescrs zip rates), inputPredicates, outputPredicates).zipped
+          .map { case (((eventId, desc), rate), inputPred, outputPred) =>
             eventId -> Event(
               rate,
               input_predicate = Some(inputPred),
               output_predicate = outputPred,
-              description = eventDescrs.get(eventId)
+              description = Some(desc)
             )
           }
           .toMap
 
         Model(
-          states,
+          states.toMap.mapValues(s => s.copy(initial_value = initials(s.state_variable))),
           events,
-          constants = parsedParams.map(p => math.Variable(Symbol(p)) -> 0.0).toMap,
+          constants = parsedParams.map { p =>
+            val v = math.Variable(Symbol(p))
+            v -> initials(v).asConstant.get.d
+          }.toMap,
         )
 
     case _ => throw new JuliaExtractException(
-      "main function body (with grounding, reaction, delta, phi, and lambda)",
+      "main function body (with grounding, variables, delta, phi, and lambda)",
       expr
     )
   }
 
-  def extractGrounding(): (Map[StateId, State], Map[EventId, String]) = expr match {
+  def extractGrounding(): (Seq[(StateId, State)], Seq[(EventId, String)]) = expr match {
     case SNested(SAtom("block") :: groundings) =>
-      val states = Map.newBuilder[StateId, State]
-      val events = Map.newBuilder[EventId, String]
+      val states = List.newBuilder[(StateId, State)]
+      val events = List.newBuilder[(EventId, String)]
       for (grounding <- groundings) {
         grounding.extractNounOrVerb() match {
           case Left(state) => states += state
@@ -189,24 +212,26 @@ trait ExtractOps { expr: JuliaSExpr =>
   def extractDeltas(): Seq[OutputPredicate] = expr match {
     case SNested(SAtom("vect") :: entries) =>
       for (entry <- entries) yield {
-        val (variablesTup, sideEffectsTup) = entry.extractArrowTuple()
-        val variables = variablesTup.extractTuple()
-        val sideEffects = sideEffectsTup.extractTuple()
-        assert(variables.length == sideEffects.length)
+        val transitions = entry.extractTuple()
+          .map {
+            case SNested(List(SAtom("call"), SAtom("~"), vari, newVar)) =>
+              val stateV = vari.extractVariable()
+              val stateId = StateId(stateV.s.name)
+              val stateEffect = newVar.extractMathExpr()
 
-        val transitions = Map.newBuilder[StateId, math.Expr[Double]]
-        for ((v, se) <- variables zip sideEffects) {
-          val stateV = v.extractVariable()
-          val stateId = StateId(stateV.s.name)
-          val stateEffect = (se).extractMathExpr()
+              stateEffect match {
+                case math.Plus(v, other) if v == stateV => (stateId -> other)
+                case other => (stateId -> math.Plus(other, math.Negate(stateV)))
+              }
 
-          stateEffect match {
-            case math.Plus(v, other) if v == stateV => transitions += (stateId -> other)
-            case other => transitions += (stateId -> math.Plus(other, math.Negate(stateV)))
+            case other => throw new JuliaExtractException(
+              "Delta side-effect is expected to take the form `<VAR>~<NEW-VAR>`",
+              other
+            )
           }
-        }
+          .toMap
 
-        OutputPredicate(transitions.result())
+        OutputPredicate(transitions)
       }
 
     case _ => throw new JuliaExtractException(
@@ -215,16 +240,11 @@ trait ExtractOps { expr: JuliaSExpr =>
     )
   }
 
-  /* Extract all the input predicates
-   *
-   * TODO: this ignores the LHS of the `->`
-   */
+  /* Extract all the input predicates */
   def extractPhis(): Seq[InputPredicate] = expr match {
     case SNested(SAtom("vect") :: entries) =>
       for (entry <- entries) yield {
-        val (_, rawPredicate) = entry.extractArrowTuple()
-        val predicate = rawPredicate.extractPredicate()
-        InputPredicate(predicate)
+        InputPredicate(entry.extractPredicate())
       }
 
     case _ => throw new JuliaExtractException(
@@ -233,35 +253,11 @@ trait ExtractOps { expr: JuliaSExpr =>
     )
   }
 
-  /* Extract all of the rates
-   *
-   * TODO: this ignores the LHS of the `->` and assumes there is only an equation in the block.
-   */
-  def extractLambdas(): Seq[(EventId,math.Expr[Double])] = expr match {
-    case SNested(SAtom("vect") :: entries) =>
-      entries.map(entry => (entry).extractRate())
+  /* Extract all of the rates */
+  def extractLambdas(): Seq[math.Expr[Double]] = expr match {
+    case SNested(SAtom("vect") :: entries) => entries.map(_.extractMathExpr())
 
-    case _ => throw new JuliaExtractException(
-      "lambda block, containing rates",
-      expr
-    )
-  }
-
-  def extractRate(): (EventId, math.Expr[Double]) = expr match {
-    case
-      SNested(List(
-        SAtom("(=)"),
-        SNested(SAtom("call") :: SAtom(event) :: _),
-        SNested(List(SAtom("block"), rate)),
-      )) =>
-        val id = EventId(event)
-        val rateExpr = (rate).extractMathExpr()
-        (id, rateExpr)
-
-    case _ => throw new JuliaExtractException(
-      "event rate of the form `λ₂(...) = begin <rate-expr> end`",
-      expr
-    )
+    case _ => throw new JuliaExtractException("rate expressions", expr)
   }
 
   def extractVariable(): math.Variable = expr match {

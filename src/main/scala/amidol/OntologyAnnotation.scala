@@ -58,10 +58,52 @@ case class ColorRange(
 /** Represents a single RGB color */
 case class Color(
   hue: Long,         // 0-255
-  saturation: Long,  // percentage
-  luminosity: Long,  // percentage
+  saturation: Long, // percentage
+  luminosity: Long, // percentage
 ) {
   def render: String = s"hsl($hue, $saturation%, $luminosity%)"
+
+  def renderRGB: String = {
+      var h = hue.toDouble
+      var s = saturation.toDouble
+      var l = luminosity.toDouble
+      s /= 100;
+      l /= 100;
+      val c = (1 - Math.abs(2*l - 1)) * s;
+      val hh = h/60;
+      val x = c * (1 - Math.abs(hh % 2 - 1));
+
+      var r = 0.0;
+      var g = 0.0;
+      var b = 0.0;
+      if (hh >= 0 && hh < 1) {
+        r = c;
+        g = x;
+      } else if (hh >= 1 && hh < 2) {
+        r = x;
+        g = c;
+      } else if (hh >= 2 && hh < 3) {
+        g = c;
+        b = x;
+      } else if (hh >= 3 && hh < 4) {
+        g = x;
+        b = c;
+      } else if (hh >= 4 && hh < 5) {
+        r = x;
+        b = c;
+      } else {
+        r = c;
+        b = c;
+      }
+      var m = l - c/2;
+      r += m;
+      g += m;
+      b += m;
+      r *= 255.0;
+      g *= 255.0;
+      b *= 255.0;
+      f"#${Math.round(r)*65536+Math.round(g)*256+Math.round(b)}%06x";
+  }
 
   def +(other: Color) = Color(
     this.hue + other.hue,

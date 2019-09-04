@@ -8,35 +8,33 @@ function main(β, γ, μ, n)
         λ₃ => Verb(loss_of_immunity)
     end
 
-    @reaction begin
-        λ₁, S + I -> 2I
-        λ₂, I -> R
-        λ₃, R -> S
-    end, λ₁, λ₂, λ₃
-
-    # β, 1S + 1I -> 0S + 2I
-    # γ, 0R + 1I -> 0I + 1R
-    # μ, 1R + 0S -> 1S + 0R
+    @variables S, I, R, β, γ, μ, n
 
     Δ = [
-        (S,I) -> (S-1, I+1),
-        (I,R) -> (I-1, R+1),
-        (R,S) -> (R-1, S+1),
+        (S~S-1, I~I+1),
+        (I~I-1, R~R+1),
+        (R~R-1, S~S+1)
     ]
 
     ϕ = [
-        (S, I) -> S > 0 && I > 0,
-        (I) -> I > 0,
-        (R) -> R > 0,
+        S > 0 && I > 0,
+        I > 0,
+        R > 0,
     ]
 
     Λ = [
-        λ₁(S,I) = begin β*S*I/n end,
-        λ₂(I) = begin γ*I end,
-        λ₃(R) = begin μ*R end
+        β*S*I/n,
+        γ*I,
+        μ*R
     ]
-    m = Petri.Model(g, Δ, ϕ, Λ)
-    d = convert(ODEProblem, m)
-    soln = solve(m) #discrete
-    soln = solve(d) #continuos
+
+    # generate discrete petri model
+    m = Petri.Model([S, I, R], Δ, ϕ, Λ)
+
+    # create instance of petri model with initial conditions
+    p = Petri.Problem(m, (100, 1, 0, 0.5, 0.15, 0.05, 101), 150)
+
+    # discrete solution
+    soln = Petri.solve(p)
 end
+

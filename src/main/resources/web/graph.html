@@ -487,7 +487,6 @@
 
 			loadTemplate: function(toEditName) {
 				var toEdit = paletteItems[toEditName]
-				console.log(toEdit)
 				if (toEdit) {
 					UI.paletteEditor.updateSaveButton(toEdit.className);
 					$("#palette-element-name").val(toEdit.className)
@@ -634,7 +633,7 @@
 			})
 			node.props = {
 				"className":	_.clone(paletteItem.className),
-				"parameters":  _.clone(parameters)
+				"parameters":	_.clone(parameters)
 			}
 			node.image = paletteItem.image
 			return node
@@ -795,36 +794,40 @@
 							name: "julia_model",
 							juliaSourceCode: e.target.result
 						};
-						$.post("/appstate/loadJuliaModel", payload, function(res) {
-						var nodes = _.values(res.nodes)
-						var links = _.values(res.links)
-						journal.future.push({
-							type: "add",
-							nodes: _.map(nodes, function (node) {
-								node.image = "images/unknown.png";
-								return node;
-							}),
-							edges: links
-						});
-						availablePalettes["julia_model"] = _.map(nodes, function (n) {
-							return n.props.className;
-						});
-						chosenPalette = "julia_model";
-						global_vars = []
-						reward_vars = []
-						palette.update(function () {
-							$("#redo_button").click()
-							UI.updateButtonStates()
-							UI.render.rewardVars()
-							UI.render.localVars()
-							UI.render.iconRedraw()
-							UI.render.palette(availablePalettes[chosenPalette])
-							network.setOptions({ physics: true })
-							setTimeout(function() {
-								network.setOptions({ physics: false })
-							}, 1000)
-						})
-					});
+						$.post("/appstate/loadJuliaModel", payload)
+							.done(function(res) {
+								var nodes = _.values(res.nodes)
+								var links = _.values(res.links)
+								journal.future.push({
+									type: "add",
+									nodes: _.map(nodes, function (node) {
+										node.image = "images/unknown.png";
+										return node;
+									}),
+									edges: links
+								});
+								availablePalettes["julia_model"] = _.map(nodes, function (n) {
+									return n.props.className;
+								});
+								chosenPalette = "julia_model";
+								global_vars = []
+								reward_vars = []
+								palette.update(function () {
+									$("#redo_button").click()
+									UI.updateButtonStates()
+									UI.render.rewardVars()
+									UI.render.localVars()
+									UI.render.iconRedraw()
+									UI.render.palette(availablePalettes[chosenPalette])
+									network.setOptions({ physics: true })
+									setTimeout(function() {
+										network.setOptions({ physics: false })
+									}, 1000)
+								})
+							})
+							.catch(function (err) {
+								alert(err.responseText);
+							});
 				};
 				reader.readAsText(file);
 			}
@@ -952,7 +955,7 @@
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
 		document.getElementById('choose-julia-upload').addEventListener('change', UI.uploadJuliaSrc, false)
 
-		var startingPalette =  availablePalettes[chosenPalette]
+		var startingPalette =	availablePalettes[chosenPalette]
 
 		UI.render.network()
 
@@ -1141,6 +1144,8 @@
 						<option value="images/prey.svg">Prey</option>
 						<option value="images/time.svg">Time</option>
 						<option value="images/virus.svg">Virus</option>
+						<option value="images/Ebola.svg">Ebola</option>
+						<option value="images/HIV.svg">HIV</option>
 					</select>
 					<input id="palette-element-color" type="color" name="icon color" style='width: 60px'/>
 				</td>
