@@ -926,6 +926,12 @@
 		}
 	}
 
+	function resetEverything() {
+		if (confirm("WARNING: This is going to clear all the internal application state")) {
+			$.post("/appstate/reset").done(location.reload())
+		}
+	}
+
 
 	var paletteItems = { }			// loaded from server dynamically
 	var chosenPalette = "SIR"
@@ -1187,6 +1193,7 @@
 		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
 		<button id="upload_julia_button" class="right" onclick="document.getElementById('choose-julia-upload').click()">Load Julia code</button>
 		<img id="redo_button" title="Redo" class="right" src="images/redo.png" onclick="journal.redo()" />
+		<img id="reset_button" title="Reset" class="right" src="images/reset.png" onclick="resetEverything()" />
 		<img id="undo_button" title="Undo" class="right" src="images/undo.png" onclick="journal.undo()" />
 		<img id="upload" title="Load model file" class="right" src="images/load_model.jpg" onclick="document.getElementById('choose-upload').click()" />
 		<img id="download" title="Save model file" class="right" src="images/save_model.jpeg" onclick="UI.download()" />

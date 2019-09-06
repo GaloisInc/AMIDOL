@@ -23,7 +23,7 @@ import java.nio.file.Paths
 import com.typesafe.config.ConfigFactory
 import java.io.File
 
-object Main extends App with Directives {
+object Main extends App with Directives { app =>
 
   val conf = ConfigFactory.load();
   OntologyDb // Initialize db
@@ -32,7 +32,7 @@ object Main extends App with Directives {
   //
   // TODO: eventually, think about thread safety here (what happens if someone changes the model
   // while the backend is running?)
-  object AppState {
+  class AppState() {
     var currentModel: Model = Model.empty
     var paletteItems: Map[String, PaletteItem] = List(
         "cure", "population", "infect", "patient",
@@ -55,6 +55,7 @@ object Main extends App with Directives {
     }
     val requestId: AtomicLong = new AtomicLong()
   }
+  var state = new AppState()
 
   // Set up actor system and contexts
   implicit val system = ActorSystem("my-system")
@@ -74,7 +75,7 @@ object Main extends App with Directives {
       } ~
       pathPrefix("appstate") {
         path("model") {
-          complete(AppState.currentModel)
+          complete(app.state.currentModel)
         }
       } ~
       pathPrefix("ontology") {
@@ -105,15 +106,22 @@ object Main extends App with Directives {
       pathPrefix("appstate") {
         formField('model.as[Model]) { case model: Model =>
           complete {
-            AppState.currentModel = model
+            app.state.currentModel = model
             StatusCodes.Created -> s"Model has been updated"
+          }
+        } ~
+        path("reset") {
+          complete {
+            app.state = new AppState()
+            println("Clearing all application state")
+            StatusCodes.Created -> s"State has been reset"
           }
         } ~
         path("uiModel") {
           formField('graph.as[ui.Graph]) { case graph: ui.Graph =>
             complete {
-              graph.parse(AppState.paletteItems).map { model =>
-                AppState.currentModel = model
+              graph.parse(app.state.paletteItems).map { model =>
+                app.state.currentModel = model
               } match {
                 case Success(_) => StatusCodes.Created -> s"Model has been updated"
                 case Failure(f) => StatusCodes.BadRequest -> f.getMessage
@@ -130,7 +138,7 @@ object Main extends App with Directives {
               JuliaExtract.extractFromSource(juliaSrc, name) match {
                 case Failure(f) => StatusCodes.BadRequest -> f.getMessage()
                 case Success((uiGraph, newPalElems)) =>
-                  AppState.paletteItems ++= newPalElems
+                  app.state.paletteItems ++= newPalElems
                   StatusCodes.Created -> uiGraph
               }
             }
@@ -144,7 +152,7 @@ object Main extends App with Directives {
             formField('name.as[String], 'time.as[Vector[Double]], 'data.as[Vector[Double]]) {
               case (name: String, time: Vector[Double], trace: Vector[Double]) =>
                 complete {
-                  AppState.dataTraces += (name -> (time, trace))
+                  app.state.dataTraces += (name -> (time, trace))
                   StatusCodes.Created -> s"Data trace has been added"
                 }
             }
@@ -152,7 +160,7 @@ object Main extends App with Directives {
           path("remove") {
             formField('name.as[String]) { case name: String =>
               complete {
-                AppState.dataTraces -= name
+                app.state.dataTraces -= name
                 StatusCodes.OK -> "Data trace has been removed"
               }
             }
@@ -161,7 +169,7 @@ object Main extends App with Directives {
             formField('names.as[List[String]]) { case names =>
               complete {
                 StatusCodes.OK -> names
-                  .map { name => (name, AppState.dataTraces.get(name)) }
+                  .map { name => (name, app.state.dataTraces.get(name)) }
                   .collect { case (name, Some((label, series))) => (name, label, series) }
               }
             }
@@ -169,7 +177,7 @@ object Main extends App with Directives {
           path("list") {
             formField('limit.as[Long]) { case limit: Long =>
               complete {
-                StatusCodes.OK -> AppState.dataTraces.keys.take(limit.toInt) // limit.fold(Int.MaxValue)(_.toInt))
+                StatusCodes.OK -> app.state.dataTraces.keys.take(limit.toInt) // limit.fold(Int.MaxValue)(_.toInt))
               }
             }
           }
@@ -179,7 +187,7 @@ object Main extends App with Directives {
           path("put") {
             formField('name.as[String], 'palette.as[PaletteItem]) { case (name: String, p: PaletteItem) =>
               complete {
-                AppState.paletteItems += (name -> p)
+                app.state.paletteItems += (name -> p)
                 StatusCodes.Created -> s"Palette has been updated"
               }
             }
@@ -187,7 +195,7 @@ object Main extends App with Directives {
           path("remove") {
             formField('name.as[String]) { case name: String =>
               complete {
-                AppState.paletteItems -= name
+                app.state.paletteItems -= name
                 StatusCodes.OK -> s"Palette has been removed"
               }
             }
@@ -195,7 +203,7 @@ object Main extends App with Directives {
           path("get") {
             formField('name.as[String]) { case name: String =>
               complete {
-                StatusCodes.OK -> AppState.paletteItems.get(name)
+                StatusCodes.OK -> app.state.paletteItems.get(name)
               }
             }
           } ~
@@ -203,7 +211,7 @@ object Main extends App with Directives {
             formField('limit.as[Int].?) { case limit: Option[Int] =>
               complete {
                 StatusCodes.OK -> {
-                  val values = AppState.paletteItems.values
+                  val values = app.state.paletteItems.values
                   limit.fold(values)(values.take(_))
                 }
               }
@@ -223,9 +231,9 @@ object Main extends App with Directives {
             complete {
               JuliaSExpr(juliaSourceCode).flatMap(sexpr => Try(sexpr.extractModel())) match {
                 case Success(model) =>
-                  AppState.currentModel = model
+                  app.state.currentModel = model
                   StatusCodes.Created -> s"Model has been updated"
-              
+
                 case Failure(f) =>
                   StatusCodes.BadRequest -> f.getMessage
               }
@@ -242,9 +250,9 @@ object Main extends App with Directives {
             entity(as[Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> routeComplete(
-                  AppState.currentModel,
+                  app.state.currentModel,
                   inputs,
-                  AppState.requestId.incrementAndGet()
+                  app.state.requestId.incrementAndGet()
                 )
               )
             }
@@ -253,13 +261,13 @@ object Main extends App with Directives {
         pathPrefix("scipy") {
           path("integrate") {
             import SciPyIntegrate._
-            
+
             entity(as[Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> routeComplete(
-                  AppState.currentModel,
+                  app.state.currentModel,
                   inputs,
-                  AppState.requestId.incrementAndGet()
+                  app.state.requestId.incrementAndGet()
                 )
               )
             }
@@ -268,11 +276,11 @@ object Main extends App with Directives {
             entity(as[SciPyLinearSteadyState.Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> SciPyLinearSteadyState.routeComplete(
-                  AppState.currentModel,
-                  AppState.currentGlobalConstants,
-                  AppState.currentInitialConditions,
+                  app.state.currentModel,
+                  app.state.currentGlobalConstants,
+                  app.state.currentInitialConditions,
                   inputs,
-                  AppState.requestId.incrementAndGet()
+                  app.state.requestId.incrementAndGet()
                 )
               )
             }
@@ -283,11 +291,11 @@ object Main extends App with Directives {
             entity(as[PySCeS.Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> PySCeS.routeComplete(
-                  AppState.currentModel,
-                  AppState.currentGlobalConstants,
-                  AppState.currentInitialConditions,
+                  app.state.currentModel,
+                  app.state.currentGlobalConstants,
+                  app.state.currentInitialConditions,
                   inputs,
-                  AppState.requestId.incrementAndGet()
+                  app.state.requestId.incrementAndGet()
                 )
               )
             }
