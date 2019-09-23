@@ -6,6 +6,9 @@ import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
+import org.webjars.WebJarAssetLocator
 import akka.stream.ActorMaterializer
 import amidol.backends._
 import scala.io.{Source, StdIn}
@@ -65,6 +68,7 @@ object Main extends App with Directives { app =>
   // Set up the folder for temporary files
   Files.createDirectories(Paths.get("tmp_scripts"))
 
+  private val webJarAssetLocator = new WebJarAssetLocator()
   val route = respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*)) {
     get {
       path("") {
@@ -72,6 +76,15 @@ object Main extends App with Directives { app =>
       } ~
       pathPrefix("") {
         getFromResourceDirectory("web")
+      } ~
+      pathPrefix("lib") {  // Go get resources from WebJars
+        extractUnmatchedPath { path =>
+          Try(webJarAssetLocator.getFullPath(path.toString)) match {
+            case Success(fullPath) => getFromResource(fullPath)
+            case Failure(_: IllegalArgumentException) => reject
+            case Failure(err) => failWith(err)
+          }
+        }
       } ~
       pathPrefix("appstate") {
         path("model") {
