@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  17 SEP 2019 15:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  22 SEP 2019 16:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -516,6 +516,16 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 730.
 LaTeX Info: Redefining \[ on input line 2844.
 LaTeX Info: Redefining \] on input line 2845.
 )
+(/usr/local/texlive/2019/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup5
+\symAMSb=\mathgroup6
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)
+(/usr/local/texlive/2019/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+)
 (/usr/local/texlive/2019/texmf-dist/tex/latex/amsmath/amscd.sty
 Package: amscd 2017/04/14 v2.1 AMS Commutative Diagrams
 \athelp@=\toks38
@@ -539,22 +549,139 @@ Style option: `fancyvrb' v3.2a <2019/01/15> (tvz)
 \c@FancyVerbLine=\count135
 \FV@StepNumber=\count136
 \FV@OutFile=\write4
-) (./AMIDOL_M10_Report.aux)
+)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xy.sty
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xy.tex Bootstrap'ing:
+catcodes, docmode,
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xyrecat.tex)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xyidioms.tex)
+
+ Xy-pic version 3.8.9 <2013/10/06>
+ Copyright (c) 1991-2013 by Kristoffer H. Rose <krisrose@tug.org> and others
+ Xy-pic is free software: see the User's Guide for details.
+
+Loading kernel: messages; fonts; allocations: state,
+\X@c=\dimen177
+\Y@c=\dimen178
+\U@c=\dimen179
+\D@c=\dimen180
+\L@c=\dimen181
+\R@c=\dimen182
+\Edge@c=\toks41
+\X@p=\dimen183
+\Y@p=\dimen184
+\U@p=\dimen185
+\D@p=\dimen186
+\L@p=\dimen187
+\R@p=\dimen188
+\Edge@p=\toks42
+\X@origin=\dimen189
+\Y@origin=\dimen190
+\X@xbase=\dimen191
+\Y@xbase=\dimen192
+\X@ybase=\dimen193
+\Y@ybase=\dimen194
+\X@min=\dimen195
+\Y@min=\dimen196
+\X@max=\dimen197
+\Y@max=\dimen198
+\lastobjectbox@=\box47
+\zerodotbox@=\box48
+\almostz@=\dimen199
+ direction,
+\d@X=\dimen256
+\d@Y=\dimen257
+\K@=\count137
+\KK@=\count138
+\Direction=\count139
+\K@dXdY=\dimen258
+\K@dYdX=\dimen259
+\xyread@=\read4
+\xywrite@=\write5
+\csp@=\count140
+\quotPTK@=\dimen260
+
+utility macros; pictures: \xy, positions,
+\swaptoks@@=\toks43
+\connectobjectbox@@=\box49
+ objects,
+\styletoks@=\toks44
+ decorations;
+kernel objects: directionals, circles, text; options; algorithms: directions,
+edges, connections;  Xy-pic loaded)
+Package: xy 2013/10/06 Xy-pic version 3.8.9
+
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xyall.tex
+ Xy-pic option: All features v.3.8
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xycurve.tex
+ Xy-pic option: Curve and Spline extension v.3.12 curve,
+\crv@cnt@=\count141
+\crvpts@=\toks45
+\splinebox@=\box50
+\splineval@=\dimen261
+\splinedepth@=\dimen262
+\splinetol@=\dimen263
+\splinelength@=\dimen264
+ circles,
+\L@=\dimen265
+ loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xyframe.tex
+ Xy-pic option: Frame and Bracket extension v.3.14 loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xycmtip.tex
+ Xy-pic option: Computer Modern tip extension v.3.7
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xytips.tex
+ Xy-pic option: More Tips extension v.3.11 loaded) loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xyline.tex
+ Xy-pic option: Line styles extension v.3.10
+\xylinethick@=\dimen266
+ loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xyrotate.tex
+ Xy-pic option: Rotate and Scale extension v.3.8 loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xycolor.tex
+ Xy-pic option: Colour extension v.3.11 loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xymatrix.tex
+ Xy-pic option: Matrix feature v.3.14
+\Row=\count142
+\Col=\count143
+\queue@=\toks46
+\queue@@=\toks47
+\qcount@=\count144
+\qcount@@=\count145
+\matrixsize@=\count146
+ loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xyarrow.tex
+ Xy-pic option: Arrow and Path feature v.3.9 path, \ar, loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xygraph.tex
+ Xy-pic option: Graph feature v.3.11 loaded) loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xy2cell.tex
+ Xy-pic option: Two-cell feature v.3.7 two-cells, loaded)
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xypdf.tex
+ Xy-pic option: PDF driver v.1.7 Xy-pic pdf driver: `color' extension support
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xypdf-co.tex loaded)
+Xy-pic pdf driver: `curve' extension support
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xypdf-cu.tex loaded)
+Xy-pic pdf driver: `frame' extension support
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xypdf-fr.tex loaded)
+Xy-pic pdf driver: `line' extension support
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xypdf-li.tex loaded)
+Xy-pic pdf driver: `rotate' extension support
+(/usr/local/texlive/2019/texmf-dist/tex/generic/xypic/xypdf-ro.tex loaded)
+loaded)) (./AMIDOL_M10_Report.aux)
 \openout1 = `AMIDOL_M10_Report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 62.
-LaTeX Font Info:    ... okay on input line 62.
-LaTeX Font Info:    Try loading font information for OT1+pplx on input line 62.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 68.
+LaTeX Font Info:    ... okay on input line 68.
+LaTeX Font Info:    Try loading font information for OT1+pplx on input line 68.
 
 
 (/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/ot1pplx.fd
@@ -562,17 +689,17 @@ File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
 )
 (/usr/local/texlive/2019/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count137
-\scratchdimen=\dimen177
-\scratchbox=\box47
-\nofMPsegments=\count138
-\nofMParguments=\count139
-\everyMPshowfont=\toks41
-\MPscratchCnt=\count140
-\MPscratchDim=\dimen178
-\MPnumerator=\count141
-\makeMPintoPDFobject=\count142
-\everyMPtoPDFconversion=\toks42
+\scratchcounter=\count147
+\scratchdimen=\dimen267
+\scratchbox=\box51
+\nofMPsegments=\count148
+\nofMParguments=\count149
+\everyMPshowfont=\toks48
+\MPscratchCnt=\count150
+\MPscratchDim=\dimen268
+\MPnumerator=\count151
+\makeMPintoPDFobject=\count152
+\everyMPtoPDFconversion=\toks49
 ) (/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -656,80 +783,136 @@ e
 
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 62.
-\c@lstlisting=\count143
+(lastpage)             ! on input line 68.
+\c@lstlisting=\count153
 ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for OT1+phv on input line 63.
+LaTeX Font Info:    Try loading font information for OML+zplm on input line 68.
+
+
+(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/omlzplm.fd
+File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
+)
+LaTeX Font Info:    Try loading font information for OMS+zplm on input line 68.
+
+
+(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/omszplm.fd
+File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
+)
+LaTeX Font Info:    Try loading font information for OMX+zplm on input line 68.
+
+
+(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/omxzplm.fd
+File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
+)
+LaTeX Font Info:    Try loading font information for OT1+zplm on input line 68.
+
+
+(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/ot1zplm.fd
+File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
+)
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 12.50409pt on input line 68.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 9.37807pt on input line 68.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 7.29405pt on input line 68.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 12.50409pt on input line 68.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 9.37807pt on input line 68.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 7.29405pt on input line 68.
+Package xypdf Info: Line width: 0.48pt on input line 68.
+LaTeX Font Info:    Try loading font information for OT1+phv on input line 69.
 
 (/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/ot1phv.fd
 File: ot1phv.fd 2001/06/04 scalable font definitions for OT1/phv.
 )
 LaTeX Font Info:    Font shape `OT1/phv/m/n' will be
-(Font)              scaled to size 11.39996pt on input line 63.
+(Font)              scaled to size 11.39996pt on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/m/n' will be
-(Font)              scaled to size 13.67995pt on input line 63.
+(Font)              scaled to size 13.67995pt on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 63.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/b/n' will be
-(Font)              scaled to size 13.67995pt on input line 63.
+(Font)              scaled to size 13.67995pt on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <12> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 63.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/b/n' will be
-(Font)              scaled to size 11.39996pt on input line 63.
+(Font)              scaled to size 11.39996pt on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <20.74> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 63.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/b/n' will be
-(Font)              scaled to size 19.70294pt on input line 63.
+(Font)              scaled to size 19.70294pt on input line 69.
 LaTeX Font Info:    Font shape `OT1/phv/m/n' will be
-(Font)              scaled to size 10.40245pt on input line 63.
+(Font)              scaled to size 10.40245pt on input line 69.
 
 (./AMIDOL_M10_Report.toc
 LaTeX Font Info:    Font shape `OT1/pplx/bx/n' in size <12> not available
 (Font)              Font shape `OT1/pplx/b/n' tried instead on input line 1.
 )
-\tf@toc=\write5
-\openout5 = `AMIDOL_M10_Report.toc'.
+\tf@toc=\write6
+\openout6 = `AMIDOL_M10_Report.toc'.
 
- 
-AED: lastpage setting LastPage
+ <xymatrix 2x1 44> <xymatrix 6x2 214> <xymatrix 5x3
+308> <xymatrix 3x2 264>
 <galois-blue.png, id=4, 500.5902pt x 131.0496pt>
 File: galois-blue.png Graphic file (type png)
 <use galois-blue.png>
-Package pdftex.def Info: galois-blue.png  used on input line 71.
+Package pdftex.def Info: galois-blue.png  used on input line 115.
 (pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
 
 Underfull \hbox (badness 10000) has occurred while \output is active
  [] 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+phv on input line 71.
+LaTeX Font Info:    Try loading font information for OMS+phv on input line 115.
+
 (/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/omsphv.fd
 File: omsphv.fd 
 )
 LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 71.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 115.
  [1
 
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./galoi
 s-blue.png>]
-(./AMIDOL_M10_Report.aux) ) 
+<xymatrix 2x1 20> 
+AED: lastpage setting LastPage
+File: galois-blue.png Graphic file (type png)
+<use galois-blue.png>
+Package pdftex.def Info: galois-blue.png  used on input line 120.
+(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
+LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <12> not available
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 120.
+LaTeX Font Info:    Font shape `OT1/phv/m/sl' will be
+(Font)              scaled to size 11.39996pt on input line 120.
+[2] (./AMIDOL_M10_Report.aux) ) 
 Here is how much of TeX's memory you used:
- 15136 strings out of 492616
- 287526 string characters out of 6129482
- 339496 words of memory out of 5000000
- 18747 multiletter control sequences out of 15000+600000
- 15148 words of font info for 31 fonts, out of 8000000 for 9000
+ 18356 strings out of 492616
+ 326928 string characters out of 6129482
+ 435451 words of memory out of 5000000
+ 21849 multiletter control sequences out of 15000+600000
+ 32350 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,15n,48p,414b,338s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/
-base/8r.enc}</usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmsy10.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.
-pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></u
-sr/local/texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb>
-Output written on AMIDOL_M10_Report.pdf (1 page, 47403 bytes).
+ 55i,15n,48p,3243b,715s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2019/texmf-dist/fonts/enc/dv
+ips/base/8r.enc}</usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr10.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmsy10.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/mathpazo/fp
+lmri.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/symbol
+s/msbm10.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvb8
+a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb><
+/usr/local/texlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/l
+ocal/texlive/2019/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/te
+xlive/2019/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2
+019/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb></usr/local/texlive/2019/te
+xmf-dist/fonts/type1/public/xypic/xyatip10.pfb></usr/local/texlive/2019/texmf-d
+ist/fonts/type1/public/xypic/xybtip10.pfb>
+Output written on AMIDOL_M10_Report.pdf (2 pages, 93163 bytes).
 PDF statistics:
- 31 PDF objects out of 1000 (max. 8388607)
- 21 compressed objects within 1 object stream
+ 66 PDF objects out of 1000 (max. 8388607)
+ 47 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  18 words of extra memory for PDF output out of 10000 (max. 10000000)
 
