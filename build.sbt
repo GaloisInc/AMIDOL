@@ -1,9 +1,18 @@
-import Dependencies._
+import com.typesafe.sbt.web.SbtWeb
+import sbt.Keys._
+import sbt._
 
 ThisBuild / scalaVersion     := "2.12.8"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
 
 lazy val root = (project in file("."))
+  .settings(
+    resourceGenerators in Compile += WebpackNpm.webpack,
+    WebpackNpm.projectName := "web-react",
+    WebpackNpm.npmProjectDir := (resourceDirectory in Compile).value / "web-react",
+    WebpackNpm.outputDir := (resourceManaged in Compile).value / "web",
+    WebpackNpm.webpack := WebpackNpm.npmWebpackTask.value,
+  )
   .settings(
     name := "amidol",
     scalacOptions ++= Seq(
@@ -13,8 +22,8 @@ lazy val root = (project in file("."))
 
       "-language:implicitConversions"
     ),
+
     libraryDependencies ++= Seq(
-      scalaTest % Test,
       // Akka web stack
       "com.typesafe.akka"      %% "akka-actor"               % "2.5.19",
       "com.typesafe.akka"      %% "akka-stream"              % "2.5.19",
@@ -37,7 +46,10 @@ lazy val root = (project in file("."))
       "org.webjars.bower"      % "underscore"                % "1.9.1",
       "org.webjars.npm"        % "chartist"                  % "0.11.0",
       "org.webjars.npm"        % "chartist-plugin-axistitle" % "0.0.4",
-      "org.webjars.bower"      % "plotly.js"                 % "1.48.3"
+      "org.webjars.bower"      % "plotly.js"                 % "1.48.3",
+
+      // Testing
+      "org.scalatest"          %% "scalatest"                % "3.0.5" % Test,
     ),
   )
   .enablePlugins(SbtWeb)
