@@ -96,7 +96,7 @@ package object math {
 
     // Simple arithmetic grammar with a packrat parser (cuz it's fast and I like my left recursion)
     val (predicateParser: PackratParser[Expr[Boolean]], arithmeticParser: PackratParser[Expr[Double]]) = {
-  
+
       lazy val booleanAtom: PackratParser[Expr[Boolean]] =
         ( ("true" | "TRUE")             ^^ { _ => Literal(true) }
         | ("false" | "FALSE")           ^^ { _ => Literal(false) }
@@ -107,7 +107,7 @@ package object math {
       lazy val doubleAtom: PackratParser[Expr[Double]] =
         ( "-" ~> doubleAtom             ^^ { e => Negate(e) }
         | floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
-        | raw"(?U)\p{L}[\p{L}_]*".r     ^^ { v => Variable(Symbol(v))  }
+        | raw"(?U)\p{L}[\p{L}\p{No}_]*".r     ^^ { v => Variable(Symbol(v))  }
         | "(" ~> term <~ ")"
         )
 

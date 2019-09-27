@@ -21,6 +21,10 @@ case class Model(
     constants ++ other.constants,
   )
 
+  def rename(renamer: Renamer[Variable, Variable]): Model = {
+   this.mapIds(identity[StateId], identity[EventId], renamer.getOrInsert(_))
+  }
+
   def mapIds(
     stateIdFunc: StateId => StateId,
     eventIdFunc: EventId => EventId,

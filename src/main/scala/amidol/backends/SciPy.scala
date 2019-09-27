@@ -23,7 +23,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
   type Python = String
 
   override def run(
-    model: Model,
+    modelUnrenamed: Model,
     inputs: Inputs,
     requestId: Long
   )(implicit
@@ -34,6 +34,9 @@ object SciPyIntegrate extends ContinuousInitialValue {
       end = inputs.finalTime,
       step = inputs.stepSize
     ).map(_.toDouble).toVector
+
+    val renamer = Renamer.filterAscii()
+    val model = modelUnrenamed.rename(renamer)
 
     // Set up the system of differential equations 
     val states: List[State] = model.states.values.toList
@@ -120,7 +123,8 @@ object SciPyIntegrate extends ContinuousInitialValue {
       nestedArrs <- Try(outputArrs.parseJson.convertTo[Seq[Vector[Double]]])
 
     } yield {
-      val traces = stateVarsStr zip nestedArrs
+      val origStateVarsStr = stateVarsStr.map(s => renamer.reverseGet(new math.Variable(Symbol(s))).fold(s)(_.prettyPrint()))
+      val traces = origStateVarsStr zip nestedArrs
       val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
       Main.state.dataTraces ++= traces.map { case (traceName, traceData) =>
         s"${date}_${traceName}_scipy_${requestId}" -> (timeRange, traceData)

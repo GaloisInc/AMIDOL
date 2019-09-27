@@ -13,6 +13,10 @@ class MathSpec extends FlatSpec with Matchers {
     Expr.expression("foo").get     shouldEqual Variable('foo)
   }
 
+  it should "parse subscripts, superscripts, and greek letters" in {
+    Expr.expression("β₂").get shouldEqual Variable(Symbol("β₂"))
+  }
+
   it should "support compound operations" in {
     Expr.expression("-x").get    shouldEqual Negate(Variable('x))
     Expr.expression("1 + 2").get shouldEqual Plus(Literal(1), Literal(2))
