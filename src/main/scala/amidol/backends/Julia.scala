@@ -12,10 +12,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 object JuliaGillespie extends ContinuousInitialValue {
- 
+
   val name: String = "JuliaGillespie"
   val backendDescription: String = "Generates Julia code for a Gillespie model"
-  
+
   // TODO: revisit this when we have discrete events
   def applicable(model: Model): Boolean = true
 
@@ -24,6 +24,7 @@ object JuliaGillespie extends ContinuousInitialValue {
 
   override def run(
     model: Model,
+    appState: Main.AppState,
     inputs: Inputs,
     requestId: Long
   )(implicit
@@ -87,7 +88,7 @@ object JuliaGillespie extends ContinuousInitialValue {
       .toList
       .sortBy { case (sId, _) => statesIdx(sId) }
       .map { case (_, s) => s.state_variable.prettyPrint() }
-    
+
     val intialConstArray: Julia = model.constants
       .toList
       .sortBy { case (cv, _) => constantsIdx(cv) }
@@ -144,7 +145,7 @@ object JuliaGillespie extends ContinuousInitialValue {
     } yield {
       val traces = stateVarsStr zip nestedArrs
       val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
-      Main.state.dataTraces ++= traces.map { case (traceName, traceData) =>
+      appState.dataTraces ++= traces.map { case (traceName, traceData) =>
         s"${date}_${traceName}_julia_${requestId}" -> (times, traceData)
       }
       Outputs(

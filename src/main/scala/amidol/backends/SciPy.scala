@@ -24,6 +24,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
 
   override def run(
     modelUnrenamed: Model,
+    appState: Main.AppState,
     inputs: Inputs,
     requestId: Long
   )(implicit
@@ -126,7 +127,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
       val origStateVarsStr = stateVarsStr.map(s => renamer.reverseGet(new math.Variable(Symbol(s))).fold(s)(_.prettyPrint()))
       val traces = origStateVarsStr zip nestedArrs
       val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
-      Main.state.dataTraces ++= traces.map { case (traceName, traceData) =>
+      appState.dataTraces ++= traces.map { case (traceName, traceData) =>
         s"${date}_${traceName}_scipy_${requestId}" -> (timeRange, traceData)
       }
       Outputs(

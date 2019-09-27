@@ -1,10 +1,10 @@
 package amidol
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Cancellable}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.Directives
+import akka.http.scaladsl.server.{Directive1, Directives}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -26,7 +26,7 @@ import java.nio.file.Paths
 import com.typesafe.config.ConfigFactory
 import java.io.File
 
-object Main extends App with Directives { app =>
+object Main extends App with Directives {
 
   val conf = ConfigFactory.load();
   OntologyDb // Initialize db
@@ -37,28 +37,38 @@ object Main extends App with Directives { app =>
   // while the backend is running?)
   class AppState() {
     var currentModel: Model = Model.empty
-    var paletteItems: Map[String, PaletteItem] = List(
-        "cure", "population", "infect", "patient",
-        "population_vital_dynamics", "patient_vital_dynamics", "time",
-        "predator", "prey", "hunting"
-      )
-      .map { name: String =>
-        val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
-        name -> Try(modelSource.parseJson.convertTo[PaletteItem]).recoverWith {
-          case err =>
-            println(s"Failure in $name")
-            Failure(err)
-        }.get
-      }
-      .toMap
+    var paletteItems: Map[String, PaletteItem] = getPaletteItems()
+
+    // Load up palette elements from resources
+    def getPaletteItems(): Map[String, PaletteItem] =
+      List(
+          "cure", "population", "infect", "patient",
+          "population_vital_dynamics", "patient_vital_dynamics", "time",
+          "predator", "prey", "hunting"
+        )
+        .map { name: String =>
+          val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
+          name -> Try(modelSource.parseJson.convertTo[PaletteItem]).recoverWith {
+            case err =>
+              println(s"Failure in $name")
+              Failure(err)
+          }.get
+        }
+        .toMap
 
     val dataTraces: concurrent.Map[String, (Vector[Double], Vector[Double])] = {
       import scala.collection.JavaConverters._
       new ConcurrentHashMap().asScala
     }
-    val requestId: AtomicLong = new AtomicLong()
+
+    def reset(): Unit = {
+      println("Resetting state...")
+      currentModel = Model.empty
+      paletteItems = getPaletteItems()
+      dataTraces.clear()
+    }
   }
-  var state = new AppState()
+  val requestId: AtomicLong = new AtomicLong()
 
   // Set up actor system and contexts
   implicit val system = ActorSystem("my-system")
@@ -69,7 +79,54 @@ object Main extends App with Directives { app =>
   Files.createDirectories(Paths.get("tmp_scripts"))
 
   private val webJarAssetLocator = new WebJarAssetLocator()
-  val route = respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*)) {
+
+  /** Get the AMIDOL_ID cookie, or create a new random cookie if one is not
+   *  already defined. Then, use this cookie to choose the right appstate.
+   *
+   *  Every appstate automatically gets reset after an hour.
+   */
+  val cookiedAppState: Directive1[AppState] = {
+
+    /** All of the current appstates, keyed under the cookie that reaches them */
+    val states: concurrent.Map[String, AppState] = concurrent.TrieMap.empty[String, AppState]
+
+    /** The tasks to clear the appstate map */
+    val resets: concurrent.Map[String, Cancellable] = concurrent.TrieMap.empty[String, Cancellable]
+    val timeTillReset: FiniteDuration =
+      conf.getDuration("amidol.app-state-reset-time").toNanos().nanoseconds
+
+    /** Reset the time until a certain appstate will be flushed out */
+    def startResetTime(amidolId: String): Unit = {
+      val resetTask = system.scheduler.scheduleOnce(timeTillReset) {
+        println(s"Clearing out the app state for AMIDOL_ID=$amidolId")
+        states.remove(amidolId)
+        resets.remove(amidolId)
+      }
+      resets.put(amidolId, resetTask) match {
+        case Some(previousResetTask) => previousResetTask.cancel()
+        case None => /* nothing to do */
+      }
+    }
+
+    optionalCookie("AMIDOL_ID").flatMap {
+      case Some(existing) if states.contains(existing.value) =>
+        startResetTime(existing.value)
+        provide(states(existing.value))
+
+      case _missing =>
+        val newId: String = java.util.UUID.randomUUID().toString()
+        val newState = new AppState()
+        states += (newId -> newState)
+        println(s"Created new cookie AMIDOL_ID=$newId")
+
+        setCookie(HttpCookie("AMIDOL_ID", value = newId)).tflatMap { _ =>
+          startResetTime(newId)
+          provide(newState)
+        }
+    }
+  }
+
+  val route = cookiedAppState { appState: AppState =>
     get {
       path("") {
         getFromResource("web/graph.html")
@@ -88,7 +145,7 @@ object Main extends App with Directives { app =>
       } ~
       pathPrefix("appstate") {
         path("model") {
-          complete(app.state.currentModel)
+          complete(appState.currentModel)
         }
       } ~
       pathPrefix("ontology") {
@@ -119,13 +176,13 @@ object Main extends App with Directives { app =>
       pathPrefix("appstate") {
         formField('model.as[Model]) { case model: Model =>
           complete {
-            app.state.currentModel = model
+            appState.currentModel = model
             StatusCodes.Created -> s"Model has been updated"
           }
         } ~
         path("reset") {
           complete {
-            app.state = new AppState()
+            appState.reset()
             println("Clearing all application state")
             StatusCodes.Created -> s"State has been reset"
           }
@@ -133,8 +190,8 @@ object Main extends App with Directives { app =>
         path("uiModel") {
           formField('graph.as[ui.Graph]) { case graph: ui.Graph =>
             complete {
-              graph.parse(app.state.paletteItems).map { model =>
-                app.state.currentModel = model
+              graph.parse(appState.paletteItems).map { model =>
+                appState.currentModel = model
               } match {
                 case Success(_) => StatusCodes.Created -> s"Model has been updated"
                 case Failure(f) => StatusCodes.BadRequest -> f.getMessage
@@ -151,7 +208,7 @@ object Main extends App with Directives { app =>
               JuliaExtract.extractFromSource(juliaSrc, name) match {
                 case Failure(f) => StatusCodes.BadRequest -> f.getMessage()
                 case Success((uiGraph, newPalElems)) =>
-                  app.state.paletteItems ++= newPalElems
+                  appState.paletteItems ++= newPalElems
                   StatusCodes.Created -> uiGraph
               }
             }
@@ -165,7 +222,7 @@ object Main extends App with Directives { app =>
             formField('name.as[String], 'time.as[Vector[Double]], 'data.as[Vector[Double]]) {
               case (name: String, time: Vector[Double], trace: Vector[Double]) =>
                 complete {
-                  app.state.dataTraces += (name -> (time, trace))
+                  appState.dataTraces += (name -> (time, trace))
                   StatusCodes.Created -> s"Data trace has been added"
                 }
             }
@@ -173,7 +230,7 @@ object Main extends App with Directives { app =>
           path("remove") {
             formField('name.as[String]) { case name: String =>
               complete {
-                app.state.dataTraces -= name
+                appState.dataTraces -= name
                 StatusCodes.OK -> "Data trace has been removed"
               }
             }
@@ -182,7 +239,7 @@ object Main extends App with Directives { app =>
             formField('names.as[List[String]]) { case names =>
               complete {
                 StatusCodes.OK -> names
-                  .map { name => (name, app.state.dataTraces.get(name)) }
+                  .map { name => (name, appState.dataTraces.get(name)) }
                   .collect { case (name, Some((label, series))) => (name, label, series) }
               }
             }
@@ -190,7 +247,7 @@ object Main extends App with Directives { app =>
           path("list") {
             formField('limit.as[Long]) { case limit: Long =>
               complete {
-                StatusCodes.OK -> app.state.dataTraces.keys.take(limit.toInt) // limit.fold(Int.MaxValue)(_.toInt))
+                StatusCodes.OK -> appState.dataTraces.keys.take(limit.toInt) // limit.fold(Int.MaxValue)(_.toInt))
               }
             }
           }
@@ -200,7 +257,7 @@ object Main extends App with Directives { app =>
           path("put") {
             formField('name.as[String], 'palette.as[PaletteItem]) { case (name: String, p: PaletteItem) =>
               complete {
-                app.state.paletteItems += (name -> p)
+                appState.paletteItems += (name -> p)
                 StatusCodes.Created -> s"Palette has been updated"
               }
             }
@@ -208,7 +265,7 @@ object Main extends App with Directives { app =>
           path("remove") {
             formField('name.as[String]) { case name: String =>
               complete {
-                app.state.paletteItems -= name
+                appState.paletteItems -= name
                 StatusCodes.OK -> s"Palette has been removed"
               }
             }
@@ -216,7 +273,7 @@ object Main extends App with Directives { app =>
           path("get") {
             formField('name.as[String]) { case name: String =>
               complete {
-                StatusCodes.OK -> app.state.paletteItems.get(name)
+                StatusCodes.OK -> appState.paletteItems.get(name)
               }
             }
           } ~
@@ -224,7 +281,7 @@ object Main extends App with Directives { app =>
             formField('limit.as[Int].?) { case limit: Option[Int] =>
               complete {
                 StatusCodes.OK -> {
-                  val values = app.state.paletteItems.values
+                  val values = appState.paletteItems.values
                   limit.fold(values)(values.take(_))
                 }
               }
@@ -244,7 +301,7 @@ object Main extends App with Directives { app =>
             complete {
               JuliaSExpr(juliaSourceCode).flatMap(sexpr => Try(sexpr.extractModel())) match {
                 case Success(model) =>
-                  app.state.currentModel = model
+                  appState.currentModel = model
                   StatusCodes.Created -> s"Model has been updated"
 
                 case Failure(f) =>
@@ -263,9 +320,10 @@ object Main extends App with Directives { app =>
             entity(as[Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> routeComplete(
-                  app.state.currentModel,
+                  appState.currentModel,
+                  appState,
                   inputs,
-                  app.state.requestId.incrementAndGet()
+                  requestId.incrementAndGet()
                 )
               )
             }
@@ -278,9 +336,10 @@ object Main extends App with Directives { app =>
             entity(as[Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> routeComplete(
-                  app.state.currentModel,
+                  appState.currentModel,
+                  appState,
                   inputs,
-                  app.state.requestId.incrementAndGet()
+                  requestId.incrementAndGet()
                 )
               )
             }
@@ -289,11 +348,11 @@ object Main extends App with Directives { app =>
             entity(as[SciPyLinearSteadyState.Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> SciPyLinearSteadyState.routeComplete(
-                  app.state.currentModel,
-                  app.state.currentGlobalConstants,
-                  app.state.currentInitialConditions,
+                  appState.currentModel,
+                  appState.currentGlobalConstants,
+                  appState.currentInitialConditions,
                   inputs,
-                  app.state.requestId.incrementAndGet()
+                  requestId.incrementAndGet()
                 )
               )
             }
@@ -304,11 +363,11 @@ object Main extends App with Directives { app =>
             entity(as[PySCeS.Inputs]) { inputs =>
               complete(
                 StatusCodes.OK -> PySCeS.routeComplete(
-                  app.state.currentModel,
-                  app.state.currentGlobalConstants,
-                  app.state.currentInitialConditions,
+                  appState.currentModel,
+                  appState.currentGlobalConstants,
+                  appState.currentInitialConditions,
                   inputs,
-                  app.state.requestId.incrementAndGet()
+                  requestId.incrementAndGet()
                 )
               )
             }
@@ -317,11 +376,12 @@ object Main extends App with Directives { app =>
       }
     }
   }
+  val routeAcao = respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*))(route)
 
   // Start the server
   val address = conf.getString("amidol.address") // "52.43.67.227"
   val port = conf.getInt("amidol.port") // 80
-  val bindingFuture = Http().bindAndHandle(route, address, port)
+  val bindingFuture = Http().bindAndHandle(routeAcao, address, port)
 
   println(s"Server online at $address:$port/\nPress RETURN to stop...")
   StdIn.readLine() // let it run until user presses return

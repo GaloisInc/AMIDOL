@@ -928,7 +928,7 @@
 
 	function resetEverything() {
 		if (confirm("WARNING: This is going to clear all the internal application state")) {
-			$.post("/appstate/reset").done(location.reload())
+			$.post("/appstate/reset").then(function (result) { location.reload() })
 		}
 	}
 
