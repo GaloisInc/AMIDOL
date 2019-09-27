@@ -43,6 +43,7 @@ lazy val root = (project in file("."))
       "org.webjars"            % "webjars-locator"           % "0.36",
       "org.webjars"            % "jquery"                    % "3.4.1",
       "org.webjars"            % "visjs"                     % "4.21.0",
+      "org.webjars"            % "bootstrap"                 % "4.3.1",
       "org.webjars.bower"      % "underscore"                % "1.9.1",
       "org.webjars.npm"        % "chartist"                  % "0.11.0",
       "org.webjars.npm"        % "chartist-plugin-axistitle" % "0.0.4",

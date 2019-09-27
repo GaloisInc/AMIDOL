@@ -1,0 +1,24 @@
+{
+  "name": "web-react",
+  "description": "",
+  "author": "",
+  "license": {},
+  "devDependencies": {
+    "@types/react": "^16.9.2",
+    "@types/react-dom": "^16.9.0",
+    "@types/reactstrap": "^8.0.4",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.1.2",
+    "typescript": "^3.6.3",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9"
+  },
+  "dependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "reactstrap": "^8.0.1"
+  },
+  "scripts": {
+    "webpack": "webpack"
+  }
+}
