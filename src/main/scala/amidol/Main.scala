@@ -376,7 +376,12 @@ object Main extends App with Directives {
       }
     }
   }
-  val routeAcao = respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*))(route)
+  val routeAcao = toStrictEntity(3.seconds) {
+    respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*)) {
+      route
+    }
+  }
+
 
   // Start the server
   val address = conf.getString("amidol.address") // "52.43.67.227"
