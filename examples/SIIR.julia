@@ -20,17 +20,17 @@ function main(β₁, β₂, γ₁, γ₂, n)
     ]
 
     ϕ = [
-        S > 0 && I > 0,
+        S > 0 && I1 > 0,
+        S > 0 && I2 > 0,
         I1 > 0,
         I2 > 0,
-        R > 0,
     ]
 
     Λ = [
         β₁*S*I1/n,
         β₂*S*I2/n,
-        γ₁*I,
-        γ₂*I,
+        γ₁*I1,
+        γ₂*I2,
     ]
 
     # generate discrete petri model
