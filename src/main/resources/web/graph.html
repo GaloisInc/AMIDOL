@@ -22,6 +22,17 @@
 
 <script type="text/javascript">
 
+  var reactCallbacks = {
+    // Call this whenever there is a new noun on the canvas
+    updateMeasureNouns: function (nouns) { },
+
+    // Call this to get measures
+    getMeasures: function() { },
+		//		var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
+		//			if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
+		//		}), (a) => ! _.isEmpty(a))
+  }
+
 	var node_data_set, edge_data_set, network;
 	var global_vars = { Example : 0 };
 	var reward_vars = []// { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
@@ -232,6 +243,11 @@
 			},
 
 			rewardVars : function() {
+				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
+          if (get(paletteItems, [n.props.className, 'type']) == "noun") { return { id: n.id, label: n.label } } else { {} }
+				}), (a) => ! _.isEmpty(a))
+        reactCallbacks.updateMeasureNouns(nodeNames)
+        /*
 				var rvs = $("#rewardVars")
 				rvs.empty()
 				rvs.append("<h2>Measures:</h2>")
@@ -294,6 +310,7 @@
 					])
 				}))
 				rvs.append($("<button>").html("New").click((e) => UI.addRewardVar() ))
+   //     */
 			},
 
 			fancyCharts : function(chartsData) {
@@ -1210,7 +1227,10 @@
 	</div>
 
 	<script type="text/javascript" src="webReact.js"></script>
-	<script type="text/javascript">
+<!--	<script type="text/javascript">
     webReact.showModalDialog(document.getElementById('example'));
+</script> -->
+	<script type="text/javascript">
+    webReact.showMeasures(document.getElementById('rewardVars'));
   </script>
 </body>
