@@ -22,16 +22,20 @@
 
 <script type="text/javascript">
 
-  var reactCallbacks = {
-    // Call this whenever there is a new noun on the canvas
-    updateMeasureNouns: function (nouns) { },
+	var reactCallbacks = {
+		// Call this whenever there is a new noun on the canvas
+		updateMeasureNouns: function (nouns) { },
 
-    // Call this to get measures
-    getMeasures: function() { },
+		// Call this to get measures
+		getMeasures: function() { },
+
+		addMeasureEffect: function(newMeasure) { },
+		deleteMeasureEffect: function(measureName) { },
+		updateMeasureEffect: function(updatedMeasure) { }
 		//		var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
 		//			if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
 		//		}), (a) => ! _.isEmpty(a))
-  }
+	}
 
 	var node_data_set, edge_data_set, network;
 	var global_vars = { Example : 0 };
@@ -128,7 +132,17 @@
 					node_data_set.update({ id: event.id, props: newProps })
 					break
 				case "setRewardVar":
-					var new_rvs = _.filter(reward_vars, (v) => v.key != event.key)
+
+					// Update the React state
+					if (event.new == null) {
+						reactCallbacks.deleteMeasureEffect(event.key);
+					} else if (event.old == null) {
+						reactCallbacks.addMeasureEffect(event.new);
+					} else {
+						reactCallbacks.updateMeasureEffect(event.new);
+					}
+
+					var new_rvs = _.filter(reward_vars, (v) => v.name != event.key)
 					if (event.new != null) { new_rvs.push(event.new) }
 					reward_vars = new_rvs
 					UI.render.rewardVars()
@@ -207,7 +221,7 @@
 				);
 				$("#paletteChooser select").val(chosenPalette);
 
-				// Redraww actual palette
+				// Redraw actual palette
 				$("#palette .paletteItem").remove()
 				$("#palette")
 					.append(_.map(items, function(item){
@@ -215,7 +229,7 @@
 						return $("<img />")
 							.attr({src: p.image, classname: p.className})
 							.attr("onclick", "UI.selectPaletteNode(this)")
-							.attr("ondblclick", "UI.paletteEditor.show('" + item + "')")
+							.attr("ondblclick", "UI.paletteEditor('" + item + "')")
 							.addClass("paletteItem")
 							.addClass(p.type)
 					}))
@@ -244,73 +258,9 @@
 
 			rewardVars : function() {
 				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
-          if (get(paletteItems, [n.props.className, 'type']) == "noun") { return { id: n.id, label: n.label } } else { {} }
+					if (get(paletteItems, [n.props.className, 'type']) == "noun") { return { id: n.id, label: n.label } } else { {} }
 				}), (a) => ! _.isEmpty(a))
-        reactCallbacks.updateMeasureNouns(nodeNames)
-        /*
-				var rvs = $("#rewardVars")
-				rvs.empty()
-				rvs.append("<h2>Measures:</h2>")
-				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
-					if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
-				}), (a) => ! _.isEmpty(a))
-				var rv_names = ["Instant of Time", "Interval of Time", "Time Avg. Interval", "Steady State"]
-
-
-				// reward_vars = _.map(reward_vars, function(r){
-				//	if ( ! _.isEmpty(nodeNames) && ! _.contains(nodeNames, r.opt1)) {
-				//		r.opt1 = nodeNames[0][1]
-				//	}
-				//	return r
-				// })
-
-				rvs.append(_.map(reward_vars, function(r){
-					return $("<div>").attr({class: "rv_element", rv_key: r.key}).change(
-						(e) => UI.updateRewardVar(r.key)
-					).append([
-						$("<h3>").attr({class: "key"}).html(r.key),
-						$("<div>").append(
-							$("<select>").attr({class: "opt1"}).append(
-								_.map(nodeNames, function(n) {
-									var opt = $("<option>").attr('value', n[1]).html(n[1])
-									if (r.opt1 == n[1]) {
-										opt.attr('selected','selected')
-									}
-									return opt
-								})
-							)
-						),
-						$("<h4>").html("Range"),
-						$("<div>").append(
-							$("<select>").attr({class: "opt2"}).append(
-								_.map(rv_names, function(n, idx) {
-									var opt = $("<option>").attr({'value': n}).html(n)
-									if (idx != 0) { opt.attr('disabled', 'disabled') }
-									return opt
-								})
-							),
-							$("<div>").append(
-								$("<div>").attr({class: "range_param"}).append(
-									$("<label>").html("Start"),
-									$("<input>").attr({class: "range_start", value: r.range.start, 'size': 5})
-								),
-								$("<div>").attr({class: "range_param"}).append(
-									$("<label>").html("Until"),
-									$("<input>").attr({class: "range_end", value: r.range.end, 'size': 5})
-								),
-								$("<div>").attr({class: "range_param"}).append(
-									$("<label>").html("Step"),
-									$("<input>").attr({class: "range_step", value: r.range.step, 'size': 5})
-								)
-							)
-						),
-						$("<button>").html("Delete").css({clear: "both"}).click(function(e){
-							UI.removeRewardVar(r.key)
-						})
-					])
-				}))
-				rvs.append($("<button>").html("New").click((e) => UI.addRewardVar() ))
-   //     */
+				reactCallbacks.updateMeasureNouns(nodeNames)
 			},
 
 			fancyCharts : function(chartsData) {
@@ -475,143 +425,47 @@
 			}
 		},
 
-		paletteEditor: {
-			show: function(toEditName) {
-				// Update the palette dropdown before showing
-				$("#palette-element-selector").empty()
-				$("#palette-element-selector").append($("<option>").attr({ value: "" }).text("None"))
-				$("#palette-element-selector").append(_.map(
-					availablePalettes[chosenPalette],
-					function(key) { return $("<option>").attr({ value: key }).text(key); }
-				))
-				if (toEditName) {
-					$("#palette-element-selector").val(toEditName);
-					UI.paletteEditor.loadTemplate(toEditName);
-				}
+		paletteEditor: function(toEditName) {
+			webReact.showEditNodeDialog(
+				document.getElementById("paletteEditor"),
+				function (name, paletteElement, then) {
 
-				$("#paletteEditor").show()
-			},
+					refillSvg(paletteElement.icon, paletteElement.color).done(function(image) {
+						// Set the palette element
+						paletteElement.image = image;
+						$.post("/appstate/palette/put", { name: name, palette: JSON.stringify(paletteElement) })
+							.fail(function (err) {
+								alert("Failed to register new palette element.\n\n(" + err.responseText + ")");
+							})
+							.done(function () {
 
-			hide: function() {
-				$("#paletteEditor").hide()
-				$("#palette-element-name").val("")
-				$("#palette-element-type").val("noun")
-				$("#palette-element-class").val("")
-				$("#palette-element-icon").val("")
-				$("#palette-element-color").val("")
-				$("#palette-element-shared").val("")
-				$("#palette-element-model").val("")
-			},
+								 // Detect new!
+								 if (!paletteItems[name]) {
+									 availablePalettes[chosenPalette].push(name)
+								 }
+								 paletteItems[name] = paletteElement
 
-			loadTemplate: function(toEditName) {
-				var toEdit = paletteItems[toEditName]
-				if (toEdit) {
-					UI.paletteEditor.updateSaveButton(toEdit.className);
-					$("#palette-element-name").val(toEdit.className)
-					$("#palette-element-type").val(toEdit.type)
-					$("#palette-element-icon").val(toEdit.icon)
-					$("#palette-element-color").val(toEdit.color)
-					$("#palette-element-shared").val(toEdit.sharedStates.join(", "))
-					$("#palette-element-model").val(JSON.stringify(toEdit.backingModel, null, 2))
-				}
-			},
-
-			updateSaveButton: function(nameValue) {
-				if (paletteItems.hasOwnProperty(nameValue)) {
-					$("#save-palette-element").text("Update existing element");
-					$("#remove-palette-element").show();
-				} else {
-					$("#save-palette-element").text("Save new element");
-					$("#remove-palette-element").hide();
-				}
-			},
-
-			deletePaletteElement: function() {
-				var name = $("#palette-element-name").val()
-				$.post("/appstate/palette/remove", { name: name })
-					.done(palette.update(function () {
-
-						// Re-render and clean up
-						UI.render.palette(availablePalettes[chosenPalette])
-						UI.render.iconRedraw()
-
-						$("#paletteEditor").hide()
-						$("#palette-element-name").val("")
-						$("#palette-element-type").val("noun")
-						$("#palette-element-class").val("")
-						$("#palette-element-icon").val("")
-						$("#palette-element-color").val("")
-						$("#palette-element-shared").val("")
-						$("#palette-element-model").val("")
-						UI.paletteEditor.updateSaveButton("")
-					}));
-			},
-
-			submitPaletteElement: function() {
-				var paletteEditor = $("#paletteEditor")
-
-				// Get values from all fields
-				// TODO: validate the data we get
-				// TODO: support _all_ fields (including parameters)
-				var name = $("#palette-element-name").val()
-				if (name == "") {
-					alert("Invalid empty palette element name");
-					return;
-				}
-				var type = $("#palette-element-type").val()
-				var icon = $("#palette-element-icon").val()
-				var color = $("#palette-element-color").val()
-				var shared = _.map(
-					$("#palette-element-shared").val().split(","),
-					function (st) { return st.trim() }
-				)
-				try {
-					var model = JSON.parse($("#palette-element-model").val())
-				} catch (e) {
-					alert("Malformed JSON description of IR model!\n\n(" + e.message + ")");
-					return;
-				}
-
-				refillSvg(icon, color).done(function(image) {
-					// Set the palette element
-					var paletteElement = {
-						className: name,
-						type: type,
-						icon: icon,
-						color: color,
-						image: image,
-						sharedStates: shared,
-						backingModel: model,
-					}
-
-					$.post("/appstate/palette/put", { name: name, palette: JSON.stringify(paletteElement) })
-						.fail(function (err) {
-							alert("Failed to register new palette element.\n\n(" + err.responseText + ")");
-						})
-						.done(function () {
-
-							// Detect new!
-							if (!paletteItems[name]) {
-								availablePalettes[chosenPalette].push(name)
-							}
-							paletteItems[name] = paletteElement
+								 // Re-render and clean up
+								 UI.render.palette(availablePalettes[chosenPalette])
+								 UI.render.iconRedraw()
+								 then()
+							})
+					})
+				},
+				function (name, then) {
+					$.post("/appstate/palette/remove", { name: name })
+						.done(palette.update(function () {
 
 							// Re-render and clean up
 							UI.render.palette(availablePalettes[chosenPalette])
 							UI.render.iconRedraw()
-
-							$("#paletteEditor").hide()
-							$("#palette-element-name").val("")
-							$("#palette-element-type").val("noun")
-							$("#palette-element-class").val("")
-							$("#palette-element-icon").val("")
-							$("#palette-element-color").val("")
-							$("#palette-element-shared").val("")
-							$("#palette-element-model").val("")
-							UI.paletteEditor.updateSaveButton("")
-						});
-				});
-			}
+							then()
+						}))
+				},
+				paletteItems,
+				availablePalettes[chosenPalette],
+				toEditName
+			);
 		},
 
 		// Remove all nodes in the network drawn (but they are still accessible through history)
@@ -660,45 +514,6 @@
 		// This is a terrible hack!
 		propBlur: function(idObj, key, val){
 			UI.setProp(idObj.id, key, val)
-		},
-
-		updateRewardVar : function(rvKey) {
-			parent = $(".rv_element[rv_key='"+rvKey+"']")
-			var new_rv = {
-				key: parent.find(".key").html(),
-				opt1: parent.find(".opt1").val(),
-				opt2: parent.find(".opt2").val(),
-				range: {
-					start: parent.find(".range_start").val(),
-					end: parent.find(".range_end").val(),
-					step: parent.find(".range_step").val()
-				}
-			}
-			var old_rv = _.clone(_.find(reward_vars, (v) => v.key == new_rv.key))
-			var event = { type: "setRewardVar", key: new_rv.key, old: old_rv, new: new_rv }
-			journal.apply( event )
-		},
-
-		addRewardVar : function() {
-			var name = prompt("Name your new reward variable:")
-			if (name != undefined && ! _.contains(_.pluck(reward_vars, "id"), name )) {
-				var new_rv = {
-					key: name,
-					opt1: getOrElse(_.find(node_data_set.get(), (n) => get(paletteItems, [n.props.className, 'type']) == "noun"), {label: ""}).label,
-					opt2: "Instant of Time",
-					range: { start: 0, end: 100, step: 5 }
-				}
-				var event = { type: "setRewardVar", key: new_rv.key, old: null, new: new_rv }
-				journal.apply(event)
-			}
-		},
-
-		removeRewardVar : function(key) {
-			if (key != undefined && ! _.contains(_.pluck(reward_vars, "id"), key )) {
-				var old_rv = _.find(reward_vars, (v) => v.key == key)
-				var event = { type: "setRewardVar", key: key, old: old_rv, new: null }
-				journal.apply(event)
-			}
 		},
 
 		addGlobalVar : function() {
@@ -787,6 +602,7 @@
 						journal.future = journal.future.concat(data.journal)
 						global_vars = data.global_vars;
 						reward_vars = data.reward_vars;
+						reactCallbacks.setMeasures(data.reward_vars);
 						chosenPalette = data.chosen_palette;
 						UI.updateButtonStates()
 					}
@@ -830,6 +646,7 @@
 								chosenPalette = "julia_model";
 								global_vars = []
 								reward_vars = []
+								reactCallbacks.setMeasures([]);
 								palette.update(function () {
 									$("#redo_button").click()
 									UI.updateButtonStates()
@@ -858,7 +675,7 @@
 		chartDataAcc: [],
 
 		submit : function(){
-			if (_.isEmpty(reward_vars) || !_.isEmpty(_.find(reward_vars, (rv) => rv.opt1 == ""))) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
+			if (_.isEmpty(reward_vars) || !_.isEmpty(_.find(reward_vars, (rv) => rv.nounId == ""))) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
 
 			$.fancybox.open($("<img>").attr({src: "images/spinner.gif"}))
 
@@ -880,10 +697,10 @@
 					}
 					IR.execute.backend.integrate(simParams, function(data, status, jqXHR) {
 						IR.chartDataAcc.push({
-							title: rv.opt1,
+							title: rv.name,
 							labels: data.times,
 							series: [
-								data.variables[rv.opt1]
+								data.variables[node_data_set.get(rv.nounId).label]
 							]
 						})
 						if (IR.chartCount == IR.chartDataAcc.length){
@@ -1101,109 +918,15 @@
 		height: 80%
 	}
 
-	#paletteEditor {
-		position: absolute;
-		left: 40px;
-		right: 40px;
-		top: 40px;
-		max-height: calc(100% - 80px - 70px);
-		background-color: lightgray;
-		border: 1px solid gray;
-		border-radius: 15px;
-		padding: 35px;
-		z-index: 1;
-		overflow-y: scroll;
-	}
-
 
 </style></head>
 <body>
-  <div id="example"></div>
 	<div id="results" style="display: none;"></div>
-	<div id="paletteEditor" style="display: none;">
-		<h3>Palette element editor</h3>
-
-		Start from (or edit) an existing element:
-		<select id="palette-element-selector"
-						name="template"
-						style='width: 100%'
-						onchange="UI.paletteEditor.loadTemplate(this.value)">
-		</select>
-		<br/>
-
-		<table style='width: 100%'>
-			<tr>
-				<td>Name:</td>
-				<td>
-					<input
-						id="palette-element-name"
-						type="text"
-						name="name"
-						style='width: 100%'
-						onchange="UI.paletteEditor.updateSaveButton(this.value)"
-						onkeyup="UI.paletteEditor.updateSaveButton(this.value)"/>
-				</td>
-			</tr>
-
-			<tr>
-				<td>Type:</td>
-				<td>
-					<select id="palette-element-type" name="type" style='width: 100%'>
-						<option value="noun">Noun</option>
-						<option value="verb">Verb</option>
-					</select>
-				</td>
-			</tr>
-
-			<tr>
-				<td>Icon:</td>
-				<td>
-					<select id="palette-element-icon" name="icon name" style='width: calc(100% - 70px)'>
-						<option value="images/birth.svg">Birth</option>
-						<option value="images/breeding.svg">Breeding</option>
-						<option value="images/cure.svg">Cure</option>
-						<option value="images/death.svg">Death</option>
-						<option value="images/hunting.svg">Hunting</option>
-						<option value="images/patient.svg">Patient</option>
-						<option value="images/person.svg">Person</option>
-						<option value="images/predator.svg">Predator</option>
-						<option value="images/prey.svg">Prey</option>
-						<option value="images/time.svg">Time</option>
-						<option value="images/virus.svg">Virus</option>
-						<option value="images/Ebola.svg">Ebola</option>
-						<option value="images/HIV.svg">HIV</option>
-					</select>
-					<input id="palette-element-color" type="color" name="icon color" style='width: 60px'/>
-				</td>
-			</tr>
-
-			<tr>
-				<td>Shared states (enter comma-delimited):</td>
-				<td><input id="palette-element-shared" type="text" name="shared states" style='width: 100%'/></td>
-			</tr>
-
-			<tr>
-				<td>Backend model (enter JSON):</td>
-				<td><textarea id="palette-element-model" type="text" name="backend model" style='width: 100%; resize: vertical'></textarea></td>
-			</tr>
-		</table>
-
-		<center>
-			<button onclick="UI.paletteEditor.hide()">
-				Cancel
-			</button>
-			<button id="save-palette-element" onclick="UI.paletteEditor.submitPaletteElement()">
-				Save new element
-			</button>
-			<button id="remove-palette-element" onclick="UI.paletteEditor.deletePaletteElement()" style="display:none">
-				Remove element
-			</button>
-		</center>
-	</div>
+	<div id="paletteEditor"></div>
 	<div id="palette">
 		<div id="paletteChooser">
 			<select onchange="UI.choosePalette(this)"></select>
-			<button onclick="UI.paletteEditor.show()">Edit</button>
+			<button onclick="UI.paletteEditor()">Edit</button>
 		</div>
 		<select id="exec_chooser" class="right" onchange="UI.changeBackend(this)">
 			<option value="scipy">SciPy</option>
@@ -1227,10 +950,18 @@
 	</div>
 
 	<script type="text/javascript" src="webReact.js"></script>
-<!--	<script type="text/javascript">
-    webReact.showModalDialog(document.getElementById('example'));
-</script> -->
 	<script type="text/javascript">
-    webReact.showMeasures(document.getElementById('rewardVars'));
-  </script>
+		webReact.showMeasures(
+			document.getElementById('rewardVars'),
+			function (measureName, oldMeasure, newMeasure) {
+				var event = {
+					type: "setRewardVar",
+					key: measureName,
+					old: oldMeasure,
+					new: newMeasure
+				};
+				journal.apply( event )
+			}
+		);
+	</script>
 </body>

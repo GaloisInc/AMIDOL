@@ -192,8 +192,8 @@
   ],
   "reward_vars": [
     {
-      "key": "Infected 1",
-      "opt1": "Infected",
+      "name": "Infected 1",
+      "nounId": "3",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
@@ -202,8 +202,8 @@
       }
     },
     {
-      "key": "Infected 2",
-      "opt1": "Infected2",
+      "name": "Infected 2",
+      "nounId": "7",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
