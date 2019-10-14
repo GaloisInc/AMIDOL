@@ -132,9 +132,19 @@ object Main extends App with Directives {
         getFromResource("web/graph.html")
       } ~
       pathPrefix("") {
+        extractUnmatchedPath {
+          case path if path.toString.endsWith(".js.map") =>
+            println(s"Triggered $path")
+            /* See "Source map workaround" in `project/Webpack.scala` */
+            getFromResource(s"web/${path.toString.stripSuffix(".js.map")}.js-map")
+
+          case _ => reject
+        }
+      } ~
+      pathPrefix("") {
         getFromResourceDirectory("web")
       } ~
-      pathPrefix("lib") {  // Go get resources from WebJars
+      pathPrefix("") {  // Go get resources from WebJars
         extractUnmatchedPath { path =>
           Try(webJarAssetLocator.getFullPath(path.toString)) match {
             case Success(fullPath) => getFromResource(fullPath)

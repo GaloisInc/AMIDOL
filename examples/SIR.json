@@ -117,8 +117,8 @@
   ],
   "reward_vars": [
     {
-      "key": "Susceptible",
-      "opt1": "Susceptible",
+      "nounId": "1",
+      "name": "Susceptible",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
@@ -127,8 +127,8 @@
       }
     },
     {
-      "key": "Infected",
-      "opt1": "Infected",
+      "nounId": "3",
+      "name": "Infected",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
@@ -137,8 +137,8 @@
       }
     },
     {
-      "key": "Recovered",
-      "opt1": "Recovered",
+      "nounId": "5",
+      "name": "Recovered",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,

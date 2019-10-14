@@ -206,38 +206,7 @@
       ]
     }
   ],
-  "reward_vars": [
-    {
-      "key": "Susceptible",
-      "opt1": "Susceptible",
-      "opt2": "Instant of Time",
-      "range": {
-        "start": 0,
-        "end": 300,
-        "step": 5
-      }
-    },
-    {
-      "key": "Infected",
-      "opt1": "Infected",
-      "opt2": "Instant of Time",
-      "range": {
-        "start": 0,
-        "end": 300,
-        "step": 5
-      }
-    },
-    {
-      "key": "Recovered",
-      "opt1": "Recovered",
-      "opt2": "Instant of Time",
-      "range": {
-        "start": 0,
-        "end": 300,
-        "step": 5
-      }
-    }
-  ],
+  "reward_vars": [],
   "global_vars": {},
 	"chosen_palette": "SIR"
 }

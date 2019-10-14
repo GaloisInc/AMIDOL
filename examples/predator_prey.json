@@ -72,8 +72,8 @@
   ],
   "reward_vars": [
     {
-      "key": "Prey",
-      "opt1": "Prey",
+      "nounId": "2",
+      "name": "Prey",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
@@ -82,8 +82,8 @@
       }
     },
     {
-      "key": "Predator",
-      "opt1": "Predator",
+      "nounId": "4",
+      "name": "Predator",
       "opt2": "Instant of Time",
       "range": {
         "start": 0,
