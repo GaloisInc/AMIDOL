@@ -587,7 +587,10 @@
 			a.download = "model.json"
 			a.href = URL.createObjectURL(blob)
 			a.target = "_blank"
+			a.style.display = 'none'
+			document.body.appendChild(a) // required for firefox
 			a.click()
+			a.remove()
 		},
 
 		upload : function(event) {
