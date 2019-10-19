@@ -45,9 +45,9 @@ lazy val root = (project in file("."))
       "org.webjars"            % "visjs"                     % "4.21.0",
       "org.webjars"            % "bootstrap"                 % "4.3.1",
       "org.webjars.bower"      % "underscore"                % "1.9.1",
-      "org.webjars.npm"        % "chartist"                  % "0.11.0",
-      "org.webjars.npm"        % "chartist-plugin-axistitle" % "0.0.4",
-      "org.webjars.bower"      % "plotly.js"                 % "1.48.3",
+      "org.webjars.bower"      % "plotly.js"                 % "1.50.1",
+
+
 
       // Testing
       "org.scalatest"          %% "scalatest"                % "3.0.5" % Test,

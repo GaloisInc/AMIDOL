@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom";
 import { Hello, Greet } from "./components/Hello";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
 import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
+import { GraphResults, Measure } from "./components/GraphResults";
 
 declare var reactCallbacks: MeasuresCallbacks;
 
@@ -44,4 +45,26 @@ export function showEditNodeDialog(
   );
 }
 
+interface GraphResultsProps {
+  closeResults(): void;
+  backend: string;
+  measures: Measure[];
+}
 
+export function showGraphResults(
+  mountPoint: HTMLElement,
+
+  backend: string,
+  measures: Measure[],
+) {
+  const close = () => ReactDOM.unmountComponentAtNode(mountPoint);
+
+  ReactDOM.render(
+    <GraphResults
+      backend={backend}
+      measures={measures}
+      closeResults={close}
+    />,
+    mountPoint,
+  );
+}

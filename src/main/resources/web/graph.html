@@ -7,17 +7,11 @@
 	<link rel="stylesheet" href="vis.min.css" type="text/css" />
 	<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
 
-	<script type="text/javascript" src="jquery.fancybox.min.js"></script>
-	<link rel="stylesheet" href="jquery.fancybox.min.css" type="text/css" />
-
 	<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
 	<link rel="stylesheet" href="normalize.css">
 	<link rel="stylesheet" href="skeleton.css">
 
-	<link rel="stylesheet" href="chartist.min.css" type="text/css" />
-	<script type="text/javascript" src="chartist.min.js"></script>
-	<script type="text/javascript" src="chartist-plugin-axistitle.min.js"></script>
 	<script type="text/javascript" src="svg.js"></script>
 
 <script type="text/javascript">
@@ -261,40 +255,6 @@
 					if (get(paletteItems, [n.props.className, 'type']) == "noun") { return { id: n.id, label: n.label } } else { {} }
 				}), (a) => ! _.isEmpty(a))
 				reactCallbacks.updateMeasureNouns(nodeNames)
-			},
-
-			fancyCharts : function(chartsData) {
-				$.fancybox.destroy()
-				var chartIdPrefix = "chart-"
-				var charts = _.map(chartsData, function(i, idx) {
-					return $("<div>").attr({id: chartIdPrefix + idx, class: "resultChart"})
-				})
-				$("#results").append(charts)
-				$.fancybox.open(charts, {
-					helpers : {
-						title : { type : 'inside' }
-					},
-					loop : true,
-					afterClose: function() { $("#results").empty() },
-					beforeShow: function() {
-						// Creating the Chartist objects are in the `beforeShow` function because they were not rendering properly when fancybox changed slides. (all elements in the graph were rendered at a single point)
-						_.map(chartsData, function(singleChartData, idx){
-							var pluginOpts = {
-								chartPadding: { top: 20, right: 0, bottom: 20, left: 0 },
-								plugins: [ Chartist.plugins.ctAxisTitle({
-									axisX: {
-										axisTitle: singleChartData.title,
-										axisClass: "ct-axis-title",
-										offset: { x: 0, y: 40 },
-										textAnchor: "middle"
-									},
-									axisY: {}
-								})]
-							}
-							new Chartist.Line("#" + chartIdPrefix + idx, singleChartData, pluginOpts)
-						})
-					}
-				})
 			},
 
 			iconRedraw : function() {
@@ -674,58 +634,38 @@
 
 	var IR = {
 
-		chartCount: 0,
-		chartDataAcc: [],
-
 		submit : function(){
 			if (_.isEmpty(reward_vars) || !_.isEmpty(_.find(reward_vars, (rv) => rv.nounId == ""))) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
 
-			$.fancybox.open($("<img>").attr({src: "images/spinner.gif"}))
+      var measures = _.map(reward_vars, function(rv) {
+				var simParams = {
+					initialTime: parseFloat(rv.range.start),
+					finalTime: parseFloat(rv.range.end),
+					stepSize: parseFloat(rv.range.step),
+					savePlot: null
+        };
+        if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
+					alert("Sampling the range you defined will require more memory than this system can spare right now.")
+					return false;
+        }
+        return {
+          name: rv.name,
+          label: node_data_set.get(rv.nounId).label,
+          simParams: simParams
+        }
+      });
 
 			IR.submitGraph(function(data, status, jqXHR) {
-				IR.chartCount = reward_vars.length
-				IR.chartDataAcc = []
-
-				_.map(reward_vars, function(rv) {
-					var simParams = {
-						"initialTime": parseFloat(rv.range.start),
-						"finalTime": parseFloat(rv.range.end),
-						"stepSize": parseFloat(rv.range.step),
-						"savePlot": null
-					}
-					if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
-						alert("Sampling the range you defined will require more memory than this system can spare right now.")
-						$.fancybox.destroy()
-						return false
-					}
-					IR.execute.backend.integrate(simParams, function(data, status, jqXHR) {
-						IR.chartDataAcc.push({
-							title: rv.name,
-							labels: data.times,
-							series: [
-								data.variables[node_data_set.get(rv.nounId).label]
-							]
-						})
-						if (IR.chartCount == IR.chartDataAcc.length){
-							UI.render.fancyCharts( IR.chartDataAcc )
-							IR.chartDataAcc = []
-							IR.chartCount = 0
-						}
-					})
-				})
-			})
+        webReact.showGraphResults(
+          document.getElementById("results"),
+          chosen_backend,
+          measures
+        )
+      })
 		},
 
 		submitGraph : function(onSuccessFunc){
 			$.post("/appstate/uiModel", IR.getData(), onSuccessFunc)
-		},
-
-		execute : {
-			backend : {
-				integrate : function(simParams, onSuccessFunc) {
-					$.postJSON("/backends/"+chosen_backend+"/integrate", simParams, onSuccessFunc)
-				}
-			}
 		},
 
 		getData : function(){
@@ -829,6 +769,30 @@
 		width: 75%;
 		/*border: 5px solid gray;*/
 	}
+  .tall-modal-content {
+    height: 80vh;
+  }
+
+  .red-bg-mine {
+    background: red
+  }
+  .carousel-control-next-icon-mine {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+  }
+  .carousel-control-prev-icon-mine {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+  }
+
 	#palette img {
 		margin: 5px;
 		padding: 5px;
@@ -920,6 +884,7 @@
 		width: 80%;
 		height: 80%
 	}
+  .foo { height: 80vh; maxHeight: 1600px }
 
 
 </style></head>

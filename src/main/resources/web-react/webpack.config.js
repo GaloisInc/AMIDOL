@@ -12,6 +12,9 @@ module.exports = {
       libraryTarget: 'var',
       filename: 'webReact.js',
     },
+    externals: {
+      'plotly.js': 'Plotly'
+    },
     module: {
         rules: [
             {
