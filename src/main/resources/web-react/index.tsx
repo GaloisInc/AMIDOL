@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Hello, Greet } from "./components/Hello";
+import { ButtonBar } from "./components/ButtonBar";
+import { Journal } from "./components/ModelNavigation";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
 import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
 import { GraphResults, Measure } from "./components/GraphResults";
@@ -64,6 +65,31 @@ export function showGraphResults(
       backend={backend}
       measures={measures}
       closeResults={close}
+    />,
+    mountPoint,
+  );
+}
+
+export function attachButtonBar(
+  mountPoint: HTMLElement,
+
+  journal: Journal,
+  onUpload: () => void,
+  onDownload: () => void,
+
+  onJuliaUpload: () => void,
+
+  setNewCurrentBackend: (newBackend: string) => void,
+  onExecute: () => void,
+) {
+  ReactDOM.render(
+    <ButtonBar
+      journal={journal}
+      onUpload={onUpload}
+      onDownload={onDownload}
+      setNewCurrentBackend={setNewCurrentBackend}
+      onExecute={onExecute}
+      onJuliaUpload={onJuliaUpload}
     />,
     mountPoint,
   );

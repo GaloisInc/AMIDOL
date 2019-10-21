@@ -6,11 +6,12 @@
 	<script type="text/javascript" src="underscore-min.js"></script>
 	<link rel="stylesheet" href="vis.min.css" type="text/css" />
 	<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="ionicons.min.css" type="text/css" />
 
 	<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
-	<link rel="stylesheet" href="normalize.css">
-	<link rel="stylesheet" href="skeleton.css">
+  <!-- <link rel="stylesheet" href="normalize.css"> -->
+  <!--	<link rel="stylesheet" href="skeleton.css"> -->
 
 	<script type="text/javascript" src="svg.js"></script>
 
@@ -63,30 +64,6 @@
 	var journal = {
 		past : [],
 		future : [],
-
-		// `apply`, `undo`, and `redo` manage the journals _and_ trigger effects through applyEventEffects
-		apply: function(event) {
-			this.past.push(event)
-			this.future = []
-			this.applyEventEffects(event)
-		},
-
-		undo : function() {
-			if (this.past.length > 0) {
-				var journal_event = this.past.pop()
-				this.future.unshift(journal_event)
-				this.applyEventEffects(this.invertEvent(journal_event))
-			}
-		},
-
-		redo : function() {
-			if (this.future.length > 0) {
-				var journal_event = this.future.shift()
-				this.past.push(journal_event)
-				this.applyEventEffects(journal_event)
-			}
-		},
-
 
 		// Purpose: cause UI side effects... and nothing else.
 		// Always call last, after setting the relevant shared states.
@@ -146,7 +123,6 @@
 					console.log("Unknown event in applyEventEffects: " + JSON.stringify(event))
 					break
 			}
-			UI.updateButtonStates()
 		},
 
 		invertEvent : function(initial_event) {
@@ -200,10 +176,6 @@
 	}
 
 	var UI = {
-
-		changeBackend: function(elem) {
-			chosen_backend = $(elem).val()
-		},
 
 		render: {
 
@@ -505,16 +477,6 @@
 		},
 
 		updateButtonStates : function() {
-			if (_.isEmpty(journal.past)) {
-				$("#undo_button").addClass("disabled")
-			} else {
-				$("#undo_button").removeClass("disabled")
-			}
-			if (_.isEmpty(journal.future)) {
-				$("#redo_button").addClass("disabled")
-			} else {
-				$("#redo_button").removeClass("disabled")
-			}
 			var selectedNodes = network.getSelectedNodes()
 			if (selectedNodes.length == 1) {
 				UI.render.localVars(selectedNodes[0])
@@ -570,8 +532,7 @@
 						UI.updateButtonStates()
 					}
 					reader.onloadend = function(e) {
-						do { $("#redo_button").click() }
-						while ( ! $("#redo_button").hasClass("disabled"))
+            journal.redoAll();
 						UI.render.palette(availablePalettes[chosenPalette])
 						UI.render.rewardVars()
 						UI.render.localVars()
@@ -611,7 +572,7 @@
 								reward_vars = []
 								reactCallbacks.setMeasures([]);
 								palette.update(function () {
-									$("#redo_button").click()
+                  journal.redoAll()
 									UI.updateButtonStates()
 									UI.render.rewardVars()
 									UI.render.localVars()
@@ -773,26 +734,6 @@
     height: 80vh;
   }
 
-  .red-bg-mine {
-    background: red
-  }
-  .carousel-control-next-icon-mine {
-    border: solid black;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(-45deg);
-    -webkit-transform: rotate(-45deg);
-  }
-  .carousel-control-prev-icon-mine {
-    border: solid black;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    transform: rotate(135deg);
-    -webkit-transform: rotate(135deg);
-  }
-
 	#palette img {
 		margin: 5px;
 		padding: 5px;
@@ -810,9 +751,11 @@
 		fill: gray;
 	}
 	#palette img.selected {
-		border-color: lightblue;
+		border-color: #007bff;
+    border-radius: .25rem;
+    border-width: 1px;
 	}
-	#palette img.right, #palette input.right {
+	#palette img.right, #palette input.right, #palette div.right {
 		margin-top: 1em;
 		height: 40px;
 	}
@@ -884,7 +827,6 @@
 		width: 80%;
 		height: 80%
 	}
-  .foo { height: 80vh; maxHeight: 1600px }
 
 
 </style></head>
@@ -896,18 +838,7 @@
 			<select onchange="UI.choosePalette(this)"></select>
 			<button onclick="UI.paletteEditor()">Edit</button>
 		</div>
-		<select id="exec_chooser" class="right" onchange="UI.changeBackend(this)">
-			<option value="scipy">SciPy</option>
-			<option value="pysces">PySCeS</option>
-			<option value="julia">Julia</option>
-		</select>
-		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
-		<button id="upload_julia_button" class="right" onclick="document.getElementById('choose-julia-upload').click()">Load Julia code</button>
-		<img id="redo_button" title="Redo" class="right" src="images/redo.png" onclick="journal.redo()" />
-		<img id="reset_button" title="Reset" class="right" src="images/reset.png" onclick="resetEverything()" />
-		<img id="undo_button" title="Undo" class="right" src="images/undo.png" onclick="journal.undo()" />
-		<img id="upload" title="Load model file" class="right" src="images/load_model.jpg" onclick="document.getElementById('choose-upload').click()" />
-		<img id="download" title="Save model file" class="right" src="images/save_model.jpeg" onclick="UI.download()" />
+    <div id="button_bar" class="right"></div>
 		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
 		<input type="file" class="right" id="choose-julia-upload" name="files[]" style="display: none;" />
 	</div>
@@ -931,5 +862,21 @@
 				journal.apply( event )
 			}
 		);
+
+    webReact.attachButtonBar(
+      document.getElementById('button_bar'),
+
+      // For navigation stuff
+      journal,
+      function() { document.getElementById('choose-upload').click() },
+      function() { UI.download() },
+
+      // For Julia
+      function() { document.getElementById('choose-julia-upload').click() },
+
+      // For execution
+      function(newBackend) { chosen_backend = newBackend; },
+      function() { IR.submit() },
+    );
 	</script>
 </body>

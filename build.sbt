@@ -46,7 +46,7 @@ lazy val root = (project in file("."))
       "org.webjars"            % "bootstrap"                 % "4.3.1",
       "org.webjars.bower"      % "underscore"                % "1.9.1",
       "org.webjars.bower"      % "plotly.js"                 % "1.50.1",
-
+      "org.webjars"            % "ionicons"                  % "2.0.1",
 
 
       // Testing
