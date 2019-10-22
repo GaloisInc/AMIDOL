@@ -834,6 +834,7 @@
 	<div id="results" style="display: none;"></div>
 	<div id="paletteEditor"></div>
 	<div id="palette">
+          <div id="paletteNew"></div>
 		<div id="paletteChooser">
 			<select onchange="UI.choosePalette(this)"></select>
 			<button onclick="UI.paletteEditor()">Edit</button>
@@ -878,5 +879,9 @@
       function(newBackend) { chosen_backend = newBackend; },
       function() { IR.submit() },
     );
+
+//    webReact.attachPalette(
+//      document.getElementById('paletteNew'),
+//    );
 	</script>
 </body>

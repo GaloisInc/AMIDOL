@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import { Palette } from "./components/Palette";
 import { ButtonBar } from "./components/ButtonBar";
 import { Journal } from "./components/ModelNavigation";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
@@ -92,5 +93,14 @@ export function attachButtonBar(
       onJuliaUpload={onJuliaUpload}
     />,
     mountPoint,
+  );
+}
+
+export function attachPalette(
+  mountPoint: HTMLElement
+) {
+  ReactDOM.render(
+    <Palette />,
+    mountPoint
   );
 }
