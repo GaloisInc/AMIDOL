@@ -5,6 +5,7 @@
  */
 function refillSvg(svgSrc, newColour) {
 	return $.get(svgSrc).then(function(response) {
+    console.log(svgSrc)
 		if (svgSrc == "images/unknown.png") return svgSrc;
 
 		// We expect a `SVGSVGElement`

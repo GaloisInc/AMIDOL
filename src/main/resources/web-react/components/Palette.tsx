@@ -56,7 +56,9 @@ export class Palette extends React.Component<{}, PaletteState> {
   }
 
   render() {
-    return (<div style={{ width: '200px' }}>
+    return (
+      <ButtonToolbar>
+<div style={{ width: '200px' }}>
       <InputGroup>
       <Input
         type="select"
@@ -78,6 +80,7 @@ export class Palette extends React.Component<{}, PaletteState> {
       </Button>
       </InputGroup>
       </div>
+      </ButtonToolbar>
     );
   }
 

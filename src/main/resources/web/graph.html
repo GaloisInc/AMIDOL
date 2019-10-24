@@ -8,11 +8,6 @@
 	<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
   <link rel="stylesheet" href="ionicons.min.css" type="text/css" />
 
-	<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-
-  <!-- <link rel="stylesheet" href="normalize.css"> -->
-  <!--	<link rel="stylesheet" href="skeleton.css"> -->
-
 	<script type="text/javascript" src="svg.js"></script>
 
 <script type="text/javascript">
@@ -360,39 +355,30 @@
 		paletteEditor: function(toEditName) {
 			webReact.showEditNodeDialog(
 				document.getElementById("paletteEditor"),
-				function (name, paletteElement, then) {
+				function (name, paletteElement) {
+					// Detect new!
+					if (!paletteItems[name]) {
+					  availablePalettes[chosenPalette].push(name)
+					}
+					paletteItems[name] = paletteElement
 
-					refillSvg(paletteElement.icon, paletteElement.color).done(function(image) {
-						// Set the palette element
-						paletteElement.image = image;
-						$.post("/appstate/palette/put", { name: name, palette: JSON.stringify(paletteElement) })
-							.fail(function (err) {
-								alert("Failed to register new palette element.\n\n(" + err.responseText + ")");
-							})
-							.done(function () {
-
-								 // Detect new!
-								 if (!paletteItems[name]) {
-									 availablePalettes[chosenPalette].push(name)
-								 }
-								 paletteItems[name] = paletteElement
-
-								 // Re-render and clean up
-								 UI.render.palette(availablePalettes[chosenPalette])
-								 UI.render.iconRedraw()
-								 then()
-							})
-					})
+					// Re-render and clean up
+					UI.render.palette(availablePalettes[chosenPalette])
+					UI.render.iconRedraw()
 				},
-				function (name, then) {
-					$.post("/appstate/palette/remove", { name: name })
-						.done(palette.update(function () {
+				function (name) {
+          // Remote the palette element
+          delete paletteItems[name];
+          availablePalettes = _.mapObject(availablePalettes, function (pal) {
+						return _.filter(
+							pal,
+							function(name) { return paletteItems.hasOwnProperty(name); }
+						)
+					});
 
-							// Re-render and clean up
-							UI.render.palette(availablePalettes[chosenPalette])
-							UI.render.iconRedraw()
-							then()
-						}))
+          // Re-render and clean up
+					UI.render.palette(availablePalettes[chosenPalette])
+					UI.render.iconRedraw()
 				},
 				paletteItems,
 				availablePalettes[chosenPalette],
@@ -665,12 +651,6 @@
 		}
 	}
 
-	function resetEverything() {
-		if (confirm("WARNING: This is going to clear all the internal application state")) {
-			$.post("/appstate/reset").then(function (result) { location.reload() })
-		}
-	}
-
 
 	var paletteItems = { }			// loaded from server dynamically
 	var chosenPalette = "SIR"
@@ -768,7 +748,7 @@
 	#exec_chooser {
 		margin: 22px 0px 22px 0px;
 	}
-	#paletteChooser{
+	#paletteChooser, #paletteNew {
 		margin: 1.5em 1.5em 0em 1.5em;
 		float: left;
 	}
@@ -835,7 +815,7 @@
 	<div id="paletteEditor"></div>
 	<div id="palette">
           <div id="paletteNew"></div>
-		<div id="paletteChooser">
+		<div id="paletteChooser" style="display: none">
 			<select onchange="UI.choosePalette(this)"></select>
 			<button onclick="UI.paletteEditor()">Edit</button>
 		</div>
@@ -880,8 +860,8 @@
       function() { IR.submit() },
     );
 
-//    webReact.attachPalette(
-//      document.getElementById('paletteNew'),
-//    );
+    webReact.attachPalette(
+      document.getElementById('paletteNew'),
+    );
 	</script>
 </body>

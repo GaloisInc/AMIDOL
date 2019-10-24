@@ -7,6 +7,7 @@ import { Journal } from "./components/ModelNavigation";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
 import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
 import { GraphResults, Measure } from "./components/GraphResults";
+import { refillSvg, svgColors } from "./utility/Svg.ts";
 
 declare var reactCallbacks: MeasuresCallbacks;
 
@@ -24,8 +25,8 @@ export function showMeasures(
 export function showEditNodeDialog(
   mountPoint: HTMLElement,
 
-  submitPaletteElement: (string, item, then) => void,
-  deletePaletteElement: (string, then) => void,
+  submitPaletteElement: (string, item) => void,
+  deletePaletteElement: (string) => void,
 
   paletteItems: { [itemName: string]: PaletteItem },
   chosenPaletteItemNames: string[],
