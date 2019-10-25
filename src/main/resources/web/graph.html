@@ -27,6 +27,15 @@
 		//		}), (a) => ! _.isEmpty(a))
 	}
 
+  var paletteCallbacks = {
+    setChosenPalette: function(paletteName) { },
+    getChosenPalette: function() { },
+    addPaletteGroup: function(paletteName, items, onComplete) { },
+    getPaletteItem: function(itemName) { },
+    getSelectedPaletteItemName: function() { },
+    setSelectedPaletteItemName: function(name) { }
+  }
+
 	var node_data_set, edge_data_set, network;
 	var global_vars = { Example : 0 };
 	var reward_vars = []// { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
@@ -174,29 +183,6 @@
 
 		render: {
 
-			palette : function(items) {
-				// Redraw dropdown
-				$("#paletteChooser select option").remove();
-				$("#paletteChooser select").append(
-					_.map(_.keys(availablePalettes), function(k) { return $("<option>").html(k); })
-				);
-				$("#paletteChooser select").val(chosenPalette);
-
-				// Redraw actual palette
-				$("#palette .paletteItem").remove()
-				$("#palette")
-					.append(_.map(items, function(item){
-						var p = paletteItems[item]
-						return $("<img />")
-							.attr({src: p.image, classname: p.className})
-							.attr("onclick", "UI.selectPaletteNode(this)")
-							.attr("ondblclick", "UI.paletteEditor('" + item + "')")
-							.addClass("paletteItem")
-							.addClass(p.type)
-					}))
-				if ($(".selected").length == 0) { $(".paletteItem").first().addClass("selected") }
-			},
-
 			localVars : function(id) {
 				var vs = $("#localVars")
 				vs.empty()
@@ -219,7 +205,8 @@
 
 			rewardVars : function() {
 				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
-					if (get(paletteItems, [n.props.className, 'type']) == "noun") { return { id: n.id, label: n.label } } else { {} }
+          var item = paletteCallbacks.getPaletteItem(n.props.className);
+					if (item && item['type'] && item['type'] == 'noun') { return { id: n.id, label: n.label } } else { {} }
 				}), (a) => ! _.isEmpty(a))
 				reactCallbacks.updateMeasureNouns(nodeNames)
 			},
@@ -227,7 +214,7 @@
 			iconRedraw : function() {
 				_.forEach(node_data_set.getIds(), function(id) {
 					var className = node_data_set.get(id).props.className
-					node_data_set.update({ id: id, image: paletteItems[className].image })
+					node_data_set.update({ id: id, image: paletteCallbacks.getPaletteItem(className).image })
 				})
 			},
 
@@ -249,8 +236,9 @@
 							node.label = prompt("Name your new node:")
 							var isUnused = _.find(node_data_set.get(), (n) => n.label == node.label) === undefined
 							if (node.label != null && isUnused) {
-								node.image = $("#palette img.selected").attr("src")
-								var className = $("#palette img.selected").attr("classname")
+								var className = paletteCallbacks.getSelectedPaletteItemName();
+								var theItem = paletteCallbacks.getPaletteItem(className);
+								node.image = theItem.image;
 								var node = UI.makeNode(node, className)
 								journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
 							} else {
@@ -261,8 +249,8 @@
 							// edge.label = prompt("Edge label:")
 							var fromClass = get(node_data_set.get(edge.from), ['props', 'className'])
 							var toClass = get(node_data_set.get(edge.to), ['props', 'className'])
-							var fromType = fromClass && get(paletteItems, [fromClass, 'type'])
-							var toType = toClass && get(paletteItems, [toClass, 'type'])
+							var fromType = fromClass && get(paletteCallbacks.getPaletteItem(fromClass), ['type'])
+							var toType = toClass && get(paletteCallbacks.getPaletteItem(toClass), ['type'])
 							if (fromType !== toType) {
 								journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
 							} else {
@@ -322,8 +310,7 @@
 				network.on("selectNode", function(data){
 					if (data.nodes.length == 1) {
 						UI.render.localVars(data.nodes[0])
-						$("#palette img.selected").removeClass("selected");
-						$("#palette img[classname='" + node_data_set.get(data.nodes[0]).props.className + "']").addClass("selected");
+            paletteCallbacks.setSelectedPaletteItemName(node_data_set.get(data.nodes[0]).props.className);
 					}
 				})
 				network.on("deselectNode", function(data){
@@ -352,40 +339,6 @@
 			}
 		},
 
-		paletteEditor: function(toEditName) {
-			webReact.showEditNodeDialog(
-				document.getElementById("paletteEditor"),
-				function (name, paletteElement) {
-					// Detect new!
-					if (!paletteItems[name]) {
-					  availablePalettes[chosenPalette].push(name)
-					}
-					paletteItems[name] = paletteElement
-
-					// Re-render and clean up
-					UI.render.palette(availablePalettes[chosenPalette])
-					UI.render.iconRedraw()
-				},
-				function (name) {
-          // Remote the palette element
-          delete paletteItems[name];
-          availablePalettes = _.mapObject(availablePalettes, function (pal) {
-						return _.filter(
-							pal,
-							function(name) { return paletteItems.hasOwnProperty(name); }
-						)
-					});
-
-          // Re-render and clean up
-					UI.render.palette(availablePalettes[chosenPalette])
-					UI.render.iconRedraw()
-				},
-				paletteItems,
-				availablePalettes[chosenPalette],
-				toEditName
-			);
-		},
-
 		// Remove all nodes in the network drawn (but they are still accessible through history)
 		clearNetwork : function(reason) {
 			if (_.isEmpty(node_data_set.get()) || confirm(reason)) {
@@ -397,12 +350,6 @@
 			}
 		},
 
-		choosePalette: function(elem) {
-			chosenPalette = $(elem).val()
-			if (UI.clearNetwork("Changing palettes will clear the drawing canvas.")) {
-				UI.render.palette(availablePalettes[chosenPalette])
-			}
-		},
 
 		makeNode : function(node, className) {
 			if ( ! node.hasOwnProperty("id")) {
@@ -414,7 +361,7 @@
 				}
 				node.id = randomUuid()
 			}
-			var paletteItem = paletteItems[className]
+			var paletteItem = paletteCallbacks.getPaletteItem(className)
 			var parameters = _.map(_.pairs(paletteItem.backingModel.constants), function(e) {
 				return {
 					name: e[0],
@@ -488,7 +435,7 @@
 				journal: journal.past,
 				reward_vars: reward_vars,
 				global_vars: global_vars,
-				chosen_palette: chosenPalette,
+				chosen_palette: paletteCallbacks.getChosenPalette(),
 			}
 			var blob = new Blob([JSON.stringify(data)], {type: "application/json"})
 			var a = document.createElement('a')
@@ -514,12 +461,11 @@
 						global_vars = data.global_vars;
 						reward_vars = data.reward_vars;
 						reactCallbacks.setMeasures(data.reward_vars);
-						chosenPalette = data.chosen_palette;
+						paletteCallbacks.setChosenPalette(data.chosen_palette);
 						UI.updateButtonStates()
 					}
 					reader.onloadend = function(e) {
             journal.redoAll();
-						UI.render.palette(availablePalettes[chosenPalette])
 						UI.render.rewardVars()
 						UI.render.localVars()
 						UI.render.iconRedraw()
@@ -550,25 +496,25 @@
 									}),
 									edges: links
 								});
-								availablePalettes["julia_model"] = _.map(nodes, function (n) {
-									return n.props.className;
-								});
-								chosenPalette = "julia_model";
-								global_vars = []
-								reward_vars = []
-								reactCallbacks.setMeasures([]);
-								palette.update(function () {
-                  journal.redoAll()
-									UI.updateButtonStates()
-									UI.render.rewardVars()
-									UI.render.localVars()
-									UI.render.iconRedraw()
-									UI.render.palette(availablePalettes[chosenPalette])
-									network.setOptions({ physics: true })
-									setTimeout(function() {
-										network.setOptions({ physics: false })
-									}, 1000)
-								})
+                paletteCallbacks.addPaletteGroup(
+                  "julia_model",
+                  _.map(nodes, function (n) { return n.props.className; }),
+                  function () {
+                    paletteCallbacks.setChosenPalette("julia_model");
+    								global_vars = []
+    								reward_vars = []
+    								reactCallbacks.setMeasures([]);
+                    journal.redoAll()
+    								UI.updateButtonStates()
+    								UI.render.rewardVars()
+    								UI.render.localVars()
+    								UI.render.iconRedraw()
+    								network.setOptions({ physics: true })
+    								setTimeout(function() {
+    									network.setOptions({ physics: false })
+    								}, 1000)
+                  }
+                );
 							})
 							.catch(function (err) {
 								alert(err.responseText);
@@ -624,73 +570,19 @@
 				globalVariables: JSON.stringify(global_vars) */
 			}
 		}
-	}
-
-	var palette = {
-		update : function(onComplete) {
-			$.post("/appstate/palette/list", {})
-				.then(function (data) {
-					paletteItems = { }
-					var remaining = data.length - 1;
-					return $.when.apply($, _.map(data, function(item) {
-						return refillSvg(item.icon, item.color).then(function (image) {
-							item.image = image
-							paletteItems[item.className] = item
-						})
-					}))
-				})
-				.done(function () {
-					availablePalettes = _.mapObject(availablePalettes, function (pal) {
-						return _.filter(
-							pal,
-							function(name) { return paletteItems.hasOwnProperty(name); }
-						)
-					})
-					if (onComplete) onComplete()
-				})
-		}
-	}
+	}	
 
 
-	var paletteItems = { }			// loaded from server dynamically
-	var chosenPalette = "SIR"
-	var availablePalettes = {
-		"SIR" : [
-				"population",
-				"patient",
-				"infect",
-				"cure",
-		],
-		"SIRS-VD": [
-				"population_vital_dynamics",
-				"patient_vital_dynamics",
-				"infect",
-				"cure",
-				"time",
-		],
-		"predator_prey" : [
-				"predator",
-				"prey",
-				"hunting",
-		],
-	}
-
-
-	$(function(){ palette.update(function () {
+	$(function(){
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
 		document.getElementById('choose-julia-upload').addEventListener('change', UI.uploadJuliaSrc, false)
 
-		var startingPalette =	availablePalettes[chosenPalette]
-
 		UI.render.network()
 
-		UI.render.palette(startingPalette)
 		UI.render.localVars(null)
 		UI.render.rewardVars()
 		UI.updateButtonStates()
-
-
-	}) })
+	})
 
 </script>
 
@@ -715,9 +607,8 @@
   }
 
 	#palette img {
-		margin: 5px;
-		padding: 5px;
-		height: 50px;
+		margin-left: 5px;
+		height: 35px;
 		border: 5px solid white;
 	}
 	.vis-manipulation {
@@ -749,7 +640,8 @@
 		margin: 22px 0px 22px 0px;
 	}
 	#paletteChooser, #paletteNew {
-		margin: 1.5em 1.5em 0em 1.5em;
+		margin: 1em 1.5em 0em 1.5em;
+    margin-top: 1em;
 		float: left;
 	}
 	#palette img.disabled {
@@ -812,12 +704,9 @@
 </style></head>
 <body>
 	<div id="results" style="display: none;"></div>
-	<div id="paletteEditor"></div>
 	<div id="palette">
           <div id="paletteNew"></div>
 		<div id="paletteChooser" style="display: none">
-			<select onchange="UI.choosePalette(this)"></select>
-			<button onclick="UI.paletteEditor()">Edit</button>
 		</div>
     <div id="button_bar" class="right"></div>
 		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
@@ -862,6 +751,9 @@
 
     webReact.attachPalette(
       document.getElementById('paletteNew'),
+      paletteCallbacks,
+      UI.render.iconRedraw,
+      UI.clearNetwork
     );
 	</script>
 </body>

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Palette } from "./components/Palette";
+import { Palette, PaletteCallbacks } from "./components/Palette";
 import { ButtonBar } from "./components/ButtonBar";
 import { Journal } from "./components/ModelNavigation";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
@@ -98,10 +98,18 @@ export function attachButtonBar(
 }
 
 export function attachPalette(
-  mountPoint: HTMLElement
+  mountPoint: HTMLElement,
+
+  callbacks: PaletteCallbacks,
+  redrawIcons: () => void,
+  clearNetwork: (string) => boolean,
 ) {
   ReactDOM.render(
-    <Palette />,
+    <Palette
+      redrawIcons={redrawIcons}
+      clearNetwork={clearNetwork}
+      paletteCallbacks={callbacks}
+    />,
     mountPoint
   );
 }

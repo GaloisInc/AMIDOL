@@ -138,12 +138,12 @@ export class PaletteEditor extends React.Component<PaletteEditorProps, PaletteEd
         data.append("palette", JSON.stringify(item));
         return fetch("/appstate/palette/put", { method: 'POST', body: data });
       })
-      .catch(err =>
-        alert("Failed to register new palette element.\n\n(" + err.responseText + ")")
-      )
       .then(() => {
         this.props.submitPaletteElement(name, item);
         this.toggle();
+      })
+      .catch(err => {
+        alert("Failed to register new palette element.\n\n(" + err.responseText + ")")
       });
   }
 
