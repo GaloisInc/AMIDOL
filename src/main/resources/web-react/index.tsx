@@ -8,6 +8,7 @@ import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVa
 import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
 import { GraphResults, Measure } from "./components/GraphResults";
 import { refillSvg, svgColors } from "./utility/Svg.ts";
+import { TraceSum, Compare } from "./components/Compare";
 
 declare var reactCallbacks: MeasuresCallbacks;
 
@@ -110,6 +111,17 @@ export function attachPalette(
       clearNetwork={clearNetwork}
       paletteCallbacks={callbacks}
     />,
+    mountPoint
+  );
+}
+
+export function attachCompare(
+  mountPoint: HTMLElement,
+
+  plot: (toPlot: TraceSum[]) => void,
+) {
+  ReactDOM.render(
+    <Compare plotComparision={plot} />,
     mountPoint
   );
 }
