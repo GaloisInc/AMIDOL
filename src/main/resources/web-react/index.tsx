@@ -49,11 +49,6 @@ export function showEditNodeDialog(
   );
 }
 
-interface GraphResultsProps {
-  closeResults(): void;
-  backend: string;
-  measures: Measure[];
-}
 
 export function showGraphResults(
   mountPoint: HTMLElement,
@@ -63,11 +58,37 @@ export function showGraphResults(
 ) {
   const close = () => ReactDOM.unmountComponentAtNode(mountPoint);
 
+  const endpoint = "/backends/" + backend + "/integrate";
+  const datas = Promise
+      .all(measures.map(measure => {
+        const restOptions = {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(measure.simParams)
+        };
+        return fetch(endpoint, restOptions)
+          .then(result => result.json())
+          .then(dataResult => {
+            return {
+              name: measure.name,
+              x: dataResult.time,
+              y: dataResult.variables[measure.label],
+              type: 'scatter',
+              mode: 'lines+points',
+          //    marker: { color: 'red' }
+            };
+          });
+      }));
+
+
   ReactDOM.render(
     <GraphResults
-      backend={backend}
-      measures={measures}
+      datasPromise={datas}
       closeResults={close}
+      title={"Model execution results"}
     />,
     mountPoint,
   );

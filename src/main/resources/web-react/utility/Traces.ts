@@ -7,7 +7,7 @@ export interface Trace {
 /** Returns a new summed data trace, with `x` being the union of `x` values from
  *  the two input traces
  */
-function addTraces(trace1: Trace, trace2: Trace): Trace {
+export function addTraces(trace1: Trace, trace2: Trace): Trace {
   const x1 = trace1.x;
   const x2 = trace2.x;
   const y1 = trace1.y;

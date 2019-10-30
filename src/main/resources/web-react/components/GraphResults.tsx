@@ -12,8 +12,8 @@ import Plot from 'react-plotly.js';
 
 interface GraphResultsProps {
   closeResults(): void;
-  backend: string;
-  measures: Measure[];
+  title: string;
+  datasPromise: Promise<any[]>;
 }
 
 export interface Measure {
@@ -42,34 +42,9 @@ export class GraphResults extends React.Component<GraphResultsProps, GraphResult
     this.state = {
       isOpen: true
     };
-
-    const endpoint = "/backends/" + this.props.backend + "/integrate";
-    Promise
-      .all(this.props.measures.map(measure => {
-        const restOptions = {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(measure.simParams)
-        };
-        return fetch(endpoint, restOptions)
-          .then(result => result.json())
-          .then(dataResult => {
-            return {
-              name: measure.name,
-              x: dataResult.time,
-              y: dataResult.variables[measure.label],
-              type: 'scatter',
-              mode: 'lines+points',
-          //    marker: { color: 'red' }
-            };
-          });
-      }))
-      .then(datas => this.setState({ ...this.state, datas }));
-
     this.toggle = this.toggle.bind(this);
+
+    this.props.datasPromise.then(datas => this.setState({ ...this.state, datas }));
   }
 
   toggle() {
@@ -124,7 +99,7 @@ export class GraphResults extends React.Component<GraphResultsProps, GraphResult
         contentClassName={'tall-modal-content'}
         centered
       >
-        <ModalHeader toggle={this.toggle}>Model execution results</ModalHeader>
+        <ModalHeader toggle={this.toggle}>{this.props.title}</ModalHeader>
         <ModalBody>{modalBody}</ModalBody>
       </Modal>
 
