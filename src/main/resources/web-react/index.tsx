@@ -6,7 +6,7 @@ import { ButtonBar } from "./components/ButtonBar";
 import { Journal } from "./components/ModelNavigation";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
 import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
-import { GraphResults, Measure } from "./components/GraphResults";
+import { GraphResults } from "./components/GraphResults";
 import { refillSvg, svgColors } from "./utility/Svg.ts";
 import { TraceSum, Compare } from "./components/Compare";
 
@@ -49,6 +49,18 @@ export function showEditNodeDialog(
   );
 }
 
+interface Measure {
+  name: string;
+  label: string;
+  simParams: SimParams;
+}
+
+interface SimParams {
+	initialTime: number;
+	finalTime: number;
+	stepSize: number;
+	savePlot?: string;
+}
 
 export function showGraphResults(
   mountPoint: HTMLElement,
@@ -138,11 +150,9 @@ export function attachPalette(
 
 export function attachCompare(
   mountPoint: HTMLElement,
-
-  plot: (toPlot: TraceSum[]) => void,
 ) {
   ReactDOM.render(
-    <Compare plotComparision={plot} />,
+    <Compare  />,
     mountPoint
   );
 }

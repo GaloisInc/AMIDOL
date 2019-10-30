@@ -1,32 +1,16 @@
 import * as React from "react";
-import {
-  Spinner,
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
-  Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
-  Input, InputGroupAddon, InputGroup, InputGroupText, InputGroupButtonDropdown,
-  Col, Form, FormGroup, Label, FormText
-} from 'reactstrap';
+import { Spinner, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Plot from 'react-plotly.js';
 
-// `import * from '../utility/Traces';
-
 interface GraphResultsProps {
+  // What to do when the graph is closed
   closeResults(): void;
+
+  // Title for the plot
   title: string;
+
+  // Data with which to populate the graph
   datasPromise: Promise<any[]>;
-}
-
-export interface Measure {
-  name: string;
-  label: string;
-  simParams: SimParams;
-}
-
-export interface SimParams {
-	initialTime: number;
-	finalTime: number;
-	stepSize: number;
-	savePlot?: string;
 }
 
 interface GraphResultsState {

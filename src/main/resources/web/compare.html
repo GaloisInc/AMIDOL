@@ -1,72 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
-	<script type="text/javascript" src="jquery.min.js"></script>
-	<script type="text/javascript" src="underscore-min.js"></script>
-
 	<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
-
-	<script src="plotly.min.js"></script>
-
-	<script type="text/javascript" src="trace.js"></script>
-	<script type="text/javascript" src="webReact.js"></script>
-<script type="text/javascript">
-	// This is the list of series we plan to plot
-	var planned_data_series /* : [{ key: string, traces: [string] }] */ = [];
-
-	// This is the list of valid data trace names
-	var valid_data_traces /* : [string] */ = [];
-
-	var UI = {
-
-		// Hide the plot results overlay
-		closePlot: function() {
-			$("#results").hide();
-		},
-
-		// Plot the results
-		plotResults: function(to_plot) {
-			// For each series, ask the backend for all the data of the constituent
-			// data traces, then sum everything up.
-			var posted_series = _.map(to_plot, function(data_trace) {
-				var data = { names: JSON.stringify(data_trace.traces) };
-				return $.post("/appstate/data-traces/get", data).then(function (resp) {
-					var summed = _.reduce(
-						_.map(resp, function(e) { return { x: e[1], y: e[2] } }),
-						addTraces
-					);
-					summed = summed || { x: [], y: [] };
-					summed.mode = 'lines+markers';
-					summed.name = data_trace.key;
-					return summed;
-				})
-			});
-
-			// Sequence the results...
-			$.when.apply($, posted_series).then(function() {
-				var series = Array.prototype.slice.call(arguments);
-
-				// Make the plot!
-				var layout = {
-					title: "Comparision"
-				};
-				var config = {
-					toImageButtonOptions: {
-						format: 'svg', // one of png, svg, jpeg, webp
-						filename: 'comparision',
-						height: 500,
-						width: 700,
-						scale: 1
-					},
-					responsive: true
-				};
-				$("#results").show();
-				Plotly.newPlot("comparision-plot", series, layout, config);
-			});
-		}
-	}
-
-</script>
-
+  <script type="text/javascript" src="webReact.js"></script>
 <style type="text/css">
 	html, body {
 		padding: 0px;
@@ -91,36 +26,10 @@
     height: 80vh;
   }
 
-	#results {
-		position: absolute;
-		left: 40px;
-		right: 40px;
-		top: 80px;
-		bottom: 80px;
-		background-color: lightgray;
-		border: 1px solid gray;
-		border-radius: 15px;
-		padding: 10px;
-		z-index: 1;
-	}
-	#comparision-plot {
-		position: absolute;
-		top: 20px;
-		bottom: 20px;
-		left: 20px;
-		right: 20px;
-	}
-
 </style>
 <body>
-	<div id="results" style="display: none;">
-		<div id="comparision-plot"></div>
-		<center>
-			<button onclick="UI.closePlot()" style="position: absolute; bottom: 0">Close</button>
-		</center>
-	</div>
   <div id="reactContainer" style="padding: 1em;"></div>
   <script type="text/javascript">
-    webReact.attachCompare(document.getElementById("reactContainer"), UI.plotResults)
+    webReact.attachCompare(document.getElementById("reactContainer"))
   </script>
 </body>

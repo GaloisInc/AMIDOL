@@ -4,6 +4,7 @@ import {
   ListGroup, ListGroupItem, ListGroupItemHeading, Table
 } from 'reactstrap';
 import { addTraces } from '../utility/Traces.ts';
+import { GraphResults } from './GraphResults';
 
 export interface TraceSum {
   key: string;
@@ -13,13 +14,11 @@ export interface TraceSum {
 interface CompareState {
   dataTraces: string[];
   plannedPlot: TraceSum[];
+  openPlot: boolean;
 }
 
-interface CompareProps {
-  plotComparision(toPlot: TraceSum[]);
-}
-
-export class Compare extends React.Component<CompareProps, CompareState> {
+export class Compare extends React.Component<{}, CompareState> {
+  promisedData: Promise<any[]>;
 
   constructor(props) {
     super(props);
@@ -27,6 +26,7 @@ export class Compare extends React.Component<CompareProps, CompareState> {
     this.state = {
       dataTraces: [],
       plannedPlot: [],
+      openPlot: false,
     };
 
     setInterval(
@@ -89,6 +89,23 @@ export class Compare extends React.Component<CompareProps, CompareState> {
       );
     });
 
+    let graphResults = null;
+    if (this.state.openPlot && this.promisedData !== undefined) {
+      graphResults = <GraphResults
+        datasPromise={this.promisedData}
+        closeResults={() => {
+          this.setState({ ...this.state, openPlot: false });
+          this.promisedData = undefined;
+        }}
+        title={"Comparision plot"}
+      />;
+    }
+
+    const triggerPlot = () => {
+      this.promisedData = this.produceChartData();
+      this.setState({ ...this.state, openPlot: true });
+    };
+
     return (
       <div>
         <h2>Models to compare</h2>
@@ -105,10 +122,11 @@ export class Compare extends React.Component<CompareProps, CompareState> {
           </tbody>
         </Table>
         <Button color="primary" onClick={addDataTrace}>Add new</Button>&nbsp;&nbsp;
-        <Button color="primary" onClick={() => this.props.plotComparision(this.state.plannedPlot)}>Plot comparision</Button>
+        <Button color="primary" onClick={triggerPlot}>Plot comparision</Button>
         <br/>
         <br/>
         <UploadSection registerNewDataTrace={(str) => { }} />
+        {graphResults}
       </div>
     );
   }
