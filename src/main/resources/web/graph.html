@@ -21,10 +21,14 @@
 
 		addMeasureEffect: function(newMeasure) { },
 		deleteMeasureEffect: function(measureName) { },
-		updateMeasureEffect: function(updatedMeasure) { }
+		updateMeasureEffect: function(updatedMeasure) { },
 		//		var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
 		//			if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
 		//		}), (a) => ! _.isEmpty(a))
+
+
+    setVariables: function(nodeId,nodeLabel,props) { },
+    unsetVariables: function() { }
 	}
 
   var paletteCallbacks = {
@@ -184,23 +188,13 @@
 		render: {
 
 			localVars : function(id) {
-				var vs = $("#localVars")
-				vs.empty()
-				if (_.isNull(id)) {
-					vs.append("<p>Select a node to display its variables</p><h2>Global Variables:</h2>")
-					_.mapObject(global_vars, (v, k) => vs.append(
-						$("<div><label>"+k+'</label><input value="'+v+'" onblur=""></input></div>')
-					))
-					vs.append($("<button>").html("<strike>New</strike>").click((e) => UI.addGlobalVar() ))
-				} else {
-					var thisNode = node_data_set.get(id)
-					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">⇐ back to global variables</p><h2>' + getOrElse(thisNode.label, "(no_name)") + "</h2>")
-					var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
-					vs.append(_.map(vars, function(v){
-						return $("<div><label>"+v.name+'</label><input value="'+v.value+'" onblur="UI.propBlur({id: \''+id+'\'}, \''+v.name+'\', this.value)"></input></div>')
-					}))
-					vs.append($("<button>").html("<strike>New</strike>").click((e) => UI.addLocalVar() ))
-				}
+        if (!id) {
+          reactCallbacks.unsetVariables();
+        } else {
+          var thisNode = node_data_set.get(id)
+          var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
+          reactCallbacks.setVariables(id, thisNode.label, vars)
+        }
 			},
 
 			rewardVars : function() {
@@ -733,6 +727,13 @@
 			}
 		);
 
+    webReact.showVariables(
+      document.getElementById('localVars'),
+      function(nodeId, property) {
+			  UI.setProp(nodeId, property.name, property.value)
+      }
+    );
+
     webReact.attachButtonBar(
       document.getElementById('button_bar'),
 
@@ -755,5 +756,6 @@
       UI.render.iconRedraw,
       UI.clearNetwork
     );
+
 	</script>
 </body>

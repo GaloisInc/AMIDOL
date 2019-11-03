@@ -5,12 +5,13 @@ import { Palette, PaletteCallbacks } from "./components/Palette";
 import { ButtonBar } from "./components/ButtonBar";
 import { Journal } from "./components/ModelNavigation";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
+import { Variables, VariablesCallbacks, Property } from "./components/Variables";
 import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
 import { GraphResults } from "./components/GraphResults";
 import { refillSvg, svgColors } from "./utility/Svg.ts";
 import { TraceSum, Compare } from "./components/Compare";
 
-declare var reactCallbacks: MeasuresCallbacks;
+declare var reactCallbacks: MeasuresCallbacks & VariablesCallbacks;
 
 export function showMeasures(
   mountPoint: HTMLElement,
@@ -18,6 +19,19 @@ export function showMeasures(
 ) {
   ReactDOM.render(
     <Measures callbacks={reactCallbacks} setMeasure={setMeasure}/>,
+    mountPoint
+  );
+}
+
+export function showVariables(
+  mountPoint: HTMLElement,
+  setNodeProperty: (nodeId: string, property: Property) => void,
+) {
+  ReactDOM.render(
+    <Variables
+      variablesCallbacks={reactCallbacks}
+      updateNodeProperty={setNodeProperty}
+    />,
     mountPoint
   );
 }
