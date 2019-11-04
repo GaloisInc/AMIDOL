@@ -633,7 +633,7 @@
 	#exec_chooser {
 		margin: 22px 0px 22px 0px;
 	}
-	#paletteChooser, #paletteNew {
+	#paletteChooser {
 		margin: 1em 1.5em 0em 1.5em;
     margin-top: 1em;
 		float: left;
@@ -646,36 +646,10 @@
 		width: 25%;
 		border-color: green;
 		float: right;
-	}
-	#localVars {
-		width: 100%;
-		height: 45%;
 		outline: 1px solid gray;
 		overflow: scroll;
 		padding: 1em;
 		box-sizing: border-box;
-	}
-	#localVars p {
-		/*text-decoration: underline;*/
-	}
-	#rewardVars {
-		width: 100%;
-		height: 45%;
-		outline: 1px solid gray;
-		overflow: scroll;
-		padding: 1em;
-		box-sizing: border-box;
-	}
-	#rewardVars .rv_element:not(:last-child) {
-		border-bottom: 1px solid #000;
-		margin-bottom: 1em;
-	}
-	.range_param {
-		display: inline-block;
-		padding: 1em;
-	}
-	.opt2 {
-		margin: 0px;
 	}
 	h2 {
 		font-size: 1.75em;
@@ -699,22 +673,18 @@
 <body>
 	<div id="results" style="display: none;"></div>
 	<div id="palette">
-          <div id="paletteNew"></div>
-		<div id="paletteChooser" style="display: none">
-		</div>
+		<div id="paletteChooser"></div>
     <div id="button_bar" class="right"></div>
 		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
 		<input type="file" class="right" id="choose-julia-upload" name="files[]" style="display: none;" />
 	</div>
 	<div id="graph"></div>
-	<div id="variables" class="compensate-for-scrollbar">
-		<div id="localVars" class="compensate-for-scrollbar"></div>
-		<div id="rewardVars" class="compensate-for-scrollbar"></div>
+	<div id="variables">
 	</div>
 
 	<script type="text/javascript" src="webReact.js"></script>
 	<script type="text/javascript">
-		webReact.showMeasures(
+		/* webReact.showMeasures(
 			document.getElementById('rewardVars'),
 			function (measureName, oldMeasure, newMeasure) {
 				var event = {
@@ -732,7 +702,24 @@
       function(nodeId, property) {
 			  UI.setProp(nodeId, property.name, property.value)
       }
+    ); */
+
+    webReact.showRightTabs(
+      document.getElementById('variables'),
+      function (measureName, oldMeasure, newMeasure) {
+				var event = {
+					type: "setRewardVar",
+					key: measureName,
+					old: oldMeasure,
+					new: newMeasure
+				};
+				journal.apply( event )
+			},
+      function(nodeId, property) {
+			  UI.setProp(nodeId, property.name, property.value)
+      }
     );
+
 
     webReact.attachButtonBar(
       document.getElementById('button_bar'),
@@ -751,7 +738,7 @@
     );
 
     webReact.attachPalette(
-      document.getElementById('paletteNew'),
+      document.getElementById('paletteChooser'),
       paletteCallbacks,
       UI.render.iconRedraw,
       UI.clearNetwork

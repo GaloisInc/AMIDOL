@@ -20,8 +20,8 @@ export interface LocalVariables {
   properties?: Property[];
 }
 
-interface VariablesProps {
-  updateNodeProperty(nodeId: string, property: Property): void;
+export interface VariablesProps {
+  updateNodeProperty: (nodeId: string, property: Property) => void;
 
   variablesCallbacks: VariablesCallbacks;
 }
@@ -39,13 +39,13 @@ export class Variables extends React.Component<VariablesProps, LocalVariables> {
       };
     this.props.variablesCallbacks.unsetVariables =
       () => {
-        this.setState({ });
+        this.setState({ nodeId: undefined });
       };
   }
 
   render() {
     if (!this.state.nodeId || !this.state.properties || !this.state.nodeLabel) {
-      return null;
+      return <span>Select a node to see its parameters</span>;
     }
 
     return (

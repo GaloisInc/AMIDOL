@@ -39,7 +39,7 @@ export interface Range {
 
 export interface MeasuresProps {
   callbacks: MeasuresCallbacks;
-  setMeasure(name: string, oldP: MeasureProps, newP: MeasureProps): void; 
+  setMeasure: (name: string, oldP: MeasureProps, newP: MeasureProps) => void; 
 }
 
 export class Measures extends React.Component<MeasuresProps, MeasuresState> {
@@ -163,7 +163,6 @@ export class Measures extends React.Component<MeasuresProps, MeasuresState> {
   render() {
     return (
       <div>
-      <h2>Measures:</h2>
       <ListGroup flush>
       {
         this.state.measures.map((m) => (
