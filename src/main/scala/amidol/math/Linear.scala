@@ -35,6 +35,8 @@ object Linear {
       case Negate(e) => isConstant(e)
       case Inverse(e) => isConstant(e)
       case v: Variable => !equations.contains(v)
+      case Sin(e) => isConstant(e)
+      case Max(lhs, rhs) => isConstant(lhs) && isConstant(rhs)
       case _: Literal[Double] => true
     }
 

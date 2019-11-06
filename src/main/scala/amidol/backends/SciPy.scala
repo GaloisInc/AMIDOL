@@ -85,6 +85,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |import json
          |import numpy as np
          |import matplotlib.pyplot as plt
+         |from math import sin
          |
          |# This is so that we can call "json.dumps" on Numpy arrays
          |class NumpyEncoder(json.JSONEncoder):

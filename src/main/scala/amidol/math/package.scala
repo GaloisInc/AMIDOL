@@ -87,6 +87,17 @@ package object math {
     override def asConstant: Try[Literal[A]] = scala.util.Success(this)
   }
 
+  case class Sin(arg: Expr[Double]) extends Expr[Double] {
+    val precedence: Int = 10
+    def eval(vals: Map[Symbol, Double] = Map()) = Math.sin(arg.eval(vals))
+    def mapVariables(func: Variable => Expr[Double]) = Sin(arg.mapVariables(func))
+  }
+  case class Max(lhs: Expr[Double], rhs: Expr[Double]) extends Expr[Double] {
+    val precedence: Int = 10
+    def eval(vals: Map[Symbol, Double] = Map()) = Math.max(lhs.eval(vals), rhs.eval(vals))
+    def mapVariables(func: Variable => Expr[Double]) = Max(lhs.mapVariables(func), rhs.mapVariables(func))
+  }
+
   sealed trait ComparisionOp
   case object GT extends ComparisionOp
   case object EQ extends ComparisionOp
@@ -107,7 +118,10 @@ package object math {
       lazy val doubleAtom: PackratParser[Expr[Double]] =
         ( "-" ~> doubleAtom             ^^ { e => Negate(e) }
         | floatingPointNumber           ^^ { s => Literal(s.toDouble)  }
+        | "sin" ~> "(" ~> term <~ ")"   ^^ { a => Sin(a) }
+        | ("max" ~> "(" ~> term) ~ ("," ~> term <~ ")")   ^^ { case (l ~ r) => Max(l,r) }
         | raw"(?U)\p{L}[\p{L}\p{No}_]*".r     ^^ { v => Variable(Symbol(v))  }
+        | raw"`[^`]+`".r                ^^ { v => Variable(Symbol(v.tail.init)) }
         | "(" ~> term <~ ")"
         )
 
@@ -177,6 +191,8 @@ package object math {
         case x: Inverse         => Mult(Literal(1), x).prettyPrint(precedence)
         case Variable(s)        => s.name
         case Literal(d)         => d.toString
+        case Sin(x)             => wrap("sin(" + x.prettyPrint(0) + ")")
+        case Max(l,r)           => wrap("max(" + l.prettyPrint(0) + "," + r.prettyPrint(0) + ")")
       }
     }
 
@@ -192,6 +208,8 @@ package object math {
         case Inverse(l) => l.variables()
         case v: Variable => Set(v)
         case l: Literal[_] => Set.empty
+        case Sin(x) => x.variables()
+        case Max(l,r) => l.variables() ++ r.variables()
       }
     }
 
