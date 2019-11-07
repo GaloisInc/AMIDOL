@@ -13,7 +13,7 @@ import scala.util.Try
 case class OntologyAnnotation(
   itemType: ItemType,
   colorRange: ColorRange,
-  svgImageSrc: String,
+  svgImageSrc: String
 )
 object OntologyAnnotation extends DefaultJsonProtocol {
   implicit val verbFormat = jsonFormat2(ItemType.Verb.apply)
@@ -33,7 +33,10 @@ object OntologyAnnotation extends DefaultJsonProtocol {
 
   /** Go look on disk for an annotation with a given name */
   def getForName(name: String): Option[OntologyAnnotation] = Try({
-    val src = Source.fromResource(s"annotations/$name").getLines.mkString("\n")
+
+    val src = scala.io.Source.fromInputStream( getClass.getResourceAsStream(s"annotations/$name") ).getLines.mkString("\n")
+//    val src = Source.fromResource(s"annotations/$name").getLines.mkString("\n")
+
     src.parseJson.convertTo[OntologyAnnotation]
   }).toOption
 }
@@ -41,7 +44,7 @@ object OntologyAnnotation extends DefaultJsonProtocol {
 /** RGB color gradient range */
 case class ColorRange(
   start: Color,
-  end: Color,
+  end: Color
 ) {
   def sample(seed: Long): Color = {
     val s1: Double = (Math.abs(seed) % 76).toDouble / 76.0;
@@ -50,7 +53,7 @@ case class ColorRange(
     Color(
       ((end.hue - start.hue) * s1 + start.hue).toLong,
       ((end.saturation - start.saturation) * s2 + start.saturation).toLong,
-      ((end.luminosity - start.luminosity) * s2 + start.luminosity).toLong,
+      ((end.luminosity - start.luminosity) * s2 + start.luminosity).toLong
     )
   }
 }
@@ -59,7 +62,7 @@ case class ColorRange(
 case class Color(
   hue: Long,         // 0-255
   saturation: Long, // percentage
-  luminosity: Long, // percentage
+  luminosity: Long  // percentage
 ) {
   def render: String = s"hsl($hue, $saturation%, $luminosity%)"
 
@@ -108,19 +111,19 @@ case class Color(
   def +(other: Color) = Color(
     this.hue + other.hue,
     this.saturation + other.saturation,
-    this.luminosity + other.luminosity,
+    this.luminosity + other.luminosity
   )
 
   def -(other: Color) = Color(
     this.hue - other.hue,
     this.saturation - other.saturation,
-    this.luminosity - other.luminosity,
+    this.luminosity - other.luminosity
   )
 
   def *(scalar: Double) = Color(
     (this.hue * scalar).toLong,
     (this.saturation * scalar).toLong,
-    (this.luminosity * scalar).toLong,
+    (this.luminosity * scalar).toLong
   )
 }
 

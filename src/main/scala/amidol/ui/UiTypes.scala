@@ -97,13 +97,13 @@ object Node extends UiJsonSupport
 
 case class NodeProps (
   className: String,            // name of model in palette
-  parameters:  Seq[Parameter],
+  parameters:  Seq[Parameter]
 )
 object NodeProps extends UiJsonSupport
 
 case class Parameter(
   name: String,
-  value: math.Expr[Double],
+  value: math.Expr[Double]
 )
 object Parameter extends UiJsonSupport
 

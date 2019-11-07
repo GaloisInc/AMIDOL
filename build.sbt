@@ -2,8 +2,10 @@ import com.typesafe.sbt.web.SbtWeb
 import sbt.Keys._
 import sbt._
 
-ThisBuild / scalaVersion     := "2.12.8"
+ThisBuild / scalaVersion     := "2.11.12" //"2.12.8"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
+
+val neoV = "3.5.12"
 
 lazy val root = (project in file("."))
   .settings(
@@ -38,6 +40,10 @@ lazy val root = (project in file("."))
 
       // SQLite database access
       "org.xerial"             % "sqlite-jdbc"               % "3.28.0",
+
+      // Graph database backend
+      "org.neo4j"              % "neo4j-community"           % neoV,
+      "org.neo4j"              % "neo4j-cypher"              % neoV,
 
       // WebJars (javascript dependencies masquerading as JARs)
       "org.webjars"            % "webjars-locator"           % "0.36",

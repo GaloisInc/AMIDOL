@@ -45,7 +45,7 @@ object JuliaGillespie extends ContinuousInitialValue {
         val p = constantsIdx.get(v).map(idx => s"p[$idx]")
         val u = stateVariablesIdx.get(v).map(idx => s"u[$idx]")
         math.Variable(Symbol((p orElse u).get))
-      },
+      }
     )
 
     // Produce the rate and effect functions for a given event

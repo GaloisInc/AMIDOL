@@ -35,7 +35,7 @@ object OntologyDb {
 
   // The prepared statement is not allowed to leak out... don't let it!
   private def withPreparedStatement[A](sql: String)(
-    withPrepStmt: PreparedStatement => A,
+    withPrepStmt: PreparedStatement => A
   ): A = {
     val preparedStatement = connection.prepareStatement(sql)
     try { withPrepStmt(preparedStatement) } finally { preparedStatement.close() }
@@ -55,7 +55,7 @@ object OntologyDb {
     terms: Array[String],
     children: Array[Int],
     parents: Array[Int],
-    annotations: String,
+    annotations: String
   )
   object SnomedRecord {
     def readOffResultSet(rs: ResultSet): SnomedRecord = {
@@ -70,7 +70,7 @@ object OntologyDb {
         terms = rs.getString(3).safeSplit(';'),
         children = rs.getString(4).safeSplit(',').map(_.toInt),
         parents = rs.getString(5).safeSplit(',').map(_.toInt),
-        annotations = rs.getString(6),
+        annotations = rs.getString(6)
       )
     }
   }

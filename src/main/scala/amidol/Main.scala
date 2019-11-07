@@ -11,13 +11,12 @@ import akka.http.scaladsl.server.Route
 import org.webjars.WebJarAssetLocator
 import akka.stream.ActorMaterializer
 import amidol.backends._
+
 import scala.io.{Source, StdIn}
 import scala.util._
 import scala.collection.concurrent
 import scala.concurrent.duration._
-
 import spray.json._
-
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.ConcurrentHashMap
 import java.nio.file.Files
@@ -25,6 +24,8 @@ import java.nio.file.Paths
 
 import com.typesafe.config.ConfigFactory
 import java.io.File
+
+import org.neo4j.graphdb.factory.GraphDatabaseFactory
 
 object Main extends App with Directives {
 
@@ -47,7 +48,8 @@ object Main extends App with Directives {
           "predator", "prey", "hunting"
         )
         .map { name: String =>
-          val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
+//          val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
+          val modelSource = scala.io.Source.fromInputStream( getClass.getResourceAsStream(s"palette/$name.air") ).getLines.mkString("\n")
           name -> Try(modelSource.parseJson.convertTo[PaletteItem]).recoverWith {
             case err =>
               println(s"Failure in $name")
@@ -77,6 +79,14 @@ object Main extends App with Directives {
 
   // Set up the folder for temporary files
   Files.createDirectories(Paths.get("tmp_scripts"))
+
+
+  val filePath = "/Users/ryan/Desktop/amidol.db"
+  val neo4jFile: java.io.File = new java.io.File(filePath)
+  val graphService = new GraphDatabaseFactory().newEmbeddedDatabase(neo4jFile)
+  system.registerOnTermination(graphService.shutdown())
+
+
 
   private val webJarAssetLocator = new WebJarAssetLocator()
 
@@ -170,7 +180,7 @@ object Main extends App with Directives {
                 haltOnMatch = false,
                 limit = limitOpt.getOrElse(Long.MaxValue),
                 deadline = secondsOpt.fold(1.day)(_.seconds).fromNow,
-                createSearchDotImage = Some(tempSvg.getAbsolutePath()),
+                createSearchDotImage = Some(tempSvg.getAbsolutePath())
               )
               getFromFile(tempSvg)
           }

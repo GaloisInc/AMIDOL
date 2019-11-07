@@ -12,13 +12,13 @@ case class EventId(id: String) extends AnyVal
 case class Model(
   states: Map[StateId, State],
   events: Map[EventId, Event],
-  constants: Map[Variable, Double],
+  constants: Map[Variable, Double]
 ) {
 
   def ++(other: Model) = Model(
     states ++ other.states,
     events ++ other.events,
-    constants ++ other.constants,
+    constants ++ other.constants
   )
 
   def rename(renamer: Renamer[Variable, Variable]): Model = {
@@ -28,7 +28,7 @@ case class Model(
   def mapIds(
     stateIdFunc: StateId => StateId,
     eventIdFunc: EventId => EventId,
-    variableFunc: Variable => Variable,
+    variableFunc: Variable => Variable
   ): Model = {
     val newStates = states
       .map { case (sid, State(sv, desc, init)) =>
@@ -67,7 +67,7 @@ object Model extends ModelJsonSupport {
 
   def composeModels[K: Ordering](
     models: List[(K, Model)],                      // models to compose
-    shared: List[((K, StateId), (K, StateId))], // states shared amongst submodels
+    shared: List[((K, StateId), (K, StateId))]     // states shared amongst submodels
   ): Model = {
     val sharedMap = shared.toMap
 
@@ -95,14 +95,14 @@ object Model extends ModelJsonSupport {
 case class State(
   state_variable: Variable,
   description: Option[String],
-  initial_value: Expr[Double], 
+  initial_value: Expr[Double]
 )
 
 case class Event(
   rate: Expr[Double], // always exponential for now
   input_predicate: Option[InputPredicate] = None,
   output_predicate: OutputPredicate = OutputPredicate.empty,
-  description: Option[String] = None,
+  description: Option[String] = None
 )
 
 case class InputPredicate(
@@ -147,7 +147,7 @@ trait ModelJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   /// Better format for maps with string-like keys
   implicit def objectFormat[K, A](implicit
     format: JsonFormat[A],
-    key: StringLike[K],
+    key: StringLike[K]
   ) = new RootJsonFormat[Map[K, A]] {
     def read(json: JsValue) = json.asJsObject.fields.map {
       case (k,v) => key.fromString(k) -> format.read(v)
@@ -190,7 +190,7 @@ case class PaletteItem(
                                        //                       , <shared state for outgoing arrows> ]
   icon: String,
   color: Option[String],
-  backingModel: amidol.Model,   // parameters = backingModel.constants
+  backingModel: amidol.Model           // parameters = backingModel.constants
 )
 object PaletteItem extends ModelJsonSupport
 

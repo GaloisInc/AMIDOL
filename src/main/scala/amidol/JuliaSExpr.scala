@@ -46,7 +46,7 @@ case class JuliaExtractException(
   override def toString = List(
     "JuliaExtractException:",
     "  expected a " + expected,
-    "  but instead got " + got,
+    "  but instead got " + got
   ).mkString
 }
 
@@ -151,7 +151,7 @@ trait ExtractOps { expr: JuliaSExpr =>
           constants = parsedParams.map { p =>
             val v = math.Variable(Symbol(p))
             v -> initials(v).asConstant.get.d
-          }.toMap,
+          }.toMap
         )
 
     case _ => throw new JuliaExtractException(
@@ -192,7 +192,7 @@ trait ExtractOps { expr: JuliaSExpr =>
             Left(id -> State(
               state_variable = math.Variable(Symbol(name)),
               description = Some(description),
-              initial_value = 0.0,
+              initial_value = 0.0
             ))
           case "Verb" =>
             val id = EventId(name)
@@ -287,34 +287,34 @@ trait ExtractOps { expr: JuliaSExpr =>
   def extractMathExpr(): math.Expr[Double] = expr match {
     case SNested(SAtom("call") :: SAtom("*") :: arg0 :: args) =>
       args.foldLeft(
-        arg0.extractMathExpr(),
+        arg0.extractMathExpr()
       )((acc, arg) =>
         math.Mult(
           acc,
-          arg.extractMathExpr(),
+          arg.extractMathExpr()
         )
       )
 
     case SNested(SAtom("call") :: SAtom("+") :: arg0 :: args) =>
       args.foldLeft(
-        arg0.extractMathExpr(),
+        arg0.extractMathExpr()
       )((acc, arg) =>
         math.Plus(
           acc,
-          arg.extractMathExpr(),
+          arg.extractMathExpr()
         )
       )
 
     case SNested(List(SAtom("call"), SAtom("/"), lhs, rhs)) =>
       math.Mult(
         lhs.extractMathExpr(),
-        math.Inverse(rhs.extractMathExpr()),
+        math.Inverse(rhs.extractMathExpr())
       )
 
     case SNested(List(SAtom("call"), SAtom("-"), lhs, rhs)) =>
       math.Plus(
         lhs.extractMathExpr(),
-        math.Negate(rhs.extractMathExpr()),
+        math.Negate(rhs.extractMathExpr())
       )
 
     case SAtom(a) => math.Variable(Symbol(a))
@@ -329,26 +329,26 @@ trait ExtractOps { expr: JuliaSExpr =>
       math.Comparision(
         lhs.extractMathExpr(),
         math.GT,
-        rhs.extractMathExpr(),
+        rhs.extractMathExpr()
       )
 
     case SNested(SAtom("&&") :: arg0 :: args) =>
       args.foldLeft(
-        arg0.extractPredicate(),
+        arg0.extractPredicate()
       )((acc, arg) =>
         math.And(
           acc,
-          arg.extractPredicate(),
+          arg.extractPredicate()
         )
       )
 
     case SNested(SAtom("||") :: arg0 :: args) =>
       args.foldLeft(
-        arg0.extractPredicate(),
+        arg0.extractPredicate()
       )((acc, arg) =>
         math.Or(
           acc,
-          arg.extractPredicate(),
+          arg.extractPredicate()
         )
       )
 

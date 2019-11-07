@@ -14,7 +14,7 @@ object JuliaExtract {
 
   def extractFromSource(
     juliaSource: String,
-    name: String,
+    name: String
   ): Try[(ui.Graph, Map[String, PaletteItem])] = Try {
 
     println("Extracting Julia model...")
@@ -58,7 +58,7 @@ object JuliaExtract {
 
     def ontologySearch(
       description: Option[String],
-      predicate: OntologyAnnotation => Boolean,
+      predicate: OntologyAnnotation => Boolean
     ): Option[(Color, String)] = {
       description.flatMap { desc: String =>
         OntologyDb
@@ -81,7 +81,7 @@ object JuliaExtract {
     val paletteItemsNouns = model.states.map { case (sid, st) =>
       val groundingOpt = ontologySearch(
         st.description,
-        _.itemType == ItemType.Noun,
+        _.itemType == ItemType.Noun
       )
 
       sid -> PaletteItem(
@@ -95,7 +95,7 @@ object JuliaExtract {
             initial_value = math.Variable('Initial)
           )),
           events = Map.empty,
-          constants = Map(math.Variable('Initial) -> st.initial_value.asConstant.get.d),
+          constants = Map(math.Variable('Initial) -> st.initial_value.asConstant.get.d)
         )
       )
     }
@@ -109,7 +109,7 @@ object JuliaExtract {
 
       val groundingOpt = ontologySearch(
         ev.description,
-        _.itemType == ItemType.Verb(1,1),
+        _.itemType == ItemType.Verb(1,1)
       )
 
       val (in, out) = ev.output_predicate.transition_function.toList match {
@@ -132,10 +132,10 @@ object JuliaExtract {
         backingModel = Model(
           states = Map(
             in -> model.states(in),
-            out -> model.states(out),
+            out -> model.states(out)
           ),
           events = Map(eid -> ev),
-          constants = model.constants.filterKeys(variablesUsed.contains(_)),
+          constants = model.constants.filterKeys(variablesUsed.contains)
         )
       )
     }
@@ -153,7 +153,7 @@ object JuliaExtract {
             className = pi.className,
             parameters = pi.backingModel.constants.toSeq.map { case (v,d) =>
               ui.Parameter(v.prettyPrint(), d)
-            },
+            }
           ),
           x = Random.nextLong() % 100,
           y = Random.nextLong() % 100
@@ -166,12 +166,12 @@ object JuliaExtract {
           id1 -> ui.Link(
             id = id1,
             from = pi.sharedStates(0).id,
-            to = eid.id,
+            to = eid.id
           ),
           id2 -> ui.Link(
             id = id2,
             from = eid.id,
-            to = pi.sharedStates(1).id,
+            to = pi.sharedStates(1).id
           )
         )
       }.toMap
