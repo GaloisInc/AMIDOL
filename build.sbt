@@ -2,7 +2,7 @@ import com.typesafe.sbt.web.SbtWeb
 import sbt.Keys._
 import sbt._
 
-ThisBuild / scalaVersion     := "2.12.8"
+ThisBuild / scalaVersion     := "2.13.1"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
 
 lazy val root = (project in file("."))
@@ -25,16 +25,16 @@ lazy val root = (project in file("."))
 
     libraryDependencies ++= Seq(
       // Akka web stack
-      "com.typesafe.akka"      %% "akka-actor"               % "2.5.19",
-      "com.typesafe.akka"      %% "akka-stream"              % "2.5.19",
-      "com.typesafe.akka"      %% "akka-http"                % "10.1.7",
-      "com.typesafe.akka"      %% "akka-http-spray-json"     % "10.1.7",
+      "com.typesafe.akka"      %% "akka-actor"               % "2.5.23",
+      "com.typesafe.akka"      %% "akka-stream"              % "2.5.23",
+      "com.typesafe.akka"      %% "akka-http"                % "10.1.8",
+      "com.typesafe.akka"      %% "akka-http-spray-json"     % "10.1.8",
 
       // Configuration
       "com.typesafe"           % "config"                    % "1.3.1",
 
       // Parsing
-      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1",
+      "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
 
       // SQLite database access
       "org.xerial"             % "sqlite-jdbc"               % "3.28.0",
@@ -50,7 +50,7 @@ lazy val root = (project in file("."))
 
 
       // Testing
-      "org.scalatest"          %% "scalatest"                % "3.0.5" % Test,
+      "org.scalatest"          %% "scalatest"                % "3.0.8" % Test,
     ),
   )
   .enablePlugins(SbtWeb)
