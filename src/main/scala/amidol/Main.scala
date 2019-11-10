@@ -56,7 +56,7 @@ object Main extends App with Directives {
         }
         .toMap
 
-    val dataTraces: concurrent.Map[String, (Vector[Double], Vector[Double])] = {
+    val dataTraces: concurrent.Map[String, math.Trace] = {
       import scala.collection.JavaConverters._
       new ConcurrentHashMap().asScala
     }
@@ -232,7 +232,7 @@ object Main extends App with Directives {
             formField('name.as[String], 'time.as[Vector[Double]], 'data.as[Vector[Double]]) {
               case (name: String, time: Vector[Double], trace: Vector[Double]) =>
                 complete {
-                  appState.dataTraces += (name -> (time, trace))
+                  appState.dataTraces += (name -> math.SampledTrace(time, trace))
                   StatusCodes.Created -> s"Data trace has been added"
                 }
             }
@@ -250,7 +250,7 @@ object Main extends App with Directives {
               complete {
                 StatusCodes.OK -> names
                   .map { name => (name, appState.dataTraces.get(name)) }
-                  .collect { case (name, Some((label, series))) => (name, label, series) }
+                  .collect { case (name, Some(math.SampledTrace(label, series))) => (name, label, series) }
               }
             }
           } ~
@@ -258,6 +258,16 @@ object Main extends App with Directives {
             formField('limit.as[Long]) { case limit: Long =>
               complete {
                 StatusCodes.OK -> appState.dataTraces.keys.take(limit.toInt) // limit.fold(Int.MaxValue)(_.toInt))
+              }
+            }
+          } ~
+          path("eval") {
+            formField("query".as[String]) { case query: String => 
+              complete {
+                math.Trace(query, appState.dataTraces.toMap).map {
+                  case math.SampledTrace(xs,ys) => (xs,ys)
+                  case math.PureFunc(_) => ???
+                }
               }
             }
           }

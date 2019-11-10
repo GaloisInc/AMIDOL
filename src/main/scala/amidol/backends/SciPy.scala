@@ -129,7 +129,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
       val traces = origStateVarsStr zip nestedArrs
       val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
       appState.dataTraces ++= traces.map { case (traceName, traceData) =>
-        s"${date}_${traceName}_scipy_${requestId}" -> (timeRange, traceData)
+        s"${date}_${traceName}_scipy_${requestId}" -> math.SampledTrace(timeRange, traceData)
       }
       Outputs(
         variables = traces.toMap,
