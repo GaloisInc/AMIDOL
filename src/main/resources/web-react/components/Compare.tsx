@@ -44,16 +44,17 @@ export class Compare extends React.Component<{}, CompareState> {
   produceChartData(): Promise<any[]> {
     return Promise.all(this.state.plannedPlot.map(dataTrace => {
       const data = new URLSearchParams();
-      data.append("names", JSON.stringify(dataTrace.traces));
-      return fetch("/appstate/data-traces/get", { method: 'POST', body: data })
+      data.append("query", dataTrace.traces.map(x => '`' + x + '`').join("+"));
+      return fetch("/appstate/data-traces/eval", { method: 'POST', body: data })
         .then(resp => resp.json())
         .then(resp => {
-          const summed = resp
-            .map(e => ({ x: e[1] as number[], y: e[2] as number[] }))
-            .reduce(addTraces, { x: [], y: [] });
-          summed.mode = 'lines+markers';
-          summed.name = dataTrace.key;
-          return summed;
+          console.log(resp);
+          return {
+            x: resp[0],
+            y: resp[1],
+            mode: 'lines+markers',
+            name: dataTrace.key
+          };
         });
     }));
   }
