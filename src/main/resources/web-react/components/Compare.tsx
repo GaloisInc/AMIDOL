@@ -2,7 +2,8 @@ import * as React from "react";
 import {
   Button, Input, Col, Form, FormGroup, Label, Row,
   ListGroup, ListGroupItem, ListGroupItemHeading, Table,
-  TabPane, TabContent
+  TabPane, TabContent, Popover, PopoverHeader, PopoverBody,
+  InputGroup, InputGroupAddon,
 } from 'reactstrap';
 import { addTraces } from '../utility/Traces.ts';
 import { GraphResults } from './GraphResults';
@@ -262,10 +263,15 @@ export class DataRow extends React.Component<DataRowProps, {}> {
      )
      : (
        <td>
-         <Input
-           onChange={(e) => updateEquation(e.target.value)}
-           value={this.props.plannedTrace.equation}
-         />
+         <InputGroup>
+           <Input
+             onChange={(e) => updateEquation(e.target.value)}
+             value={this.props.plannedTrace.equation}
+           />
+           <InputGroupAddon addonType="append">
+             <HelpPopover/>
+           </InputGroupAddon>
+         </InputGroup>
        </td>
      );
 
@@ -371,6 +377,70 @@ export class UploadSection extends React.Component<UploadProps, UploadState> {
           color="primary"
           onClick={newDataTrace}
         >Upload series</Button>
+      </div>
+    );
+  }
+
+}
+
+
+export class HelpPopover extends React.Component<{}, { isOpen: boolean }> {
+
+  constructor(props) {
+    super(props);
+    this.state = { isOpen: false };
+  }
+
+  render() {
+
+    const toggle = () => this.setState({ isOpen: !this.state.isOpen });
+
+    return (
+      <div>
+        <Button id="OpenHelp">Help</Button>
+        <Popover placement="bottom" isOpen={this.state.isOpen} target="OpenHelp" toggle={toggle}>
+          <PopoverHeader>Advanced equation editor</PopoverHeader>
+          <PopoverBody>
+            This equation editor lets you combine and manipulate data
+            traces in more interesting ways, although you must manually write
+            these equations out. For example:<br/><br/>
+
+            <code>
+            `trace 1` + shift(2 * `trace 2`, 35.0)
+            </code><br/><br/>
+
+            <ul>
+              <li>
+                Traces are referred to by their names, although names including
+                special characters (such as spaces or dashes) need to be
+                enclosed in backquotes. For example, <code>x</code> or
+                <code>`my trace`</code>
+              </li>
+
+              <li>
+                Ordinary arithmetic operations <code>+</code>, <code>-</code>,
+                <code>*</code>, and <code>/</code> combine two traces by
+                applying the operation at every time point
+              </li>
+
+              <li>
+                Number literals such as <code>2</code>, <code>1.3e2</code>, or
+                <code>-3.14159</code> represent traces with that constant
+                numeric value everywhere on their domain
+              </li>
+
+              <li>
+                There are a handful of special functions that can be used to
+                create special traces
+                <ul>
+                  <li><code>time()</code> produces an identity trace (eg. <code>f(t) = t</code>)</li>
+                  <li><code>shift(trace, 2.0)</code> shifts <code>trace</code> to the right by <code>2.0</code></li>
+                  <li><code>sin(trace)</code> applies the <code>sin</code> function to each value of <code>trace</code></li>
+                </ul>
+              </li>
+            </ul>
+          </PopoverBody>
+        </Popover>
       </div>
     );
   }
