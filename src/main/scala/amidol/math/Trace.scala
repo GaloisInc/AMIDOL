@@ -48,7 +48,7 @@ object Trace extends AmidolParser with SprayJsonSupport with DefaultJsonProtocol
     lazy val atom: PackratParser[Trace] =
       ( "-" ~> atom                        ^^ { t => t.mapValues(x => -x) }
       | "time()"                           ^^ { _ => PureFunc(identity) }
-      | "sin(" ~> term <~ ")"              ^^ { _ => PureFunc(math.sin) }
+      | "sin(" ~> term <~ ")"              ^^ { t => t.mapValues(math.sin) }
       | "shift(" ~> term ~ "," ~ floatingPointNumber <~ ")"
                                            ^^ { case (l ~ _ ~ s) => l.mapDomain(_ - s.toDouble) }
       | floatingPointNumber                ^^ { s => PureFunc(_ => s.toDouble)  }

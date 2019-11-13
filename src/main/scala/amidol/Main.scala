@@ -264,10 +264,14 @@ object Main extends App with Directives {
           path("eval") {
             formField("query".as[String]) { case query: String => 
               complete {
-                math.Trace(query, appState.dataTraces.toMap).map {
-                  case math.SampledTrace(xs,ys) => (xs,ys)
-                  case math.PureFunc(_) => ???
-                }
+                math.Trace(query, appState.dataTraces.toMap)
+                  .map {
+                    case s: math.SampledTrace => s
+                    case p: math.PureFunc => p.sampleAt(collection.immutable.Range(0, 100, 1).toVector.map(_.toDouble))
+                  }
+                  .map {
+                    case math.SampledTrace(xs,ys) => (xs,ys)
+                  }
               }
             }
           }
