@@ -16,6 +16,7 @@ interface GraphResultsProps {
 interface GraphResultsState {
   isOpen: boolean;
   datas?: any[];
+  error?: any;
 }
 
 export class GraphResults extends React.Component<GraphResultsProps, GraphResultsState> {
@@ -28,7 +29,9 @@ export class GraphResults extends React.Component<GraphResultsProps, GraphResult
     };
     this.toggle = this.toggle.bind(this);
 
-    this.props.datasPromise.then(datas => this.setState({ ...this.state, datas }));
+    this.props.datasPromise
+      .then(datas => this.setState({ ...this.state, datas }))
+      .catch(error => this.setState({ ...this.state, error }));
   }
 
   toggle() {
@@ -64,7 +67,13 @@ export class GraphResults extends React.Component<GraphResultsProps, GraphResult
           }}
 		      useResizeHandler
         />
-      )
+      );
+    } else if (this.state.error) {
+      modalBody = (
+        <div style={{color: "red"}}>
+          Error: {this.state.error.toString()}
+        </div>
+      );
     } else {
       modalBody = (
         <div style={{display: 'flex', justifyContent: 'center'}}>
