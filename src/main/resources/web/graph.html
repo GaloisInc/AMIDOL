@@ -6,18 +6,8 @@
 	<script type="text/javascript" src="underscore-min.js"></script>
 	<link rel="stylesheet" href="vis.min.css" type="text/css" />
 	<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="ionicons.min.css" type="text/css" />
 
-	<script type="text/javascript" src="jquery.fancybox.min.js"></script>
-	<link rel="stylesheet" href="jquery.fancybox.min.css" type="text/css" />
-
-	<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-
-	<link rel="stylesheet" href="normalize.css">
-	<link rel="stylesheet" href="skeleton.css">
-
-	<link rel="stylesheet" href="chartist.min.css" type="text/css" />
-	<script type="text/javascript" src="chartist.min.js"></script>
-	<script type="text/javascript" src="chartist-plugin-axistitle.min.js"></script>
 	<script type="text/javascript" src="svg.js"></script>
 
 <script type="text/javascript">
@@ -31,11 +21,24 @@
 
 		addMeasureEffect: function(newMeasure) { },
 		deleteMeasureEffect: function(measureName) { },
-		updateMeasureEffect: function(updatedMeasure) { }
+		updateMeasureEffect: function(updatedMeasure) { },
 		//		var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
 		//			if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
 		//		}), (a) => ! _.isEmpty(a))
+
+
+    setVariables: function(nodeId,nodeLabel,props) { },
+    unsetVariables: function() { }
 	}
+
+  var paletteCallbacks = {
+    setChosenPalette: function(paletteName) { },
+    getChosenPalette: function() { },
+    addPaletteGroup: function(paletteName, items, onComplete) { },
+    getPaletteItem: function(itemName) { },
+    getSelectedPaletteItemName: function() { },
+    setSelectedPaletteItemName: function(name) { }
+  }
 
 	var node_data_set, edge_data_set, network;
 	var global_vars = { Example : 0 };
@@ -69,30 +72,6 @@
 	var journal = {
 		past : [],
 		future : [],
-
-		// `apply`, `undo`, and `redo` manage the journals _and_ trigger effects through applyEventEffects
-		apply: function(event) {
-			this.past.push(event)
-			this.future = []
-			this.applyEventEffects(event)
-		},
-
-		undo : function() {
-			if (this.past.length > 0) {
-				var journal_event = this.past.pop()
-				this.future.unshift(journal_event)
-				this.applyEventEffects(this.invertEvent(journal_event))
-			}
-		},
-
-		redo : function() {
-			if (this.future.length > 0) {
-				var journal_event = this.future.shift()
-				this.past.push(journal_event)
-				this.applyEventEffects(journal_event)
-			}
-		},
-
 
 		// Purpose: cause UI side effects... and nothing else.
 		// Always call last, after setting the relevant shared states.
@@ -152,7 +131,6 @@
 					console.log("Unknown event in applyEventEffects: " + JSON.stringify(event))
 					break
 			}
-			UI.updateButtonStates()
 		},
 
 		invertEvent : function(initial_event) {
@@ -207,100 +185,30 @@
 
 	var UI = {
 
-		changeBackend: function(elem) {
-			chosen_backend = $(elem).val()
-		},
-
 		render: {
 
-			palette : function(items) {
-				// Redraw dropdown
-				$("#paletteChooser select option").remove();
-				$("#paletteChooser select").append(
-					_.map(_.keys(availablePalettes), function(k) { return $("<option>").html(k); })
-				);
-				$("#paletteChooser select").val(chosenPalette);
-
-				// Redraw actual palette
-				$("#palette .paletteItem").remove()
-				$("#palette")
-					.append(_.map(items, function(item){
-						var p = paletteItems[item]
-						return $("<img />")
-							.attr({src: p.image, classname: p.className})
-							.attr("onclick", "UI.selectPaletteNode(this)")
-							.attr("ondblclick", "UI.paletteEditor('" + item + "')")
-							.addClass("paletteItem")
-							.addClass(p.type)
-					}))
-				if ($(".selected").length == 0) { $(".paletteItem").first().addClass("selected") }
-			},
-
 			localVars : function(id) {
-				var vs = $("#localVars")
-				vs.empty()
-				if (_.isNull(id)) {
-					vs.append("<p>Select a node to display its variables</p><h2>Global Variables:</h2>")
-					_.mapObject(global_vars, (v, k) => vs.append(
-						$("<div><label>"+k+'</label><input value="'+v+'" onblur=""></input></div>')
-					))
-					vs.append($("<button>").html("<strike>New</strike>").click((e) => UI.addGlobalVar() ))
-				} else {
-					var thisNode = node_data_set.get(id)
-					vs.append('<p onclick="network.selectNodes([]);UI.render.localVars(null)">⇐ back to global variables</p><h2>' + getOrElse(thisNode.label, "(no_name)") + "</h2>")
-					var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
-					vs.append(_.map(vars, function(v){
-						return $("<div><label>"+v.name+'</label><input value="'+v.value+'" onblur="UI.propBlur({id: \''+id+'\'}, \''+v.name+'\', this.value)"></input></div>')
-					}))
-					vs.append($("<button>").html("<strike>New</strike>").click((e) => UI.addLocalVar() ))
-				}
+        if (!id) {
+          reactCallbacks.unsetVariables();
+        } else {
+          var thisNode = node_data_set.get(id)
+          var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
+          reactCallbacks.setVariables(id, thisNode.label, vars)
+        }
 			},
 
 			rewardVars : function() {
 				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
-					if (get(paletteItems, [n.props.className, 'type']) == "noun") { return { id: n.id, label: n.label } } else { {} }
+          var item = paletteCallbacks.getPaletteItem(n.props.className);
+					if (item && item['type'] && item['type'] == 'noun') { return { id: n.id, label: n.label } } else { {} }
 				}), (a) => ! _.isEmpty(a))
 				reactCallbacks.updateMeasureNouns(nodeNames)
-			},
-
-			fancyCharts : function(chartsData) {
-				$.fancybox.destroy()
-				var chartIdPrefix = "chart-"
-				var charts = _.map(chartsData, function(i, idx) {
-					return $("<div>").attr({id: chartIdPrefix + idx, class: "resultChart"})
-				})
-				$("#results").append(charts)
-				$.fancybox.open(charts, {
-					helpers : {
-						title : { type : 'inside' }
-					},
-					loop : true,
-					afterClose: function() { $("#results").empty() },
-					beforeShow: function() {
-						// Creating the Chartist objects are in the `beforeShow` function because they were not rendering properly when fancybox changed slides. (all elements in the graph were rendered at a single point)
-						_.map(chartsData, function(singleChartData, idx){
-							var pluginOpts = {
-								chartPadding: { top: 20, right: 0, bottom: 20, left: 0 },
-								plugins: [ Chartist.plugins.ctAxisTitle({
-									axisX: {
-										axisTitle: singleChartData.title,
-										axisClass: "ct-axis-title",
-										offset: { x: 0, y: 40 },
-										textAnchor: "middle"
-									},
-									axisY: {}
-								})]
-							}
-							new Chartist.Line("#" + chartIdPrefix + idx, singleChartData, pluginOpts)
-						})
-					}
-				})
 			},
 
 			iconRedraw : function() {
 				_.forEach(node_data_set.getIds(), function(id) {
 					var className = node_data_set.get(id).props.className
-					node_data_set.update({ id: id, image: paletteItems[className].image })
+					node_data_set.update({ id: id, image: paletteCallbacks.getPaletteItem(className).image })
 				})
 			},
 
@@ -322,8 +230,9 @@
 							node.label = prompt("Name your new node:")
 							var isUnused = _.find(node_data_set.get(), (n) => n.label == node.label) === undefined
 							if (node.label != null && isUnused) {
-								node.image = $("#palette img.selected").attr("src")
-								var className = $("#palette img.selected").attr("classname")
+								var className = paletteCallbacks.getSelectedPaletteItemName();
+								var theItem = paletteCallbacks.getPaletteItem(className);
+								node.image = theItem.image;
 								var node = UI.makeNode(node, className)
 								journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
 							} else {
@@ -334,8 +243,8 @@
 							// edge.label = prompt("Edge label:")
 							var fromClass = get(node_data_set.get(edge.from), ['props', 'className'])
 							var toClass = get(node_data_set.get(edge.to), ['props', 'className'])
-							var fromType = fromClass && get(paletteItems, [fromClass, 'type'])
-							var toType = toClass && get(paletteItems, [toClass, 'type'])
+							var fromType = fromClass && get(paletteCallbacks.getPaletteItem(fromClass), ['type'])
+							var toType = toClass && get(paletteCallbacks.getPaletteItem(toClass), ['type'])
 							if (fromType !== toType) {
 								journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
 							} else {
@@ -395,8 +304,7 @@
 				network.on("selectNode", function(data){
 					if (data.nodes.length == 1) {
 						UI.render.localVars(data.nodes[0])
-						$("#palette img.selected").removeClass("selected");
-						$("#palette img[classname='" + node_data_set.get(data.nodes[0]).props.className + "']").addClass("selected");
+            paletteCallbacks.setSelectedPaletteItemName(node_data_set.get(data.nodes[0]).props.className);
 					}
 				})
 				network.on("deselectNode", function(data){
@@ -425,49 +333,6 @@
 			}
 		},
 
-		paletteEditor: function(toEditName) {
-			webReact.showEditNodeDialog(
-				document.getElementById("paletteEditor"),
-				function (name, paletteElement, then) {
-
-					refillSvg(paletteElement.icon, paletteElement.color).done(function(image) {
-						// Set the palette element
-						paletteElement.image = image;
-						$.post("/appstate/palette/put", { name: name, palette: JSON.stringify(paletteElement) })
-							.fail(function (err) {
-								alert("Failed to register new palette element.\n\n(" + err.responseText + ")");
-							})
-							.done(function () {
-
-								 // Detect new!
-								 if (!paletteItems[name]) {
-									 availablePalettes[chosenPalette].push(name)
-								 }
-								 paletteItems[name] = paletteElement
-
-								 // Re-render and clean up
-								 UI.render.palette(availablePalettes[chosenPalette])
-								 UI.render.iconRedraw()
-								 then()
-							})
-					})
-				},
-				function (name, then) {
-					$.post("/appstate/palette/remove", { name: name })
-						.done(palette.update(function () {
-
-							// Re-render and clean up
-							UI.render.palette(availablePalettes[chosenPalette])
-							UI.render.iconRedraw()
-							then()
-						}))
-				},
-				paletteItems,
-				availablePalettes[chosenPalette],
-				toEditName
-			);
-		},
-
 		// Remove all nodes in the network drawn (but they are still accessible through history)
 		clearNetwork : function(reason) {
 			if (_.isEmpty(node_data_set.get()) || confirm(reason)) {
@@ -479,12 +344,6 @@
 			}
 		},
 
-		choosePalette: function(elem) {
-			chosenPalette = $(elem).val()
-			if (UI.clearNetwork("Changing palettes will clear the drawing canvas.")) {
-				UI.render.palette(availablePalettes[chosenPalette])
-			}
-		},
 
 		makeNode : function(node, className) {
 			if ( ! node.hasOwnProperty("id")) {
@@ -496,7 +355,7 @@
 				}
 				node.id = randomUuid()
 			}
-			var paletteItem = paletteItems[className]
+			var paletteItem = paletteCallbacks.getPaletteItem(className)
 			var parameters = _.map(_.pairs(paletteItem.backingModel.constants), function(e) {
 				return {
 					name: e[0],
@@ -545,16 +404,6 @@
 		},
 
 		updateButtonStates : function() {
-			if (_.isEmpty(journal.past)) {
-				$("#undo_button").addClass("disabled")
-			} else {
-				$("#undo_button").removeClass("disabled")
-			}
-			if (_.isEmpty(journal.future)) {
-				$("#redo_button").addClass("disabled")
-			} else {
-				$("#redo_button").removeClass("disabled")
-			}
 			var selectedNodes = network.getSelectedNodes()
 			if (selectedNodes.length == 1) {
 				UI.render.localVars(selectedNodes[0])
@@ -580,7 +429,7 @@
 				journal: journal.past,
 				reward_vars: reward_vars,
 				global_vars: global_vars,
-				chosen_palette: chosenPalette,
+				chosen_palette: paletteCallbacks.getChosenPalette(),
 			}
 			var blob = new Blob([JSON.stringify(data)], {type: "application/json"})
 			var a = document.createElement('a')
@@ -606,13 +455,11 @@
 						global_vars = data.global_vars;
 						reward_vars = data.reward_vars;
 						reactCallbacks.setMeasures(data.reward_vars);
-						chosenPalette = data.chosen_palette;
+						paletteCallbacks.setChosenPalette(data.chosen_palette);
 						UI.updateButtonStates()
 					}
 					reader.onloadend = function(e) {
-						do { $("#redo_button").click() }
-						while ( ! $("#redo_button").hasClass("disabled"))
-						UI.render.palette(availablePalettes[chosenPalette])
+            journal.redoAll();
 						UI.render.rewardVars()
 						UI.render.localVars()
 						UI.render.iconRedraw()
@@ -643,25 +490,25 @@
 									}),
 									edges: links
 								});
-								availablePalettes["julia_model"] = _.map(nodes, function (n) {
-									return n.props.className;
-								});
-								chosenPalette = "julia_model";
-								global_vars = []
-								reward_vars = []
-								reactCallbacks.setMeasures([]);
-								palette.update(function () {
-									$("#redo_button").click()
-									UI.updateButtonStates()
-									UI.render.rewardVars()
-									UI.render.localVars()
-									UI.render.iconRedraw()
-									UI.render.palette(availablePalettes[chosenPalette])
-									network.setOptions({ physics: true })
-									setTimeout(function() {
-										network.setOptions({ physics: false })
-									}, 1000)
-								})
+                paletteCallbacks.addPaletteGroup(
+                  "julia_model",
+                  _.map(nodes, function (n) { return n.props.className; }),
+                  function () {
+                    paletteCallbacks.setChosenPalette("julia_model");
+    								global_vars = []
+    								reward_vars = []
+    								reactCallbacks.setMeasures([]);
+                    journal.redoAll()
+    								UI.updateButtonStates()
+    								UI.render.rewardVars()
+    								UI.render.localVars()
+    								UI.render.iconRedraw()
+    								network.setOptions({ physics: true })
+    								setTimeout(function() {
+    									network.setOptions({ physics: false })
+    								}, 1000)
+                  }
+                );
 							})
 							.catch(function (err) {
 								alert(err.responseText);
@@ -674,58 +521,38 @@
 
 	var IR = {
 
-		chartCount: 0,
-		chartDataAcc: [],
-
 		submit : function(){
 			if (_.isEmpty(reward_vars) || !_.isEmpty(_.find(reward_vars, (rv) => rv.nounId == ""))) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
 
-			$.fancybox.open($("<img>").attr({src: "images/spinner.gif"}))
+      var measures = _.map(reward_vars, function(rv) {
+				var simParams = {
+					initialTime: parseFloat(rv.range.start),
+					finalTime: parseFloat(rv.range.end),
+					stepSize: parseFloat(rv.range.step),
+					savePlot: null
+        };
+        if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
+					alert("Sampling the range you defined will require more memory than this system can spare right now.")
+					return false;
+        }
+        return {
+          name: rv.name,
+          label: node_data_set.get(rv.nounId).label,
+          simParams: simParams
+        }
+      });
 
 			IR.submitGraph(function(data, status, jqXHR) {
-				IR.chartCount = reward_vars.length
-				IR.chartDataAcc = []
-
-				_.map(reward_vars, function(rv) {
-					var simParams = {
-						"initialTime": parseFloat(rv.range.start),
-						"finalTime": parseFloat(rv.range.end),
-						"stepSize": parseFloat(rv.range.step),
-						"savePlot": null
-					}
-					if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
-						alert("Sampling the range you defined will require more memory than this system can spare right now.")
-						$.fancybox.destroy()
-						return false
-					}
-					IR.execute.backend.integrate(simParams, function(data, status, jqXHR) {
-						IR.chartDataAcc.push({
-							title: rv.name,
-							labels: data.times,
-							series: [
-								data.variables[node_data_set.get(rv.nounId).label]
-							]
-						})
-						if (IR.chartCount == IR.chartDataAcc.length){
-							UI.render.fancyCharts( IR.chartDataAcc )
-							IR.chartDataAcc = []
-							IR.chartCount = 0
-						}
-					})
-				})
-			})
+        webReact.showGraphResults(
+          document.getElementById("results"),
+          chosen_backend,
+          measures
+        )
+      })
 		},
 
 		submitGraph : function(onSuccessFunc){
 			$.post("/appstate/uiModel", IR.getData(), onSuccessFunc)
-		},
-
-		execute : {
-			backend : {
-				integrate : function(simParams, onSuccessFunc) {
-					$.postJSON("/backends/"+chosen_backend+"/integrate", simParams, onSuccessFunc)
-				}
-			}
 		},
 
 		getData : function(){
@@ -737,79 +564,19 @@
 				globalVariables: JSON.stringify(global_vars) */
 			}
 		}
-	}
-
-	var palette = {
-		update : function(onComplete) {
-			$.post("/appstate/palette/list", {})
-				.then(function (data) {
-					paletteItems = { }
-					var remaining = data.length - 1;
-					return $.when.apply($, _.map(data, function(item) {
-						return refillSvg(item.icon, item.color).then(function (image) {
-							item.image = image
-							paletteItems[item.className] = item
-						})
-					}))
-				})
-				.done(function () {
-					availablePalettes = _.mapObject(availablePalettes, function (pal) {
-						return _.filter(
-							pal,
-							function(name) { return paletteItems.hasOwnProperty(name); }
-						)
-					})
-					if (onComplete) onComplete()
-				})
-		}
-	}
-
-	function resetEverything() {
-		if (confirm("WARNING: This is going to clear all the internal application state")) {
-			$.post("/appstate/reset").then(function (result) { location.reload() })
-		}
-	}
+	}	
 
 
-	var paletteItems = { }			// loaded from server dynamically
-	var chosenPalette = "SIR"
-	var availablePalettes = {
-		"SIR" : [
-				"population",
-				"patient",
-				"infect",
-				"cure",
-		],
-		"SIRS-VD": [
-				"population_vital_dynamics",
-				"patient_vital_dynamics",
-				"infect",
-				"cure",
-				"time",
-		],
-		"predator_prey" : [
-				"predator",
-				"prey",
-				"hunting",
-		],
-	}
-
-
-	$(function(){ palette.update(function () {
+	$(function(){
 		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
 		document.getElementById('choose-julia-upload').addEventListener('change', UI.uploadJuliaSrc, false)
 
-		var startingPalette =	availablePalettes[chosenPalette]
-
 		UI.render.network()
 
-		UI.render.palette(startingPalette)
 		UI.render.localVars(null)
 		UI.render.rewardVars()
 		UI.updateButtonStates()
-
-
-	}) })
+	})
 
 </script>
 
@@ -829,10 +596,13 @@
 		width: 75%;
 		/*border: 5px solid gray;*/
 	}
+  .tall-modal-content {
+    height: 80vh;
+  }
+
 	#palette img {
-		margin: 5px;
-		padding: 5px;
-		height: 50px;
+		margin-left: 5px;
+		height: 35px;
 		border: 5px solid white;
 	}
 	.vis-manipulation {
@@ -846,9 +616,11 @@
 		fill: gray;
 	}
 	#palette img.selected {
-		border-color: lightblue;
+		border-color: #007bff;
+    border-radius: .25rem;
+    border-width: 1px;
 	}
-	#palette img.right, #palette input.right {
+	#palette img.right, #palette input.right, #palette div.right {
 		margin-top: 1em;
 		height: 40px;
 	}
@@ -861,8 +633,9 @@
 	#exec_chooser {
 		margin: 22px 0px 22px 0px;
 	}
-	#paletteChooser{
-		margin: 1.5em 1.5em 0em 1.5em;
+	#paletteChooser {
+		margin: 1em 1.5em 0em 1.5em;
+    margin-top: 1em;
 		float: left;
 	}
 	#palette img.disabled {
@@ -873,36 +646,10 @@
 		width: 25%;
 		border-color: green;
 		float: right;
-	}
-	#localVars {
-		width: 100%;
-		height: 45%;
 		outline: 1px solid gray;
 		overflow: scroll;
 		padding: 1em;
 		box-sizing: border-box;
-	}
-	#localVars p {
-		/*text-decoration: underline;*/
-	}
-	#rewardVars {
-		width: 100%;
-		height: 45%;
-		outline: 1px solid gray;
-		overflow: scroll;
-		padding: 1em;
-		box-sizing: border-box;
-	}
-	#rewardVars .rv_element:not(:last-child) {
-		border-bottom: 1px solid #000;
-		margin-bottom: 1em;
-	}
-	.range_param {
-		display: inline-block;
-		padding: 1em;
-	}
-	.opt2 {
-		margin: 0px;
 	}
 	h2 {
 		font-size: 1.75em;
@@ -925,36 +672,19 @@
 </style></head>
 <body>
 	<div id="results" style="display: none;"></div>
-	<div id="paletteEditor"></div>
 	<div id="palette">
-		<div id="paletteChooser">
-			<select onchange="UI.choosePalette(this)"></select>
-			<button onclick="UI.paletteEditor()">Edit</button>
-		</div>
-		<select id="exec_chooser" class="right" onchange="UI.changeBackend(this)">
-			<option value="scipy">SciPy</option>
-			<option value="pysces">PySCeS</option>
-			<option value="julia">Julia</option>
-		</select>
-		<button id="exec_button" class="right" onclick="IR.submit()">Execute</button>
-		<button id="upload_julia_button" class="right" onclick="document.getElementById('choose-julia-upload').click()">Load Julia code</button>
-		<img id="redo_button" title="Redo" class="right" src="images/redo.png" onclick="journal.redo()" />
-		<img id="reset_button" title="Reset" class="right" src="images/reset.png" onclick="resetEverything()" />
-		<img id="undo_button" title="Undo" class="right" src="images/undo.png" onclick="journal.undo()" />
-		<img id="upload" title="Load model file" class="right" src="images/load_model.jpg" onclick="document.getElementById('choose-upload').click()" />
-		<img id="download" title="Save model file" class="right" src="images/save_model.jpeg" onclick="UI.download()" />
+		<div id="paletteChooser"></div>
+    <div id="button_bar" class="right"></div>
 		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
 		<input type="file" class="right" id="choose-julia-upload" name="files[]" style="display: none;" />
 	</div>
 	<div id="graph"></div>
-	<div id="variables" class="compensate-for-scrollbar">
-		<div id="localVars" class="compensate-for-scrollbar"></div>
-		<div id="rewardVars" class="compensate-for-scrollbar"></div>
+	<div id="variables">
 	</div>
 
 	<script type="text/javascript" src="webReact.js"></script>
 	<script type="text/javascript">
-		webReact.showMeasures(
+		/* webReact.showMeasures(
 			document.getElementById('rewardVars'),
 			function (measureName, oldMeasure, newMeasure) {
 				var event = {
@@ -966,5 +696,53 @@
 				journal.apply( event )
 			}
 		);
+
+    webReact.showVariables(
+      document.getElementById('localVars'),
+      function(nodeId, property) {
+			  UI.setProp(nodeId, property.name, property.value)
+      }
+    ); */
+
+    webReact.showRightTabs(
+      document.getElementById('variables'),
+      function (measureName, oldMeasure, newMeasure) {
+				var event = {
+					type: "setRewardVar",
+					key: measureName,
+					old: oldMeasure,
+					new: newMeasure
+				};
+				journal.apply( event )
+			},
+      function(nodeId, property) {
+			  UI.setProp(nodeId, property.name, property.value)
+      }
+    );
+
+
+    webReact.attachButtonBar(
+      document.getElementById('button_bar'),
+
+      // For navigation stuff
+      journal,
+      function() { document.getElementById('choose-upload').click() },
+      function() { UI.download() },
+
+      // For Julia
+      function() { document.getElementById('choose-julia-upload').click() },
+
+      // For execution
+      function(newBackend) { chosen_backend = newBackend; },
+      function() { IR.submit() },
+    );
+
+    webReact.attachPalette(
+      document.getElementById('paletteChooser'),
+      paletteCallbacks,
+      UI.render.iconRedraw,
+      UI.clearNetwork
+    );
+
 	</script>
 </body>

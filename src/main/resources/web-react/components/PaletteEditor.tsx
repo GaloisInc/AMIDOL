@@ -5,6 +5,8 @@ import {
   Input, InputGroupAddon, InputGroup, InputGroupText, InputGroupButtonDropdown,
   Col, Form, FormGroup, Label, FormText
 } from 'reactstrap';
+import { refillSvg, svgColors } from "../utility/Svg.ts";
+
 
 export interface PaletteEditorState {
   name: string;
@@ -22,10 +24,10 @@ export interface PaletteEditorProps {
   closeEditor(): void;
 
   // effect change on global palette
-  submitPaletteElement(itemName: string, item: PaletteItem, onSuccess: () => void): void;
+  submitPaletteElement(itemName: string, item: PaletteItem): void;
 
   // remove existing palette element
-  deletePaletteElement(itemName: string, onSuccess: () => void): void;
+  deletePaletteElement(itemName: string): void;
 
   paletteItems: { [itemName: string]: PaletteItem };
   chosenPaletteItemNames: string[];
@@ -40,6 +42,7 @@ export interface PaletteItem {
 
   icon: string,
   color: string, // TODO: optional?
+  image?: string,
   backingModel: any
 }
 
@@ -66,6 +69,8 @@ export class PaletteEditor extends React.Component<PaletteEditorProps, PaletteEd
     this.updateIcon = this.updateIcon.bind(this);
     this.updateSharedStates = this.updateSharedStates.bind(this);
     this.updateBackingModel = this.updateBackingModel.bind(this);
+    this.submitPaletteElement = this.submitPaletteElement.bind(this);
+    this.deletePaletteElement = this.deletePaletteElement.bind(this);
   }
 
   componentDidMount() {
@@ -121,6 +126,41 @@ export class PaletteEditor extends React.Component<PaletteEditorProps, PaletteEd
     this.setState(prevState => ({ ...prevState, isOpen: !prevState.isOpen }));
   }
 
+  submitPaletteElement(item: PaletteItem) {
+    const name = this.state.name;
+    refillSvg(item.icon, item.color)
+      .then(imageSrc => {
+        item.image = imageSrc;
+
+        // Register the new palette item in the backend
+        const data = new URLSearchParams();
+        data.append("name", name);
+        data.append("palette", JSON.stringify(item));
+        return fetch("/appstate/palette/put", { method: 'POST', body: data });
+      })
+      .then(() => {
+        this.props.submitPaletteElement(name, item);
+        this.toggle();
+      })
+      .catch(err => {
+        alert("Failed to register new palette element.\n\n(" + err.responseText + ")")
+      });
+  }
+
+  deletePaletteElement() {
+    const name = this.state.name;
+    const data = new URLSearchParams();
+    data.append("name", name);
+    fetch("/appstate/palette/remove", { method: 'POST', body: data })
+      .catch(err =>
+        alert("Failed to register new palette element.\n\n(" + err.responseText + ")")
+      )
+      .then(() => {
+        this.props.deletePaletteElement(name);
+        this.toggle();
+      });
+  };
+
   currentPaletteItem() {
     if (!this.state.name) return undefined;
     return {
@@ -145,19 +185,13 @@ export class PaletteEditor extends React.Component<PaletteEditorProps, PaletteEd
       confButtons = [
         <Button
           color="primary"
-          onClick={() => this.props.deletePaletteElement(
-            this.state.name,
-            this.toggle
-          )}
+          onClick={this.deletePaletteElement}
         >
           Remove element
         </Button>,
         <Button
           color="primary"
-          onClick={() => this.props.submitPaletteElement(
-            this.state.name, wip,
-            this.toggle
-          )}
+          onClick={() => this.submitPaletteElement(wip)}
           disabled={wip === undefined}
         >
           Update existing element
@@ -167,10 +201,7 @@ export class PaletteEditor extends React.Component<PaletteEditorProps, PaletteEd
       confButtons = [
         <Button
           color="primary"
-          onClick={() => this.props.submitPaletteElement(
-            this.state.name, wip,
-            this.toggle
-          )}
+          onClick={() => this.submitPaletteElement(wip)}
           disabled={wip === undefined}
         >
           Create new element

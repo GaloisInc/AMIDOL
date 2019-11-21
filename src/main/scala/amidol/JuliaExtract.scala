@@ -135,7 +135,7 @@ object JuliaExtract {
             out -> model.states(out),
           ),
           events = Map(eid -> ev),
-          constants = model.constants.filterKeys(variablesUsed.contains(_)),
+          constants = model.constants.view.filterKeys(variablesUsed.contains(_)).toMap,
         )
       )
     }

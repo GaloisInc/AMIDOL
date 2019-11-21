@@ -85,6 +85,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |import json
          |import numpy as np
          |import matplotlib.pyplot as plt
+         |from math import sin
          |
          |# This is so that we can call "json.dumps" on Numpy arrays
          |class NumpyEncoder(json.JSONEncoder):
@@ -128,7 +129,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
       val traces = origStateVarsStr zip nestedArrs
       val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
       appState.dataTraces ++= traces.map { case (traceName, traceData) =>
-        s"${date}_${traceName}_scipy_${requestId}" -> (timeRange, traceData)
+        s"${date}_${traceName}_scipy_${requestId}" -> math.SampledTrace(timeRange, traceData)
       }
       Outputs(
         variables = traces.toMap,

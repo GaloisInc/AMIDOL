@@ -1,4 +1,8 @@
 import * as React from "react";
+import {
+  Button, Input, Col, Form, FormGroup, Label, Row,
+  ListGroup, ListGroupItem, ListGroupItemHeading
+} from 'reactstrap';
 
 export interface MeasuresCallbacks {
   updateMeasureNouns(MeasuresNoun: string[]): void;
@@ -35,7 +39,7 @@ export interface Range {
 
 export interface MeasuresProps {
   callbacks: MeasuresCallbacks;
-  setMeasure(name: string, oldP: MeasureProps, newP: MeasureProps): void; 
+  setMeasure: (name: string, oldP: MeasureProps, newP: MeasureProps) => void; 
 }
 
 export class Measures extends React.Component<MeasuresProps, MeasuresState> {
@@ -159,7 +163,7 @@ export class Measures extends React.Component<MeasuresProps, MeasuresState> {
   render() {
     return (
       <div>
-      <h2>Measures:</h2>
+      <ListGroup flush>
       {
         this.state.measures.map((m) => (
           <Measure
@@ -172,7 +176,10 @@ export class Measures extends React.Component<MeasuresProps, MeasuresState> {
           />
         ))
       }
-      <button onClick={this.addNewMeasure}>New</button>
+      <ListGroupItem>
+      <Button color="primary" onClick={this.addNewMeasure} block>Add new</Button>
+      </ListGroupItem>
+      </ListGroup>
       </div>
     );
   }
@@ -186,44 +193,62 @@ export interface MeasureCallbacks {
 export class Measure extends React.Component<MeasureProps & MeasureCallbacks & { nouns: MeasuresNoun[] }, {}> {
   render() {
     return (
-      <div className="rv_element">
-        <h3 className="key">{this.props.name}</h3>
-        <select
-          value={this.props.nounId}
-          onChange={(e) => this.props.updateMeasure(
-            this.props.name,
-            this.props.range,
-            e.target.value
-          )}
-        >
-          {this.props.nouns.map(noun => <option value={noun.id}>{noun.label}</option>)}
-        </select>
-        <h4>Range</h4>
-        <div>
-          <select className="opt2">
-            <option value="Instant of Time">Instant of Time</option>
-            <option value="Interval of Time" disabled>Interval of Time</option>
-            <option value="Time Avg. Interval" disabled>Time Avg. Interval</option>
-            <option value="Steady State" disabled>Steady State</option>
-          </select>
-          <div>
-            <div className="range_param">
-              <label>Start</label>
-              <input
-                className="range_start"
+      <ListGroupItem>
+        <ListGroupItemHeading>{this.props.name}</ListGroupItemHeading>
+        <FormGroup row>
+          <Label for="stateVariableTracked" sm={4}>Tracking</Label>
+          <Col sm={8}>
+            <Input
+              type="select"
+              id="stateVariableTracked"
+              value={this.props.nounId}
+              onChange={(e) => this.props.updateMeasure(
+                this.props.name,
+                this.props.range,
+                e.target.value
+              )}
+            >
+              {
+                this.props.nouns.map(noun =>
+                  <option value={noun.id}>{noun.label}</option>
+                )
+              }
+            </Input>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="measureSort" sm={4}>Type</Label>
+          <Col sm={8}>
+            <Input type="select" id="measureSort">
+              <option value="Instant of Time">Instant of Time</option>
+              <option value="Interval of Time" disabled>Interval of Time</option>
+              <option value="Time Avg. Interval" disabled>Time Avg. Interval</option>
+              <option value="Steady State" disabled>Steady State</option>
+            </Input>
+          </Col>
+        </FormGroup>
+        <Row>
+          <Col sm={4}>
+            <FormGroup>
+              <Label for="range_start">Start</Label>
+              <Input
+                type="text"
+                id="range_start"
                 value={this.props.range.start}
-                size={5}
                 onChange={(e) => this.props.updateMeasure(
                   this.props.name,
                   { ...this.props.range, start: parseFloat(e.target.value) },
                   this.props.nounId
                 )}
               />
-            </div>
-            <div className="range_param">
-              <label>Until</label>
-              <input
-                className="range_end"
+            </FormGroup>
+          </Col>
+          <Col sm={4}>
+            <FormGroup>
+              <Label for="range_end">Until</Label>
+              <Input
+                type="text"
+                id="range_end"
                 value={this.props.range.end}
                 size={5}
                 onChange={(e) => this.props.updateMeasure(
@@ -232,24 +257,30 @@ export class Measure extends React.Component<MeasureProps & MeasureCallbacks & {
                   this.props.nounId
                 )}
               />
-            </div>
-            <div className="range_param">
-              <label>Step</label>
-              <input
-                className="range_step"
+            </FormGroup>
+          </Col>
+          <Col sm={4}>
+            <FormGroup>
+              <Label for="range_step">Step</Label>
+              <Input
+                type="text"
+                id="range_step"
                 value={this.props.range.step}
-                size={5}
                 onChange={(e) => this.props.updateMeasure(
                   this.props.name,
                   { ...this.props.range, step: parseFloat(e.target.value) },
                   this.props.nounId
                 )}
               />
-            </div>
-          </div>
-        </div>
-        <button onClick={() => this.props.deleteMeasure(this.props.name)}>Delete</button>
-      </div>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Button
+          color="secondary"
+          onClick={() => this.props.deleteMeasure(this.props.name)}
+          block
+        >Remove</Button>
+      </ListGroupItem>
     );
   }
 }

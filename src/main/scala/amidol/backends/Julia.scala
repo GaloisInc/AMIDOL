@@ -146,7 +146,7 @@ object JuliaGillespie extends ContinuousInitialValue {
       val traces = stateVarsStr zip nestedArrs
       val date = new SimpleDateFormat("dd-MM-yy:HH:mm:SS").format(new Date())
       appState.dataTraces ++= traces.map { case (traceName, traceData) =>
-        s"${date}_${traceName}_julia_${requestId}" -> (times, traceData)
+        s"${date}_${traceName}_julia_${requestId}" -> math.SampledTrace(times, traceData)
       }
       Outputs(
         variables = traces.toMap,

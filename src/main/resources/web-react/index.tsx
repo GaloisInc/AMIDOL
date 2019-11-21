@@ -1,18 +1,30 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Hello, Greet } from "./components/Hello";
+import { Palette, PaletteCallbacks } from "./components/Palette";
+import { ButtonBar } from "./components/ButtonBar";
+import { Journal } from "./components/ModelNavigation";
 import { Measures, MeasuresCallbacks, MeasureProps } from "./components/RewardVariables";
+import { Variables, VariablesCallbacks, Property } from "./components/Variables";
+import { RightTabs } from "./components/RightTabs";
 import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
+import { GraphResults } from "./components/GraphResults";
+import { refillSvg, svgColors } from "./utility/Svg.ts";
+import { TraceSum, Compare } from "./components/Compare";
 
-declare var reactCallbacks: MeasuresCallbacks;
+declare var reactCallbacks: MeasuresCallbacks & VariablesCallbacks;
 
-export function showMeasures(
+export function showRightTabs(
   mountPoint: HTMLElement,
   setMeasure: (name: string, oldP: MeasureProps, newP: MeasureProps) => void,
+  setNodeProperty: (nodeId: string, property: Property) => void,
 ) {
   ReactDOM.render(
-    <Measures callbacks={reactCallbacks} setMeasure={setMeasure}/>,
+    <RightTabs
+      callbacks={reactCallbacks}
+      setMeasure={setMeasure}
+      updateNodeProperty={setNodeProperty}
+    />,
     mountPoint
   );
 }
@@ -21,8 +33,8 @@ export function showMeasures(
 export function showEditNodeDialog(
   mountPoint: HTMLElement,
 
-  submitPaletteElement: (string, item, then) => void,
-  deletePaletteElement: (string, then) => void,
+  submitPaletteElement: (string, item) => void,
+  deletePaletteElement: (string) => void,
 
   paletteItems: { [itemName: string]: PaletteItem },
   chosenPaletteItemNames: string[],
@@ -44,4 +56,110 @@ export function showEditNodeDialog(
   );
 }
 
+interface Measure {
+  name: string;
+  label: string;
+  simParams: SimParams;
+}
 
+interface SimParams {
+	initialTime: number;
+	finalTime: number;
+	stepSize: number;
+	savePlot?: string;
+}
+
+export function showGraphResults(
+  mountPoint: HTMLElement,
+
+  backend: string,
+  measures: Measure[],
+) {
+  const close = () => ReactDOM.unmountComponentAtNode(mountPoint);
+
+  const endpoint = "/backends/" + backend + "/integrate";
+  const datas = Promise
+      .all(measures.map(measure => {
+        const restOptions = {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(measure.simParams)
+        };
+        return fetch(endpoint, restOptions)
+          .then(result => result.json())
+          .then(dataResult => {
+            return {
+              name: measure.name,
+              x: dataResult.time,
+              y: dataResult.variables[measure.label],
+              type: 'scatter',
+              mode: 'lines+points',
+          //    marker: { color: 'red' }
+            };
+          });
+      }));
+
+
+  ReactDOM.render(
+    <GraphResults
+      datasPromise={datas}
+      closeResults={close}
+      title={"Model execution results"}
+    />,
+    mountPoint,
+  );
+}
+
+export function attachButtonBar(
+  mountPoint: HTMLElement,
+
+  journal: Journal,
+  onUpload: () => void,
+  onDownload: () => void,
+
+  onJuliaUpload: () => void,
+
+  setNewCurrentBackend: (newBackend: string) => void,
+  onExecute: () => void,
+) {
+  ReactDOM.render(
+    <ButtonBar
+      journal={journal}
+      onUpload={onUpload}
+      onDownload={onDownload}
+      setNewCurrentBackend={setNewCurrentBackend}
+      onExecute={onExecute}
+      onJuliaUpload={onJuliaUpload}
+    />,
+    mountPoint,
+  );
+}
+
+export function attachPalette(
+  mountPoint: HTMLElement,
+
+  callbacks: PaletteCallbacks,
+  redrawIcons: () => void,
+  clearNetwork: (string) => boolean,
+) {
+  ReactDOM.render(
+    <Palette
+      redrawIcons={redrawIcons}
+      clearNetwork={clearNetwork}
+      paletteCallbacks={callbacks}
+    />,
+    mountPoint
+  );
+}
+
+export function attachCompare(
+  mountPoint: HTMLElement,
+) {
+  ReactDOM.render(
+    <Compare  />,
+    mountPoint
+  );
+}

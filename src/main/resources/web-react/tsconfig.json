@@ -8,6 +8,7 @@
         "allowJs": true,
         "checkJs": true,
         "jsx": "react",
-        "pretty": true
+        "pretty": true,
+        "lib": [ "es5", "es6", "dom" ]
     }
 }

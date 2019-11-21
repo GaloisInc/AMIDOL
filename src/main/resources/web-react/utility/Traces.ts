@@ -1,15 +1,21 @@
+
+export interface Trace {
+ x: number[];
+ y: number[];
+}
+
 /** Returns a new summed data trace, with `x` being the union of `x` values from
  *  the two input traces
  */
-function addTraces(trace1, trace2) {
-  var x1 = trace1.x;
-  var x2 = trace2.x;
-  var y1 = trace1.y;
-  var y2 = trace2.y;
+export function addTraces(trace1: Trace, trace2: Trace): Trace {
+  const x1 = trace1.x;
+  const x2 = trace2.x;
+  const y1 = trace1.y;
+  const y2 = trace2.y;
 
   // Summed trace
-  var x3 = [];
-  var y3 = [];
+  const x3: number[] = [];
+  const y3: number[] = [];
 
   var i1 = 0;  // index through trace1
   var i2 = 0;  // index through trace2

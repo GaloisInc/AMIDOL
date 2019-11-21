@@ -35,28 +35,32 @@ object Linear {
       case Negate(e) => isConstant(e)
       case Inverse(e) => isConstant(e)
       case v: Variable => !equations.contains(v)
+      case Sin(e) => isConstant(e)
+      case Max(lhs, rhs) => isConstant(lhs) && isConstant(rhs)
       case _: Literal[Double] => true
     }
 
     // Linear equations
     val decomposed: Map[Variable, Map[Variable, Expr[Double]]] = 
-      equations.mapValues { case expr =>
-        val linearTerms: Seq[(Variable, Expr[Double])] = for {
-          term <- immediateTerms(expr)
-          factors = immediateFactors(term)
-          (theVars, theRest) = factors.partition {
-            case x if isConstant(x) => false
-            case v: Variable => true
-            case _ => return None
-          }
-          theVar = theVars match {
-            case List(v: Variable) => v
-            case _ => return None
-          }
-        } yield (theVar, theRest.foldLeft[Expr[Double]](1)(Mult(_,_)))
+      equations.view
+        .mapValues { case expr =>
+          val linearTerms: Seq[(Variable, Expr[Double])] = for {
+            term <- immediateTerms(expr)
+            factors = immediateFactors(term)
+            (theVars, theRest) = factors.partition {
+              case x if isConstant(x) => false
+              case v: Variable => true
+              case _ => return None
+            }
+            theVar = theVars match {
+              case List(v: Variable) => v
+              case _ => return None
+            }
+          } yield (theVar, theRest.foldLeft[Expr[Double]](1)(Mult(_,_)))
 
-        linearTerms.toMap
-      }
+          linearTerms.toMap
+        }
+        .toMap
 
     // Pick an order for variables and make the matrix
     val variables: Array[Variable] = equations.keys.toArray

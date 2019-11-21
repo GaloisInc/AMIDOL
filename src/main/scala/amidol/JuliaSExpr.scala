@@ -146,7 +146,7 @@ trait ExtractOps { expr: JuliaSExpr =>
           .toMap
 
         Model(
-          states.toMap.mapValues(s => s.copy(initial_value = initials(s.state_variable))),
+          states.toMap.view.mapValues(s => s.copy(initial_value = initials(s.state_variable))).toMap,
           events,
           constants = parsedParams.map { p =>
             val v = math.Variable(Symbol(p))
