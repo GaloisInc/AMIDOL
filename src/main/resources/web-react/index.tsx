@@ -11,6 +11,7 @@ import { PaletteEditor, PaletteItem } from "./components/PaletteEditor";
 import { GraphResults } from "./components/GraphResults";
 import { refillSvg, svgColors } from "./utility/Svg.ts";
 import { TraceSum, Compare } from "./components/Compare";
+import { DifferentialEquations } from "./components/DifferentialEquations";
 
 declare var reactCallbacks: MeasuresCallbacks & VariablesCallbacks;
 
@@ -160,6 +161,15 @@ export function attachCompare(
 ) {
   ReactDOM.render(
     <Compare  />,
+    mountPoint
+  );
+}
+
+export function attachDiffEq(
+  mountPoint: HTMLElement,
+) {
+  ReactDOM.render(
+    <DifferentialEquations />,
     mountPoint
   );
 }

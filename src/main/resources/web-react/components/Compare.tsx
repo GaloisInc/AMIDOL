@@ -5,7 +5,6 @@ import {
   TabPane, TabContent, Popover, PopoverHeader, PopoverBody,
   InputGroup, InputGroupAddon,
 } from 'reactstrap';
-import { addTraces } from '../utility/Traces.ts';
 import { GraphResults } from './GraphResults';
 
 export interface TraceSum {

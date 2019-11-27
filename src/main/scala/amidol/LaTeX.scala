@@ -8,6 +8,7 @@ import scala.util._
 
 object LaTeX extends AmidolParser {
 
+  /** Parse out a simple latex equation from a string */
   val latexExpr: PackratParser[Expr[Double]] = {
 
     lazy val doubleAtom: PackratParser[Expr[Double]] =
@@ -33,7 +34,7 @@ object LaTeX extends AmidolParser {
     lazy val factor: PackratParser[Expr[Double]] =
       ( factor ~ ("*" | "\\times" | "\\cdot") ~ doubleAtom
                                          ^^ { case (l ~ _ ~ r) => Mult(l,         r ) }
-      | factor ~ notNegateDouble             ^^ { case (l ~     r) => Mult(l,         r ) }
+      | factor ~ notNegateDouble         ^^ { case (l ~     r) => Mult(l,         r ) }
       | factor ~ "/" ~ doubleAtom        ^^ { case (l ~ _ ~ r) => Mult(l, Inverse(r)) }
       | doubleAtom
       )
