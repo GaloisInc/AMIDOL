@@ -48,7 +48,11 @@ object LaTeX extends AmidolParser {
     term
   }
 
+  lazy val equationExpr: PackratParser[(Expr[Double], Expr[Double])] =
+    latexExpr ~ "=" ~ latexExpr          ^^ { case (l ~ _ ~ r) => (l, r) }
+
   def apply(input: String): Try[Expr[Double]] = runParser(latexExpr, input)
+  def equation(input: String): Try[(Expr[Double], Expr[Double])] = runParser(equationExpr, input)
 }
 
 
