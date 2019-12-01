@@ -209,6 +209,18 @@ object Main extends App with Directives {
             }
           }
         } ~
+        path("uiDiffEqs") {
+          formField('equations.as[LatexEquations]) { case LatexEquations(equations) =>
+            complete {
+              LatexExtract.extractFromSource(equations).map { model =>
+                appState.currentModel = model
+              } match {
+                case Success(_) => StatusCodes.Created -> s"Model has been updated"
+                case Failure(f) => StatusCodes.BadRequest -> f.getMessage()
+              }
+            }
+          }
+        } ~
         path("loadJuliaModel") {
           import SprayJsonSupport._
           import DefaultJsonProtocol._

@@ -20,7 +20,8 @@ interface DiffEqState {
 
 
 export class DifferentialEquations extends React.Component<{}, DiffEqState> {
-  
+  promisedData: Promise<any[]>;
+
   constructor(props) {
     super(props);
 
@@ -32,6 +33,45 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
       range_end: "100",
       range_step: "1",
     };
+
+    this.submit = this.submit.bind(this);
+  }
+
+  submit() {
+    const uiDiffEqsData = new URLSearchParams();
+    uiDiffEqsData.append("equations", JSON.stringify({ equations: this.state.equations }));
+
+    const simParams = {
+      initialTime: parseFloat(this.state.range_start),
+      finalTime: parseFloat(this.state.range_end),
+      stepSize: parseFloat(this.state.range_step),
+      savePlot: null
+    };
+    const integrateData = JSON.stringify(simParams);
+
+    // Put the model. Once that is done, run the simulation
+    this.setState({ ...this.state, openPlot: true });
+    this.promisedData = fetch("/appstate/uiDiffEqs", { method: 'POST', body: uiDiffEqsData })
+      .then(() => fetch("/backends/scipy/integrate", {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: integrateData
+      }))
+      .then(result => result.json())
+      .then(dataResult => {
+        return Object.keys(dataResult.variables).map(key => {
+          return {
+            name: key,
+            x: dataResult.time,
+            y: dataResult.variables[key],
+            type: 'scatter',
+            mode: 'lines+points'
+          };
+        });
+      });
   }
 
   render() {
@@ -58,7 +98,20 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
     const rangeEndNum = parseFloat(this.state.range_end);
     const rangeStepNum = parseFloat(this.state.range_step);
 
+    let graphResults = null;
+    if (this.state.openPlot && this.promisedData !== undefined) {
+      graphResults = <GraphResults
+        datasPromise={this.promisedData}
+        closeResults={() => {
+          this.setState({ ...this.state, openPlot: false });
+          this.promisedData = undefined;
+        }}
+        title={"Differential Equations Simulation"}
+      />;
+    }
+
     return (
+      <div>
         <Container>
           <h1>Differential equations</h1>
           {rows}
@@ -105,12 +158,14 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
               </FormGroup>
             </Col>
             <Col sm={3}>
-              <Button color="secondary">
+              <Button color="secondary" onClick={this.submit}>
               Simulate
               </Button>
             </Col>
           </Row>
         </Container>
+        {graphResults}
+      </div>
     );
   }
 }
