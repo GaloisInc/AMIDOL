@@ -5,6 +5,7 @@ import scala.util.{Try, Failure, Success}
 import scala.util.Random
 import scala.concurrent.duration._
 import scala.collection.immutable.ArraySeq
+import scala.collection.mutable
 
 import java.io.File
 import java.io.PrintWriter
@@ -27,21 +28,63 @@ object LatexExtract {
    */
   def extractFromSource(latexSourceEquations: List[String]): Try[Model] = Try {
 
-    val equationsB = Map.newBuilder[math.Variable, math.Expr[Double]]
-    val initialsB = Map.newBuilder[math.Variable, math.Expr[Double]]
-    val constantsB = Map.newBuilder[math.Variable, Double]
+    val equations = mutable.Map.empty[math.Variable, math.Expr[Double]]
+    val initials = mutable.Map.empty[math.Variable, math.Expr[Double]]
+    val constants = mutable.Map.empty[math.Variable, Double]
 
     // Parse the equations
     for (equationSrc <- latexSourceEquations) {
       val (lhs, rhs) = LaTeX.equation(equationSrc).get
 
-      def asDerivative(): Try[Any] = extractDerivative(lhs).map { equationsB += _ -> rhs }
-      def asInitial(): Try[Any] = extractInitialCond(lhs).map { initialsB += _ -> rhs }
-      def asConstant(): Try[Any] = extractConstant(lhs, rhs).map { constantsB += _ }
+      def asDerivative(): Boolean = extractDerivative(lhs).toOption.map { variable =>
+        if (equations.contains(variable)) {
+          throw new IllegalArgumentException(
+            s"The derivative of `${variable.prettyPrint()}` is defined twice"
+          )
+        } else if (constants.contains(variable)) {
+          throw new IllegalArgumentException(
+            s"`${variable.prettyPrint()}` can't be a variable (and have a derivative)\n" +
+             "since it has been defined already as a constant"
+          )
+        }
 
-      (asDerivative() orElse asInitial() orElse asConstant()) match {
-        case Success(_) => ()
-        case Failure(_) => throw LatexExtractionException {
+        equations += variable -> rhs
+      }.nonEmpty
+      def asInitial(): Boolean = extractInitialCond(lhs).toOption.map { variable =>
+        if (initials.contains(variable)) {
+          throw new IllegalArgumentException(
+            s"The initial condition of `${variable.prettyPrint()}` is defined twice"
+          )
+        } else if (constants.contains(variable)) {
+          throw new IllegalArgumentException(
+            s"`${variable.prettyPrint()}` can't be a variable (and have as initial\n" +
+             "condition) since it has been defined already as a constant"
+          )
+        }
+
+        initials += variable -> rhs
+      }.nonEmpty
+      def asConstant(): Boolean = extractConstant(lhs, rhs).toOption.map { case (constant, value) =>
+        if (constants.contains(constant)) {
+          throw new IllegalArgumentException(
+            s"The constant `${constant.prettyPrint()}` is defined twice"
+          )
+        } else if (initials.contains(constant)) {
+          throw new IllegalArgumentException(
+            s"`${constant.prettyPrint()}` can't be a constant since it has initial conditions"
+          )
+        } else if (equations.contains(constant)) {
+          throw new IllegalArgumentException(
+            s"`${constant.prettyPrint()}` can't be a constant since it has a derivative"
+          )
+        }
+
+        constants += (constant -> value)
+      }.nonEmpty
+
+      (asDerivative() || asInitial() || asConstant()) match {
+        case true => ()
+        case false => throw LatexExtractionException {
           s"Unable to parse equation `$equationSrc` as one of:\n" +
            "  - an initial condition,\n" +
            "  - a derivate equation,\n" +
@@ -50,10 +93,30 @@ object LatexExtract {
       }
     }
 
+    // Check all variables + constants are defined
+    val variablesDefinedForEqns: Set[math.Variable] = equations.keySet.toSet | initials.keySet.toSet | constants.keySet.toSet
+    for ((v,eqn) <- equations) {
+      val undefinedVars = eqn.variables() &~ variablesDefinedForEqns
+      if (undefinedVars.nonEmpty) {
+        throw new IllegalArgumentException(
+          s"Derivative equation for `${v.prettyPrint()}` references the following\n" +
+          s"unbound variable(s): ${undefinedVars.map(_.prettyPrint()).mkString(" ")}"
+        )
+      }
+    }
+
+    val variablesDefinedForIntialConds: Set[math.Variable] = constants.keySet.toSet
+    for ((v,eqn) <- initials) {
+      val undefinedVars = eqn.variables() &~ variablesDefinedForIntialConds
+      if (undefinedVars.nonEmpty) {
+        throw new IllegalArgumentException(
+          s"Initial condition equation for `${v.prettyPrint()}` references the following\n" +
+          s"unbound variable(s): ${undefinedVars.map(_.prettyPrint()).mkString(" ")}"
+        )
+      }
+    }
+
     // Extract a model
-    val equations = equationsB.result()
-    val initials = initialsB.result()
-    val constants = constantsB.result()
     val stateIds: Map[math.Variable, StateId] =
       (equations.keySet ++ initials.keySet)
         .view
@@ -86,7 +149,7 @@ object LatexExtract {
       }
     }
 
-    Model(states.result(), events.result(), constants)
+    Model(states.result(), events.result(), constants.toMap)
   }
 
   /** Given an expression, try to interpret it as a `dX/dt` style derivative
@@ -100,6 +163,7 @@ object LatexExtract {
     derivativeVariable: math.Variable = math.Variable(Symbol("t"))
   ): Try[math.Variable] = Try {
     val (num, den) = derivativeEquation match {
+      case math.Mult(math.Mult(n, math.Inverse(d)), rhs: math.Variable) => (math.Mult(n, rhs), d)
       case math.Mult(n, math.Inverse(d)) => (n, d)
       case other => throw LatexExtractionException {
         val got = other.prettyPrint()

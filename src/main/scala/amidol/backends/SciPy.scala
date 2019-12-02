@@ -59,12 +59,18 @@ object SciPyIntegrate extends ContinuousInitialValue {
         }
       }
 
+      for (stateId <- model.states.keys) {
+        if (!builder.contains(stateId)) {
+          builder(stateId) = "0"
+        }
+      }
+
       builder.toMap
     }
 
     // Pretty printing
     val stateVarsStr   = states.map(s => s.state_variable.prettyPrint())
-    val derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).state_variable.prettyPrint()}_ = ${ie._2}") 
+    val derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).state_variable.prettyPrint()}_ = ${ie._2}")
     val initialCondStr = states.map(s => s.initial_value.prettyPrint())
     val constantsStr   = model.constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
     val writeImageFile = inputs.savePlot
@@ -99,14 +105,14 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |
          |# The ODE system
          |def deriv_(y_, t_):
-         |    ${stateVarsStr.mkString(", ")} = y_
+         |    ${if (stateVarsStr.isEmpty) "_" else stateVarsStr.mkString(", ")} = y_
          |    ${derivativesStr.mkString("\n    ")}
-         |    return ${stateVarsStr.map(v => s"d${v}_").mkString(", ")}
+         |    return ${if (stateVarsStr.isEmpty) "()" else stateVarsStr.map(v => s"d${v}_").mkString(", ")}
          |
          |# Boundary conditions and setup
          |timeRange_ = ${timeRange.mkString("[ ",", "," ]")}
-         |y0_ = ${initialCondStr.mkString(", ")}
-         |output = odeint(deriv_, y0_, timeRange_).T
+         |y0_ = ${if (initialCondStr.isEmpty) "()" else initialCondStr.mkString(", ")}
+         |output = ${if (initialCondStr.isEmpty) "[]" else "odeint(deriv_, y0_, timeRange_).T"}
          |
          |$plottingCode
          |
