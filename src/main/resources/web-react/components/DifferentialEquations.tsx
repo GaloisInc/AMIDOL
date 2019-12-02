@@ -198,10 +198,15 @@ class EquationRow extends React.Component<EquationRowProps, {}> {
     return (
       <Row>
         <Col sm={4}>
-          <Input
-            onChange={(e) => this.props.updateEquation(e.target.value)}
-            value={this.props.equation}
-          />
+          <InputGroup>
+            <Input
+              onChange={(e) => this.props.updateEquation(e.target.value)}
+              value={this.props.equation}
+            />
+            <InputGroupAddon addonType="append">
+              <HelpPopover/>
+            </InputGroupAddon>
+          </InputGroup>
         </Col>
         <Col sm={4}>
           <Latex displayMode={true} throwOnError={false}>{equationSrc}</Latex>
@@ -212,6 +217,44 @@ class EquationRow extends React.Component<EquationRowProps, {}> {
           </Button>
         </Col>
       </Row>
+    );
+  }
+
+}
+
+export class HelpPopover extends React.Component<{}, { isOpen: boolean }> {
+
+  constructor(props) {
+    super(props);
+    this.state = { isOpen: false };
+  }
+
+  render() {
+
+    const toggle = () => this.setState({ isOpen: !this.state.isOpen });
+
+    return (
+      <div>
+        <Button id="OpenHelp">Help</Button>
+        <Popover placement="bottom" isOpen={this.state.isOpen} target="OpenHelp" toggle={toggle}>
+          <PopoverHeader>Advanced equation editor</PopoverHeader>
+          <PopoverBody>
+            Enter an equation for one of three things here:
+
+            <ul>
+              <li>
+                A differential equation of the form <Latex displayMode={false}>{"$\\frac{dX}{dt} = \\cdots$"}</Latex>
+              </li>
+              <li>
+                An initial condition of the form <Latex displayMode={false}>{"$X(0) = \\cdots$"}</Latex>
+              </li>
+              <li>
+                A constant of the form <Latex displayMode={false}>{"$k = \\cdots$"}</Latex>
+              </li>
+            </ul>
+          </PopoverBody>
+        </Popover>
+      </div>
     );
   }
 

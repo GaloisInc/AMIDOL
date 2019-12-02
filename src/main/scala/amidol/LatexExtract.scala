@@ -59,7 +59,7 @@ object LatexExtract {
         .view
         .map(v => v -> StateId(v.s.name))
         .toMap
-    
+
     var eventIdCount = 0L
     def freshEventId(): EventId = {
       eventIdCount += 1L
@@ -131,7 +131,7 @@ object LatexExtract {
   /** Given an expression, try to interpret it as a `X(0)` style initial condition
    *
    *  @param intialEquation equation from which to extract the condition
-   *  @returns the variable being initialized 
+   *  @returns the variable being initialized
    */
   private[amidol] def extractInitialCond(
     intialEquation: math.Expr[Double]
@@ -148,8 +148,8 @@ object LatexExtract {
   /** Given an expression, try to interpret it as a `c` style constant
    *
    *  @param constant equation from which to extract the constant
-   *  @param equation constant equation 
-   *  @returns the constant being defined 
+   *  @param equation constant equation
+   *  @returns the constant being defined
    */
   private[amidol] def extractConstant(
     constant: math.Expr[Double],
