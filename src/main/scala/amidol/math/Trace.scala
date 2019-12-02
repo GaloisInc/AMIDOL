@@ -45,6 +45,11 @@ object Trace extends AmidolParser with SprayJsonSupport with DefaultJsonProtocol
   // Simple arithmetic grammar with a packrat parser (cuz it's fast and I like my left recursion)
   def traceParser(traces: Map[String, Trace]): PackratParser[Trace] = {
 
+    def getTrace(s: String): Parser[Trace] = commit(traces.get(s) match {
+      case None => err(s"No trace name `$s` found")
+      case Some(s) => success(s)
+    })
+
     lazy val atom: PackratParser[Trace] =
       ( "-" ~> atom                        ^^ { t => t.mapValues(x => -x) }
       | "time()"                           ^^ { _ => PureFunc(identity) }
@@ -52,8 +57,8 @@ object Trace extends AmidolParser with SprayJsonSupport with DefaultJsonProtocol
       | "shift(" ~> term ~ "," ~ floatingPointNumber <~ ")"
                                            ^^ { case (l ~ _ ~ s) => l.mapDomain(_ - s.toDouble) }
       | floatingPointNumber                ^^ { s => PureFunc(_ => s.toDouble)  }
-      | raw"(?U)\p{L}[\p{L}\p{No}_]*".r    ^^ { v => traces(v)  }
-      | raw"`[^`]+`".r                     ^^ { v => traces(v.tail.init) }
+      | raw"(?U)\p{L}[\p{L}\p{No}_]*".r    >> { v => getTrace(v)  }
+      | raw"`[^`]+`".r                     >> { v => getTrace(v.tail.init) }
       | "(" ~> term <~ ")"
       )
 
@@ -73,7 +78,8 @@ object Trace extends AmidolParser with SprayJsonSupport with DefaultJsonProtocol
   }
 
   // Parse a trace expression from a string
-  def apply(input: String, traces: Map[String, Trace]): Try[Trace] = runParser(traceParser(traces), input)
+  def apply(input: String, traces: Map[String, Trace]): Try[Trace] =
+    runParser(traceParser(traces), input)
 
 }
 

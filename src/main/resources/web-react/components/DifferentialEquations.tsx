@@ -52,6 +52,13 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
     // Put the model. Once that is done, run the simulation
     this.setState({ ...this.state, openPlot: true });
     this.promisedData = fetch("/appstate/uiDiffEqs", { method: 'POST', body: uiDiffEqsData })
+      .then(resp => {
+        if (resp.ok) {
+          return resp;
+        } else {
+          return resp.text().then(txt => { throw txt; });
+        }
+      })
       .then(() => fetch("/backends/scipy/integrate", {
         method: 'POST',
         headers: {
@@ -60,7 +67,13 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
         },
         body: integrateData
       }))
-      .then(result => result.json())
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          return resp.text().then(txt => { throw txt; });
+        }
+      })
       .then(dataResult => {
         return Object.keys(dataResult.variables).map(key => {
           return {

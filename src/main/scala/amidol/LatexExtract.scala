@@ -42,7 +42,10 @@ object LatexExtract {
       (asDerivative() orElse asInitial() orElse asConstant()) match {
         case Success(_) => ()
         case Failure(_) => throw LatexExtractionException {
-          s"Unable to parse equation `$equationSrc` as an intial condition, derivative equation, or constant"
+          s"Unable to parse equation `$equationSrc` as one of:\n" +
+           "  - an initial condition,\n" +
+           "  - a derivate equation,\n" +
+           "  - a constant"
         }
       }
     }

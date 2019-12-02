@@ -53,9 +53,14 @@ export class Compare extends React.Component<{}, CompareState> {
         : dataTrace.traces.map(x => '`' + x + '`').join("+")
       data.append("query", equation);
       return fetch("/appstate/data-traces/eval", { method: 'POST', body: data })
-        .then(resp => resp.json())
         .then(resp => {
-          console.log(resp);
+          if (resp.ok) {
+            return resp.json();
+          } else {
+            return resp.text().then(txt => { throw txt; });
+          }
+        })
+        .then(resp => {
           return {
             x: resp[0],
             y: resp[1],

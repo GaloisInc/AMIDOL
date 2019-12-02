@@ -70,9 +70,7 @@ export class GraphResults extends React.Component<GraphResultsProps, GraphResult
       );
     } else if (this.state.error) {
       modalBody = (
-        <div style={{color: "red"}}>
-          Error: {this.state.error.toString()}
-        </div>
+        <pre style={{color: "red"}}>{this.state.error.toString()}</pre>
       );
     } else {
       modalBody = (

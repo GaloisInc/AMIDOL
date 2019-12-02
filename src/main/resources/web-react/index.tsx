@@ -90,7 +90,13 @@ export function showGraphResults(
           body: JSON.stringify(measure.simParams)
         };
         return fetch(endpoint, restOptions)
-          .then(result => result.json())
+          .then(resp => {
+            if (resp.ok) {
+              return resp.json();
+            } else {
+              return resp.text().then(txt => { throw txt; });
+            }
+          })
           .then(dataResult => {
             return {
               name: measure.name,

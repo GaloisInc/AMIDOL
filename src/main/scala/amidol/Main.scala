@@ -274,7 +274,7 @@ object Main extends App with Directives {
             }
           } ~
           path("eval") {
-            formField("query".as[String]) { case query: String => 
+            formField("query".as[String]) { case query: String =>
               complete {
                 math.Trace(query, appState.dataTraces.toMap)
                   .map {
@@ -284,6 +284,10 @@ object Main extends App with Directives {
                   .map {
                     case math.SampledTrace(xs,ys) => (xs,ys)
                   }
+                  .fold(
+                    err => StatusCodes.BadRequest -> err.getMessage,
+                    success => StatusCodes.OK -> success
+                  )
               }
             }
           }
