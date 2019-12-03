@@ -246,7 +246,7 @@ export class HelpPopover extends React.Component<{}, { isOpen: boolean }> {
                 A differential equation of the form <Latex displayMode={false}>{"$\\frac{dX}{dt} = \\cdots$"}</Latex>
               </li>
               <li>
-                An initial condition of the form <Latex displayMode={false}>{"$X(0) = \\cdots$"}</Latex>
+                An initial condition of the form <Latex displayMode={false}>{"$X_0 = \\cdots$"}</Latex>
               </li>
               <li>
                 A constant of the form <Latex displayMode={false}>{"$k = \\cdots$"}</Latex>

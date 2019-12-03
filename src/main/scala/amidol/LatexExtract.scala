@@ -192,7 +192,7 @@ object LatexExtract {
     }
   }
 
-  /** Given an expression, try to interpret it as a `X(0)` style initial condition
+  /** Given an expression, try to interpret it as a `X_0` style initial condition
    *
    *  @param intialEquation equation from which to extract the condition
    *  @returns the variable being initialized
@@ -201,10 +201,12 @@ object LatexExtract {
     intialEquation: math.Expr[Double]
   ): Try[math.Variable] = Try {
     intialEquation match {
+      case v: math.Variable if v.s.name.endsWith("_0") =>
+        math.Variable(Symbol(v.s.name.dropRight(2)))
       case math.Mult(n: math.Variable, math.Literal(0.0)) => n
       case other => throw LatexExtractionException {
         val got = other.prettyPrint()
-        s"Expected an intiial condition of the form `X(0)`, but got `$got`"
+        s"Expected an intiial condition of the form `X_0`, but got `$got`"
       }
     }
   }

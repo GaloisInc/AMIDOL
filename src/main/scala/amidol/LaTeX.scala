@@ -8,18 +8,27 @@ import scala.util._
 
 object LaTeX extends AmidolParser {
 
+  sealed trait Equation
+  case class Derivative(variable: math.Variable, expression: math.Expr[Double]) extends Equation
+  case class Initial(variable: math.Variable, expression: math.Expr[Double]) extends Equation
+  case class Constant(variable: math.Variable, value: Double) extends Equation
+
   /** Parse out a simple latex equation from a string */
   val latexExpr: PackratParser[Expr[Double]] = {
 
-    lazy val doubleAtom: PackratParser[Expr[Double]] =
-      ( "-" ~> doubleAtom                ^^ { e => Negate(e) }
-      | floatingPointNumber              ^^ { s => Literal(s.toDouble)  }
-      | raw"(?U)\p{L}[\p{L}\p{No}_]*".r  ^^ { v => Variable(Symbol(v))  }
+    lazy val variable: PackratParser[Variable] =
+      ( raw"(?U)\p{L}[\p{L}\p{No}_]*0?".r  ^^ { v => Variable(Symbol(v))  }
       | ( "\\alpha"
         | "\\beta"
         | "\\gamma"
         | "\\epsilon"
         )                                ^^ { v => Variable(Symbol(v))  }
+      ).filter(_.s.name.last != '_')
+
+    lazy val doubleAtom: PackratParser[Expr[Double]] =
+      ( "-" ~> doubleAtom                ^^ { e => Negate(e) }
+      | floatingPointNumber              ^^ { s => Literal(s.toDouble)  }
+      | variable
       | "{" ~> term <~ "}"
       | "(" ~> term <~ ")"
       | "\\frac{" ~> term ~ "}{" ~ term <~ "}"
@@ -47,6 +56,7 @@ object LaTeX extends AmidolParser {
 
     term
   }
+
 
   lazy val equationExpr: PackratParser[(Expr[Double], Expr[Double])] =
     latexExpr ~ "=" ~ latexExpr          ^^ { case (l ~ _ ~ r) => (l, r) }
