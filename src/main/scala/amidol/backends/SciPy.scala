@@ -39,7 +39,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
     val renamer = Renamer.filterAscii()
     val model = modelUnrenamed.rename(renamer)
 
-    // Set up the system of differential equations 
+    // Set up the system of differential equations
     val states: List[State] = model.states.values.toList
     val derivatives: Map[StateId, Python] = {
       val builder = collection.mutable.Map.empty[StateId, String]
@@ -110,7 +110,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |    return ${if (stateVarsStr.isEmpty) "()" else stateVarsStr.map(v => s"d${v}_").mkString(", ")}
          |
          |# Boundary conditions and setup
-         |timeRange_ = ${timeRange.mkString("[ ",", "," ]")}
+         |timeRange_ = np.arange(${inputs.initialTime}, ${inputs.finalTime}, ${inputs.stepSize})
          |y0_ = ${if (initialCondStr.isEmpty) "()" else initialCondStr.mkString(", ")}
          |output = ${if (initialCondStr.isEmpty) "[]" else "odeint(deriv_, y0_, timeRange_).T"}
          |

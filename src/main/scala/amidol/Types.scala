@@ -95,7 +95,7 @@ object Model extends ModelJsonSupport {
 case class State(
   state_variable: Variable,
   description: Option[String],
-  initial_value: Expr[Double], 
+  initial_value: Expr[Double],
 )
 
 case class Event(
