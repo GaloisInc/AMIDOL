@@ -49,11 +49,15 @@ object SciPyIntegrate extends ContinuousInitialValue {
         for ((stateId, effect) <- outputPredicate.transition_function) {
           val term = math.Mult(rate, effect)
           builder(stateId) = builder.get(stateId) match {
-            case None => term.prettyPrint()
+            case None =>
+              inputPredicate match {
+                case None => term.prettyPrint()
+                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0.0)"
+              }
             case Some(existing) =>
               inputPredicate match {
                 case None => s"${term.prettyPrint()} + $existing"
-                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0) + $existing"
+                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0.0) + $existing"
               }
           }
         }
