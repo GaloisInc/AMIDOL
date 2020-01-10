@@ -2,6 +2,7 @@ package amidol
 
 import amidol.math._
 
+import java.io._
 import scala.util.{Failure, Success, Try}
 import spray.json._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
@@ -14,6 +15,25 @@ case class Model(
   events: Map[EventId, Event],
   constants: Map[Variable, Double],
 ) {
+
+  def writeDotFile(file: File): Unit = {
+    val pw = new PrintWriter(file)
+    pw.println(s"digraph {")
+
+    for ((sid, state) <- states) {
+      pw.println(s"""  ${sid.id} [shape=oval label="${state.state_variable.prettyPrint()} (${state.initial_value.prettyPrint()})"];""")
+    }
+
+    for ((eid, event) <- events) {
+      pw.println(s"""  ${eid.id} [shape=rectangle style=dotted label="${event.rate.prettyPrint()}"];""")
+      for ((sid, change) <- event.output_predicate.transition_function) {
+        pw.println(s"""  ${eid.id} -> ${sid.id} [label="${change.prettyPrint()}"];""")
+      }
+    }
+
+    pw.println("}")
+    pw.close()
+  }
 
   def ++(other: Model) = Model(
     states ++ other.states,
