@@ -41,10 +41,23 @@
           "recovered": "1"
         }
       }
+    },
+    "loss_of_immunity": {
+      "rate": "mu * recovered",
+      "input_predicate": {
+        "enabling_condition": "recovered > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "recovered": "-1",
+          "susceptible": "1"
+        }
+      }
     }
   },
   "constants": {
     "gamma": 0.333,
-    "beta": 0.413
+    "beta": 0.413,
+    "mu": 0.05
   }
 }
