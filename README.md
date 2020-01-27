@@ -14,7 +14,9 @@ prognostic queries on reward models and communicate results to domain experts.
 You'll need to:
 
   * install the [`sbt` build tool][1] and a recent version of the
-    [Oracle JDK][2] for building the `ir`
+    [Oracle JDK][2] for building the backend component
+
+  * install the [`npm` build tool][6] for building the UI component
 
   * install the [`python` interpreter][3] and [`pip` package manager][4],
     then the `pysces` and `numpy` packages (by doing
@@ -28,18 +30,18 @@ You'll need to:
     `DifferentialEquations`, `Plots`, and `DiffEqMonteCarlo` (this is done from
     the Julia REPL running `import Pkg; Pkg.add("<pkg-to-install>")`)
 
-Once you have done all of this, build and run the system with: 
+Once you have done all of this, build and run the system with:
 
 ```sh
 $ git clone https://github.com/GaloisInc/AMIDOL.git && cd AMIDOL
-AMIDOL$ sbt run 
+AMIDOL$ sbt run
 ```
 
 This opens a back-end web server on http://localhost:8080/ . NOTE: This system was only meant for use/tested on
 Google Chrome. This version of the system does not support other browsers.
 
-Example models can be found in this repository under the `examples` directory. These are JSON 
-files meant to be loaded into the web browser UI, with the cloud-shaped upload button in the 
+Example models can be found in this repository under the `examples` directory. These are JSON
+files meant to be loaded into the web browser UI, with the cloud-shaped upload button in the
 upper-right. User-drawn models can also be downloaded with the adjacent download button.
 
 
@@ -48,3 +50,4 @@ upper-right. User-drawn models can also be downloaded with the adjacent download
 [3]: https://www.python.org/downloads/
 [4]: https://pip.pypa.io/en/stable/installing/
 [5]: https://julialang.org/
+[6]: https://www.npmjs.com/get-npm

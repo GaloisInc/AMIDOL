@@ -2,6 +2,7 @@ package amidol
 
 import amidol.math._
 
+import java.io._
 import scala.util.{Failure, Success, Try}
 import spray.json._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
@@ -14,6 +15,25 @@ case class Model(
   events: Map[EventId, Event],
   constants: Map[Variable, Double],
 ) {
+
+  def writeDotFile(file: File): Unit = {
+    val pw = new PrintWriter(file)
+    pw.println(s"digraph {")
+
+    for ((sid, state) <- states) {
+      pw.println(s"""  ${sid.id} [shape=oval label="${state.state_variable.prettyPrint()} (${state.initial_value.prettyPrint()})"];""")
+    }
+
+    for ((eid, event) <- events) {
+      pw.println(s"""  ${eid.id} [shape=rectangle style=dotted label="${event.rate.prettyPrint()}"];""")
+      for ((sid, change) <- event.output_predicate.transition_function) {
+        pw.println(s"""  ${eid.id} -> ${sid.id} [label="${change.prettyPrint()}"];""")
+      }
+    }
+
+    pw.println("}")
+    pw.close()
+  }
 
   def ++(other: Model) = Model(
     states ++ other.states,
@@ -69,19 +89,50 @@ object Model extends ModelJsonSupport {
     models: List[(K, Model)],                      // models to compose
     shared: List[((K, StateId), (K, StateId))], // states shared amongst submodels
   ): Model = {
-    val sharedMap = shared.toMap
+
+    var sharedToVisit = shared
+    val sharedMapB = Map.newBuilder[(K, StateId), (K, StateId)]
+
+    while (sharedToVisit.nonEmpty) {
+      val (s1,s2) = sharedToVisit.head
+      sharedToVisit = sharedToVisit.tail
+
+      var setGrew = true
+      var inThisEquivSet: Set[(K, StateId)] = Set(s1, s2)
+
+      while (setGrew) {
+        // Split remaining edges into those connected and those not connected
+        // to the equivalence class we are building up
+        val (connected, notConnected) = sharedToVisit
+          .partition { case (s1,s2) => inThisEquivSet.contains(s1) || inThisEquivSet.contains(s2) }
+
+        setGrew = connected.nonEmpty
+        sharedToVisit = notConnected
+        inThisEquivSet ++= connected
+          .flatMap { case (s1,s2) => List(s1,s2) }
+          .toSet
+      }
+
+      // Pick a representative for the equivalence class
+      val representative :: rest = inThisEquivSet.toList
+      for (inSet <- rest) {
+        sharedMapB += inSet -> representative
+      }
+    }
+
+    val sharedMap = sharedMapB.result()
 
     def stateIdFunc(k: K)(stateId: StateId): StateId = {
       sharedMap.get(k -> stateId) match {
-        case None => StateId(s"${k}_${stateId.id}")
-        case Some((k2, stateId2)) => StateId(s"${k2}_${stateId2.id}")
+        case None => StateId(s"${stateId.id}_from_${k}")
+        case Some((k2, stateId2)) => StateId(s"${stateId2.id}_from_${k2}")
       }
     }
-    def eventIdFunc(k: K)(eventId: EventId): EventId = EventId(s"${k}_${eventId.id}")
+    def eventIdFunc(k: K)(eventId: EventId): EventId = EventId(s"${eventId.id}_from_$k")
     def variableFunc(k: K)(v: Variable): Variable = {
       sharedMap.get(k -> StateId(v.s.name)) match  {
-        case None => Variable(Symbol(s"${k}_${v.s.name}"))
-        case Some((k2, stateId2)) => Variable(Symbol(s"${k2}_${stateId2.id}"))
+        case None => Variable(Symbol(s"${v.s.name}_from_${k}"))
+        case Some((k2, stateId2)) => Variable(Symbol(s"${stateId2.id}_from_$k2"))
       }
     }
 
@@ -95,7 +146,7 @@ object Model extends ModelJsonSupport {
 case class State(
   state_variable: Variable,
   description: Option[String],
-  initial_value: Expr[Double], 
+  initial_value: Expr[Double],
 )
 
 case class Event(

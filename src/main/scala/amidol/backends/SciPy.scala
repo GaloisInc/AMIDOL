@@ -39,7 +39,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
     val renamer = Renamer.filterAscii()
     val model = modelUnrenamed.rename(renamer)
 
-    // Set up the system of differential equations 
+    // Set up the system of differential equations
     val states: List[State] = model.states.values.toList
     val derivatives: Map[StateId, Python] = {
       val builder = collection.mutable.Map.empty[StateId, String]
@@ -49,11 +49,15 @@ object SciPyIntegrate extends ContinuousInitialValue {
         for ((stateId, effect) <- outputPredicate.transition_function) {
           val term = math.Mult(rate, effect)
           builder(stateId) = builder.get(stateId) match {
-            case None => term.prettyPrint()
+            case None =>
+              inputPredicate match {
+                case None => term.prettyPrint()
+                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0.0)"
+              }
             case Some(existing) =>
               inputPredicate match {
                 case None => s"${term.prettyPrint()} + $existing"
-                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0) + $existing"
+                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0.0) + $existing"
               }
           }
         }
@@ -110,7 +114,7 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |    return ${if (stateVarsStr.isEmpty) "()" else stateVarsStr.map(v => s"d${v}_").mkString(", ")}
          |
          |# Boundary conditions and setup
-         |timeRange_ = ${timeRange.mkString("[ ",", "," ]")}
+         |timeRange_ = np.arange(${inputs.initialTime}, ${inputs.finalTime}, ${inputs.stepSize})
          |y0_ = ${if (initialCondStr.isEmpty) "()" else initialCondStr.mkString(", ")}
          |output = ${if (initialCondStr.isEmpty) "[]" else "odeint(deriv_, y0_, timeRange_).T"}
          |

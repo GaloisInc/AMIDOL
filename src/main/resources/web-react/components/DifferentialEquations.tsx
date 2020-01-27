@@ -10,7 +10,7 @@ import * as Latex from "react-latex";
 
 
 interface DiffEqState {
-  equations: string[];
+  equations: string;
   openPlot: boolean;
 
   range_start: string;
@@ -26,7 +26,7 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
     super(props);
 
     this.state = {
-      equations: [],
+      equations: "",
       openPlot: false,
 
       range_start: "0",
@@ -37,9 +37,9 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
     this.submit = this.submit.bind(this);
   }
 
-  submit() {
+  submit(differentialEquations: string[]) {
     const uiDiffEqsData = new URLSearchParams();
-    uiDiffEqsData.append("equations", JSON.stringify({ equations: this.state.equations }));
+    uiDiffEqsData.append("equations", JSON.stringify({ equations: differentialEquations }));
 
     const simParams = {
       initialTime: parseFloat(this.state.range_start),
@@ -88,25 +88,15 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
   }
 
   render() {
-    const rows = this.state.equations.map((eqn: string, idx: number) => {
-      const deleteEqn = () => {
-        const newEquations = this.state.equations.filter((x, i) => i != idx);
-        this.setState({ ...this.state, equations: newEquations });
-      };
+    const equations = this.state.equations
+      .split("\n")
+      .map(eqn => eqn.trim())
+      .filter(eqn => eqn.length > 0);
 
-      const updateEqn = (newEquation: string) => {
-        const newEquations = this.state.equations.map((oldEqn,i) => (i == idx) ? newEquation : oldEqn);
-        this.setState({ ...this.state, equations: newEquations });
-      };
+    const updateEqns = (newEquations: string) => {
+      this.setState({ ...this.state, equations: newEquations });
+    };
 
-      return <EquationRow
-        equation={eqn}
-        deleteEquation={deleteEqn}
-        updateEquation={updateEqn}
-      />;
-    });
-
-    const addEquation = () => this.setState({ ...this.state, equations: this.state.equations.concat("") });
     const rangeStartNum = parseFloat(this.state.range_start);
     const rangeEndNum = parseFloat(this.state.range_end);
     const rangeStepNum = parseFloat(this.state.range_step);
@@ -125,14 +115,27 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
 
     return (
       <div>
-        <Container>
+            <Container>
           <h1>Differential equations</h1>
-          {rows}
-          <Row>
-            <Col>
-              <Button color="primary" onClick={addEquation}>Add equation</Button>
-            </Col>
-          </Row>
+          <div>
+     Enter equations matching these structures:
+
+            <ul>
+              <li>
+                A differential equation of the form <Latex displayMode={false}>{"$\\frac{dX}{dt} = \\cdots$"}</Latex>
+              </li>
+              <li>
+                An initial condition of the form <Latex displayMode={false}>{"$X_0 = \\cdots$"}</Latex>
+              </li>
+              <li>
+                A constant of the form <Latex displayMode={false}>{"$k = \\cdots$"}</Latex>
+              </li>
+            </ul>
+          </div>
+          <EquationArea
+            equations={this.state.equations}
+            updateEquations={updateEqns}
+          />
           <br/>
           <br/>
           <h3>Simulation parameters</h3>
@@ -171,7 +174,7 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
               </FormGroup>
             </Col>
             <Col sm={3}>
-              <Button color="secondary" onClick={this.submit}>
+              <Button color="secondary" onClick={() => this.submit(equations)}>
               Simulate
               </Button>
             </Col>
@@ -185,76 +188,42 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
 
 
 interface EquationRowProps {
-  equation: string;
-  updateEquation(newEquation: string);
-  deleteEquation();
+  equations: string;
+  updateEquations(newEquations: string);
 }
 
-class EquationRow extends React.Component<EquationRowProps, {}> {
+class EquationArea extends React.Component<EquationRowProps, {}> {
 
   render() {
-    const equationSrc = (this.props.equation) ? "$" + this.props.equation + "$" : "";
+    const equationsSrc = this.props.equations
+      .split("\n")
+      .map(eqn => eqn.trim())
+      .filter(eqn => eqn.length > 0)
+      .map(eqn => "$" + eqn + "$");
 
     return (
       <Row>
-        <Col sm={4}>
+        <Col sm={6}>
           <InputGroup>
             <Input
-              onChange={(e) => this.props.updateEquation(e.target.value)}
-              value={this.props.equation}
+              type="textarea"
+              rows={10}
+              style={{fontFamily: 'monospace', height: '100%'}}
+              onChange={(e) => this.props.updateEquations(e.target.value)}
+              value={this.props.equations}
             />
-            <InputGroupAddon addonType="append">
-              <HelpPopover/>
-            </InputGroupAddon>
           </InputGroup>
         </Col>
-        <Col sm={4}>
-          <Latex displayMode={true} throwOnError={false}>{equationSrc}</Latex>
-        </Col>
-        <Col sm={4}>
-          <Button color="secondary" onClick={this.props.deleteEquation}>
-          Remove equation
-          </Button>
+        <Col sm={6}>
+          {
+            equationsSrc.map((eqnSrc: string) =>
+              <Row>
+                <Latex displayMode={true} throwOnError={false}>{eqnSrc}</Latex>
+              </Row>
+            )
+          }
         </Col>
       </Row>
-    );
-  }
-
-}
-
-export class HelpPopover extends React.Component<{}, { isOpen: boolean }> {
-
-  constructor(props) {
-    super(props);
-    this.state = { isOpen: false };
-  }
-
-  render() {
-
-    const toggle = () => this.setState({ isOpen: !this.state.isOpen });
-
-    return (
-      <div>
-        <Button id="OpenHelp">Help</Button>
-        <Popover placement="bottom" isOpen={this.state.isOpen} target="OpenHelp" toggle={toggle}>
-          <PopoverHeader>Advanced equation editor</PopoverHeader>
-          <PopoverBody>
-            Enter an equation for one of three things here:
-
-            <ul>
-              <li>
-                A differential equation of the form <Latex displayMode={false}>{"$\\frac{dX}{dt} = \\cdots$"}</Latex>
-              </li>
-              <li>
-                An initial condition of the form <Latex displayMode={false}>{"$X_0 = \\cdots$"}</Latex>
-              </li>
-              <li>
-                A constant of the form <Latex displayMode={false}>{"$k = \\cdots$"}</Latex>
-              </li>
-            </ul>
-          </PopoverBody>
-        </Popover>
-      </div>
     );
   }
 
