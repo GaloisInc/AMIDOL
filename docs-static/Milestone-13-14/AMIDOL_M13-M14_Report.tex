@@ -77,6 +77,13 @@
 
 \section{Introduction}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/AMIDOL-architecture.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
+
 \part{Milestone 13}
 
 \section{Recent Extensions to the AMIDOL Framework}
@@ -111,6 +118,55 @@ sometimes be interpreted in multiple ways (for instance: is
 Updating the comparison UI to support a richer mathematical language for derived measures:  In order to implement this, we’ve moved the work of combining data traces from the UI to the backend. The language for describing derived measures supports translations, linear distortions, component-wise arithmetic, as well as a couple built-in math functions. The backend contains a parser for this language as well as an interpreter. One of the challenges here is around how to interpolate when combing data traces whose measures had different time ranges or step sizes.
 
 \section{AMIDOL Demo Instructions}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/LaTex_VDSOL_results.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/LaTeX_VDSOL.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/SIIR_setup_comparision.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/SIIR_visualize_comparision.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/parallel.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/serial.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/substitution.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Arch}
+\end{figure}
 
 \section{AMIDOL Performance for Real-World Systems and Processes}
 
@@ -150,10 +206,77 @@ Updating the comparison UI to support a richer mathematical language for derived
 
 \section{AMIDOL as a Service}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figs/AMIDOL-service.png}
+  \caption{AMIDOL as a Service}
+  \label{Fig:Service}
+\end{figure}
+
+\subsection{Read/Write Model}
+
+Summary – Allow external applications to read and write models to AMIDOL’s IR.
+
+Requirements – Working to supplement AMIDOL with searchable model database, supporting a query interface for model properties and UUIDs for models.
+
+\subsection{Infer/Read VDSOL}
+
+Summary – Currently supports VDSOL inference from AMIDOL IR or Julia code with groundings.
+
+Requirements – Allows retrieval of VDSOLs by UUID and query interface for VDSOL properties.
+
+\subsection{Read/Write Results}
+
+Summary – Allow external applications to read and write to the AMIDOL results database.
+
+Requirements – AMIDOL is implementing a graph-based results database,
+including mechanisms to index into the database to write external
+results (from “data” or an “external model”).
+
+Suggestions – Measure indexing by outside applications is an open question.  We need a clear definition of measure equivalence.  What does it mean for two measures to be the same?  At a basic level, they have the same sigma-algebraic structure, over borel sets that are proxies for the same space.  What does this mean in practice?
+
+\subsection{Transform/Execute Model}
+
+Summary – Allow external applications transform a model in AMIDOL, and to execute a model in AMIDOL.
+
+Requirements – Valid transformation set.  This is essentially a model transformation algebra.
+
 \section{Model Algebras and Transformations}
+
+Models form a group with the operation ”.” (serial composition).
+Closed
+Associative
+Identity element
+The “pass through” model which immediately yields its inputs without changing them.
+Inverse element is a bit harder.
+Intuitively you need a model which ”undoes” g() yielding no output, and passes through the inputs to f().
+
+
 
 \subsection{Composing Models in AMIDOL}
 
+Composition via state sharing is very powerful: we’ve built prototypes that combine birth-death processes, the SIRS model, Lokta-Volterra predator prey, and population flow models. Some of the challenges we’ve identified in this space:
+
+Naming shared states, especially when multiple states are being combined. The most promising avenue is to find a way to force users to specify names.
+
+It should be possible to provide some automated assistance about which compositions make sense or don’t based on units / types / ontological categories
+
+Sub-models being composed need to be pretty general to account for different ways in which we may want to specialize them through composition. One idea to help deal with this is using substitution to introduce new states into existing models.
+
 \subsection{Substituting Models in AMIDOL}
+
+Substitution of subgraphs (of events and states) with other compatible subgraphs
+Provides a mechanism for quickly swapping out sub-models used in a bigger model (for instance: changing an SIR model into an SEIR one).
+Required inputs: the states to remove, the events (between these states) to remove, the new model to introduce, and a mapping from the removed states to the states in the new model.
+Challenge: it is possible for subgraph substitution to accidentally “break” some other part of the model. Consider the case of swapping an SIR sub-model for an SEIR sub-model: elsewhere in the larger model, uses of $S + I + R$ probably indicated “total population” and should be replaced with $S + I + E + R$.
+Solution idea: provide a mechanism for building up symbolic expressions $total_{population} = S + I + R$ that can be used multiple times in the bigger model. This alleviates the pain of “refactoring” after substitution.
+Solution idea: bring to the users attention all locations in the model where there are references to state variables that are part of substitution
+Challenge: sometimes, we want to be able to do multiple substitutions
+in parallel. For instance, we want to replace every instance of a
+sub-model with some other sub-model. In this case, model substitution
+turns into what looks like a structural graph query problem.
+
+One useful take of substitution involves introducing new states into existing models. For instance: a rate in a model starts by being approximated using a constant but eventually needs to be turned into a proper state (the model is being run with parameters where the constant assumption no longer holds - think a pendulum that goes from small-angle swings to large-angle ones).
+Challenge: this sort of transformation seems painfully low-level - is there some bigger operations that generalizes this nicely?
 
 \end{document}

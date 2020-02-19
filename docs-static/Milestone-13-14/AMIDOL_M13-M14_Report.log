@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  30 JAN 2020 14:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  19 FEB 2020 13:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -855,7 +855,29 @@ Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
 )
-(./AMIDOL_M13-M14_Report.aux)
+(./AMIDOL_M13-M14_Report.aux
+
+LaTeX Warning: Label `Fig:Arch' multiply defined.
+
+
+LaTeX Warning: Label `Fig:Arch' multiply defined.
+
+
+LaTeX Warning: Label `Fig:Arch' multiply defined.
+
+
+LaTeX Warning: Label `Fig:Arch' multiply defined.
+
+
+LaTeX Warning: Label `Fig:Arch' multiply defined.
+
+
+LaTeX Warning: Label `Fig:Arch' multiply defined.
+
+
+LaTeX Warning: Label `Fig:Arch' multiply defined.
+
+)
 \openout1 = `AMIDOL_M13-M14_Report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
@@ -872,8 +894,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
 LaTeX Font Info:    ... okay on input line 72.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 72.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 72.
-
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1cmr.fd
+ (/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 72.
@@ -1073,95 +1094,177 @@ s-blue.png>])
 \tf@toc=\write6
 \openout6 = `AMIDOL_M13-M14_Report.toc'.
 
+<figs/AMIDOL-architecture.png, id=16, 365.2044pt x 306.9066pt>
+File: figs/AMIDOL-architecture.png Graphic file (type png)
+<use figs/AMIDOL-architecture.png>
+Package pdftex.def Info: figs/AMIDOL-architecture.png  used on input line 82.
+(pdftex.def)             Requested size: 234.8775pt x 197.37956pt.
 LaTeX Font Info:    Font shape `OT1/pplx/bx/n' in size <17.28> not available
-(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 80.
+(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 87.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <17.28> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 80.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 87.
 LaTeX Font Info:    Font shape `OT1/phv/b/n' will be
-(Font)              scaled to size 16.41594pt on input line 80.
+(Font)              scaled to size 16.41594pt on input line 87.
 LaTeX Font Info:    Font shape `OT1/pplx/bx/n' in size <24.88> not available
-(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 80.
+(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 87.
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <24.88> not available
-(Font)              Font shape `OT1/phv/b/n' tried instead on input line 80.
+(Font)              Font shape `OT1/phv/b/n' tried instead on input line 87.
 LaTeX Font Info:    Font shape `OT1/phv/b/n' will be
-(Font)              scaled to size 23.63593pt on input line 80.
-LaTeX Font Info:    Try loading font information for OMS+pplx on input line 107
+(Font)              scaled to size 23.63593pt on input line 87.
+File: galois-blue.png Graphic file (type png)
+<use galois-blue.png>
+Package pdftex.def Info: galois-blue.png  used on input line 92.
+(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
+LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <12> not available
+(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 92.
+LaTeX Font Info:    Font shape `OT1/phv/m/sl' will be
+(Font)              scaled to size 11.39996pt on input line 92.
+[2 <./figs/AMIDOL-architecture.png>]
+LaTeX Font Info:    Try loading font information for OMS+pplx on input line 114
 .
-LaTeX Font Info:    No file OMSpplx.fd. on input line 107.
+LaTeX Font Info:    No file OMSpplx.fd. on input line 114.
+
 
 LaTeX Font Warning: Font shape `OMS/pplx/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbackslash' on input line 107.
+(Font)              for symbol `textbackslash' on input line 114.
 
-File: galois-blue.png Graphic file (type png)
-<use galois-blue.png>
-Package pdftex.def Info: galois-blue.png  used on input line 108.
-(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
-LaTeX Font Info:    Font shape `OT1/phv/m/it' in size <12> not available
-(Font)              Font shape `OT1/phv/m/sl' tried instead on input line 108.
-LaTeX Font Info:    Font shape `OT1/phv/m/sl' will be
-(Font)              scaled to size 11.39996pt on input line 108.
-[2]
+<figs/LaTex_VDSOL_results.png, id=22, 1114.1625pt x 847.165pt>
+File: figs/LaTex_VDSOL_results.png Graphic file (type png)
+<use figs/LaTex_VDSOL_results.png>
+Package pdftex.def Info: figs/LaTex_VDSOL_results.png  used on input line 124.
+(pdftex.def)             Requested size: 234.8775pt x 178.58208pt.
+<figs/LaTeX_VDSOL.png, id=23, 1114.1625pt x 847.165pt>
+File: figs/LaTeX_VDSOL.png Graphic file (type png)
+<use figs/LaTeX_VDSOL.png>
+Package pdftex.def Info: figs/LaTeX_VDSOL.png  used on input line 131.
+(pdftex.def)             Requested size: 234.8775pt x 178.58208pt.
+<figs/SIIR_setup_comparision.png, id=24, 1523.6925pt x 967.615pt>
+File: figs/SIIR_setup_comparision.png Graphic file (type png)
+<use figs/SIIR_setup_comparision.png>
+Package pdftex.def Info: figs/SIIR_setup_comparision.png  used on input line 13
+8.
+(pdftex.def)             Requested size: 234.8775pt x 149.15196pt.
+<figs/SIIR_visualize_comparision.png, id=25, 1523.6925pt x 967.615pt>
+File: figs/SIIR_visualize_comparision.png Graphic file (type png)
+<use figs/SIIR_visualize_comparision.png>
+Package pdftex.def Info: figs/SIIR_visualize_comparision.png  used on input lin
+e 145.
+(pdftex.def)             Requested size: 234.8775pt x 149.15196pt.
+<figs/parallel.png, id=26, 131.0496pt x 219.7008pt>
+File: figs/parallel.png Graphic file (type png)
+<use figs/parallel.png>
+Package pdftex.def Info: figs/parallel.png  used on input line 152.
+(pdftex.def)             Requested size: 234.8775pt x 393.77153pt.
+<figs/serial.png, id=27, 216.3282pt x 127.1952pt>
+File: figs/serial.png Graphic file (type png)
+<use figs/serial.png>
+Package pdftex.def Info: figs/serial.png  used on input line 159.
+(pdftex.def)             Requested size: 234.8775pt x 138.11017pt.
+<figs/substitution.png, id=28, 131.0496pt x 125.268pt>
+File: figs/substitution.png Graphic file (type png)
+<use figs/substitution.png>
+Package pdftex.def Info: figs/substitution.png  used on input line 166.
+(pdftex.def)             Requested size: 234.8775pt x 224.51884pt.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 118.
+(Font)              scaled to size 10.42007pt on input line 174.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 118.
+(Font)              scaled to size 7.91925pt on input line 174.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 118.
+(Font)              scaled to size 6.25204pt on input line 174.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 118.
+(Font)              scaled to size 10.42007pt on input line 174.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 118.
+(Font)              scaled to size 7.91925pt on input line 174.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 118.
+(Font)              scaled to size 6.25204pt on input line 174.
 LaTeX Font Info:    Font shape `OT1/pplx/bx/n' in size <10> not available
-(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 120.
+(Font)              Font shape `OT1/pplx/b/n' tried instead on input line 176.
 
-Overfull \hbox (30.28479pt too wide) in paragraph at lines 118--146
+Overfull \hbox (30.28479pt too wide) in paragraph at lines 174--202
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 118--146
+Underfull \hbox (badness 10000) in paragraph at lines 174--202
 
  []
 
-
-AED: lastpage setting LastPage
 File: galois-blue.png Graphic file (type png)
 <use galois-blue.png>
-Package pdftex.def Info: galois-blue.png  used on input line 159.
+Package pdftex.def Info: galois-blue.png  used on input line 203.
 (pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
 [3]
 File: galois-blue.png Graphic file (type png)
 <use galois-blue.png>
-Package pdftex.def Info: galois-blue.png  used on input line 159.
+Package pdftex.def Info: galois-blue.png  used on input line 203.
 (pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
- [4] (./AMIDOL_M13-M14_Report.aux)
+ [4 <./figs/LaTex_VDSOL_results.png> <./figs/LaTeX_VDSOL.png> <./figs/SIIR_setu
+p_comparision.png>]
+File: galois-blue.png Graphic file (type png)
+<use galois-blue.png>
+Package pdftex.def Info: galois-blue.png  used on input line 203.
+(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
+ [5 <./figs/SIIR_visualize_comparision.png> <./figs/parallel.png>]
+File: galois-blue.png Graphic file (type png)
+<use galois-blue.png>
+Package pdftex.def Info: galois-blue.png  used on input line 203.
+(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
+ [6 <./figs/serial.png> <./figs/substitution.png>]
+<figs/AMIDOL-service.png, id=49, 361.35pt x 326.1786pt>
+File: figs/AMIDOL-service.png Graphic file (type png)
+<use figs/AMIDOL-service.png>
+Package pdftex.def Info: figs/AMIDOL-service.png  used on input line 211.
+(pdftex.def)             Requested size: 234.8775pt x 212.01854pt.
+File: galois-blue.png Graphic file (type png)
+<use galois-blue.png>
+Package pdftex.def Info: galois-blue.png  used on input line 221.
+(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
+ [7 <./figs/AMIDOL-service.png>]
+Overfull \hbox (8.67209pt too wide) in paragraph at lines 230--231
+[]\OT1/pplx/m/n/12 Summary { Al-low ex-ter-nal ap-pli-ca-tions to read and writ
+e to the AMI-DOL re-sults database. 
+ []
+
+File: galois-blue.png Graphic file (type png)
+<use galois-blue.png>
+Package pdftex.def Info: galois-blue.png  used on input line 266.
+(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
+[8] 
+AED: lastpage setting LastPage
+File: galois-blue.png Graphic file (type png)
+<use galois-blue.png>
+Package pdftex.def Info: galois-blue.png  used on input line 282.
+(pdftex.def)             Requested size: 72.26999pt x 18.91872pt.
+[9] (./AMIDOL_M13-M14_Report.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
  ) 
 Here is how much of TeX's memory you used:
- 20060 strings out of 492616
- 356315 string characters out of 6129482
- 458417 words of memory out of 5000000
- 23529 multiletter control sequences out of 15000+600000
- 45586 words of font info for 107 fonts, out of 8000000 for 9000
+ 20120 strings out of 492616
+ 357670 string characters out of 6129482
+ 462472 words of memory out of 5000000
+ 23572 multiletter control sequences out of 15000+600000
+ 49131 words of font info for 115 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,15n,48p,3247b,378s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,16n,48p,3247b,392s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
-xlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2
-019/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2019/tex
-mf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/local/texlive/2019/texmf-dis
-t/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2019/texmf-dist/fonts
-/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/
-urw/palatino/uplri8a.pfb>
-Output written on AMIDOL_M13-M14_Report.pdf (4 pages, 96670 bytes).
+exlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/tex
+live/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
+ive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/201
+9/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2019/texmf
+-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/local/texlive/2019/texmf-dist/
+fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/t
+ype1/urw/palatino/uplr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/ur
+w/palatino/uplri8a.pfb>
+Output written on AMIDOL_M13-M14_Report.pdf (9 pages, 631752 bytes).
 PDF statistics:
- 52 PDF objects out of 1000 (max. 8388607)
- 36 compressed objects within 1 object stream
+ 91 PDF objects out of 1000 (max. 8388607)
+ 51 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 18 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 63 words of extra memory for PDF output out of 10000 (max. 10000000)
 
