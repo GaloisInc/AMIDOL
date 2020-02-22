@@ -77,98 +77,140 @@
 
 \section{Introduction}
 
+Our advancements to AMIDOL have focused on preparing for the upcoming
+live demo, final code release, and expanding AMIDOL's use of VDSOLs,
+model composition interface, and the generation of a new ``AMIDOL as a
+Service'' (AaaS) API designed to allow other modeling tools to make
+use of AMIDOL's IR, transformation, and code synthesis capabilities.
+We have released the next version of AMIDOL at its github site
+(\url{https://github.com/GaloisInc/AMIDOL/}) under the BSD 3-Clause
+``New'' or ``Revised'' License.
+
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{figs/AMIDOL-architecture.png}
   \caption{AMIDOL Architecture}
-  \label{Fig:Arch}
+  \label{Fig:Arch} 
 \end{figure}
+
+Figure \ref{Fig:Arch} shows the current state of the AMIDOL
+framework.  AMIDOL functions as an integrated prototype with the work
+of our colleagues at GTRI and their SemanticModels.jl development, and
+Automates from our colleagues at the University of Arizona.  AMIDOL
+currently supports multiple VDSOLs, both graphical and textual, a
+universal IR, a code synthesis engine capable of generating solutions
+targeting both ODE solution and Agent-Based Methods (ABMs) in both
+Python and Julia.
 
 \part{Milestone 13}
 
 \section{Recent Extensions to the AMIDOL Framework}
 
-The UI for comparing results of multiple models has been extended to support a rich language for combining traces. This is particularly useful for constructing derived measures without needing to re-run the model. For instance, this might be used in a situation where an epidemiological model tracks multiple strains of a virus separately, but the hospital data only keeps aggregate data. Another similar case is when the scientist doing modelling is trying to quickly line up peaks of infected populations from model result and real world data. Our language contains primitives like shift which simplify this sort of transformation.
+The UI for comparing results of multiple models has been extended to
+support a rich language for combining traces. This is particularly
+useful for constructing derived measures without needing to re-run a given
+model. For instance, this might be used in a situation where an
+epidemiological model tracks multiple strains of a virus separately,
+but the hospital data only keeps aggregate data. Another similar case
+is when the scientist doing modelling is trying to quickly line up
+peaks of infected populations from model result and real world
+data. Our language contains primitives, such as shift, which simplify this
+sort of transformation.
 
 A completely new VDSOL that is designed to take a system of
 differential equations written in LaTeX format has been added. The
 idea behind this new language is to simplify the work of going from a
-model written in an academic paper to an AMIDOL model. Scientists
+model written in an academic paper to an AMIDOL model. Scientists can
 enter LaTeX equations, constants, and initial conditions in a text
 box. Beside this input, they get a real-time LaTeX preview of their
 equations. From there, the model is compiled into the AMIDOL IR so
 that it can be executed and compared to results from other models
 (which may have been designed in completely different VDSOLs).
 
-Finally, we are in the process of experimenting with model composition in the backend, with the goal of finding a minimal intuitive language for combining models. To this end, we’ve been refining our existing state-sharing composition operators and have started to experiment with other techniques revolving around substitution. Most of these changes are still not exposed to end users, since we are not yet sure what a good visual representation would look like.
+Finally, we are in the process of experimenting with model composition
+in the backend, with the goal of finding a minimal intuitive language
+for combining models. To this end, we’ve been refining our existing
+state-sharing composition operators and have started to experiment
+with other techniques revolving around substitution. Most of these
+changes are still not exposed to end users in the UI, as we are still
+developing appropriate primitives for model composition.
 
 \subsection{VDSOLs for Mathematical Languages}
 
-Adding a VDSOL for LaTeX input equations: The VDSOL renders LaTeX
+AMIDOL has been extended to include a VDSOL which compiles and
+translates a system of \LaTeX equations into the AMIDOL IR. The VDSOL renders LaTeX
 equations using KaTeX, a fast browser-based Javascript library
 designed for this purpose. Once a user submits a system of
 differential equations, the backend tries to parse each line as a
 differential equation, initial condition, or constant. This step is
 complicated by the fact that the LaTeX source for equations can
 sometimes be interpreted in multiple ways (for instance: is
-`\textbackslash frac{psi}{2}` the variable `psi` divided by two, or the product of `p`, `s`, `i`, and `0.5`). To solve this ambiguity, we require that implied multiplication include at least a space to separate the factors (eg. `p s i` vs `psi`). The final step is to convert the system of differential equations into an AMIDOL model. This is fairly straightforward: variables in the equations turn into states and the right-hand side of the equations turns into events.
+`\textbackslash frac\{psi\}\{2\}` the variable `psi` divided by two, or
+the product of `p`, `s`, `i`, and `0.5`). To solve this ambiguity, we
+require that implied multiplication include at least a space to
+separate the factors (eg. `p s i` vs `psi`), assuming identifiers
+without spaces are atomic. The final step is to
+convert the system of differential equations into an AMIDOL
+model, represented in the IR. This is fairly straightforward:
+variables given as derivitives with respect to time in the equations turn
+into states and the right-hand side of the equations turns into
+events and their associated rates.  Positive and negative rates are
+matched to infer output predicates.
 
 \subsection{Definition of Derived Measures}
 
-Updating the comparison UI to support a richer mathematical language for derived measures:  In order to implement this, we’ve moved the work of combining data traces from the UI to the backend. The language for describing derived measures supports translations, linear distortions, component-wise arithmetic, as well as a couple built-in math functions. The backend contains a parser for this language as well as an interpreter. One of the challenges here is around how to interpolate when combing data traces whose measures had different time ranges or step sizes.
+The AMIDOL comparison UI has been updated
+to support a richer mathematical language
+for derived measures:  In order to implement this, we’ve moved the
+work of combining data traces from the UI to the backend. The language
+for describing derived measures supports translations, linear
+distortions, component-wise arithmetic, as well as a limited, but
+expanding, set of built-in functions. The backend contains a parser for this language as
+well as an interpreter.
 
 \section{AMIDOL Demo Instructions}
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{figs/LaTex_VDSOL_results.png}
-  \caption{AMIDOL Architecture}
-  \label{Fig:Arch}
+  \includegraphics[width=0.5\textwidth]{figs/LaTeX_VDSOL.png}
+  \caption{New AMIDOL Differential Equation VDSOL}
+  \label{Fig:DiffEq}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{figs/LaTeX_VDSOL.png}
-  \caption{AMIDOL Architecture}
-  \label{Fig:Arch}
+  \includegraphics[width=0.5\textwidth]{figs/LaTex_VDSOL_results.png}
+  \caption{New AMIDOL Results Visualization}
+  \label{Fig:Results}
 \end{figure}
+
 
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{figs/SIIR_setup_comparision.png}
-  \caption{AMIDOL Architecture}
-  \label{Fig:Arch}
+  \caption{New AMIDOL Model Comparison}
+  \label{Fig:Comp}
 \end{figure}
 
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{figs/SIIR_visualize_comparision.png}
-  \caption{AMIDOL Architecture}
-  \label{Fig:Arch}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{figs/parallel.png}
-  \caption{AMIDOL Architecture}
-  \label{Fig:Arch}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{figs/serial.png}
-  \caption{AMIDOL Architecture}
-  \label{Fig:Arch}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{figs/substitution.png}
-  \caption{AMIDOL Architecture}
+  \caption{New AMIDOL Model Comparison Results Visualization}
   \label{Fig:Arch}
 \end{figure}
 
 \section{AMIDOL Performance for Real-World Systems and Processes}
+
+In order to characterize AMIDOL's current performance, we executed the
+benchmarks documented below, measuring over four models, the time to
+compile the VDSOL to the AMIDOL IR, the time to translate a Julia AST
+into a VDSOL (including the time required to search for groundings in
+the SNOMED ontology), the time to compile the IR to both Python and
+Julia backends, and the execution times of both backends.
+
+We additionally measured the lines of code generated for each model in
+both Python and Julia by the AMIDOL code synthesis portion of the
+compiler.  The results are provided below.
 
 { \footnotesize
 \begin{tabular}{|llllll|}
@@ -200,83 +242,146 @@ Updating the comparison UI to support a richer mathematical language for derived
 \end{tabular}
 }
 
+Overall these times demonstrate performance comparable to, or faster
+than, hand-developed scientific models, with much faster and less
+error prone development cycles.
+
 \part{Milestone 14}
 
 \section{Final Prototype Development}
 
+As part of the final prototype development of AMIDOL, we have worked
+to both expand the number and types of different VDSOLs supported by
+AMIDOL; implemented a model composition system that results in a model
+algebra, capable of composing models serially, in parallel, and
+substitutionally, even across different VDSOLs; and expanded AMIDOL's
+ability to operate as a service for external applications.
+
 \section{AMIDOL as a Service}
+
+We have worked to expose AMIDOL's capabilities to external
+applications via a number of RESTful end points in order to allow for
+AMIDOL to work not only as a stand-alone application with its own UI,
+but to accept workloads from external applications seeking to leverage
+AMIDOL as part of their own tool chain, or as part of a library.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{figs/AMIDOL-service.png}
+  \includegraphics[width=0.3\textwidth]{figs/AMIDOL-service.png}
   \caption{AMIDOL as a Service}
   \label{Fig:Service}
 \end{figure}
 
+Figure \ref{Fig:Service} shows the general architecture of the AaaS
+framework, with input and output APIs, in roughly matched pairs based
+on their intended use.  We discuss those APIs in more
+detail in the following sections.
+
 \subsection{Read/Write Model}
 
-Summary – Allow external applications to read and write models to AMIDOL’s IR.
-
-Requirements – Working to supplement AMIDOL with searchable model database, supporting a query interface for model properties and UUIDs for models.
+The \texttt{Read/Write Model} API end points are designed to allow
+external applications to read and write models directly to AMIDOL's
+IR.  This allows the import and export of models into AMIDOL for
+further API calls.  To support this we have been exploring future work
+including a searchable model database, and the support of a query
+interface for finding models by their properties.
 
 \subsection{Infer/Read VDSOL}
 
-Summary – Currently supports VDSOL inference from AMIDOL IR or Julia code with groundings.
-
-Requirements – Allows retrieval of VDSOLs by UUID and query interface for VDSOL properties.
+The \texttt{Infer/Read VDSOL} API end points are designed to import
+found code, generating an inferred VDSOL, or to read an existing VDSOL
+from AMIDOL.  Imported code takes the form of Julia code, with
+grounding information supplied by AutoMATES.  The Read end point allows
+for retrieval of VDSOLs already in AMIDOL's database.  We have been
+exploring future work to also allow retrieval using a query system
+over VDSOL properties.
 
 \subsection{Read/Write Results}
 
-Summary – Allow external applications to read and write to the AMIDOL results database.
-
-Requirements – AMIDOL is implementing a graph-based results database,
-including mechanisms to index into the database to write external
-results (from “data” or an “external model”).
-
-Suggestions – Measure indexing by outside applications is an open question.  We need a clear definition of measure equivalence.  What does it mean for two measures to be the same?  At a basic level, they have the same sigma-algebraic structure, over borel sets that are proxies for the same space.  What does this mean in practice?
+The \texttt{Read/Write Results} API end point is designed to allow
+external applications to read and write to the AMIDOL results
+database.  AMIDOL is implementing a graph-based results database,
+supporting model comparison, and including mechanisms to index into
+the database to write data, traces, or external model results.  This
+will allow users to access and compare measures generated by AMIDOL,
+and submit new data or measures for comparison.  Measure indexing by
+outside applications is an open question.  We need a clear definition
+of measure equivalence.  What does it mean for two measures to be the
+same?  At a basic level, they have the same sigma-algebraic structure,
+over borel sets that are proxies for the same space.  We are exploring
+what this means in practice as part of our future work.
 
 \subsection{Transform/Execute Model}
 
-Summary – Allow external applications transform a model in AMIDOL, and to execute a model in AMIDOL.
-
-Requirements – Valid transformation set.  This is essentially a model transformation algebra.
+The \texttt{Transform/Execute Model} API end point allows external
+applications to compile and transform models in AMIDOL, including
+through model composition, and then execute compiled models.
 
 \section{Model Algebras and Transformations}
 
-Models form a group with the operation ”.” (serial composition).
-Closed
-Associative
-Identity element
-The “pass through” model which immediately yields its inputs without changing them.
-Inverse element is a bit harder.
-Intuitively you need a model which ”undoes” g() yielding no output, and passes through the inputs to f().
+In order to support the \texttt{Transform/Execute Model} API end
+point, and enable users to compose models generated in one, or
+multiple, VDSOLs, we have implemented a model algebra to allow for
+serial, parallel, and substitional model composition.  Models in
+AMIDOL are composed via the process of \textbf{state sharing} a
+powerful primitive which unifies the values of states across models,
+joining them.  While many unanswered questions exist on state sharing
+workflows for users, the current AMIDOL framework allows for parallel
+and serial
+composition using this mechanism.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.1\textwidth]{figs/parallel.png}
+  \caption{Parallel Model Composition in AMIDOL}
+  \label{Fig:Parallel}
+\end{figure}
 
+Parallel composition is accomplished by sharing no state variables,
+resulting in the diagram shown in \ref{Fig:Parallel}.  This has the
+effect of taking the union of input and output objects of both
+morphisms, and treating the new parallel composition as a morphism
+between these unions.  While seemingly simple, this construct allows
+for a richer set of serial compositions by altering the apparent input
+and output model signatures of the new composed models to potential
+match other models with which it can then be composed.
 
-\subsection{Composing Models in AMIDOL}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.2\textwidth]{figs/serial.png}
+  \caption{Serial Model Composition in AMIDOL}
+  \label{Fig:Serial}
+\end{figure}
 
-Composition via state sharing is very powerful: we’ve built prototypes that combine birth-death processes, the SIRS model, Lokta-Volterra predator prey, and population flow models. Some of the challenges we’ve identified in this space:
+Serial composition, shown in Figure \ref{Fig:Serial}, is accomplished by taking the disjoint
+union of two open models in AMIDOL's IR, $P: X \rightarrow Y$, and
+$Q: Y \rightarrow Z$ resulting in $P+Q: X \rightarrow Z$, sharing all
+similar states in the objects $Y$ belonging to $P$ and $Q$.
 
-Naming shared states, especially when multiple states are being combined. The most promising avenue is to find a way to force users to specify names.
+\begin{figure}
+  \centering
+  \includegraphics[width=0.2\textwidth]{figs/substitution.png}
+  \caption{AMIDOL Architecture}
+  \label{Fig:Sub}
+\end{figure}
 
-It should be possible to provide some automated assistance about which compositions make sense or don’t based on units / types / ontological categories
-
-Sub-models being composed need to be pretty general to account for different ways in which we may want to specialize them through composition. One idea to help deal with this is using substitution to introduce new states into existing models.
-
-\subsection{Substituting Models in AMIDOL}
-
-Substitution of subgraphs (of events and states) with other compatible subgraphs
-Provides a mechanism for quickly swapping out sub-models used in a bigger model (for instance: changing an SIR model into an SEIR one).
-Required inputs: the states to remove, the events (between these states) to remove, the new model to introduce, and a mapping from the removed states to the states in the new model.
-Challenge: it is possible for subgraph substitution to accidentally “break” some other part of the model. Consider the case of swapping an SIR sub-model for an SEIR sub-model: elsewhere in the larger model, uses of $S + I + R$ probably indicated “total population” and should be replaced with $S + I + E + R$.
-Solution idea: provide a mechanism for building up symbolic expressions $total_{population} = S + I + R$ that can be used multiple times in the bigger model. This alleviates the pain of “refactoring” after substitution.
-Solution idea: bring to the users attention all locations in the model where there are references to state variables that are part of substitution
-Challenge: sometimes, we want to be able to do multiple substitutions
-in parallel. For instance, we want to replace every instance of a
-sub-model with some other sub-model. In this case, model substitution
-turns into what looks like a structural graph query problem.
-
-One useful take of substitution involves introducing new states into existing models. For instance: a rate in a model starts by being approximated using a constant but eventually needs to be turned into a proper state (the model is being run with parameters where the constant assumption no longer holds - think a pendulum that goes from small-angle swings to large-angle ones).
-Challenge: this sort of transformation seems painfully low-level - is there some bigger operations that generalizes this nicely?
+Lastly, AMIDOL implements substititional composition using the
+double-push out rule shown in Figure \ref{Fig:Sub}, implementing the
+double-push out graph rewriting mechanism.  Substitution of subgraphs
+(of events and states) with other compatible subgraphs
+provides a mechanism for quickly swapping out sub-models used in a
+bigger model (for instance: changing an SIR model into an SEIR one).
+The substitional transformation requires a user to give an example of
+the initial model, the model invariants, and the resulting new model
+to be obtained via substition.  While semantically valid, it presents
+some possible issues as it is entirely possible for subgraph
+substitution to accidentally “break” some other part of the
+model. Consider the case of swapping an SIR sub-model for an SEIR
+sub-model: elsewhere in the larger model, uses of $S + I + R$ probably
+indicated “total population” and should be replaced with $S + I + E +
+R$.  To address this issue we are focusing our future work on
+providing a mechanism for building up symbolic expressions
+alleviating the pain of “refactoring” after
+substitution.
 
 \end{document}
