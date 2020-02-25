@@ -36,6 +36,13 @@
    \colorbox{MyGray}{\usebox{\@tempboxa}}
 }\makeatother
 
+\renewcommand{\textunderscore}{\texttt{\char`_}}
+
+\newcommand{\mathtutorial}[1]{%
+  \par\noindent
+  \framebox[\linewidth]{\texttt{\detokenize{#1}}}%
+}
+
 \setlength{\parskip}{0.6em}
 \setlength{\abovecaptionskip}{0.5em}
 
@@ -170,6 +177,131 @@ well as an interpreter.
 
 \section{AMIDOL Demo Instructions}
 
+\subsection{AMIDOL Comparison UI}
+
+The following tutorial is designed to better explain the new AMIDOL
+comparison UI.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/comparision-ui-1.png}
+  \caption{SIIR Example Model}
+  \label{Fig:Comparison1}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/comparision-ui-2.png}
+  \caption{Comparison of model infection results.}
+  \label{Fig:Comparison2}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/comparision-ui-3.png}
+  \caption{AMIDOL Compare Model Page}
+  \label{Fig:Comparison3}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/comparision-ui-4.png}
+  \caption{Total Infected Comparison}
+  \label{Fig:Comparison4}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/comparision-ui-5.png}
+  \caption{Model Comparison Page with Shift Operator}
+  \label{Fig:Comparison5}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/comparision-ui-6.png}
+  \caption{Shifted Results of Total Infection}
+  \label{Fig:Comparison6}
+\end{figure}
+
+\begin{enumerate}
+\item Download a simple SIIR model  file from
+  \url{https://raw.githubusercontent.com/GaloisInc/AMIDOL/master/examples/SIIR.json}
+\item Starting at the main page (\url{http://amidol.galois.com}) click
+  on the cloud-arrow-up button and, when prompted for a file, select
+  the SIIR.json file that was just downloaded.  You should see the
+  model in Figure \ref{Fig:Comparison1}
+\item Since this model comes with two measures already defined, it is
+  ready to be executed immediately. Press on “Execute” in the top
+  right corner of the page.  The results will be similar to those
+  shown in Figure \ref{Comparison of model infection results.}.
+\item Now, navigate to the model comparison page
+  (\url{http://amidol.galois.com/compare.html}). Here we are going to
+  compare the results of running our model to some hospital data.
+\item Click on “Add new” and name the series “Total infected model”.
+\item Then, under data traces,  click on the “…” button and add a
+  trace that has a name that looks like
+  “<date>\textunderscore{}Infected\textunderscore{}scipy\textunderscore{}<counter>”.
+\item Click on the “…” button again and add a trace that has a name
+  that looks like “<date>\textunderscore{}Infected2\textunderscore{}scipy\textunderscore{}<counter>”.
+\item Now, we are going to upload to artificial data that is meant to
+  simulate aggregate infection rates that a hospital might collect. In
+  particular, the data is shifted in time compared to the model. Under
+  “Upload a new data trace”, enter “hospital\textunderscore{}data” for “Name” and
+  choose this file for data:
+  \url{https://raw.githubusercontent.com/GaloisInc/AMIDOL/master/examples/reference-data/SIIR_infection_rates_shifted.json}. Then,
+  click “Upload series”.
+\item Next, click on “Add new” again and name the series “Total
+  infected reference”.
+\item Then, under data traces,  click on the “…” button and add the
+  data trace you just uploaded: “hospital\textunderscore{}data”.
+\item If we click “Plot comparison”, we can see that the reference and
+  hospital data match up, but they are offset in the time axis, as in
+  Figure \ref{Fig:Comparison4}.
+\item Exit the plot. Now, click on “Advanced” on the row of “Total
+  infected reference” and paste into the textbox that appears
+  “shift(`hospital\textunderscore{}data`, 22)”. This is going to dynamically adjust
+  the “hospital\textunderscore{}data” trace to start 22 time units earlier.  See
+  Figure \ref{Fig:Comparison5}
+\item Now, when we click “Plot comparison”, the infected populations
+  over time match up.  The results should match Figure \ref{Fig:Comparison6}.
+\item The “Help” button to the right of the textbox shows you the other sorts of data trace transformation operations you can perform.
+\end{enumerate}
+
+\subsection{AMIDOL Differential Equation VDSOL}
+
+The following instructions explore the new Differential Equations
+editor implemented in AMIDOL.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/diff-eq-1.png}
+  \caption{AMIDOL LaTeX Differential Equations Editor}
+  \label{Fig:DiffEq1}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figs/diff-eq-2.png}
+  \caption{}
+  \label{Fig:DiffEq2}
+\end{figure}
+
+\begin{enumerate}
+\item Navigate the differential equations page editor at \url{http://amidol.galois.com/diff-eq.html}. Here, we can enter in raw differential equations.
+\item For instance a simple Lokta Volterra model, enter the following
+  equations, verbatim, as in Figure \ref{Fig:DiffEq1}:
+  \begin{itemize}
+  \item \mathtutorial{\frac{dx}{dt} = 0.7 x - \beta x y}
+  \item \mathtutorial{\frac{dy}{dt} = 0.1 x y - 0.3 y}
+  \item \mathtutorial{ x_0 = 0.5}
+  \item \mathtutorial{ y_0 = 0.5}
+  \item \mathtutorial{ \beta = 0.1}
+  \end{itemize}
+\item Then, click “Simulate” to see the results of the model
+  running, resulting in the graph shown in Figure \ref{Fig:DiffEq2}.
+\end{enumerate}
+  
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{figs/LaTeX_VDSOL.png}
