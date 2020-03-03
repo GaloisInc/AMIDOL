@@ -82,6 +82,8 @@
 \vspace*{2cm}
 \tableofcontents
 
+\newpage
+
 \section{Introduction}
 
 Our advancements to AMIDOL have focused on preparing for the upcoming
@@ -184,42 +186,42 @@ comparison UI.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/comparision-ui-1.png}
+  \includegraphics[width=0.5\textwidth]{figs/comparision-ui-1.png}
   \caption{SIIR Example Model}
   \label{Fig:Comparison1}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/comparision-ui-2.png}
+  \includegraphics[width=0.5\textwidth]{figs/comparision-ui-2.png}
   \caption{Comparison of model infection results.}
   \label{Fig:Comparison2}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/comparision-ui-3.png}
+  \includegraphics[width=0.5\textwidth]{figs/comparision-ui-3.png}
   \caption{AMIDOL Compare Model Page}
   \label{Fig:Comparison3}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/comparision-ui-4.png}
+  \includegraphics[width=0.5\textwidth]{figs/comparision-ui-4.png}
   \caption{Total Infected Comparison}
   \label{Fig:Comparison4}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/comparision-ui-5.png}
+  \includegraphics[width=0.5\textwidth]{figs/comparision-ui-5.png}
   \caption{Model Comparison Page with Shift Operator}
   \label{Fig:Comparison5}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/comparision-ui-6.png}
+  \includegraphics[width=0.5\textwidth]{figs/comparision-ui-6.png}
   \caption{Shifted Results of Total Infection}
   \label{Fig:Comparison6}
 \end{figure}
@@ -234,16 +236,16 @@ comparison UI.
 \item Since this model comes with two measures already defined, it is
   ready to be executed immediately. Press on “Execute” in the top
   right corner of the page.  The results will be similar to those
-  shown in Figure \ref{Comparison of model infection results.}.
+  shown in Figure \ref{Fig:Comparison2}.
 \item Now, navigate to the model comparison page
   (\url{http://amidol.galois.com/compare.html}). Here we are going to
   compare the results of running our model to some hospital data.
 \item Click on “Add new” and name the series “Total infected model”.
 \item Then, under data traces,  click on the “…” button and add a
   trace that has a name that looks like
-  “<date>\textunderscore{}Infected\textunderscore{}scipy\textunderscore{}<counter>”.
+  “$\langle$date$\rangle$\textunderscore{}Infected\textunderscore{}scipy\textunderscore{}$\langle$counter$\rangle$”.
 \item Click on the “…” button again and add a trace that has a name
-  that looks like “<date>\textunderscore{}Infected2\textunderscore{}scipy\textunderscore{}<counter>”.
+  that looks like “$\langle$date$\rangle$\textunderscore{}Infected2\textunderscore{}scipy\textunderscore{}$\langle$counter$\rangle$”.
 \item Now, we are going to upload to artificial data that is meant to
   simulate aggregate infection rates that a hospital might collect. In
   particular, the data is shifted in time compared to the model. Under
@@ -275,15 +277,16 @@ editor implemented in AMIDOL.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/diff-eq-1.png}
+  \includegraphics[width=0.5\textwidth]{figs/diff-eq-1.png}
   \caption{AMIDOL LaTeX Differential Equations Editor}
   \label{Fig:DiffEq1}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{figs/diff-eq-2.png}
-  \caption{}
+  \includegraphics[width=0.5\textwidth]{figs/diff-eq-2.png}
+  \caption{Example Output of a model created in the new Differential
+    Equations Editor}
   \label{Fig:DiffEq2}
 \end{figure}
 
@@ -301,20 +304,6 @@ editor implemented in AMIDOL.
 \item Then, click “Simulate” to see the results of the model
   running, resulting in the graph shown in Figure \ref{Fig:DiffEq2}.
 \end{enumerate}
-  
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{figs/LaTeX_VDSOL.png}
-  \caption{New AMIDOL Differential Equation VDSOL}
-  \label{Fig:DiffEq}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{figs/LaTex_VDSOL_results.png}
-  \caption{New AMIDOL Results Visualization}
-  \label{Fig:Results}
-\end{figure}
 
 
 \begin{figure}
@@ -328,7 +317,7 @@ editor implemented in AMIDOL.
   \centering
   \includegraphics[width=0.5\textwidth]{figs/SIIR_visualize_comparision.png}
   \caption{New AMIDOL Model Comparison Results Visualization}
-  \label{Fig:Arch}
+  \label{Fig:Viz}
 \end{figure}
 
 \section{AMIDOL Performance for Real-World Systems and Processes}
