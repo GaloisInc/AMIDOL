@@ -138,18 +138,19 @@ package object math {
         )
 
       lazy val comp: PackratParser[Expr[Boolean]] =
-        ( term ~ ">"          ~ term   ^^ { case (l ~ _ ~ r) => Comparision(l, GT, r) }
+        ( booleanAtom
+        | term ~ ">"          ~ term   ^^ { case (l ~ _ ~ r) => Comparision(l, GT, r) }
         | term ~ ("==" | "=") ~ term   ^^ { case (l ~ _ ~ r) => Comparision(l, EQ, r) }
         | term ~ "<"          ~ term   ^^ { case (l ~ _ ~ r) => Comparision(l, LT, r) }
         )
 
       lazy val conj: PackratParser[Expr[Boolean]] =
-        ( conj ~ ("&" | "&&" | "AND" | "and") ~ comp ^^ { case (l ~ _ ~ r) => And(l, r) }
+        ( conj ~ ("&&" | "&" | "AND" | "and") ~ comp ^^ { case (l ~ _ ~ r) => And(l, r) }
         | comp
         )
 
       lazy val disj: PackratParser[Expr[Boolean]] =
-        ( disj ~ ("|" | "||" | "OR" | "or") ~ conj   ^^ { case (l ~ _ ~ r) => Or(l, r) }
+        ( disj ~ ("||" | "|" | "OR" | "or") ~ conj   ^^ { case (l ~ _ ~ r) => Or(l, r) }
         | conj
         )
 
