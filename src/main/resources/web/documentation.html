@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css">
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script>
+    const ui = SwaggerUIBundle({
+      url: "http://localhost:8080/docs/documentation.json",
+      dom_id: '#swagger-ui',
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIBundle.SwaggerUIStandalonePreset
+      ],
+      apisSorter: "alpha",
+      operationsSorter: "alpha"
+    })
+    </script>
+  </body>
+</html>

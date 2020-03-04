@@ -131,6 +131,7 @@ object Main extends App with Directives {
       path("") {
         getFromResource("web/graph.html")
       } ~
+      DocumentationServer.routes ~
       pathPrefix("") {
         extractUnmatchedPath {
           case path if path.toString.endsWith(".js.map") =>

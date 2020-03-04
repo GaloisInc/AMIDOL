@@ -25,10 +25,10 @@ lazy val root = (project in file("."))
 
     libraryDependencies ++= Seq(
       // Akka web stack
-      "com.typesafe.akka"      %% "akka-actor"               % "2.5.23",
-      "com.typesafe.akka"      %% "akka-stream"              % "2.5.23",
-      "com.typesafe.akka"      %% "akka-http"                % "10.1.8",
-      "com.typesafe.akka"      %% "akka-http-spray-json"     % "10.1.8",
+      "com.typesafe.akka"      %% "akka-actor"               % "2.6.3",
+      "com.typesafe.akka"      %% "akka-stream"              % "2.6.3",
+      "com.typesafe.akka"      %% "akka-http"                % "10.1.11",
+      "com.typesafe.akka"      %% "akka-http-spray-json"     % "10.1.11",
 
       // Configuration
       "com.typesafe"           % "config"                    % "1.3.1",
@@ -51,7 +51,11 @@ lazy val root = (project in file("."))
 
       // Testing
       "org.scalatest"          %% "scalatest"                % "3.0.8" % Test,
+
+      // Documentation of endpoints
+      "org.julienrf"           %% "endpoints-algebra-json-schema" % "0.14.0",
+      "org.julienrf"           %% "endpoints-json-schema-generic" % "0.14.0",
+      "org.julienrf"           %% "endpoints-akka-http-server"    % "0.14.0",
     ),
   )
   .enablePlugins(SbtWeb)
-
