@@ -12,7 +12,6 @@ import endpoints.{Valid, Invalid, algebra, generic, openapi}
 import endpoints.generic.{name, docs}
 import endpoints.akkahttp.server
 
-
 trait Routes
   extends algebra.Endpoints
     with algebra.JsonEntitiesFromSchemas
@@ -39,6 +38,8 @@ trait Routes
     )
   implicit lazy val variableSchema: JsonSchema[math.Variable] =
     stringJsonSchema(format = Some("variable")).xmap(s => math.Variable(Symbol(s)))(_.s.name)
+  implicit lazy val stateIdSchema: JsonSchema[StateId] =
+    stringJsonSchema(format = Some("state-id")).xmap(StateId(_))(_.id)
 
   // Map schemas
   def customKeyMapSchema[K, V : JsonSchema](
@@ -62,7 +63,8 @@ trait Routes
   implicit lazy val stateSchema: JsonSchema[State] = genericJsonSchema[State]
   implicit lazy val eventSchema: JsonSchema[Event] = genericJsonSchema[Event]
   implicit lazy val modelSchema: JsonSchema[Model] = genericJsonSchema[Model]
-
+  implicit lazy val sampledTraceSchema: JsonSchema[math.SampledTrace] = genericJsonSchema[math.SampledTrace]
+  implicit lazy val paletteItemSchema: JsonSchema[PaletteItem] = genericJsonSchema[PaletteItem]
 
   val getModel: Endpoint[Unit, Model] =
     endpoint(
@@ -71,6 +73,143 @@ trait Routes
       docs = EndpointDocs(
         summary = Some("fetch the currently loaded model"),
         tags = List("Model")
+      )
+    )
+
+  val postModel: Endpoint[Model, Unit] =
+    endpoint(
+      request = post(
+        url = path / "appstate" / "model",
+        entity = jsonRequest[Model]
+      ),
+      response = ok(emptyResponse),
+      docs = EndpointDocs(
+        summary = Some("overwrite the currently loaded model"),
+        tags = List("Model")
+      )
+    )
+
+  val postReset: Endpoint[Unit, Unit] =
+    endpoint(
+      request = post(
+        url = path / "appstate" / "reset",
+        entity = emptyRequest
+      ),
+      response = ok(emptyResponse),
+      docs = EndpointDocs(
+        summary = Some("clear application state (palettes, models, data, etc.)"),
+        tags = List("General")
+      )
+    )
+
+  val putDataTrace: Endpoint[(String, math.SampledTrace), Unit] =
+    endpoint(
+      request = put(
+        url = path / "appstate" / "data-traces" /? qs[String]("name"),
+        entity = jsonRequest[math.SampledTrace]
+      ),
+      response = response(Created, emptyResponse),
+      docs = EndpointDocs(
+        summary = Some("add a new data trace"),
+        tags = List("Data Traces")
+      )
+    )
+
+  val deleteDataTrace: Endpoint[String, Unit] =
+    endpoint(
+      request = delete(
+        url = path / "appstate" / "data-traces" /? qs[String]("name"),
+      ),
+      response = ok(emptyResponse),  // TODO: not found case
+      docs = EndpointDocs(
+        summary = Some("remove a data trace"),
+        tags = List("Data Traces")
+      )
+    )
+
+  val getDataTrace: Endpoint[String, math.SampledTrace] =
+    endpoint(
+      request = get(
+        url = path / "appstate" / "data-traces" /? qs[String]("name"),
+      ),
+      response = ok(jsonResponse[math.SampledTrace]),  // TODO: not found case
+      docs = EndpointDocs(
+        summary = Some("fetch a data trace"),
+        tags = List("Data Traces")
+      )
+    )
+
+  val listDataTraceNames: Endpoint[Option[Long], List[String]] =
+    endpoint(
+      request = get(
+        url = path / "appstate" / "data-traces" / "names" /? qs[Option[Long]]("limit"),
+      ),
+      response = ok(jsonResponse[List[String]]),
+      docs = EndpointDocs(
+        summary = Some("fetch data trace names"),
+        tags = List("Data Traces")
+      )
+    )
+
+  def evalDataTraceQuery: Endpoint[String, math.SampledTrace] =
+    endpoint(
+      request = post(
+        url = path / "appstate" / "data-traces" / "eval",
+        entity = textRequest
+      ),
+      response = ok(jsonResponse[math.SampledTrace]), // TODO: error case
+      docs = EndpointDocs(
+        summary = Some("evaluate some data trace expression"),
+        tags = List("Data Traces")
+      )
+    )
+
+  def putPaletteItem: Endpoint[(String, PaletteItem), Unit] =
+    endpoint(
+      request = put(
+        url = path / "appstate" / "palette" /? qs[String]("name"),
+        entity = jsonRequest[PaletteItem]
+      ),
+      response = response(Created, emptyResponse),
+      docs = EndpointDocs(
+        summary = Some("add a new palette item"),
+        tags = List("Palette")
+      )
+    )
+
+  val deletePaletteItem: Endpoint[String, Unit] =
+    endpoint(
+      request = delete(
+        url = path / "appstate" / "palette" /? qs[String]("name"),
+      ),
+      response = ok(emptyResponse),  // TODO: not found case
+      docs = EndpointDocs(
+        summary = Some("remove a palette item"),
+        tags = List("Palette")
+      )
+    )
+
+  val getPaletteItem: Endpoint[String, PaletteItem] =
+    endpoint(
+      request = get(
+        url = path / "appstate" / "palette" /? qs[String]("name"),
+      ),
+      response = ok(jsonResponse[PaletteItem]),  // TODO: not found case
+      docs = EndpointDocs(
+        summary = Some("fetch a palette item"),
+        tags = List("Palette")
+      )
+    )
+
+  val listPaletteItems: Endpoint[Option[Long], List[PaletteItem]] =
+    endpoint(
+      request = get(
+        url = path / "appstate" / "palette" / "names" /? qs[Option[Long]]("limit"),
+      ),
+      response = ok(jsonResponse[List[PaletteItem]]),
+      docs = EndpointDocs(
+        summary = Some("fetch loaded palette items"),
+        tags = List("Palette")
       )
     )
 }
@@ -88,7 +227,18 @@ case object RoutesDocumentation
     openApi(
       openapi.model.Info(title = "AMIDOL API", version = "1.0.0")
     )(
-      getModel
+      getModel,
+      postModel,
+      postReset,
+      putDataTrace,
+      deleteDataTrace,
+      getDataTrace,
+      listDataTraceNames,
+      evalDataTraceQuery,
+      putPaletteItem,
+      deletePaletteItem,
+      getPaletteItem,
+      listPaletteItems
     )
 }
 

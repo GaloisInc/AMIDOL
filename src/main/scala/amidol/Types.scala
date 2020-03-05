@@ -237,8 +237,8 @@ trait ModelJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 case class PaletteItem(
   className: String,
   `type`: String,
-  sharedStates: Array[StateId],        // For now, this is be: `[ <shared state for incoming arrows>
-                                       //                       , <shared state for outgoing arrows> ]
+  sharedStates: Seq[StateId],        // For now, this is be: `[ <shared state for incoming arrows>
+                                     //                       , <shared state for outgoing arrows> ]
   icon: String,
   color: Option[String],
   backingModel: amidol.Model,   // parameters = backingModel.constants
