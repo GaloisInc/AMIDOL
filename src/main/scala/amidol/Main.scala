@@ -9,7 +9,6 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import org.webjars.WebJarAssetLocator
-import akka.stream.ActorMaterializer
 import amidol.backends._
 import scala.io.{Source, StdIn}
 import scala.util._
@@ -72,7 +71,6 @@ object Main extends App with Directives {
 
   // Set up actor system and contexts
   implicit val system = ActorSystem("my-system")
-  implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
   // Set up the folder for temporary files
@@ -127,11 +125,18 @@ object Main extends App with Directives {
   }
 
   val route = cookiedAppState { appState: AppState =>
+
+    val s = appState
+    val localRoutes = new AkkaHttpRoutes {
+      val appState = s
+    }
+
+    DocumentationServer.routes ~
+    localRoutes.routes ~
     get {
       path("") {
         getFromResource("web/graph.html")
       } ~
-      DocumentationServer.routes ~
       pathPrefix("") {
         extractUnmatchedPath {
           case path if path.toString.endsWith(".js.map") =>

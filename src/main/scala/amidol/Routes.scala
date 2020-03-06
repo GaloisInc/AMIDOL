@@ -11,6 +11,7 @@ import akka.util.{ByteString, Timeout}
 import endpoints.{Valid, Invalid, algebra, generic, openapi}
 import endpoints.generic.{name, docs}
 import endpoints.akkahttp.server
+import amidol.Main.AppState
 
 trait Routes
   extends algebra.Endpoints
@@ -66,9 +67,11 @@ trait Routes
   implicit lazy val sampledTraceSchema: JsonSchema[math.SampledTrace] = genericJsonSchema[math.SampledTrace]
   implicit lazy val paletteItemSchema: JsonSchema[PaletteItem] = genericJsonSchema[PaletteItem]
 
+  val root = path / "api"
+
   val getModel: Endpoint[Unit, Model] =
     endpoint(
-      request = get(path / "appstate" / "model"),
+      request = get(root / "appstate" / "model"),
       response = ok(jsonResponse[Model]),
       docs = EndpointDocs(
         summary = Some("fetch the currently loaded model"),
@@ -79,7 +82,7 @@ trait Routes
   val postModel: Endpoint[Model, Unit] =
     endpoint(
       request = post(
-        url = path / "appstate" / "model",
+        url = root / "appstate" / "model",
         entity = jsonRequest[Model]
       ),
       response = ok(emptyResponse),
@@ -92,7 +95,7 @@ trait Routes
   val postReset: Endpoint[Unit, Unit] =
     endpoint(
       request = post(
-        url = path / "appstate" / "reset",
+        url = root / "appstate" / "reset",
         entity = emptyRequest
       ),
       response = ok(emptyResponse),
@@ -105,7 +108,7 @@ trait Routes
   val putDataTrace: Endpoint[(String, math.SampledTrace), Unit] =
     endpoint(
       request = put(
-        url = path / "appstate" / "data-traces" /? qs[String]("name"),
+        url = root / "appstate" / "data-traces" /? qs[String]("name"),
         entity = jsonRequest[math.SampledTrace]
       ),
       response = response(Created, emptyResponse),
@@ -118,7 +121,7 @@ trait Routes
   val deleteDataTrace: Endpoint[String, Unit] =
     endpoint(
       request = delete(
-        url = path / "appstate" / "data-traces" /? qs[String]("name"),
+        url = root / "appstate" / "data-traces" /? qs[String]("name"),
       ),
       response = ok(emptyResponse),  // TODO: not found case
       docs = EndpointDocs(
@@ -130,7 +133,7 @@ trait Routes
   val getDataTrace: Endpoint[String, math.SampledTrace] =
     endpoint(
       request = get(
-        url = path / "appstate" / "data-traces" /? qs[String]("name"),
+        url = root / "appstate" / "data-traces" /? qs[String]("name"),
       ),
       response = ok(jsonResponse[math.SampledTrace]),  // TODO: not found case
       docs = EndpointDocs(
@@ -142,7 +145,7 @@ trait Routes
   val listDataTraceNames: Endpoint[Option[Long], List[String]] =
     endpoint(
       request = get(
-        url = path / "appstate" / "data-traces" / "names" /? qs[Option[Long]]("limit"),
+        url = root / "appstate" / "data-traces" / "names" /? qs[Option[Long]]("limit"),
       ),
       response = ok(jsonResponse[List[String]]),
       docs = EndpointDocs(
@@ -154,7 +157,7 @@ trait Routes
   def evalDataTraceQuery: Endpoint[String, math.SampledTrace] =
     endpoint(
       request = post(
-        url = path / "appstate" / "data-traces" / "eval",
+        url = root / "appstate" / "data-traces" / "eval",
         entity = textRequest
       ),
       response = ok(jsonResponse[math.SampledTrace]), // TODO: error case
@@ -167,7 +170,7 @@ trait Routes
   def putPaletteItem: Endpoint[(String, PaletteItem), Unit] =
     endpoint(
       request = put(
-        url = path / "appstate" / "palette" /? qs[String]("name"),
+        url = root / "appstate" / "palette" /? qs[String]("name"),
         entity = jsonRequest[PaletteItem]
       ),
       response = response(Created, emptyResponse),
@@ -180,7 +183,7 @@ trait Routes
   val deletePaletteItem: Endpoint[String, Unit] =
     endpoint(
       request = delete(
-        url = path / "appstate" / "palette" /? qs[String]("name"),
+        url = root / "appstate" / "palette" /? qs[String]("name"),
       ),
       response = ok(emptyResponse),  // TODO: not found case
       docs = EndpointDocs(
@@ -189,29 +192,76 @@ trait Routes
       )
     )
 
-  val getPaletteItem: Endpoint[String, PaletteItem] =
+  val getPaletteItem: Endpoint[Option[String], List[PaletteItem]] =
     endpoint(
       request = get(
-        url = path / "appstate" / "palette" /? qs[String]("name"),
-      ),
-      response = ok(jsonResponse[PaletteItem]),  // TODO: not found case
-      docs = EndpointDocs(
-        summary = Some("fetch a palette item"),
-        tags = List("Palette")
-      )
-    )
-
-  val listPaletteItems: Endpoint[Option[Long], List[PaletteItem]] =
-    endpoint(
-      request = get(
-        url = path / "appstate" / "palette" / "names" /? qs[Option[Long]]("limit"),
+        url = root / "appstate" / "palette" /? qs[Option[String]]("name"),
       ),
       response = ok(jsonResponse[List[PaletteItem]]),
       docs = EndpointDocs(
-        summary = Some("fetch loaded palette items"),
+        summary = Some("fetch palette item(s)"),
         tags = List("Palette")
       )
     )
+}
+
+
+trait AkkaHttpRoutes extends Routes
+    with server.Endpoints
+    with server.JsonEntitiesFromSchemas {
+
+  import akka.http.scaladsl.server.Directives._
+
+  val appState: AppState
+
+  private val modelRoutes =
+    getModel.implementedBy { _ => appState.currentModel } ~
+    postModel.implementedBy { model => appState.currentModel = model }
+
+  private val resetRoute = postReset.implementedBy { _ => appState.reset() }
+
+  private val dataTraceRoutes =
+    putDataTrace.implementedBy { case (name, trace) =>
+      appState.dataTraces += (name -> trace)
+    } ~
+    deleteDataTrace.implementedBy { name =>
+      appState.dataTraces -= name
+    } ~
+    getDataTrace.implementedBy { name =>
+      appState.dataTraces(name) match {
+        case s: math.SampledTrace => s
+        case p: math.PureFunc => p.sampleAt(collection.immutable.Range(0, 100, 1).toVector.map(_.toDouble))
+      }
+    } ~
+    listDataTraceNames.implementedBy { limitOpt =>
+      appState.dataTraces.keys.take(limitOpt.fold[Int](Int.MaxValue)(_.toInt)).toList
+    } ~
+    evalDataTraceQuery.implementedBy { query =>
+      math.Trace(query, appState.dataTraces.toMap)
+        .map {
+          case s: math.SampledTrace => s
+          case p: math.PureFunc => p.sampleAt(collection.immutable.Range(0, 100, 1).toVector.map(_.toDouble))
+        }
+        .get
+    }
+
+  private val paletteRoutes =
+    putPaletteItem.implementedBy { case (name, paletteItem) =>
+      appState.paletteItems += (name -> paletteItem)
+    } ~
+    deletePaletteItem.implementedBy { name =>
+      appState.paletteItems -= name
+    } ~
+    getPaletteItem.implementedBy {
+      case None => appState.paletteItems.values.toList
+      case Some(name) => appState.paletteItems.get(name).toList
+    }
+
+  val routes =
+    modelRoutes ~
+    resetRoute ~
+    dataTraceRoutes ~
+    paletteRoutes
 }
 
 /** The OpenAPI "implementation" (docs) of our API
@@ -225,7 +275,7 @@ case object RoutesDocumentation
 
   val api: openapi.model.OpenApi =
     openApi(
-      openapi.model.Info(title = "AMIDOL API", version = "1.0.0")
+      openapi.model.Info(title = "AMIDOL", version = "1.0.0")
     )(
       getModel,
       postModel,
@@ -237,13 +287,9 @@ case object RoutesDocumentation
       evalDataTraceQuery,
       putPaletteItem,
       deletePaletteItem,
-      getPaletteItem,
-      listPaletteItems
+      getPaletteItem
     )
 }
-
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
 
 case object DocumentationServer
   extends server.Endpoints
@@ -252,6 +298,7 @@ case object DocumentationServer
   import akka.http.scaladsl._
   import akka.http.scaladsl.model._
   import akka.http.scaladsl.server.Directives
+  import akka.http.scaladsl.server.Directives._
 
   val routes = {
     val docEndpoint = endpoint(
