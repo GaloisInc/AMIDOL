@@ -127,8 +127,11 @@ object Main extends App with Directives {
   val route = cookiedAppState { appState: AppState =>
 
     val s = appState
+    val r = requestId
     val localRoutes = new AkkaHttpRoutes {
       val appState = s
+      val requestId = r
+      implicit val ec = executionContext
     }
 
     DocumentationServer.routes ~

@@ -5,13 +5,16 @@ import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
 import java.util.Base64
+import java.util.concurrent.atomic.AtomicLong
 
 import akka.util.{ByteString, Timeout}
 
 import endpoints.{Valid, Invalid, algebra, generic, openapi}
 import endpoints.generic.{name, docs}
 import endpoints.akkahttp.server
+
 import amidol.Main.AppState
+import amidol.backends._
 
 trait Routes
   extends algebra.Endpoints
@@ -66,6 +69,27 @@ trait Routes
   implicit lazy val modelSchema: JsonSchema[Model] = genericJsonSchema[Model]
   implicit lazy val sampledTraceSchema: JsonSchema[math.SampledTrace] = genericJsonSchema[math.SampledTrace]
   implicit lazy val paletteItemSchema: JsonSchema[PaletteItem] = genericJsonSchema[PaletteItem]
+  implicit lazy val juliaGillespieInputsSchema: JsonSchema[JuliaGillespie.Inputs] = genericJsonSchema[JuliaGillespie.Inputs]
+  implicit lazy val scipyIntegrateInputsSchema: JsonSchema[SciPyIntegrate.Inputs] = genericJsonSchema[SciPyIntegrate.Inputs]
+  implicit lazy val juliaGillespieOutputsSchema: JsonSchema[JuliaGillespie.Outputs] = genericJsonSchema[JuliaGillespie.Outputs]
+  implicit lazy val scipyIntegrateOutputsSchema: JsonSchema[SciPyIntegrate.Outputs] = genericJsonSchema[SciPyIntegrate.Outputs]
+
+  implicit lazy val uiParameterSchema: JsonSchema[ui.Parameter] = genericJsonSchema[ui.Parameter]
+  implicit lazy val uiNodePropsSchema: JsonSchema[ui.NodeProps] = genericJsonSchema[ui.NodeProps]
+  implicit lazy val uiNodeSchema: JsonSchema[ui.Node] = genericJsonSchema[ui.Node]
+  implicit lazy val uiLinkSchema: JsonSchema[ui.Link] = genericJsonSchema[ui.Link]
+  implicit lazy val uiGraphSchema: JsonSchema[ui.Graph] = genericJsonSchema[ui.Graph]
+
+  implicit lazy val latexSchema: JsonSchema[LatexEquations] =
+    withExampleJsonSchema(
+      schema = genericJsonSchema[LatexEquations],
+      example = LatexEquations(List(
+        "\\frac{dX}{dt} = -Y",
+        "\\frac{dY}{dt} = x - \\kappa Y ",
+        "Y_0 = 1",
+        "\\kappa = 0.1"
+      ))
+    )
 
   val root = path / "api"
 
@@ -75,7 +99,7 @@ trait Routes
       response = ok(jsonResponse[Model]),
       docs = EndpointDocs(
         summary = Some("fetch the currently loaded model"),
-        tags = List("Model")
+        tags = List("Internal Model")
       )
     )
 
@@ -88,7 +112,7 @@ trait Routes
       response = ok(emptyResponse),
       docs = EndpointDocs(
         summary = Some("overwrite the currently loaded model"),
-        tags = List("Model")
+        tags = List("Internal Model")
       )
     )
 
@@ -167,40 +191,92 @@ trait Routes
       )
     )
 
+  def putUiModel: Endpoint[ui.Graph, Unit] =
+    endpoint(
+      request = put(
+        url = root / "appstate" / "vdsol" / "model",
+        entity = jsonRequest[ui.Graph]
+      ),
+      response = response(Created, emptyResponse),
+      docs = EndpointDocs(
+        summary = Some("update the current model using the VDSOL palette"),
+        tags = List("VDSOL UI")
+      )
+    )
+
   def putPaletteItem: Endpoint[(String, PaletteItem), Unit] =
     endpoint(
       request = put(
-        url = root / "appstate" / "palette" /? qs[String]("name"),
+        url = root / "appstate" / "vdsol" / "palette" /? qs[String]("name"),
         entity = jsonRequest[PaletteItem]
       ),
       response = response(Created, emptyResponse),
       docs = EndpointDocs(
         summary = Some("add a new palette item"),
-        tags = List("Palette")
+        tags = List("VDSOL UI")
       )
     )
 
   val deletePaletteItem: Endpoint[String, Unit] =
     endpoint(
       request = delete(
-        url = root / "appstate" / "palette" /? qs[String]("name"),
+        url = root / "appstate" / "vdsol" / "palette" /? qs[String]("name"),
       ),
       response = ok(emptyResponse),  // TODO: not found case
       docs = EndpointDocs(
         summary = Some("remove a palette item"),
-        tags = List("Palette")
+        tags = List("VDSOL UI")
       )
     )
 
   val getPaletteItem: Endpoint[Option[String], List[PaletteItem]] =
     endpoint(
       request = get(
-        url = root / "appstate" / "palette" /? qs[Option[String]]("name"),
+        url = root / "appstate" / "vdsol" / "palette" /? qs[Option[String]]("name"),
       ),
       response = ok(jsonResponse[List[PaletteItem]]),
       docs = EndpointDocs(
         summary = Some("fetch palette item(s)"),
-        tags = List("Palette")
+        tags = List("VDSOL UI")
+      )
+    )
+
+  val putDiffEqModel: Endpoint[LatexEquations, Unit] =
+    endpoint(
+      request = put(
+        url = root / "appstate" / "diff-eq" / "model",
+        entity = jsonRequest[LatexEquations]
+      ),
+      response = response(Created, emptyResponse),
+      docs = EndpointDocs(
+        summary = Some("update the current model using differential equations"),
+        tags = List("Differential Equations UI")
+      )
+    )
+
+  val scipyIntegrateBackend: Endpoint[SciPyIntegrate.Inputs, SciPyIntegrate.Outputs] =
+    endpoint(
+      request = post(
+        url = root / "backends" / "scipy" / "integrate",
+        entity = jsonRequest[SciPyIntegrate.Inputs]
+      ),
+      response = ok(jsonResponse[SciPyIntegrate.Outputs]), // TODO: errors
+      docs = EndpointDocs(
+        summary = Some("backend based on the SciPy ODE solver"),
+        tags = List("Backends")
+      )
+    )
+
+  val juliaGillespieBackend: Endpoint[JuliaGillespie.Inputs, JuliaGillespie.Outputs] =
+    endpoint(
+      request = post(
+        url = root / "backends" / "julia" / "gillespie",
+        entity = jsonRequest[JuliaGillespie.Inputs]
+      ),
+      response = ok(jsonResponse[JuliaGillespie.Outputs]), // TODO: errors
+      docs = EndpointDocs(
+        summary = Some("backend based on the Julia Gillespie solver"),
+        tags = List("Backends")
       )
     )
 }
@@ -213,6 +289,8 @@ trait AkkaHttpRoutes extends Routes
   import akka.http.scaladsl.server.Directives._
 
   val appState: AppState
+  val requestId: AtomicLong
+  implicit val ec: ExecutionContext
 
   private val modelRoutes =
     getModel.implementedBy { _ => appState.currentModel } ~
@@ -245,7 +323,11 @@ trait AkkaHttpRoutes extends Routes
         .get
     }
 
-  private val paletteRoutes =
+  private val vdsolRoutes =
+    putUiModel.implementedBy { graph =>
+      val model = graph.parse(appState.paletteItems).get
+      appState.currentModel = model
+    } ~
     putPaletteItem.implementedBy { case (name, paletteItem) =>
       appState.paletteItems += (name -> paletteItem)
     } ~
@@ -257,11 +339,37 @@ trait AkkaHttpRoutes extends Routes
       case Some(name) => appState.paletteItems.get(name).toList
     }
 
+  private val diffEqRoute =
+    putDiffEqModel.implementedBy { case LatexEquations(equations) =>
+      val model = LatexExtract.extractFromSource(equations).get
+      appState.currentModel = model
+    }
+
+  private val backendRoutes =
+    scipyIntegrateBackend.implementedByAsync { inputs =>
+      SciPyIntegrate.routeComplete(
+        appState.currentModel,
+        appState,
+        inputs,
+        requestId.incrementAndGet()
+      ).map(_.get)
+    } ~
+    juliaGillespieBackend.implementedByAsync { inputs =>
+      JuliaGillespie.routeComplete(
+        appState.currentModel,
+        appState,
+        inputs,
+        requestId.incrementAndGet()
+      ).map(_.get)
+    }
+
   val routes =
     modelRoutes ~
     resetRoute ~
     dataTraceRoutes ~
-    paletteRoutes
+    vdsolRoutes ~
+    diffEqRoute ~
+    backendRoutes
 }
 
 /** The OpenAPI "implementation" (docs) of our API
@@ -285,9 +393,13 @@ case object RoutesDocumentation
       getDataTrace,
       listDataTraceNames,
       evalDataTraceQuery,
+      putUiModel,
       putPaletteItem,
       deletePaletteItem,
-      getPaletteItem
+      getPaletteItem,
+      putDiffEqModel,
+      scipyIntegrateBackend,
+      juliaGillespieBackend
     )
 }
 
