@@ -85,6 +85,60 @@ object Model extends ModelJsonSupport {
 
   val empty = Model(Map.empty, Map.empty, Map.empty)
 
+  /** Sample SIR model */
+  val sampleSir = {
+    val s = StateId("Susceptible")
+    val i = StateId("Infected")
+    val r = StateId("Recovered")
+
+    val e = EventId("Exposed")
+    val c = EventId("Cured")
+
+    Model(
+      states = Map(
+        s -> State(
+          math.Variable(Symbol("Susceptible")),
+          Some("Population of people who are susceptible to be infected"),
+          Expr.expression("300").get
+        ),
+        i -> State(
+          math.Variable(Symbol("Infected")),
+          Some("Population of people who are infected"),
+          Expr.expression("1").get
+        ),
+        r -> State(
+          math.Variable(Symbol("Recovered")),
+          Some("Population of people who recovered (and have immunity now)"),
+          Expr.expression("0").get
+        )
+      ),
+      events = Map(
+        e -> Event(
+          rate = Expr.expression("beta * Susceptible * Infected / 301").get,
+          input_predicate = Some(InputPredicate(Expr.predicate("Susceptible > 0 && Infected > 0").get)),
+          output_predicate = OutputPredicate(Map(
+            s -> Expr.expression("-1").get,
+            i -> Expr.expression("1").get,
+          )),
+          description = Some("Infection event which causes a healthy person to become infected")
+        ),
+        c -> Event(
+          rate = Expr.expression("gamma * Infected").get,
+          input_predicate = Some(InputPredicate(Expr.predicate("Infected > 0").get)),
+          output_predicate = OutputPredicate(Map(
+            i -> Expr.expression("-1").get,
+            r -> Expr.expression("1").get,
+          )),
+          description = Some("Cure event which causes an infected person to recover")
+        ),
+      ),
+      constants = Map(
+        math.Variable(Symbol("beta")) -> 0.413,
+        math.Variable(Symbol("gamma")) -> 0.333,
+      )
+    )
+  }
+
   def composeModels[K: Ordering](
     models: List[(K, Model)],                      // models to compose
     shared: List[((K, StateId), (K, StateId))], // states shared amongst submodels

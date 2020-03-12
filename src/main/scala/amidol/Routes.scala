@@ -21,6 +21,17 @@ trait Routes
     with algebra.JsonEntitiesFromSchemas
     with generic.JsonSchemas {
 
+  case class ModelComposition(
+    models: Map[String, Model],
+    sharedStates: List[SharedState]
+  )
+  case class SharedState(
+    model1Name: String,
+    model1State: StateId,
+    model2Name: String,
+    model2State: StateId
+  )
+
   // Expressions
   implicit lazy val exprBoolSchema: JsonSchema[math.Expr[Boolean]] =
     withExampleJsonSchema(
@@ -66,8 +77,14 @@ trait Routes
   implicit lazy val outputPredSchema: JsonSchema[OutputPredicate] = genericJsonSchema[OutputPredicate]
   implicit lazy val stateSchema: JsonSchema[State] = genericJsonSchema[State]
   implicit lazy val eventSchema: JsonSchema[Event] = genericJsonSchema[Event]
-  implicit lazy val modelSchema: JsonSchema[Model] = genericJsonSchema[Model]
-  implicit lazy val sampledTraceSchema: JsonSchema[math.SampledTrace] = genericJsonSchema[math.SampledTrace]
+  implicit lazy val modelSchema: JsonSchema[Model] = withExampleJsonSchema(
+    schema = genericJsonSchema[Model],
+    example = Model.sampleSir
+  )
+  implicit lazy val sampledTraceSchema: JsonSchema[math.SampledTrace] = withExampleJsonSchema(
+    schema = genericJsonSchema[math.SampledTrace],
+    example = math.SampledTrace(Vector(1, 1.1, 1.2, 1.3, 1.4, 1.5), Vector(1, 1.21, 1.44, 1.69, 1.96, 2.25))
+  )
   implicit lazy val paletteItemSchema: JsonSchema[PaletteItem] = genericJsonSchema[PaletteItem]
   implicit lazy val juliaGillespieInputsSchema: JsonSchema[JuliaGillespie.Inputs] = genericJsonSchema[JuliaGillespie.Inputs]
   implicit lazy val scipyIntegrateInputsSchema: JsonSchema[SciPyIntegrate.Inputs] = genericJsonSchema[SciPyIntegrate.Inputs]
@@ -79,6 +96,9 @@ trait Routes
   implicit lazy val uiNodeSchema: JsonSchema[ui.Node] = genericJsonSchema[ui.Node]
   implicit lazy val uiLinkSchema: JsonSchema[ui.Link] = genericJsonSchema[ui.Link]
   implicit lazy val uiGraphSchema: JsonSchema[ui.Graph] = genericJsonSchema[ui.Graph]
+
+  implicit lazy val sharedStateSchema: JsonSchema[SharedState] = genericJsonSchema[SharedState]
+  implicit lazy val modelCompositionSchema: JsonSchema[ModelComposition] = genericJsonSchema[ModelComposition]
 
   implicit lazy val latexSchema: JsonSchema[LatexEquations] =
     withExampleJsonSchema(
@@ -112,6 +132,19 @@ trait Routes
       response = ok(emptyResponse),
       docs = EndpointDocs(
         summary = Some("overwrite the currently loaded model"),
+        tags = List("Internal Model")
+      )
+    )
+
+  val composeModels: Endpoint[ModelComposition, Model] =
+    endpoint(
+      request = post(
+        url = root / "transient" / "model" / "compose",
+        entity = jsonRequest[ModelComposition]
+      ),
+      response = ok(jsonResponse[Model]),
+      docs = EndpointDocs(
+        summary = Some("compose some models via state sharing and return the composed model"),
         tags = List("Internal Model")
       )
     )
@@ -294,7 +327,11 @@ trait AkkaHttpRoutes extends Routes
 
   private val modelRoutes =
     getModel.implementedBy { _ => appState.currentModel } ~
-    postModel.implementedBy { model => appState.currentModel = model }
+    postModel.implementedBy { model => appState.currentModel = model } ~
+    composeModels.implementedBy { case ModelComposition(models, shared) =>
+      val shrd = shared.map { case SharedState(m1,s1,m2,s2) => (m1 -> s1) -> (m2 -> s2) }
+      Model.composeModels(models.toList, shrd)
+    }
 
   private val resetRoute = postReset.implementedBy { _ => appState.reset() }
 
@@ -387,6 +424,7 @@ case object RoutesDocumentation
     )(
       getModel,
       postModel,
+      composeModels,
       postReset,
       putDataTrace,
       deleteDataTrace,
