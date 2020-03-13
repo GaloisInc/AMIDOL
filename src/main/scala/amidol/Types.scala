@@ -297,5 +297,25 @@ case class PaletteItem(
   color: Option[String],
   backingModel: amidol.Model,   // parameters = backingModel.constants
 )
-object PaletteItem extends ModelJsonSupport
+object PaletteItem extends ModelJsonSupport {
+
+  val infectPalette = PaletteItem(
+    className = "infect",
+    `type` = "verb",
+    sharedStates = List(StateId("INPUT"), StateId("OUTPUT")),
+    icon = "images/virus.svg",
+    color = Some("#fec22f"),
+    backingModel = Model(
+      states = Map(
+        StateId("INPUT") -> State(Variable('INPUT),None,math.Expr.expression("0.0").get),
+        StateId("OUTPUT") -> State(Variable('OUTPUT),None,math.Expr.expression("0.0").get)
+      ),
+      events = Map(
+        EventId("cure") -> Event(math.Expr.expression("beta * INPUT * OUTPUT / total_pop").get,None,OutputPredicate(Map(StateId("INPUT") -> Negate(Literal(1.0)), StateId("OUTPUT") -> Literal(1.0))),None)
+      ),
+      constants = Map(Variable('beta) -> 0.413, Variable('total_pop) -> 1.0)
+    )
+  )
+
+}
 

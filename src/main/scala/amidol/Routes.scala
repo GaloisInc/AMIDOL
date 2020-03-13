@@ -85,7 +85,10 @@ trait Routes
     schema = genericJsonSchema[math.SampledTrace],
     example = math.SampledTrace(Vector(1, 1.1, 1.2, 1.3, 1.4, 1.5), Vector(1, 1.21, 1.44, 1.69, 1.96, 2.25))
   )
-  implicit lazy val paletteItemSchema: JsonSchema[PaletteItem] = genericJsonSchema[PaletteItem]
+  implicit lazy val paletteItemSchema: JsonSchema[PaletteItem] = withExampleJsonSchema(
+    schema = genericJsonSchema[PaletteItem],
+    example = PaletteItem.infectPalette
+  )
   implicit lazy val juliaGillespieInputsSchema: JsonSchema[JuliaGillespie.Inputs] = genericJsonSchema[JuliaGillespie.Inputs]
   implicit lazy val scipyIntegrateInputsSchema: JsonSchema[SciPyIntegrate.Inputs] = genericJsonSchema[SciPyIntegrate.Inputs]
   implicit lazy val juliaGillespieOutputsSchema: JsonSchema[JuliaGillespie.Outputs] = genericJsonSchema[JuliaGillespie.Outputs]

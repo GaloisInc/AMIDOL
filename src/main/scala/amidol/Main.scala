@@ -46,7 +46,7 @@ object Main extends App with Directives {
           "predator", "prey", "hunting"
         )
         .map { name: String =>
-          val modelSource = Source.fromResource(s"palette/$name.air").getLines.mkString("\n")
+          val modelSource = Source.fromResource(s"palette/$name.air").mkString
           name -> Try(modelSource.parseJson.convertTo[PaletteItem]).recoverWith {
             case err =>
               println(s"Failure in $name")
