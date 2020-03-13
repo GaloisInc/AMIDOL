@@ -24,6 +24,7 @@ import java.nio.file.Paths
 
 import com.typesafe.config.ConfigFactory
 import java.io.File
+import akka.http.scaladsl.server.directives.DebuggingDirectives
 
 object Main extends App with Directives {
 
@@ -78,7 +79,7 @@ object Main extends App with Directives {
 
   private val webJarAssetLocator = new WebJarAssetLocator()
 
-  /** Get the AMIDOL_ID cookie, or create a new random cookie if one is not
+  /** Get the AMIDOL_UID2 cookie, or create a new random cookie if one is not
    *  already defined. Then, use this cookie to choose the right appstate.
    *
    *  Every appstate automatically gets reset after an hour.
@@ -96,7 +97,7 @@ object Main extends App with Directives {
     /** Reset the time until a certain appstate will be flushed out */
     def startResetTime(amidolId: String): Unit = {
       val resetTask = system.scheduler.scheduleOnce(timeTillReset) {
-        println(s"Clearing out the app state for AMIDOL_ID=$amidolId")
+        println(s"Clearing out the app state for AMIDOL_UID2=$amidolId")
         states.remove(amidolId)
         resets.remove(amidolId)
       }
@@ -106,36 +107,33 @@ object Main extends App with Directives {
       }
     }
 
-    optionalCookie("AMIDOL_ID").flatMap {
-      case Some(existing) if states.contains(existing.value) =>
+    optionalCookie("AMIDOL_UID2").flatMap {
+      case Some(existing) =>
+        val st = states.getOrElseUpdate(existing.value, new AppState())
         startResetTime(existing.value)
-        provide(states(existing.value))
+        provide(st)
 
       case _missing =>
         val newId: String = java.util.UUID.randomUUID().toString()
         val newState = new AppState()
         states += (newId -> newState)
-        println(s"Created new cookie AMIDOL_ID=$newId")
+        println(s"Created new cookie AMIDOL_UID2=$newId")
 
-        setCookie(HttpCookie("AMIDOL_ID", value = newId)).tflatMap { _ =>
+        val cookie = HttpCookie(
+          name = "AMIDOL_UID2",
+          value = newId,
+          path = Some("/"),
+          maxAge = Some(timeTillReset.toSeconds)
+        )
+        setCookie(cookie).tflatMap { _ =>
           startResetTime(newId)
           provide(newState)
         }
     }
   }
 
-  val route = cookiedAppState { appState: AppState =>
-
-    val s = appState
-    val r = requestId
-    val localRoutes = new AkkaHttpRoutes {
-      val appState = s
-      val requestId = r
-      implicit val ec = executionContext
-    }
-
+  val staticFileRoute =
     DocumentationServer.routes ~
-    localRoutes.routes ~
     get {
       path("") {
         getFromResource("web/graph.html")
@@ -161,7 +159,21 @@ object Main extends App with Directives {
             case Failure(err) => failWith(err)
           }
         }
-      } ~
+      }
+    }
+
+  val route = cookiedAppState { appState: AppState =>
+
+    val s = appState
+    val r = requestId
+    val localRoutes = new AkkaHttpRoutes {
+      val appState = s
+      val requestId = r
+      implicit val ec = executionContext
+    }
+
+    localRoutes.routes ~
+    get {
       pathPrefix("appstate") {
         path("model") {
           complete(appState.currentModel)
@@ -427,7 +439,7 @@ object Main extends App with Directives {
   }
   val routeAcao = toStrictEntity(3.seconds) {
     respondWithHeader(`Access-Control-Allow-Origin`(HttpOriginRange.*)) {
-      route
+      staticFileRoute ~ route
     }
   }
 
