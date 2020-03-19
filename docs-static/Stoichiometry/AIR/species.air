@@ -1,0 +1,10 @@
+{"irModel": {
+ "irModelName": "species",
+ "stateVariables": [{"name": "S", "label": "S", "type": "float", "initial_value": "0.0"}],
+ "events": [],
+ "constants": [],
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
+}}

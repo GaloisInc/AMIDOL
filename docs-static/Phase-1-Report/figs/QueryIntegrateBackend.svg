@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="terminal" baseProfile="full" viewBox="0 0 808 1141" width="808" version="1.1">
+    <defs>
+        <termtosvg:template_settings xmlns:termtosvg="https://github.com/nbedos/termtosvg">
+            <termtosvg:screen_geometry columns="101" rows="67"/>
+        </termtosvg:template_settings>
+        <style type="text/css" id="generated-style"><![CDATA[:root {
+            --animation-duration: 1000ms;
+        }
+        
+        #screen {
+                font-family: 'DejaVu Sans Mono', monospace;
+                font-style: normal;
+                font-size: 14px;
+            }
+
+        text {
+            dominant-baseline: text-before-edge;
+            white-space: pre;
+        }]]></style>
+        <style type="text/css" id="user-style">
+            /* gjm8 color theme (source: https://terminal.sexy/) */
+            .foreground {fill: #c5c5c5;}
+            .background {fill: #1c1c1c;}
+            .color0 {fill: #1c1c1c;}
+            .color1 {fill: #ff005b;}
+            .color2 {fill: #cee318;}
+            .color3 {fill: #ffe755;}
+            .color4 {fill: #048ac7;}
+            .color5 {fill: #833c9f;}
+            .color6 {fill: #0ac1cd;}
+            .color7 {fill: #e5e5e5;}
+            .color8 {fill: #1c1c1c;}
+            .color9 {fill: #ff005b;}
+            .color10 {fill: #cee318;}
+            .color11 {fill: #ffe755;}
+            .color12 {fill: #048ac7;}
+            .color13 {fill: #833c9f;}
+            .color14 {fill: #0ac1cd;}
+            .color15 {fill: #e5e5e5;}
+        </style>
+    </defs>
+    <svg id="screen" width="808" preserveAspectRatio="xMidYMin meet" viewBox="0 0 808 450">
+        <rect class="background" height="100%" width="100%" x="0" y="0"/><defs><g id="g1"><text class="foreground" textLength="808" x="0">bash-3.2$ pwd                                                                                        </text></g></defs><defs><g id="g2"><text class="foreground" textLength="256" x="0">/Users/atheriault/Code/AMIDOL/ir</text></g></defs><defs><g id="g3"><text class="foreground" textLength="800" x="0">bash-3.2$ cat query.json | jq                                                                       </text></g></defs><defs><g id="g4"><text class="foreground" font-weight="bold" textLength="8" x="0">{</text></g></defs><defs><g id="g5"><text class="foreground" font-weight="bold" textLength="16" x="0">  </text><text class="color12" font-weight="bold" textLength="88" x="16">"constants"</text><text class="foreground" font-weight="bold" textLength="24" x="104">: {</text></g></defs><defs><g id="g6"><text class="foreground" font-weight="bold" textLength="32" x="0">    </text><text class="color12" font-weight="bold" textLength="24" x="32">"γ"</text><text class="foreground" font-weight="bold" textLength="16" x="56">: </text><text class="foreground" textLength="40" x="72">0.333</text><text class="foreground" font-weight="bold" textLength="8" x="112">,</text></g></defs><defs><g id="g7"><text class="foreground" font-weight="bold" textLength="32" x="0">    </text><text class="color12" font-weight="bold" textLength="24" x="32">"β"</text><text class="foreground" font-weight="bold" textLength="16" x="56">: </text><text class="foreground" textLength="40" x="72">0.413</text><text class="foreground" font-weight="bold" textLength="8" x="112">,</text></g></defs><defs><g id="g8"><text class="foreground" font-weight="bold" textLength="32" x="0">    </text><text class="color12" font-weight="bold" textLength="24" x="32">"μ"</text><text class="foreground" font-weight="bold" textLength="16" x="56">: </text><text class="foreground" textLength="8" x="72">0</text></g></defs><defs><g id="g9"><text class="foreground" font-weight="bold" textLength="32" x="0">  },</text></g></defs><defs><g id="g10"><text class="foreground" font-weight="bold" textLength="16" x="0">  </text><text class="color12" font-weight="bold" textLength="80" x="16">"boundary"</text><text class="foreground" font-weight="bold" textLength="24" x="96">: {</text></g></defs><defs><g id="g11"><text class="foreground" font-weight="bold" textLength="32" x="0">    </text><text class="color12" font-weight="bold" textLength="104" x="32">"Susceptible"</text><text class="foreground" font-weight="bold" textLength="16" x="136">: </text><text class="foreground" textLength="64" x="152">51999999</text><text class="foreground" font-weight="bold" textLength="8" x="216">,</text></g></defs><defs><g id="g12"><text class="foreground" font-weight="bold" textLength="32" x="0">    </text><text class="color12" font-weight="bold" textLength="96" x="32">"Infectious"</text><text class="foreground" font-weight="bold" textLength="16" x="128">: </text><text class="foreground" textLength="8" x="144">1</text><text class="foreground" font-weight="bold" textLength="8" x="152">,</text></g></defs><defs><g id="g13"><text class="foreground" font-weight="bold" textLength="32" x="0">    </text><text class="color12" font-weight="bold" textLength="88" x="32">"Recovered"</text><text class="foreground" font-weight="bold" textLength="16" x="120">: </text><text class="foreground" textLength="8" x="136">0</text></g></defs><defs><g id="g14"><text class="foreground" font-weight="bold" textLength="16" x="0">  </text><text class="color12" font-weight="bold" textLength="104" x="16">"initialTime"</text><text class="foreground" font-weight="bold" textLength="16" x="120">: </text><text class="foreground" textLength="16" x="136">40</text><text class="foreground" font-weight="bold" textLength="8" x="152">,</text></g></defs><defs><g id="g15"><text class="foreground" font-weight="bold" textLength="16" x="0">  </text><text class="color12" font-weight="bold" textLength="88" x="16">"finalTime"</text><text class="foreground" font-weight="bold" textLength="16" x="104">: </text><text class="foreground" textLength="24" x="120">400</text><text class="foreground" font-weight="bold" textLength="8" x="144">,</text></g></defs><defs><g id="g16"><text class="foreground" font-weight="bold" textLength="16" x="0">  </text><text class="color12" font-weight="bold" textLength="80" x="16">"stepSize"</text><text class="foreground" font-weight="bold" textLength="16" x="96">: </text><text class="foreground" textLength="8" x="112">1</text><text class="foreground" font-weight="bold" textLength="8" x="120">,</text></g></defs><defs><g id="g17"><text class="foreground" font-weight="bold" textLength="16" x="0">  </text><text class="color12" font-weight="bold" textLength="80" x="16">"savePlot"</text><text class="foreground" font-weight="bold" textLength="16" x="96">: </text><text class="color2" textLength="72" x="112">"img.png"</text></g></defs><defs><g id="g18"><text class="foreground" font-weight="bold" textLength="8" x="0">}</text></g></defs><defs><g id="g19"><text class="foreground" textLength="808" x="0">bash-3.2$ curl -H 'Accept: application/json' \                                                       </text></g></defs><defs><g id="g20"><text class="foreground" textLength="208" x="0">&gt;              -X GET -G \</text></g></defs><defs><g id="g21"><text class="foreground" textLength="456" x="0">&gt;              --data-urlencode "inputs=$(&lt;query.json)" \</text></g></defs><defs><g id="g22"><text class="foreground" textLength="504" x="0">&gt;              "http://localhost:8080/backends/scipy/integrate"</text></g></defs><defs><g id="g23"><text class="foreground" textLength="112" x="0">bash-3.2$ exit</text></g></defs><defs><g id="g24"><text class="background" textLength="8" x="0"> </text></g></defs><g display="none"><use y="0" xlink:href="#g1"/><use y="17" xlink:href="#g2"/><use y="34" xlink:href="#g3"/><use y="51" xlink:href="#g4"/><use y="68" xlink:href="#g5"/><use y="85" xlink:href="#g6"/><use y="102" xlink:href="#g7"/><use y="119" xlink:href="#g8"/><use y="136" xlink:href="#g9"/><use y="153" xlink:href="#g10"/><use y="170" xlink:href="#g11"/><use y="187" xlink:href="#g12"/><use y="204" xlink:href="#g13"/><use y="221" xlink:href="#g9"/><use y="238" xlink:href="#g14"/><use y="255" xlink:href="#g15"/><use y="272" xlink:href="#g16"/><use y="289" xlink:href="#g17"/><use y="306" xlink:href="#g18"/><use y="323" xlink:href="#g19"/><use y="340" xlink:href="#g20"/><use y="357" xlink:href="#g21"/><use y="374" xlink:href="#g22"/><use y="391" xlink:href="#g23"/><rect class="foreground" height="17" width="8" x="0" y="408"/><use y="408" xlink:href="#g24"/><animate attributeName="display" begin="0ms; anim_last.end" dur="1000ms" from="inline" to="inline" id="anim_last"/></g></svg>
+</svg>

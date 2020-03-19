@@ -1,0 +1,24 @@
+(:function, (:call, :main, :β, :γ, :μ, :n), (:block,
+    (:macrocall, Symbol("@grounding"), nothing, (:block,
+        (:call, :(=>), :S, (:call, :Noun, :person)),
+        (:call, :(=>), :I, (:call, :Noun, :patient)),
+        (:call, :(=>), :R, (:call, :Noun, :person)),
+        (:call, :(=>), :λ₁, (:call, :Verb, :h3n2)),
+        (:call, :(=>), :λ₂, (:call, :Verb, :treatment)),
+        (:call, :(=>), :λ₃, (:call, :Verb, :loss_of_immunity))
+      )),
+    (:macrocall, Symbol("@variables"), nothing, (:tuple, :S, :I, :R, :β, :γ, :μ, :n)),
+    (:(=), :Δ, (:vect, (:tuple, (:call, :~, :S, (:call, :-, :S, 1)), (:call, :~, :I, (:call, :+, :I, 1))), (:tuple, (:call, :~, :I, (:call, :-, :I, 1)), (:call, :~, :R, (:call, :+, :R, 1))), (:tuple, (:call, :~, :R, (:call, :-, :R, 1)), (:call, :~, :S, (:call, :+, :S, 1))))),
+    (:(=), :ϕ, (:vect, (:&&, (:call, :>, :S, 0), (:call, :>, :I, 0)), (:call, :>, :I, 0), (:call, :>, :R, 0))),
+    (:(=), :Λ, (:vect, (:call, :/, (:call, :*, :β, :S, :I), :n), (:call, :*, :γ, :I), (:call, :*, :μ, :R))),
+    (:(=), :m, (:call, (:., :Petri, (:quote, #QuoteNode
+            :Model
+          )), (:vect, :S, :I, :R), :Δ, :ϕ, :Λ)),
+    (:(=), :p, (:call, (:., :Petri, (:quote, #QuoteNode
+            :Problem
+          )), :m, (:tuple, 100, 1, 0, 0.5, 0.15, 0.05, 101), 150)),
+    (:(=), :soln, (:call, (:., :Petri, (:quote, #QuoteNode
+            :solve
+          )), :p))
+  ))
+

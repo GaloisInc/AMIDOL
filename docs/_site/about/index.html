@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      About &middot; AMIDOL
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,400italic,700">  
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700">  
+  <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">  
+  
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" 
+        href="public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- MathJax -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body class="theme-base-09">
+
+    <div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="http://localhost:4000/AMIDOL/">
+          AMIDOL
+        </a>
+      </h1>
+      <p class="lead">Agile Metamodel Interface using Domain-specific Ontological Languages</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <a class="sidebar-nav-item" href="http://localhost:4000/AMIDOL/">Home</a>
+
+      
+        <h4 style="color: white;">About</h4>
+        <h4 style="font-weight: normal; color: white;">Contents</h4>
+
+      <ul>
+  <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#documentation">Documentation</a></li>
+  <li><a href="#building">Building</a></li>
+</ul>
+
+      
+
+    </nav>
+
+    <p>&copy; 2019. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="page">
+  <h1 class="page-title">About</h1>
+  <h2 id="introduction">Introduction</h2>
+
+<p>AMIDOL is designed to support models in a number of scientific, physical, social, and hybrid domains by allowing domain experts to construct meta-models in a novel way, using visual domain specific ontological languages (VDSOLs).  These VDSOLs utilize an underlying intermediate abstract representation to give formal meaning to the intuitive process diagrams scientists and domain experts normally create.  AMIDOL then provides translations from these VDSOLs into an intermediate representation which can be transformed as appropriate to compose models, apply optimizations, and translate them into executable representations allowing AMIDOL’s inference engine to execute prognostic queries on reward models and communicate results to domain experts. In Phase 2 AMIDOL will bind these results to the original ontologies providing more explainability when compared to conventional methods.</p>
+
+<p>AMIDOL addresses the problem of machine-assisted inference with two high-level goals:</p>
+
+<ol>
+  <li>improving the ability of domain experts to build and maintain models and</li>
+  <li>improving the explainability and agility of the results of machine-inference.</li>
+</ol>
+
+<p>The VDSOLs help achieve these goals by lowering the barrier for entry associated with formal modeling languages.  VDSOLs allow the expression of rich mathematical concepts using visual diagrams for systems and processes.  The AMIDOL intermediate representation backs these diagrams with mathematical meaning, and allows the creation of new VDSOL elements as necessary with full expressivity, and Turing completeness.  The use of the intermediate representation also allows AMIDOL to decouple the problem of model optimization, performance, and implementation from the task of model definition, ensuring any model defined in any VDSOL is translated to the same abstract representation.  This abstraction can then be transformed using a set of well defined operations, eventually resulting in executable code which the AMIDOL inference engine can execute.  Because AMIDOL uses a universal representation for this intermediate form, models defined with AMIDOL can be easily ported to off the shelf solution techniques which have already been vetted by the community, and optimized for high performance computing.</p>
+
+<h2 id="documentation">Documentation</h2>
+
+<ul>
+  <li><a href="/documentation/ir/">AMIDOL IR</a></li>
+</ul>
+
+<h2 id="building">Building</h2>
+
+<p>You’ll need to:</p>
+
+<ul>
+  <li>
+    <p>install the <a href="https://www.scala-sbt.org/download.html"><code class="highlighter-rouge">sbt</code> build tool</a> and a recent version of the
+<a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle JDK</a> for building the <code class="highlighter-rouge">ir</code></p>
+  </li>
+  <li>
+    <p>install the <a href="https://www.python.org/downloads/"><code class="highlighter-rouge">python</code> interpreter</a> and <a href="https://pip.pypa.io/en/stable/installing/"><code class="highlighter-rouge">pip</code> package manager</a>,
+then the <code class="highlighter-rouge">pysces</code> and <code class="highlighter-rouge">numpy</code> packages (by doing
+<code class="highlighter-rouge">pip install pysces numpy</code>) for the PySCeS backend</p>
+  </li>
+  <li>
+    <p>install the <a href="https://www.python.org/downloads/"><code class="highlighter-rouge">python3</code> interpreter</a> and <a href="https://pip.pypa.io/en/stable/installing/"><code class="highlighter-rouge">pip3</code> package manager</a>,
+then the <code class="highlighter-rouge">scipy</code> and <code class="highlighter-rouge">matplotlib</code> packages (by doing
+<code class="highlighter-rouge">pip3 install scipy matplotlib</code>) for the SciPy backends</p>
+  </li>
+</ul>
+
+<p>Once you have done all of this, build and run the system with:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/GaloisInc/AMIDOL.git <span class="o">&amp;&amp;</span> <span class="nb">cd </span>AMIDOL
+AMIDOL<span class="nv">$ </span>sbt run 
+</code></pre></div></div>
+
+<p>This opens a back-end web server on http://localhost:8080/ . NOTE: This system was only meant for use/tested on
+Google Chrome. This version of the system does not support other browsers.</p>
+
+<p>Example models can be found in this repository under the <code class="highlighter-rouge">examples</code> directory. These are JSON 
+files meant to be loaded into the web browser UI, with the cloud-shaped upload button in the 
+upper-right. User-drawn models can also be downloaded with the adjacent download button.</p>
+
+
+</div>
+
+    </div>
+
+  </body>
+</html>

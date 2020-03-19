@@ -1,0 +1,39 @@
+{
+  "states": {
+    "portland": {
+      "state_variable": "portland",
+      "initial_value": 100
+    },
+    "salem": {
+      "state_variable": "salem",
+      "initial_value": 100
+    }
+  },
+  "events": {
+    "move_to_portland": {
+      "rate": "0.01 * salem",
+      "input_predicate": {
+        "enabling_condition": "salem > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "portland": "1",
+          "salem": "-1"
+        }
+      }
+    },
+    "move_to_salem": {
+      "rate": "0.005 * portland",
+      "input_predicate": {
+        "enabling_condition": "portland > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "portland": "-1",
+          "salem": "1"
+        }
+      }
+    }
+  },
+  "constants": {}
+}

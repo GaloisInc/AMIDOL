@@ -1,0 +1,36 @@
+{
+  "className": "infect",
+  "type": "verb",
+  "sharedStates": ["INPUT", "OUTPUT"],
+  "icon": "images/virus.svg",
+  "color": "#fec22f",
+  "backingModel": {
+    "states": {
+      "INPUT": {
+        "state_variable": "INPUT",
+        "decription": "Susceptible",
+        "initial_value": "0"
+      },
+      "OUTPUT": {
+        "state_variable": "OUTPUT",
+        "decription": "Infected",
+        "initial_value": "0"
+      }
+    },
+    "events": {
+      "cure": {
+        "rate": "beta * INPUT * OUTPUT / total_pop",
+        "output_predicate": {
+          "transition_function": {
+            "INPUT": "-1",
+            "OUTPUT": "1"
+          }
+        }
+      }
+    },
+    "constants": {
+      "beta": 0.413,
+      "total_pop": 1
+    }
+  }
+}

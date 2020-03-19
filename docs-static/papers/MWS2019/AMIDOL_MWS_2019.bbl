@@ -1,0 +1,124 @@
+\begin{thebibliography}{10}
+
+\bibitem{cardelli2004brane}
+Luca Cardelli.
+\newblock Brane calculi.
+\newblock In {\em International Conference on Computational Methods in Systems
+  Biology}, pages 257--278. Springer, 2004.
+
+\bibitem{cardelli2005abstract}
+Luca Cardelli.
+\newblock Abstract machines of systems biology.
+\newblock In {\em Transactions on Computational Systems Biology III}, pages
+  145--168. Springer, 2005.
+
+\bibitem{cdc2019fluview}
+CDC.
+\newblock National, regional, and state level outpatient illness and viral
+  surveillance.
+\newblock https://www.cdc.gov/flu/weekly/fluactivitysurv.htm.
+\newblock Accessed: January 2019.
+
+\bibitem{chiola1993generalized}
+Giovanni Chiola, Marco~Ajmone Marsan, Gianfranco Balbo, and Gianni Conte.
+\newblock Generalized stochastic petri nets: A definition at the net level and
+  its implications.
+\newblock {\em IEEE Transactions on software engineering}, 19(2):89--107, 1993.
+
+\bibitem{ciardo1996well}
+Gianfranco Ciardo and Robert Zijal.
+\newblock Well-defined stochastic petri nets.
+\newblock In {\em Modeling, Analysis, and Simulation of Computer and
+  Telecommunication Systems, 1996. MASCOTS'96., Proceedings of the Fourth
+  International Workshop on}, pages 278--284. IEEE, 1996.
+
+\bibitem{deavours1999efficient}
+Daniel~D Deavours and William~H Sanders.
+\newblock An efficient well-specified check.
+\newblock In {\em Petri Nets and Performance Models, 1999. Proceedings. The 8th
+  International Workshop on}, pages 124--133. IEEE, 1999.
+
+\bibitem{enright1975comparing}
+Wayne~H Enright, TE~Hull, and Bengt Lindberg.
+\newblock Comparing numerical methods for stiff systems of ode: s.
+\newblock {\em BIT Numerical Mathematics}, 15(1):10--48, 1975.
+
+\bibitem{fisman2014early}
+David Fisman, Edwin Khoo, and Ashleigh Tuite.
+\newblock Early epidemic dynamics of the west african 2014 ebola outbreak:
+  estimates derived with a simple two-parameter model.
+\newblock {\em PLoS currents}, 6, 2014.
+
+\bibitem{fraser2009pandemic}
+Christophe Fraser, Christl~A Donnelly, Simon Cauchemez, William~P Hanage,
+  Maria~D Van~Kerkhove, T~D{\'e}irdre Hollingsworth, Jamie Griffin, Rebecca~F
+  Baggaley, Helen~E Jenkins, Emily~J Lyons, et~al.
+\newblock Pandemic potential of a strain of influenza a (h1n1): early findings.
+\newblock {\em science}, 2009.
+
+\bibitem{freire1990technique}
+Roberto Freire.
+\newblock A technique for simulating composed san-based reward models.
+\newblock 1990.
+
+\bibitem{howard2012dynamic}
+Ronald~A Howard.
+\newblock {\em Dynamic probabilistic systems: Markov models}, volume~1.
+\newblock Courier Corporation, 2012.
+
+\bibitem{lampka2002symbolic}
+Kai Lampka and Markus Siegle.
+\newblock Symbolic composition within the m{\"o}bius framework.
+\newblock In {\em Proc. of the 2nd MMB Workshop}, pages 63--74, 2002.
+
+\bibitem{lattner2004llvm}
+Chris Lattner and Vikram Adve.
+\newblock Llvm: A compilation framework for lifelong program analysis \&
+  transformation.
+\newblock In {\em Proceedings of the international symposium on Code generation
+  and optimization: feedback-directed and runtime optimization}, page~75. IEEE
+  Computer Society, 2004.
+
+\bibitem{movaghar1985performability}
+Ali Movaghar.
+\newblock Performability modeling with stochastic activity networks.
+\newblock 1985.
+
+\bibitem{nurse2008life}
+Paul Nurse.
+\newblock Life, logic and information.
+\newblock {\em Nature}, 454(7203):424, 2008.
+
+\bibitem{qureshi1996algorithms}
+Muhammad~A Qureshi, William~H Sanders, Aad~PA Van~Moorsel, and Reinhard German.
+\newblock Algorithms for the generation of state-level representations of
+  stochastic activity networks with general reward structures.
+\newblock {\em IEEE Transactions on Software Engineering}, 22(9):603--614,
+  1996.
+
+\bibitem{sanders1992dependability}
+William~H Sanders and Luai~M Malhis.
+\newblock Dependability evaluation using composed san-based reward models.
+\newblock {\em Journal of parallel and distributed computing}, 15(3):238--254,
+  1992.
+
+\bibitem{sanders1991reduced}
+William~H Sanders and John~F Meyer.
+\newblock Reduced base model construction methods for stochastic activity
+  networks.
+\newblock {\em IEEE Journal on Selected Areas in Communications}, 9(1):25--36,
+  1991.
+
+\bibitem{sanders2000stochastic}
+William~H Sanders and John~F Meyer.
+\newblock Stochastic activity networks: Formal definitions and concepts.
+\newblock In {\em School organized by the European Educational Forum}, pages
+  315--343. Springer, 2000.
+
+\bibitem{sanders1988construction}
+William~Harry Sanders.
+\newblock Construction and solution of performability models based on
+  stochastic activity networks.
+\newblock 1988.
+
+\end{thebibliography}

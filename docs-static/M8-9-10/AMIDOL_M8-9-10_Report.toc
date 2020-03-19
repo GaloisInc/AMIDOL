@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}Milestone 8: Interim Code Release}{1}% 
+\contentsline {section}{\numberline {2}Milestone 9: Interim Status Report}{2}% 
+\contentsline {subsection}{\numberline {2.1}Machine-Generation and Evaluation of Expert Hypothesis}{2}% 
+\contentsline {subsection}{\numberline {2.2}Formal Rules for Composing the AMIDOL IR}{4}% 
+\contentsline {paragraph}{Parallel composition.}{5}% 
+\contentsline {paragraph}{Serial composition.}{5}% 
+\contentsline {paragraph}{Substitution rules.}{5}% 
+\contentsline {subsection}{\numberline {2.3}Interpretation of Model Outputs to Identify Novel Characteristics or Flaws}{6}% 
+\contentsline {section}{\numberline {3}Milestone 10: Scripted Demonstration Prototype and Initial Performance Benchmarks}{7}% 
+\contentsline {subsection}{\numberline {3.1}Extracting a Model from Julia Source Code}{7}% 
+\contentsline {subsection}{\numberline {3.2}Comparing Model Results to Experimental Data}{8}% 
+\contentsline {subsection}{\numberline {3.3}Initial Performance Benchmarks}{9}% 

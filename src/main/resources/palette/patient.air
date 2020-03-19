@@ -1,0 +1,20 @@
+{
+  "className": "patient",
+  "type": "noun",
+  "sharedStates": ["P","P"],
+  "icon": "images/patient.svg",
+  "color": "#3677bc",
+  "backingModel": {
+    "states": {
+      "P": {
+        "state_variable": "P",
+        "decription": "Patient",
+        "initial_value": "Initial"
+      }
+    },
+    "events": {},
+    "constants": {
+      "Initial": 0  
+    }
+  }
+}

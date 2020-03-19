@@ -1,0 +1,36 @@
+{
+  "states": {
+    "alive": {
+      "state_variable": "alive",
+      "initial_value": "1"
+    }
+  },
+  "events": {
+    "birth": {
+      "rate": "birth_rate * alive",
+      "input_predicate": {
+        "enabling_condition": "alive > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "alive": "1"
+        }
+      }
+    },
+    "death": {
+      "rate": "death_rate * alive",
+      "input_predicate": {
+        "enabling_condition": "alive > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "alive": "-1"
+        }
+      }
+    }
+  },
+  "constants": {
+    "birth_rate": 0.005,
+    "death_rate": 0.003
+  }
+}

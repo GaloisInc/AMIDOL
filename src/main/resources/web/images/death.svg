@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   data-name="Glyph Icon"
+   viewBox="0 0 64 64"
+   x="0px"
+   y="0px"
+	 height="64"
+	 width="64"
+   version="1.1"
+   id="svg896"
+   sodipodi:docname="death.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata902">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs900" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1234"
+     inkscape:window-height="801"
+     id="namedview898"
+     showgrid="false"
+     inkscape:zoom="10"
+     inkscape:cx="32"
+     inkscape:cy="32"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg896" />
+  <title
+     id="title888">Grave</title>
+  <path
+     d="M47.25,22.25a15.25,15.25,0,0,0-30.5,0V51a.48.48,0,0,0,.49.49H46.76a.48.48,0,0,0,.49-.49ZM42.19,29.6a.93.93,0,0,1-.93.93H22.74a.93.93,0,0,1-.93-.93V20.34a.93.93,0,0,1,.93-.92H41.26a.93.93,0,0,1,.93.92Z"
+     id="path890"
+     style="fill:#fec22f;fill-opacity:1" />
+  <rect
+     x="23.67"
+     y="21.27"
+     width="16.67"
+     height="7.41"
+     id="rect892"
+     style="fill:#fec22f;fill-opacity:1" />
+  <rect
+     x="12.56"
+     y="53.3"
+     width="38.89"
+     height="3.7"
+     rx="0.49"
+     ry="0.49"
+     id="rect894"
+     style="fill:#fec22f;fill-opacity:1" />
+</svg>

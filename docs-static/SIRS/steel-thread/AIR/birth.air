@@ -1,0 +1,12 @@
+{"irModel": {
+ "irModelName": "birth_model",
+ "stateVariables": [{"name": "P", "label": "P", "type": "float", "initial_value": "0"},
+ 		    {"name": "Q", "label": "Q", "type": "float", "initial_value": "0"}],
+ "events": [{"name": "infect", "label": "birth", "rate": "mu*P*P",
+ 	     "input_predicate": "P > 0.0", "output_predicate": "(Q += 1"}],
+ "constants": [{"name": "mu", "value": "extern"}],
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
+}}

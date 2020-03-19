@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+	<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
+  <script type="text/javascript" src="webReact.js"></script>
+<style type="text/css">
+	html, body {
+		padding: 0px;
+		margin: 0px;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+	}
+	h2 {
+		font-size: 1.75em;
+	}
+	h3 {
+		font-size: 1.5em;
+	}
+	h4 {
+		font-size: 1.1em;
+	}
+  button, select, input {
+    margin-top: 2px;
+  }
+  .tall-modal-content {
+    height: 80vh;
+  }
+
+</style>
+<body>
+  <div id="reactContainer" style="padding: 1em;"></div>
+  <script type="text/javascript">
+    webReact.attachCompare(document.getElementById("reactContainer"))
+  </script>
+</body>

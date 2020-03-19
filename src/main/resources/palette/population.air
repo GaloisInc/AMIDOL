@@ -1,0 +1,20 @@
+{
+  "className": "population",
+  "type": "noun",
+  "sharedStates": ["P", "P"],
+  "icon": "images/person.svg",
+  "color": "#3677bc",
+  "backingModel": {
+    "states": {
+      "P": {
+        "state_variable": "P",
+        "decription": "Population",
+        "initial_value": "Initial"
+      }
+    },
+    "events": {},
+    "constants": {
+      "Initial": 0
+    }
+  }
+}

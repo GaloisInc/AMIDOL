@@ -1,0 +1,748 @@
+<!doctype html>
+<meta charset="utf-8">
+<head>
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="vis.min.js"></script>
+	<script type="text/javascript" src="underscore-min.js"></script>
+	<link rel="stylesheet" href="vis.min.css" type="text/css" />
+	<link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="ionicons.min.css" type="text/css" />
+
+	<script type="text/javascript" src="svg.js"></script>
+
+<script type="text/javascript">
+
+	var reactCallbacks = {
+		// Call this whenever there is a new noun on the canvas
+		updateMeasureNouns: function (nouns) { },
+
+		// Call this to get measures
+		getMeasures: function() { },
+
+		addMeasureEffect: function(newMeasure) { },
+		deleteMeasureEffect: function(measureName) { },
+		updateMeasureEffect: function(updatedMeasure) { },
+		//		var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
+		//			if (get(paletteItems, [n.props.className, 'type']) == "noun") { return [n.id, n.label] } else { [] }
+		//		}), (a) => ! _.isEmpty(a))
+
+
+    setVariables: function(nodeId,nodeLabel,props) { },
+    unsetVariables: function() { }
+	}
+
+  var paletteCallbacks = {
+    setChosenPalette: function(paletteName) { },
+    getChosenPalette: function() { },
+    addPaletteGroup: function(paletteName, items, onComplete) { },
+    getPaletteItem: function(itemName) { },
+    getSelectedPaletteItemName: function() { },
+    setSelectedPaletteItemName: function(name) { }
+  }
+
+	var node_data_set, edge_data_set, network;
+	var global_vars = { Example : 0 };
+	var reward_vars = []// { key: "Example", opt1: "Susceptible", opt2: "Instant of Time", range: { start: 0, end: 100, step: 5 }} ];
+	var chosen_backend = "scipy"
+
+
+	function get(o, p) { return p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o) }
+
+	function getOrElse(value, alternate) {
+		if (typeof value != "undefined" && value != null) {
+			return value
+		} else {
+			return alternate
+		}
+	}
+
+	$.postJSON = function(url, data, callback) {
+		return jQuery.ajax({
+			'type': 'POST',
+			'url': url,
+			'contentType': 'application/json',
+			'data': JSON.stringify(data),
+			'dataType': 'json',
+			'success': callback
+		});
+	};
+
+
+
+	var journal = {
+		past : [],
+		future : [],
+
+		// Purpose: cause UI side effects... and nothing else.
+		// Always call last, after setting the relevant shared states.
+		applyEventEffects : function(event) {
+			switch (event.type) {
+				case "add":
+					node_data_set.add(event.nodes)
+					edge_data_set.add(event.edges)
+					break
+				case "subtract":
+					var node_ids_to_remove = _.pluck(event.nodes, "id")
+					var edge_ids_to_remove = _.pluck(event.edges, "id")
+					node_data_set.remove(node_ids_to_remove)
+					edge_data_set.remove(edge_ids_to_remove)
+					break
+				case "move":
+					_.mapObject(event.to, function(pos, nodeId){
+						node_data_set.update({id: nodeId, x: pos.x, y: pos.y})
+					})
+					break
+				case "renameEdge":
+					edge_data_set.update({id: event.id, label: event.to})
+					break
+				case "renameNode":
+					node_data_set.update({id: event.id, label: event.to})
+					UI.render.localVars(event.id)
+					break
+				case "setProp":
+					// { type: "setProp", id: 0, key: "", previous: "", updated: "" }
+					var newParams = _.clone(get(node_data_set.get(event.id), ['props', 'parameters']))
+					var newParamList = _.filter(newParams, (kv) => kv.name != event.key)
+					if (event.updated !== null) {
+						newParamList.push({ name: event.key, value: event.updated })
+					}
+					var newProps = _.clone(get(node_data_set.get(event.id), ['props']))
+					newProps['parameters'] = newParamList
+					node_data_set.update({ id: event.id, props: newProps })
+					break
+				case "setRewardVar":
+
+					// Update the React state
+					if (event.new == null) {
+						reactCallbacks.deleteMeasureEffect(event.key);
+					} else if (event.old == null) {
+						reactCallbacks.addMeasureEffect(event.new);
+					} else {
+						reactCallbacks.updateMeasureEffect(event.new);
+					}
+
+					var new_rvs = _.filter(reward_vars, (v) => v.name != event.key)
+					if (event.new != null) { new_rvs.push(event.new) }
+					reward_vars = new_rvs
+					UI.render.rewardVars()
+					break
+			//	case "setAllNodesEdges":
+				default:
+					console.log("Unknown event in applyEventEffects: " + JSON.stringify(event))
+					break
+			}
+		},
+
+		invertEvent : function(initial_event) {
+			var event = _.clone(initial_event)	// make a copy, return a new object
+			switch (event.type) {
+				case "add":
+					event.type = "subtract"
+					return event
+				case "subtract":
+					event.type = "add"
+					return event
+				case "move":
+					var from = event.from
+					event.from = event.to
+					event.to = from
+					return event
+				case "renameEdge":
+					var from = event.from
+					event.from = event.to
+					event.to = from
+					return event
+				case "renameNode":
+					var from = event.from
+					event.from = event.to
+					event.to = from
+					return event
+				case "setProp":
+					var previous = event.previous
+					event.previous = event.updated
+					event.updated = previous
+					return event
+				case "setRewardVar":
+					var old = event.old
+					event.old = event.new
+					event.new = old
+					return event
+				default:
+					console.log("Unknown event in invertEvent: " + JSON.stringify(event))
+					return event
+			}
+		},
+
+		logHistory : function() {
+			console.log(
+				JSON.stringify(
+					[ _.map(journal.past, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}),
+						_.map(journal.future, function(x){return x.type + ":" + _.map(x.nodes, function(y){return y.id})}) ]
+				)
+			)
+		}
+	}
+
+	var UI = {
+
+		render: {
+
+			localVars : function(id) {
+        if (!id) {
+          reactCallbacks.unsetVariables();
+        } else {
+          var thisNode = node_data_set.get(id)
+          var vars = getOrElse(get(thisNode, ['props', 'parameters']), [])
+          reactCallbacks.setVariables(id, thisNode.label, vars)
+        }
+			},
+
+			rewardVars : function() {
+				var nodeNames = _.filter(_.map(node_data_set.get(), function(n) {
+          var item = paletteCallbacks.getPaletteItem(n.props.className);
+					if (item && item['type'] && item['type'] == 'noun') { return { id: n.id, label: n.label } } else { {} }
+				}), (a) => ! _.isEmpty(a))
+				reactCallbacks.updateMeasureNouns(nodeNames)
+			},
+
+			iconRedraw : function() {
+				_.forEach(node_data_set.getIds(), function(id) {
+					var className = node_data_set.get(id).props.className
+					node_data_set.update({ id: id, image: paletteCallbacks.getPaletteItem(className).image })
+				})
+			},
+
+			network : function() {
+				var data = { "nodes" : [], "edges" : [] }
+				var options = {
+					physics: false,
+					nodes: {
+						shape: "image"
+					},
+					edges: {
+						smooth: false,
+						color: { color: "black" },
+						arrows: "to"
+					},
+					manipulation: {
+						initiallyActive: true,
+						addNode: function(node, callback){
+							node.label = prompt("Name your new node:")
+							var isUnused = _.find(node_data_set.get(), (n) => n.label == node.label) === undefined
+							if (node.label != null && isUnused) {
+								var className = paletteCallbacks.getSelectedPaletteItemName();
+								var theItem = paletteCallbacks.getPaletteItem(className);
+								node.image = theItem.image;
+								var node = UI.makeNode(node, className)
+								journal.apply( { "type": "add", "nodes": [node], "edges": [] } )
+							} else {
+								if (! isUnused) { alert("That name is already used.") }
+							}
+						},
+						addEdge: function(edge, callback){
+							// edge.label = prompt("Edge label:")
+							var fromClass = get(node_data_set.get(edge.from), ['props', 'className'])
+							var toClass = get(node_data_set.get(edge.to), ['props', 'className'])
+							var fromType = fromClass && get(paletteCallbacks.getPaletteItem(fromClass), ['type'])
+							var toType = toClass && get(paletteCallbacks.getPaletteItem(toClass), ['type'])
+							if (fromType !== toType) {
+								journal.apply( { "type": "add", "nodes": [], "edges": [edge] } )
+							} else {
+								alert("Cannot draw edges between two " + fromType + "s.")
+							}
+						},
+						editEdge: false,
+						// editNode: function(node, callback) {
+						//	var props = getOrElse(node.props, [])
+						//	UI.render.localVars(node.id, node.label, props)
+						//	callback() // returns the editing bar to its normal state
+						// },
+						deleteNode: function(dataIds, callback) {
+							journal.apply( {
+								"type": "subtract",
+								"nodes": node_data_set.get(dataIds.nodes),
+								"edges": edge_data_set.get(dataIds.edges)
+							} )
+						},
+						deleteEdge: function(dataIds, callback) {
+							journal.apply( {
+								"type": "subtract",
+								"nodes": node_data_set.get(dataIds.nodes),
+								"edges": edge_data_set.get(dataIds.edges)
+							} )
+						}
+					}
+				}
+
+				node_data_set = new vis.DataSet(data.nodes)
+				edge_data_set = new vis.DataSet(data.edges)
+
+				var container = document.getElementById('graph')
+				var network_data = { "nodes" : node_data_set, "edges" : edge_data_set }
+				network = new vis.Network(container, network_data, options)
+
+				network.on("oncontext", UI.networkRightClick)
+				network.on("doubleClick", function(e){
+					// Renameing nodes and edges:
+					if (_.size(e.nodes) == 1) {
+						var newName = prompt("New node name:")
+						var isUnused = _.find(node_data_set.get(), (n) => n.label == newName) === undefined
+						if (newName !== null && isUnused) {
+							UI.renameNode(e.nodes[0], newName)
+						} else {
+							if (! isUnused) { alert("That name is already used.") }
+						}
+					}
+					// else { if (_.size(e.edges) == 1) {
+					//	var newName = prompt("New edge name:")
+					//	if (newName !== null) {
+					//		UI.renameEdge(e.edges[0], newName)
+					//	}
+					// }}
+				})
+				// network.on("oncontext", function(){})
+				network.on("selectNode", function(data){
+					if (data.nodes.length == 1) {
+						UI.render.localVars(data.nodes[0])
+            paletteCallbacks.setSelectedPaletteItemName(node_data_set.get(data.nodes[0]).props.className);
+					}
+				})
+				network.on("deselectNode", function(data){
+					UI.render.localVars(null)
+				})
+				// network.on("selectEdge", function(data){console.log("selectEdge"); console.log(data)})
+				// network.on("deselectEdge", function(data){console.log("deselectEdge"); console.log(data)})
+				network.on("hold", function(e){
+					console.log(e)
+				})
+				network.on("dragStart", function(e){
+					var selectedNodes = network.getSelectedNodes()
+					if ( ! _.isEmpty(selectedNodes)) {
+						UI.movingNodes = network.getPositions(selectedNodes)
+					}
+				})
+				network.on("dragEnd", function(e){
+					if (UI.movingNodes != null) {
+						var from = UI.movingNodes
+						var to = network.getPositions(_.keys(UI.movingNodes))
+						UI.movingNodes = null
+						journal.past.push({ "type" : "move", "from": from, "to": to })
+					}
+				})
+				// $("#graph").on("mousemove", null)	// Cannot use network 'dragging' event?
+			}
+		},
+
+		// Remove all nodes in the network drawn (but they are still accessible through history)
+		clearNetwork : function(reason) {
+			if (_.isEmpty(node_data_set.get()) || confirm(reason)) {
+				journal.past = []
+				journal.applyEventEffects( { type: "subtract", nodes: node_data_set.get(), edges: edge_data_set.get() } )
+				return true
+			} else {
+				return false
+			}
+		},
+
+
+		makeNode : function(node, className) {
+			if ( ! node.hasOwnProperty("id")) {
+				function randomUuid() {
+					return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+						var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+						return v.toString(16)
+					})
+				}
+				node.id = randomUuid()
+			}
+			var paletteItem = paletteCallbacks.getPaletteItem(className)
+			var parameters = _.map(_.pairs(paletteItem.backingModel.constants), function(e) {
+				return {
+					name: e[0],
+					value: e[1].toString()
+				}
+			})
+			node.props = {
+				"className":	_.clone(paletteItem.className),
+				"parameters":	_.clone(parameters)
+			}
+			node.image = paletteItem.image
+			return node
+		},
+
+		// This is a terrible hack!
+		propBlur: function(idObj, key, val){
+			UI.setProp(idObj.id, key, val)
+		},
+
+		addGlobalVar : function() {
+			alert("Not supported yet.")
+		},
+
+		addLocalVar : function() {
+			alert("Not supported yet.")
+		},
+
+		setProp: function(id, key, value) {
+			var paramList = get(node_data_set.get(id), ['props', 'parameters'])
+			var previous = get(_.find(paramList, (p) => p.name === key), ['value'])
+			journal.apply(
+				{ type: "setProp", id: id, key: key, previous: previous, updated: value }
+			)
+		},
+
+		renameEdge : function(edgeId, newName) {
+			var existing = edge_data_set.get(edgeId)
+			var event = {type: "renameEdge", id: edgeId, from: existing.label, to: newName}
+			journal.apply(event)
+		},
+
+		renameNode : function(nodeId, newName) {
+			var existing = node_data_set.get(nodeId)
+			var event = {type: "renameNode", id: nodeId, from: existing.label, to: newName}
+			journal.apply(event)
+		},
+
+		updateButtonStates : function() {
+			var selectedNodes = network.getSelectedNodes()
+			if (selectedNodes.length == 1) {
+				UI.render.localVars(selectedNodes[0])
+			} else {
+				UI.render.localVars(null)
+			}
+			UI.render.rewardVars()
+		},
+
+		selectPaletteNode : function(elem) {
+			$("#palette img").removeClass("selected")
+			$(elem).addClass("selected")
+		},
+
+		networkRightClick : function(context) {
+			context.event.preventDefault()
+		},
+
+		movingNodes : null, // or:	{ nodeId1: {x: xValue, y: yValue}, … }
+
+		download : function() {
+			var data = {
+				journal: journal.past,
+				reward_vars: reward_vars,
+				global_vars: global_vars,
+				chosen_palette: paletteCallbacks.getChosenPalette(),
+			}
+			var blob = new Blob([JSON.stringify(data)], {type: "application/json"})
+			var a = document.createElement('a')
+			a.download = "model.json"
+			a.href = URL.createObjectURL(blob)
+			a.target = "_blank"
+			a.style.display = 'none'
+			document.body.appendChild(a) // required for firefox
+			a.click()
+			a.remove()
+		},
+
+		upload : function(event) {
+			var files = event.target.files
+			_.map(files, function(f){
+				if (f.type === "application/json" &&
+						UI.clearNetwork("Loading up a model will clear the drawing canvas.")) {
+					journal.future = []
+					var reader = new FileReader()
+					reader.onload = function(e) {
+						var data = JSON.parse(e.target.result)
+						journal.future = journal.future.concat(data.journal)
+						global_vars = data.global_vars;
+						reward_vars = data.reward_vars;
+						reactCallbacks.setMeasures(data.reward_vars);
+						paletteCallbacks.setChosenPalette(data.chosen_palette);
+						UI.updateButtonStates()
+					}
+					reader.onloadend = function(e) {
+            journal.redoAll();
+						UI.render.rewardVars()
+						UI.render.localVars()
+						UI.render.iconRedraw()
+					}
+					reader.readAsText(f)
+				}
+			})
+		},
+
+		uploadJuliaSrc : function(event) {
+			var file = event.target.files[0];
+			if (file && UI.clearNetwork("Loading up a Julia model will clear the drawing canvas.")) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+						var payload = {
+							name: "julia_model",
+							juliaSourceCode: e.target.result
+						};
+						$.post("/appstate/loadJuliaModel", payload)
+							.done(function(res) {
+								var nodes = _.values(res.nodes)
+								var links = _.values(res.links)
+								journal.future.push({
+									type: "add",
+									nodes: _.map(nodes, function (node) {
+										node.image = "images/unknown.png";
+										return node;
+									}),
+									edges: links
+								});
+                paletteCallbacks.addPaletteGroup(
+                  "julia_model",
+                  _.map(nodes, function (n) { return n.props.className; }),
+                  function () {
+                    paletteCallbacks.setChosenPalette("julia_model");
+    								global_vars = []
+    								reward_vars = []
+    								reactCallbacks.setMeasures([]);
+                    journal.redoAll()
+    								UI.updateButtonStates()
+    								UI.render.rewardVars()
+    								UI.render.localVars()
+    								UI.render.iconRedraw()
+    								network.setOptions({ physics: true })
+    								setTimeout(function() {
+    									network.setOptions({ physics: false })
+    								}, 1000)
+                  }
+                );
+							})
+							.catch(function (err) {
+								alert(err.responseText);
+							});
+				};
+				reader.readAsText(file);
+			}
+		}
+	}
+
+	var IR = {
+
+		submit : function(){
+			if (_.isEmpty(reward_vars) || !_.isEmpty(_.find(reward_vars, (rv) => rv.nounId == ""))) { return alert("Cannot execute a model with no reward variables. Please create at least one reward variable.")}
+
+      var measures = _.map(reward_vars, function(rv) {
+				var simParams = {
+					initialTime: parseFloat(rv.range.start),
+					finalTime: parseFloat(rv.range.end),
+					stepSize: parseFloat(rv.range.step),
+					savePlot: null
+        };
+        if (_.range(simParams.initialTime, simParams.finalTime, simParams.stepSize).length > 10000) {
+					alert("Sampling the range you defined will require more memory than this system can spare right now.")
+					return false;
+        }
+        return {
+          name: rv.name,
+          label: node_data_set.get(rv.nounId).label,
+          simParams: simParams
+        }
+      });
+
+			IR.submitGraph(function(data, status, jqXHR) {
+        webReact.showGraphResults(
+          document.getElementById("results"),
+          chosen_backend,
+          measures
+        )
+      })
+		},
+
+		submitGraph : function(onSuccessFunc){
+			$.post("/appstate/uiModel", IR.getData(), onSuccessFunc)
+		},
+
+		getData : function(){
+			return {
+				graph: JSON.stringify({
+					nodes : node_data_set.getDataSet()._data,
+					links : edge_data_set.getDataSet()._data
+				}) /*,
+				globalVariables: JSON.stringify(global_vars) */
+			}
+		}
+	}	
+
+
+	$(function(){
+		document.getElementById('choose-upload').addEventListener('change', UI.upload, false)
+		document.getElementById('choose-julia-upload').addEventListener('change', UI.uploadJuliaSrc, false)
+
+		UI.render.network()
+
+		UI.render.localVars(null)
+		UI.render.rewardVars()
+		UI.updateButtonStates()
+	})
+
+</script>
+
+<style type="text/css">
+	html, body, #graph {
+		padding: 0px;
+		margin: 0px;
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+	}
+	#header {
+		text-align: center;
+	}
+	#graph {
+		float:left;
+		width: 75%;
+		/*border: 5px solid gray;*/
+	}
+  .tall-modal-content {
+    height: 80vh;
+  }
+
+	#palette img {
+		margin-left: 5px;
+		height: 35px;
+		border: 5px solid white;
+	}
+	.vis-manipulation {
+		outline: 1px solid gray;
+		width: 99.9% !important; /* Ugly UI hack! */
+	}
+	.vis-close {
+		display: none !important;
+	}
+	.verb {
+		fill: gray;
+	}
+	#palette img.selected {
+		border-color: #007bff;
+    border-radius: .25rem;
+    border-width: 1px;
+	}
+	#palette img.right, #palette input.right, #palette div.right {
+		margin-top: 1em;
+		height: 40px;
+	}
+	#palette .right{
+		float: right;
+	}
+	#exec_button, #upload_julia_button {
+		margin: 22px 0px 22px 22px;
+	}
+	#exec_chooser {
+		margin: 22px 0px 22px 0px;
+	}
+	#paletteChooser {
+		margin: 1em 1.5em 0em 1.5em;
+    margin-top: 1em;
+		float: left;
+	}
+	#palette img.disabled {
+		opacity: 0.25;
+	}
+	#variables {
+		height: 100%;
+		width: 25%;
+		border-color: green;
+		float: right;
+		outline: 1px solid gray;
+		overflow: scroll;
+		padding: 1em;
+		box-sizing: border-box;
+	}
+	h2 {
+		font-size: 1.75em;
+	}
+	h3 {
+		font-size: 1.5em;
+	}
+	h4 {
+		font-size: 1.1em;
+	}
+	button {
+		background-color: white;
+	}
+	.resultChart {
+		width: 80%;
+		height: 80%
+	}
+
+
+</style></head>
+<body>
+	<div id="results" style="display: none;"></div>
+	<div id="palette">
+		<div id="paletteChooser"></div>
+    <div id="button_bar" class="right"></div>
+		<input type="file" id="choose-upload" name="files[]" style="display: none;" multiple />
+		<input type="file" class="right" id="choose-julia-upload" name="files[]" style="display: none;" />
+	</div>
+	<div id="graph"></div>
+	<div id="variables">
+	</div>
+
+	<script type="text/javascript" src="webReact.js"></script>
+	<script type="text/javascript">
+		/* webReact.showMeasures(
+			document.getElementById('rewardVars'),
+			function (measureName, oldMeasure, newMeasure) {
+				var event = {
+					type: "setRewardVar",
+					key: measureName,
+					old: oldMeasure,
+					new: newMeasure
+				};
+				journal.apply( event )
+			}
+		);
+
+    webReact.showVariables(
+      document.getElementById('localVars'),
+      function(nodeId, property) {
+			  UI.setProp(nodeId, property.name, property.value)
+      }
+    ); */
+
+    webReact.showRightTabs(
+      document.getElementById('variables'),
+      function (measureName, oldMeasure, newMeasure) {
+				var event = {
+					type: "setRewardVar",
+					key: measureName,
+					old: oldMeasure,
+					new: newMeasure
+				};
+				journal.apply( event )
+			},
+      function(nodeId, property) {
+			  UI.setProp(nodeId, property.name, property.value)
+      }
+    );
+
+
+    webReact.attachButtonBar(
+      document.getElementById('button_bar'),
+
+      // For navigation stuff
+      journal,
+      function() { document.getElementById('choose-upload').click() },
+      function() { UI.download() },
+
+      // For Julia
+      function() { document.getElementById('choose-julia-upload').click() },
+
+      // For execution
+      function(newBackend) { chosen_backend = newBackend; },
+      function() { IR.submit() },
+    );
+
+    webReact.attachPalette(
+      document.getElementById('paletteChooser'),
+      paletteCallbacks,
+      UI.render.iconRedraw,
+      UI.clearNetwork
+    );
+
+	</script>
+</body>

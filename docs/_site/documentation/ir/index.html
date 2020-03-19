@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      AMIDOL IR &middot; AMIDOL
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,400italic,700">  
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700">  
+  <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">  
+  
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" 
+        href="public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- MathJax -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body class="theme-base-09">
+
+    <div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="http://localhost:4000/AMIDOL/">
+          AMIDOL
+        </a>
+      </h1>
+      <p class="lead">Agile Metamodel Interface using Domain-specific Ontological Languages</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <a class="sidebar-nav-item" href="http://localhost:4000/AMIDOL/">Home</a>
+
+      
+        <h4 style="color: white;">AMIDOL IR</h4>
+        <h4 style="font-weight: normal; color: white;">Contents</h4>
+
+      <ul>
+  <li><a href="#formal-definition">Formal Definition</a>
+    <ul>
+      <li><a href="#state-variables">State Variables</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#names-of-state-variables-and-events">Names of State Variables and Events</a></li>
+      <li><a href="#labels">Labels</a></li>
+      <li><a href="#constants">Constants</a></li>
+    </ul>
+  </li>
+  <li><a href="#expressions">Expressions</a></li>
+  <li><a href="#reward-variables">Reward Variables</a>
+    <ul>
+      <li><a href="#rate-rewards">Rate Rewards</a></li>
+      <li><a href="#impulse-rewards">Impulse Rewards</a></li>
+      <li><a href="#temporal-characteristics-of-reward-variables">Temporal Characteristics of Reward Variables</a></li>
+      <li><a href="#composed-rewards">Composed Rewards</a></li>
+      <li><a href="#reward-expressions">Reward Expressions</a></li>
+    </ul>
+  </li>
+  <li><a href="#practical-considerations">Practical Considerations</a>
+    <ul>
+      <li><a href="#partially-defined-models">Partially Defined Models</a></li>
+    </ul>
+  </li>
+  <li><a href="#transformations">Transformations</a>
+    <ul>
+      <li><a href="#composition">Composition</a></li>
+    </ul>
+  </li>
+  <li><a href="#turing-completeness">Turing Completeness</a></li>
+  <li><a href="#compactness-of-representation">Compactness of Representation</a></li>
+  <li><a href="#examples">Examples</a></li>
+</ul>
+
+      
+
+    </nav>
+
+    <p>&copy; 2019. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">AMIDOL IR</h1>
+  <span class="post-date"></span>
+  <h2 id="formal-definition">Formal Definition</h2>
+
+<p>Formally, the IR is a 5-tuple, <script type="math/tex">(S, E, L, \Phi, \Lambda, \Delta)</script> where:</p>
+<ul>
+  <li><script type="math/tex">S</script> is a finite set of state variables <script type="math/tex">\{s_0, s_1, \ldots, s_{n-1}\}</script> that take on values in <script type="math/tex">\mathbb{N}</script>.</li>
+  <li><script type="math/tex">E</script> is a finite set of events <script type="math/tex">\{e_0, e_1, \ldots, e_{m-1}\}</script> that may occur in the model.</li>
+  <li><script type="math/tex">L: S \mid E \rightarrow \mathbb{N}</script> is the event and state variable labeling function that maps elements of <script type="math/tex">S</script> and <script type="math/tex">E</script> into the original ontology.</li>
+  <li><script type="math/tex">\Phi: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow \{0, 1\}</script> is the event enabling predicate.</li>
+  <li><script type="math/tex">\Lambda: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow (0, \infty)</script> is the transition rate specification.</li>
+  <li><script type="math/tex">\Delta: E \times N_0 \times N_1 \times \ldots \times N_{n-1} \rightarrow N_0 \times N_1 \times \ldots \times N_{n-1}</script> is the state variable transition function specification.</li>
+</ul>
+
+<p>Informally the IR represents a model using a universal and Turing-complete mathematical language using a formalism based on Generalized Stochastic Petri-nets with inhibitor arcs. Instead of inhibitor arcs, we utilize the more intuitive and compact method of allowing events to have input predicates <script type="math/tex">\Phi</script> which can be evaluated to determine if an event is enabled, and output predicates <script type="math/tex">\Delta</script> which define the side effects of event firing.</p>
+
+<p>Intuitively, the <em>marking</em> of a model in the IR given as <script type="math/tex">N_0 \times N_1 \times \ldots \times N_{n-1}</script> is the set values of each state variable.  We typically do not represent the entire marking when giving the definition of enabling conditions (input predicates), transition rates associated with an event, or state variable transition function (output predicates), and instead only indicate the markings on which an given input predicate depends, and those state variables whose values change when an event fires due to the output predicate, omitting the “don’t care” values.</p>
+
+<h3 id="state-variables">State Variables</h3>
+
+<p>State variables are defined in the IR as objects which have a name, a set of semantic labels, a state variable type (such as int or float), and an initial value given as an expression.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
+    </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sv_type"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Intuitively, the set of state variables in a model define the current state.  While state variables are defined as taking on values in <script type="math/tex">\mathbb{N}</script> in the formal definition, this does not restrict them from representing real numbers to arbitrary precision in modern computer hardware.  In practice, they are implemented as integers, and floating point numbers by solvers.</p>
+
+<h3 id="events">Events</h3>
+
+<p>Events are defined in the IR as objects which have a name, a set of semantic labels, a rate given as an expression, and an input predicate and output predicate, defined either as objects, or undefined.  In the cases where the input predicate is undefined, it is interpreted as being always true.  In the case where the output predicate is undefined, the event is interpreted as having no effect on the state of the model when it fires.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"event"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
+    </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"string"</span><span class="p">],</span><span class="w">
+    </span><span class="s2">"rate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"input_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+    </span><span class="s2">"output_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Events can be interpreted in two ways: discrete and continuous.  In both cases events define the ways in which a model can change state by altering the value of state variables.  In the discrete case, events fire at discrete times defined by their rates, changing the value of the model at those times as defined by their output predicates.  In the continuous case, events define flow relations which alter the state in proportion to their output predicates scaled by their rates.</p>
+
+<p>Currently in AMIDOL, all rates are considered exponential.  AMIDOL can be extended at a later date to account for general distributions.</p>
+
+<h4 id="input-predicates">Input Predicates</h4>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"input_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"enabling_condition"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean_expression"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="output-predicates">Output Predicates</h4>
+
+<p>The transition function is specified as a partially defined state change vector</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"output_predicate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"transition_function"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="s2">"sv_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="s2">"function"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Output predicates define the state change vector associated with event firing through partial definition as a list of state variable names, followed by an expression <script type="math/tex">e</script> indicating their change when the event is fired under the discrete interpretation of events.  Given an event with rate <script type="math/tex">\mu</script> the continuous interpretation of event firing utilizes a scaled version of this expression given by <script type="math/tex">\mu \cdot e</script>.</p>
+
+<script type="math/tex; mode=display">\frac{dS}{dt} = -\frac{\beta IS}{N}</script>
+
+<script type="math/tex; mode=display">\frac{dI}{dt} = \frac{\beta IS}{N} - \gamma I</script>
+
+<script type="math/tex; mode=display">\frac{dR}{dt} = \gamma I</script>
+
+<p>For example, the “infect” event of an SIR model given above would have rate <script type="math/tex">\beta \frac{SI}{N}</script>, and the partial state transition function [{“S”: -1}, {“I”: 1}].</p>
+
+<h3 id="names-of-state-variables-and-events">Names of State Variables and Events</h3>
+
+<p>In order to support composition via the operations of state sharing, and event sharing, the AMIDOL IR represents names of state variables and events as lists of strings.  The strings in this list must be unique to the individual state variable or event, or the model is invalid and an exception should be raised.  For example:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}},</span><span class="w">
+</span><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Infected"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Is a valid model, the strings in each name list are unique.  But the following example should have an exception raised:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}},</span><span class="w">
+</span><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"I"</span><span class="p">,</span><span class="w"> </span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>as the string “S” is shared by the name lists of both state variables.  Names are lists to allow for easy name resolution when composing two models.  Given the following Models:</p>
+
+<p><strong>Model A</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Model B</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Susceptible"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Composing A and B on <code class="highlighter-rouge">["S", "Susceptible"]</code> results in the model:</p>
+
+<p><strong>Model AcB</strong></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"state_variable"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"S"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Susceptible"</span><span class="p">],</span><span class="w"> </span><span class="s2">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"initial_value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Any events in Model A which referred to “S” are treated as if they refer to the new shared state variable with name <code class="highlighter-rouge">["S", "Susceptible"]</code>.</p>
+
+<h3 id="labels">Labels</h3>
+
+<p>Elements of the IR have labels associated with them, used to propagate domain knowledge from the formulation in a VDSOL to the mathematical elements of the IR.</p>
+
+<h3 id="constants">Constants</h3>
+
+<p>Constants in the IR allow the definition of identifiers which refer to literal values, mostly useful for setting model wide scaling factors, initial conditions, etc.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"constant"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"literal"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="expressions">Expressions</h2>
+
+<p>Expressions in AMIDOL are defined by a simple syntax over state variable names, constant names, and literal constants.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expression ::= term "+" expression | term "-" expression |
+               term
+term       ::= "(" expression ")" | term "*" expression | term "/" expression |
+               atom
+atom       ::= identifier | literal
+identifier ::= sv_name | constant_name
+literal    ::= integer | float
+</code></pre></div></div>
+
+<h4 id="boolean-expressions">Boolean Expressions</h4>
+
+<p>Input predicates utilize boolean expressions, which are defined by the following syntax which builds on the syntax given above.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>boolean_expression ::= "(" boolean_expression ")" | "NOT" boolean_expression |
+                       boolean_expression "AND" boolean_expression |
+                       boolean_expression "OR" boolean_expression | boolean_term
+boolean_term ::= expression relation expression | "TRUE" | "FALSE"
+</code></pre></div></div>
+
+<h2 id="reward-variables">Reward Variables</h2>
+
+<p>The AMIDOL IR allows the specifications of reward variables as a partial definition of a model, and the composition of these reward variables with other models to define measures of interest which can be solved by the executable translation of a total model in the IR.
+Given a model <script type="math/tex">M = (S, E, L, \Phi, \Lambda, \Delta)</script> we define two basic types of rewards structures, rewards over state variable values (rate rewards), and rewards over events (impulse rewards).</p>
+
+<h3 id="rate-rewards">Rate Rewards</h3>
+
+<p>A rate reward is formally defined as a function <script type="math/tex">\mathcal{R}: P(S, \mathbb{N}) \rightarrow \mathbb{R}</script> where <script type="math/tex">q \in P(S, \mathbb{N})</script> is the reward accumulated when for each <script type="math/tex">(s,n) \in q</script> the marking of the state variable <script type="math/tex">s</script> is <script type="math/tex">n</script>.  Informally a rate reward variable <script type="math/tex">x</script> accumulates a defined reward whenever a subset of the state variables take on prescribed values.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"rate_reward"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"sv_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sv_name string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"reward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"temporal_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"instant_of_time"</span><span class="err">|</span><span class="s2">"interval_of_time"</span><span class="err">|</span><span class="s2">"time_averaged_interval_of_time"</span><span class="err">|</span><span class="s2">"steady_state"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"temporal_domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"float"</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">  
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The IR definition of a rate reward associates the identifier of a single state variable with a temporal type and time domain, and a reward expression.  The reward variable begins with an initial value of zero and functions as an accumulator, accumulating value equal to the evaluation of the reward expression as specified by the temporal type and time domain.</p>
+
+<h3 id="impulse-rewards">Impulse Rewards</h3>
+
+<p>An impulse reward is formally defined as a function <script type="math/tex">\mathcal{I}: E \rightarrow \mathbb{R}</script> where <script type="math/tex">e \in E, \mathcal{I}_e</script> is the reward for the completion of <script type="math/tex">e</script>.  Informally an impulse reward variable <script type="math/tex">x</script> accumulates a defined reward whenever the event <script type="math/tex">e</script> fires.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"impulse_reward"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"ev_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ev_name string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"reward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"expression"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"temporal_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"instant_of_time"</span><span class="err">|</span><span class="s2">"interval_of_time"</span><span class="err">|</span><span class="s2">"time_averaged_interval_of_time"</span><span class="err">|</span><span class="s2">"steady_state"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"temporal_domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"float"</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The IR definition of an impulse reward associates the identifier of a single event with a temporal type and time domain, and a reward expression.  The reward variable begins with an initial value of zero and functions as an accumulator, accumulating value equal to the evaluation of the reward expression as specified by the temporal type and time domain.</p>
+
+<h3 id="temporal-characteristics-of-reward-variables">Temporal Characteristics of Reward Variables</h3>
+
+<p>Both rate and impulse reward variables measure the behavior of a model <script type="math/tex">M</script> with respect to time.  As such, a reward variable <script type="math/tex">\theta</script> is declared as either an instant-of-time variable, an interval-of-time variable, a time-averaged interval-of-time variable, or a steady state variable.  An instant of time variable <script type="math/tex">\Theta_t</script> is defined as:</p>
+
+<script type="math/tex; mode=display">\theta_t = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{I}^{\nu}_t + \sum_{e \in E} \mathcal{I}(e) \cdot I_t^e\</script>
+
+<p>Intuitively a rate reward declared as an instant-of-time variable can be used to measure the value of a state variable precisely at time <script type="math/tex">t</script>, and an impulse reward declared as an instant-of-time variable can be used to measure whether a given event fired at precisely time <script type="math/tex">t</script>.  While the latter is not a particularly useful measure (as the probability of an event with a firing time drawn from a continuous distribution at time <script type="math/tex">t</script> is 0) it is defined primarily for closure reasons, as well as extensions to discrete general distributions.</p>
+
+<p>An interval-of-time variable intuitively accumulates reward over some fixed interval of time <script type="math/tex">[t, t+1]</script>.  Given such a variable <script type="math/tex">\theta_{[t, t+1]}</script> we formally define interval-of-time variables as:</p>
+
+<script type="math/tex; mode=display">\theta_{[t,t+1]} = \sum_{\nu \in P(S, \mathbb{N})} \mathcal{R}(\nu) \cdot \mathcal{J}^{\nu}_{[t, t+1]} + \sum_{e \in E} \mathcal{I}(e)N^e_{[t,t+1]}</script>
+
+<p>where</p>
+
+<ul>
+  <li><script type="math/tex">J^{\nu}_{[t,t+1]}</script> is a random variable which represents the total time the model spent in a marking such that for each <script type="math/tex">(s, n) \in \nu</script>, the state variable <script type="math/tex">s</script> has a value of <script type="math/tex">n</script> during the period <script type="math/tex">[t, t+1]</script>.</li>
+  <li><script type="math/tex">I^e_{t\rightarrow\infty}</script> is a random variable which represents the number of times an event <script type="math/tex">e</script> has fired during the period <script type="math/tex">[t, t+1]</script>.</li>
+</ul>
+
+<p>Time-averaged interval of time variables quantify accumulated reward over some interval of time.  Such a variable <script type="math/tex">\theta'_{[t,t+1]}</script> is defined formally as:</p>
+
+<script type="math/tex; mode=display">\theta'_{[t,t+1]} = \frac{\theta_{[t,t+1]}}{l}</script>
+
+<p>Steady state reward variables are realized by testing for initial transients, and calculating an instant of time variable after a model has reached a stable steady state with high confidence.</p>
+
+<h4 id="practical-considerations-of-temporal-domains">Practical considerations of temporal domains</h4>
+
+<p>Given a rate or impulse reward with temporal type and domain:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"temporal_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"instant_of_time"</span><span class="err">|</span><span class="s2">"interval_of_time"</span><span class="err">|</span><span class="s2">"time_averaged_interval_of_time"</span><span class="err">|</span><span class="s2">"steady_state"</span><span class="p">,</span><span class="w">
+</span><span class="s2">"temporal_domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"float"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The temporal domain is interpreted as follows:</p>
+
+<ul>
+  <li><strong>Instant of time</strong> - a list of times to sample the reward.  For a list <script type="math/tex">[t_0, \ldots, t_{n-1}]</script> we create <script type="math/tex">n</script> separate instant of time reward variables which all accumulate exactly one observation at the specified time.</li>
+  <li><strong>Interval of time</strong> and <strong>Time averaged interval of time</strong> - the list should include exactly three values, <script type="math/tex">[t_0, t_{n-1}, s]</script>.  A single accumulator is created which accumulates rewards <script type="math/tex">\frac{t_{n-1} - t_0}{s}</script> times at points <script type="math/tex">t_0, (t_0 + s), (t_0 + 2s), \ldots</script>.</li>
+  <li><strong>Steady state</strong> - the list should include exactly one value, which is an estimate of when the system reaches steady state.  A single accumulator is created to store the appropriate reward.</li>
+</ul>
+
+<h3 id="composed-rewards">Composed Rewards</h3>
+
+<p>Composed rewards are defined with rewards that are a special type of expression, a reward variable expression.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="s2">"composed_reward"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"reward"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rv_expression"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="reward-expressions">Reward Expressions</h3>
+
+<p>Reward variable expressions differ from standard expressions in the AMIDOL IR in their identifier term, which can only refer to names of other reward variables.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rv_expression ::= rv_term "+" rv_expression | rv_term "-" rv_expression |
+                  rv_term
+rv_term       ::= "(" rv_expression ")" | rv_term "*" rv_expression |
+                  rv_term "/" rv_expression |rv_atom
+rv_atom       ::= rv_identifier | literal
+rv_identifier ::= rate_reward_name | impulse_reward_name | composed_reward_name | constant_name
+literal       ::= integer | float
+</code></pre></div></div>
+
+<p>Composed rewards allow us to construct a set of arbitrary measures on the set of impulse and rate rewards.  Composed rewards need not be solved for during execution of a model, but can be computed after solving a model for the impulse and rate rewards contained in the reward expression for a composed reward variable.</p>
+
+<h2 id="practical-considerations">Practical Considerations</h2>
+
+<h3 id="partially-defined-models">Partially Defined Models</h3>
+
+<p>A model is considered partially defined, and thus unexecutable if:</p>
+<ul>
+  <li>It contains expressions which refer to <code class="highlighter-rouge">identifier</code>s or <code class="highlighter-rouge">rv_identifier</code>s which are undefined.</li>
+  <li>If it contains no state variables.</li>
+</ul>
+
+<p>A model without a reward variable is fully defined, but trivially so as it has a null solution.</p>
+
+<h2 id="transformations">Transformations</h2>
+
+<h3 id="composition">Composition</h3>
+
+<h2 id="turing-completeness">Turing Completeness</h2>
+
+<h2 id="compactness-of-representation">Compactness of Representation</h2>
+
+<h2 id="examples">Examples</h2>
+
+</div>
+
+    </div>
+
+  </body>
+</html>

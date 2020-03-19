@@ -1,0 +1,17 @@
+{
+  "colorRange": {
+    "end": {
+      "hue": 141,
+      "saturation": 50,
+      "luminosity": 40
+    },
+    "start": {
+      "hue": 212,
+      "saturation": 100,
+      "luminosity": 75
+    }
+  },
+  "itemType": "Noun",
+  "svgImageSrc": "images/patient.svg"
+}
+

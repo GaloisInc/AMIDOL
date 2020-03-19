@@ -1,0 +1,20 @@
+{
+  "colorRange": {
+    "end": {
+      "hue": 43,
+      "saturation": 50,
+      "luminosity": 40
+    },
+    "start": {
+      "hue": 85,
+      "saturation": 100,
+      "luminosity": 75
+    }
+  },
+  "itemType": {
+    "inputCount": 1,
+    "outputType": 1
+  },
+  "svgImageSrc": "images/Ebola.svg"
+}
+

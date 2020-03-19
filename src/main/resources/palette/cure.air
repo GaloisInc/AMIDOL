@@ -1,0 +1,35 @@
+{
+  "className": "cure",
+  "type": "verb",
+  "sharedStates": ["INPUT", "OUTPUT"],
+  "icon": "images/cure.svg",
+  "color": "#fec22f",
+  "backingModel": {
+    "states": {
+      "INPUT": {
+        "state_variable": "INPUT",
+        "decription": "Infected",
+        "initial_value": "0"
+      },
+      "OUTPUT": {
+        "state_variable": "OUTPUT",
+        "decription": "Recovered",
+        "initial_value": "0"
+      }
+    },
+    "events": {
+      "cure": {
+        "rate": "gamma * INPUT",
+        "output_predicate": {
+          "transition_function": {
+            "INPUT": "-1",
+            "OUTPUT": "1"
+          }
+        }
+      }
+    },
+    "constants": {
+      "gamma": 0.333
+    }
+  }
+}

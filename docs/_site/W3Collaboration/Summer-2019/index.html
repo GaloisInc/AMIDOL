@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      W3 Collaboration - Summer 2019 Meeting &middot; AMIDOL
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,400italic,700">  
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,700">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700">  
+  <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">  
+  
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" 
+        href="public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- MathJax -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+</head>
+
+
+  <body class="theme-base-09">
+
+    <div class="sidebar">
+  <div class="container">
+    <div class="sidebar-about">
+      <h1>
+        <a href="http://localhost:4000/AMIDOL/">
+          AMIDOL
+        </a>
+      </h1>
+      <p class="lead">Agile Metamodel Interface using Domain-specific Ontological Languages</p>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <a class="sidebar-nav-item" href="http://localhost:4000/AMIDOL/">Home</a>
+
+      
+        <h4 style="color: white;">W3 Collaboration - Summer 2019 Meeting</h4>
+        <h4 style="font-weight: normal; color: white;">Contents</h4>
+
+      <ul>
+  <li><a href="#meeting-notes">Meeting Notes</a></li>
+  <li><a href="#questions-from-gtri">Questions from GTRI</a></li>
+</ul>
+
+      
+
+    </nav>
+
+    <p>&copy; 2019. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="post">
+  <h1 class="post-title">W3 Collaboration - Summer 2019 Meeting</h1>
+  <span class="post-date"></span>
+  <h2 id="meeting-notes">Meeting Notes</h2>
+
+<ul>
+  <li><a href="/W3Collaboration/2019-06-17-W3-Day1-Notes/">Day 1 W3 Meeting Notes</a></li>
+  <li><a href="/W3Collaboration/2019-06-18-W3-Day2-Notes/">Day 2 W3 Meeting Notes</a></li>
+  <li><a href="/W3Collaboration/2019-06-19-W3-Day3-Notes/">Day 3 W3 Meeting Notes</a></li>
+</ul>
+
+<h2 id="questions-from-gtri">Questions from GTRI</h2>
+
+<ol>
+  <li>Does the user have parameters, functions, and variables to choose from or is it completely arbitrary? If arbitrary, how do you compare two models using your IR?
+    <ul>
+      <li>It is “arbitrary”.  A given VDSOL will have a predefined palette, but the palettes are designed to be flexible and extensible.  Model comparison is envisioned to happen in two major ways.</li>
+    </ul>
+    <ul>
+      <li><strong>Structural similarity</strong> - Are the models structurally equivalent?  This can be found by using a normal form of the underlying mathematical model, or by generating the state-space for finite state models, or a bounded approximation of the state-space for models with infinite space.</li>
+      <li><strong>Similarity and bisimilarity with respect to reward variables</strong> - This is probably the “right” way to identify similarity or compare models in most cases.  Domain knowledge, coupled with reward variables defined over the model leads to comparable outcomes for reward variables.  Model comparison is done not on the models themselves, but measures computed on their reward variables.</li>
+    </ul>
+  </li>
+  <li>AMDIOL backend can perform transformations on a model resulting in more performable versions of a model for “efficient” solution and takes into account “structural optimizations” to solve a set of reward variables to determine model equivalence. Can you explain how to determine structural optimization and what determines an efficient solution?
+    <ul>
+      <li>This is meant as a general statement.  We view the AMIDOL IR like LLVM’s bytecode.  It’s a universal mathematical language on which transformations can be performed in a domain-agnostic fashion.  For example - state space lumping techniques.  Say we have the following set of chemical equations: <script type="math/tex">A + B \overset{\alpha}{\leftrightarrow} C</script> and <script type="math/tex">D + E \overset{\alpha}{\leftrightarrow} F</script>.  Any estimate for a reward variable on the population of <script type="math/tex">C</script> is also an estimate for the equivalent reward variable on the population of <script type="math/tex">F</script>. Symmetry detection in Petri-nets reduces to a previously solved problem, which means there is a more efficient solution for this model than the naive solution of the entire system.</li>
+      <li>Efficient solution in this case refers to the speed up gained through the application of transforms of this sort or other similar ones.  E.g. importance sampling, importance splitting for stiff system solution; antithetic variance methods; batch-means simulation; etc.</li>
+    </ul>
+  </li>
+  <li>If you have two instances of a single model, both with different reward variables, does this result in two entries in the database?
+    <ul>
+      <li>We haven’t implemented the database yet, so this isn’t solved as of yet.  It seems to relate to model similarity.  Do we want to fuse multiple models if they are equivalent?  My initial thought is that we do not.  We may want to connect them, but exact symmetry is hard to guarantee without explicitly generating the state-space.</li>
+    </ul>
+  </li>
+  <li>Does the database store all the results from all the past models that it has seen before?
+    <ul>
+      <li>We’d like it to be as comprehensive as possible.  The database is a Phase II goal, and not yet complete.</li>
+    </ul>
+  </li>
+  <li>Is the noun/verb labeling automated or manually provided?
+    <ul>
+      <li>Manually.  We envision this also being something that could be a by product of TA1 performers.  We’d like to explore automatic labeling.</li>
+    </ul>
+  </li>
+  <li>“Model composition in AMIDOL is being designed to support state sharing and event synchronization” – In terms of the state sharing , how do you tell two states are equivalent and can be shared between models?
+    <ul>
+      <li>State sharing is semantic knowledge from the modeler.  It has to be specified.  The best results in the previously studied literature advises human-machine teaming solutions which range from simple “share all similarly named state variables” to interactive processes.</li>
+      <li>Labels from the source material from TA1 performers might help?</li>
+    </ul>
+  </li>
+  <li>How does the union of predicates of an event contribute to the model?
+    <ul>
+      <li>The union of input predicates creates a composed event which is enabled only when both of it’s shared event “parents”’ predicates evaluate to true.</li>
+      <li>The union of output predicates creates a composed event whose state transition function is the same as the union of the it’s shared “parents”.</li>
+      <li>In essence - it is only enabled if both of its “parents” would be enabled, and when fired has the same effect as if both of its “parents” fired.</li>
+    </ul>
+  </li>
+  <li>How is selection handled when cardinality of either set of predicates is &gt; 1?
+    <ul>
+      <li><em>Discussion point:</em> I’m not sure what selection refers to here.</li>
+    </ul>
+  </li>
+  <li>How do you know that the noun specified by a user can be tied to an event? Is this determined by the predicates?
+    <ul>
+      <li>Nouns are connected to <strong>verbs</strong> via arcs.  Right now nouns and verbs have input and output sets.  Those sets are shared on connection.  The input and output sets are sets of state variables.  The IR defines a noun or verb explicitly with those state variables.  Any event in a noun or a verb has its input predicate specified in terms of state variables local to the noun or verb’s IR model.</li>
+    </ul>
+  </li>
+  <li>How to identify input predicates that trigger events?
+    <ul>
+      <li><em>Discussion point:</em> I’m not sure what is meant to here.  Input predicates do not trigger events.  Input predicates determine if an event is enabled and can fire.  In the discrete interpretation (for ABM, or discrete event simulation) the event list is scanned for enabled events whenever state variables change.  In the continuous interpretation, for event <script type="math/tex">e</script> with  rate <script type="math/tex">\Lambda(e)</script>, and output predicate <script type="math/tex">\Delta(e)</script> there is an equivalent set of flow locations for each set defining a state variable translations <script type="math/tex">(u,v) \in \Delta(e)  u != v</script> equal to <script type="math/tex">(v-u)\Lambda(e)</script>.</li>
+    </ul>
+  </li>
+  <li>“In practice, they are implemented as integers, and floating point numbers by the AMIDOL source code.” How is this done? Again how are States determined?
+    <ul>
+      <li>State variables are just variables in the executable code, either integers or floating point numbers.  <strong>State variables</strong> are determined from the VDSOL.  <strong>States</strong> can be generated through the application of a state space generation algorithm to the AMIDOL IR.</li>
+    </ul>
+  </li>
+  <li>How is the rate function distribution determined, is it user-defined or empirically derived?
+    <ul>
+      <li>User defined from the TA2 perspective.  In theory we could extract them with the help of a TA1 performer.  They’re quite easy to determine from most formal model specifications.  <em>Let’s work an example using SIR, and the crystalization model.</em></li>
+    </ul>
+  </li>
+  <li>Impulse Reward Variables where is the reward for the completion of events, scope seems to be large, how is this determined?
+    <ul>
+      <li>Impulse and rate rewards are tools to define a measure.  For an impulse reward variable with reward <script type="math/tex">r</script> and event <script type="math/tex">e</script>, we create an acccumulator variable <script type="math/tex">\rho_{r,e}</script>.  If <script type="math/tex">\rho_{r,e}</script> is defined as an instant of time reward, it is trivially 0.  If <script type="math/tex">\rho_{r,e}</script> is defined as an interval of time reward from <script type="math/tex">[t_0, t_n]</script>, then the continuous interpretation is simply <script type="math/tex">\Lambda(e) \cdot r \cdot(t_n - t_0)</script>.  The discrete interpretation is determined by creating an accumulator that is incremented whenever $e$ is fired and the simulation time <script type="math/tex">t_0 \leq t_{now} \leq t_n</script>.</li>
+    </ul>
+  </li>
+  <li>How to determine the rewards that come out of events?
+    <ul>
+      <li>Rewards do not come out of events.  Reward variables are computed over a model.  They are formal measures defined on a model.</li>
+    </ul>
+  </li>
+</ol>
+
+</div>
+
+    </div>
+
+  </body>
+</html>

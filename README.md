@@ -1,43 +1,53 @@
 # AMIDOL
 
-The UI (an Elm project contained in the `ui` directory) is a series of
-HTML pages through which users will interact with the system. That includes
-drawing/manipulating semi-formal models, issuing queries, loading data.
-
-The main system (a Scala project contained in the `ir` directory) compiles
-questions that users may have about models they've created into code artifacts
-targeting different simulation/solver backends. Over time, we expect this
-system to also manipulate and compose datasets (from real-world observations
-as well as from the output of other simulations).
+AMIDOL is designed to support models in a number of scientific, physical, social, and hybrid domains by
+allowing domain experts to construct meta-models in a novel way, using visual domain specific
+ontological languages (VDSOLs). These VDSOLs utilize an underlying intermediate abstract
+representation to give formal meaning to the intuitive process diagrams scientists and domain
+experts normally create. AMIDOL then provides translations from these VDSOLs into an intermediate
+representation which can be transformed as appropriate to compose models, apply optimizations, and
+translate them into executable representations allowing AMIDOL's inference engine to execute
+prognostic queries on reward models and communicate results to domain experts.
 
 ### Building
 
 You'll need to:
 
-  * install the [`elm` compiler][0] for building the `ui`
-
   * install the [`sbt` build tool][1] and a recent version of the
-    [Oracle JDK][2] for building the `ir`
+    [Oracle JDK][2] for building the backend component
+
+  * install the [`npm` build tool][6] for building the UI component
+
+  * install the [`python` interpreter][3] and [`pip` package manager][4],
+    then the `pysces` and `numpy` packages (by doing
+    `pip install pysces numpy`) for the PySCeS backend
 
   * install the [`python3` interpreter][3] and [`pip3` package manager][4],
     then the `scipy` and `matplotlib` packages (by doing
-    `pip3 install scipy matplotlib`) for the SciPy backends to the `ir`
+    `pip3 install scipy matplotlib`) for the SciPy backends
 
-Once you have done all of this, build and run the system with: 
+  * install [Julia][5] and then install `JSON`, `DiffEqBiological`,
+    `DifferentialEquations`, `Plots`, and `DiffEqMonteCarlo` (this is done from
+    the Julia REPL running `import Pkg; Pkg.add("<pkg-to-install>")`)
+
+Once you have done all of this, build and run the system with:
 
 ```sh
-$ git clone https://github.com/GaloisInc/AMIDOL.git && cd AMIDOl
-AMIDOL$ source run.sh
+$ git clone https://github.com/GaloisInc/AMIDOL.git && cd AMIDOL
+AMIDOL$ sbt run
 ```
 
-This opens a back-end web server on http://localhost:8080/ .
-See [`ir/README.md`](ir/README.md) for examples of requests that the server can handle.
+This opens a back-end web server on http://localhost:8080/ . NOTE: This system was only meant for use/tested on
+Google Chrome. This version of the system does not support other browsers.
 
-It also compiles the Elm front-end, which can be accessed directly from your filesystem
-by opening ui/index.html in a web browser.
+Example models can be found in this repository under the `examples` directory. These are JSON
+files meant to be loaded into the web browser UI, with the cloud-shaped upload button in the
+upper-right. User-drawn models can also be downloaded with the adjacent download button.
 
-[0]: https://guide.elm-lang.org/install.html
+
 [1]: https://www.scala-sbt.org/download.html
 [2]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 [3]: https://www.python.org/downloads/
 [4]: https://pip.pypa.io/en/stable/installing/
+[5]: https://julialang.org/
+[6]: https://www.npmjs.com/get-npm

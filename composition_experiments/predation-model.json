@@ -1,0 +1,30 @@
+{
+  "states": {
+    "predator": {
+      "state_variable": "predator",
+      "initial_value": "100"
+    },
+    "prey": {
+      "state_variable": "prey",
+      "initial_value": "100"
+    }
+  },
+  "events": {
+    "predation": {
+      "rate": "predation_rate * predator * prey",
+      "input_predicate": {
+        "enabling_condition": "prey > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "prey": "-1",
+          "predator": "conversion_ratio"
+        }
+      }
+    }
+  },
+  "constants": {
+    "predation_rate": 0.04,
+    "conversion_ratio": 0.75
+  }
+}

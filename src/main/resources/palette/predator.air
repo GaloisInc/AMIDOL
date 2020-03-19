@@ -1,0 +1,30 @@
+{
+  "className": "predator",
+  "type": "noun",
+  "sharedStates": ["P","P"],
+  "icon": "images/predator.svg",
+  "color": "#3677bc",
+  "backingModel": {
+    "states": {
+      "P": {
+        "state_variable": "P",
+        "decription": "Predator",
+        "initial_value": "Initial"
+      }
+    },
+    "events": {
+      "competition": {
+        "rate": "gamma * P",
+        "output_predicate": {
+          "transition_function": {
+            "P": "-1"
+          }
+        }
+      }
+    },
+    "constants": {
+      "Initial": 0,
+      "gamma": 1
+    }
+  }
+}

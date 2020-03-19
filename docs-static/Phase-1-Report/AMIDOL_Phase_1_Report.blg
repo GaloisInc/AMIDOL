@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: AMIDOL_Phase_1_Report.aux
+The style file: plain.bst
+Database file #1: AMIDOL-MWS.bib
+Warning--can't use both volume and number fields in ahnert2011odeint
+Warning--empty journal in freire1990technique
+Warning--empty journal in movaghar1985performability
+Warning--empty journal in sanders1988construction
+You've used 31 entries,
+            2118 wiz_defined-function locations,
+            683 strings with 9318 characters,
+and the built_in function-call counts, 10236 in all, are:
+= -- 1005
+> -- 476
+< -- 9
++ -- 192
+- -- 158
+* -- 695
+:= -- 1698
+add.period$ -- 96
+call.type$ -- 31
+change.case$ -- 166
+chr.to.int$ -- 0
+cite$ -- 35
+duplicate$ -- 389
+empty$ -- 808
+format.name$ -- 158
+if$ -- 2137
+int.to.chr$ -- 0
+int.to.str$ -- 31
+missing$ -- 33
+newline$ -- 157
+num.names$ -- 62
+pop$ -- 195
+preamble$ -- 1
+purify$ -- 140
+quote$ -- 0
+skip$ -- 282
+stack$ -- 0
+substring$ -- 605
+swap$ -- 83
+text.length$ -- 9
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 114
+warning$ -- 4
+while$ -- 101
+width$ -- 33
+write$ -- 333
+(There were 4 warnings)

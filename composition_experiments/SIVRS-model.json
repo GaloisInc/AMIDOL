@@ -1,0 +1,63 @@
+{
+  "states": {
+    "susceptible": {
+      "state_variable": "susceptible",
+      "initial_value": "100"
+    },
+    "infected": {
+      "state_variable": "infected",
+      "initial_value": "1"
+    },
+    "recovered": {
+      "state_variable": "recovered",
+      "initial_value": "0"
+    },
+    "virus": {
+      "state_variable": "virus",
+      "initial_value": "1"
+    }
+  },
+  "events": {
+    "infect": {
+      "rate": "beta * virus * infected * susceptible / (susceptible + infected + recovered)",
+      "input_predicate": {
+        "enabling_condition": "susceptible > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "susceptible": "-1",
+          "infected": "1"
+        }
+      }
+    },
+    "cure": {
+      "rate": "gamma * infected",
+      "input_predicate": {
+        "enabling_condition": "infected > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "infected": "-1",
+          "recovered": "1"
+        }
+      }
+    },
+    "loss_of_immunity": {
+      "rate": "mu * recovered",
+      "input_predicate": {
+        "enabling_condition": "recovered > 0"
+      },
+      "output_predicate": {
+        "transition_function": {
+          "recovered": "-1",
+          "susceptible": "1"
+        }
+      }
+    }
+  },
+  "constants": {
+    "gamma": 0.333,
+    "beta": 0.413,
+    "mu": 0.05
+  }
+}

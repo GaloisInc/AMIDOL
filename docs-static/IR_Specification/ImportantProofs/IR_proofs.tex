@@ -1,0 +1,91 @@
+\documentclass[11pt]{article}
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\bibliographystyle{plain}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%%% Please add the author's last names
+\lhead{Davis, Theriault, Orhai, Westbrook, and Wright}
+\rhead{Modeling the World's Systems, 2019}
+%%% Please use \cfoot{} to remove page numbers
+\cfoot{ }
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&
+\usepackage{titlesec}
+\titlespacing{\section}{0pt}{\parskip}{-.5\parskip}
+\titlespacing{\subsection}{0pt}{\parskip}{- .5\parskip}
+\titlespacing{\subsubsection}{0pt}{\parskip}{- .5\parskip}
+\newcommand{\closeup}{\setlength{\itemsep}{-4pt}}
+
+\newcommand{\amidol}{\textsc{AMIDOL}}
+
+\def\signed #1{{\leavevmode\unskip\nobreak\hfil\penalty50\hskip2em
+  \hbox{}\nobreak\hfil(#1)%
+  \parfillskip=0pt \finalhyphendemerits=0 \endgraf}}
+
+\newsavebox\mybox
+\newenvironment{aquote}[1]
+  {\savebox\mybox{#1}\begin{quote}}
+  {\signed{\usebox\mybox}\end{quote}}
+
+\date{\vspace{-5ex}}
+% Use this to get rid of the date
+
+\usepackage{authblk}
+\author{Eric Davis}
+\author{Alec Theriault}
+\author{Ryan Wright}
+\affil{Galois, Inc}
+
+%\setcounter{page}{0}
+
+
+
+\title{Proof Sketches for the \amidol{} Intermediate Representation}
+
+\begin{document}
+\maketitle
+\vspace{10pt}
+\begin{abstract}
+\end{abstract}
+
+\section{Introduction}
+
+One instruction set computer (OISC) and ultimate reduced instruction set computer (URISC) \cite{mavaddat1988urisc}.
+
+\section{Acknowledgments}
+
+This research has been supported by DARPA contract DARPA-PA-18-02-AIE-FP-039.
+
+\section{Resources, web sites, etc.}
+
+The current \amidol{} source code, including example models and documentation, is available at the \amidol{} Github site \url{https://github.com/GaloisInc/AMIDOL}.
+
+Three classes of Petri nets:
+\begin{itemize}
+\item Condition-event nets (C/E-nets).
+\item Place-transition nets (P/T-nets).
+\item Predicate-event nets (P/E-nets).
+\end{itemize}
+\cite{reisig2012petri}
+
+To be classed as a P/T-net the Petri net must lift the restriction of a single token residing in a given place, which is present for C/E-nets.  While this opens the door to infinite state-spaces, it also gives a petri-net the equivalent of an infinite bi-directional tape required for Turing machines.  
+
+\cite{ciardo1994petri}
+
+
+%\newcommand*{\doi}[1]{\href{http://dx.doi.org/#1}{doi: #1}}
+\bibliography{AMIDOL-MWS}
+
+
+
+\end{document}

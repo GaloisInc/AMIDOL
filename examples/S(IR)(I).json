@@ -1,0 +1,167 @@
+{
+  "journal": [
+    {
+      "type": "add",
+      "nodes": [
+        {
+          "id": "1",
+          "label": "Susceptible",
+          "x": -350,
+          "y": 0,
+          "props": {
+            "className": "population",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "500"
+              }
+            ]
+          },
+          "image": "images/person.svg"
+        },
+        {
+          "id": "2",
+          "label": "Exposed",
+          "x": -175,
+          "y": 0,
+          "props": {
+            "className": "infect",
+            "parameters": [
+              {
+                "name": "beta",
+                "value": "0.413"
+              },
+              {
+                "name": "total_pop",
+                "value": "501"
+              }
+            ]
+          },
+          "image": "images/virus.svg"
+        },
+				{
+          "id": "6",
+          "label": "Exposed",
+          "x": -175,
+          "y": -175,
+          "props": {
+            "className": "infect",
+            "parameters": [
+              {
+                "name": "beta",
+                "value": "0.413"
+              },
+              {
+                "name": "total_pop",
+                "value": "501"
+              }
+            ]
+          },
+          "image": "images/virus.svg"
+        },
+        {
+          "id": "3",
+          "label": "Infected",
+          "x": 0,
+          "y": 0,
+          "props": {
+            "className": "patient",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "1"
+              }
+            ]
+          },
+          "image": "images/patient.svg"
+        },
+				{
+          "id": "7",
+          "label": "Infected2",
+          "x": 0,
+          "y": -175,
+          "props": {
+            "className": "patient",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "1"
+              }
+            ]
+          },
+          "image": "images/patient.svg"
+        },
+        {
+          "id": "4",
+          "label": "Cured",
+          "x": 175,
+          "y": 0,
+          "props": {
+            "className": "cure",
+            "type": "verb",
+            "sharedStates": ["INPUT","OUTPUT"],
+            "icon": "images/cure.svg",
+            "parameters": [
+              {
+                "name": "gamma",
+                "value": "0.333"
+              }
+            ]
+          },
+          "image": "images/cure.svg"
+        },
+        {
+          "id": "5",
+          "label": "Recovered",
+          "x": 350,
+          "y": 0,
+          "props": {
+            "className": "population",
+            "parameters": [
+              {
+                "name": "Initial",
+                "value": "0"
+              }
+            ]
+          },
+          "image": "images/person.svg"
+        }
+      ],
+      "edges": [
+        {
+          "id": "a",
+          "from": "1",
+          "to": "2"
+        },
+        {
+          "id": "b",
+          "from": "2",
+          "to": "3"
+        },
+        {
+          "id": "c",
+          "from": "3",
+          "to": "4"
+        },
+        {
+          "id": "d",
+          "from": "4",
+          "to": "5"
+        },
+				{
+          "id": "e",
+          "from": "1",
+          "to": "6"
+        },
+				{
+          "id": "f",
+          "from": "6",
+          "to": "7"
+        }
+      ]
+    }
+  ],
+  "reward_vars": [],
+  "global_vars": {},
+	"chosen_palette": "SIR"
+}

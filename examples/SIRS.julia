@@ -1,0 +1,40 @@
+function main(β, γ, μ, n)
+    @grounding begin
+        S => Noun(person)
+        I => Noun(patient)
+        R => Noun(person)
+        λ₁ => Verb(h3n2)
+        λ₂ => Verb(treatment)
+        λ₃ => Verb(loss_of_immunity)
+    end
+
+    @variables S, I, R, β, γ, μ, n
+
+    Δ = [
+        (S~S-1, I~I+1),
+        (I~I-1, R~R+1),
+        (R~R-1, S~S+1)
+    ]
+
+    ϕ = [
+        S > 0 && I > 0,
+        I > 0,
+        R > 0,
+    ]
+
+    Λ = [
+        β*S*I/n,
+        γ*I,
+        μ*R
+    ]
+
+    # generate discrete petri model
+    m = Petri.Model([S, I, R], Δ, ϕ, Λ)
+
+    # create instance of petri model with initial conditions
+    p = Petri.Problem(m, (100, 1, 0, 0.5, 0.15, 0.05, 101), 150)
+
+    # discrete solution
+    soln = Petri.solve(p)
+end
+

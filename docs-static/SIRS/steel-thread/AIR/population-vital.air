@@ -1,0 +1,13 @@
+{"irModel": {
+ "irModelName": "population_vital_model",
+ "stateVariables": [{"name": "P", "label": "P", "type": "float", "initial_value": "0"}],
+ "events": [{"name": "birth", "label": "birth", "rate": "mu*P*P",
+             "input_predicate": "P > 0.0", "output_predicate": "(P+=1)"},
+	     {"name": "death", "label": "death", "rate": "nu*P",
+             "input_predicate": "P > 0.0", "output_predicate": "(P-=1)"}],
+ "constants": [{"name": "mu", "value": "extern"}, {"name": "nu", "value": "extern"}],
+ "expressions": [],
+ "rateRewards": [],
+ "impulseRewards": [],
+ "composedRewards": []
+}}

@@ -1,0 +1,113 @@
+\begin{thebibliography}{10}
+
+\bibitem{bailis2005mortality}
+Robert Bailis, Majid Ezzati, and Daniel~M Kammen.
+\newblock Mortality and greenhouse gas impacts of biomass and petroleum energy
+  futures in africa.
+\newblock {\em Science}, 308(5718):98--103, 2005.
+
+\bibitem{balakrishnan2012textbook}
+Rangaswami Balakrishnan and Kanna Ranganathan.
+\newblock {\em A textbook of graph theory}.
+\newblock Springer Science \& Business Media, 2012.
+
+\bibitem{berge1984hypergraphs}
+Claude Berge.
+\newblock {\em Hypergraphs: combinatorics of finite sets}, volume~45.
+\newblock Elsevier, 1984.
+
+\bibitem{brauer2012mathematical}
+Fred Brauer, Carlos Castillo-Chavez, and Carlos Castillo-Chavez.
+\newblock {\em Mathematical models in population biology and epidemiology},
+  volume~40.
+\newblock Springer, 2012.
+
+\bibitem{cdc2019fluview}
+CDC.
+\newblock National, regional, and state level outpatient illness and viral
+  surveillance.
+\newblock https://www.cdc.gov/flu/weekly/fluactivitysurv.htm.
+\newblock Accessed: January 2019.
+
+\bibitem{chiola1993generalized}
+Giovanni Chiola, Marco~Ajmone Marsan, Gianfranco Balbo, and Gianni Conte.
+\newblock Generalized stochastic petri nets: A definition at the net level and
+  its implications.
+\newblock {\em IEEE Transactions on software engineering}, 19(2):89--107, 1993.
+
+\bibitem{freedman1980deterministic}
+Herbert~I Freedman.
+\newblock {\em Deterministic mathematical models in population ecology},
+  volume~57.
+\newblock Marcel Dekker Incorporated, 1980.
+
+\bibitem{haseltine2002approximate}
+Eric~L Haseltine and James~B Rawlings.
+\newblock Approximate simulation of coupled fast and slow reactions for
+  stochastic chemical kinetics.
+\newblock {\em The Journal of chemical physics}, 117(15):6959--6969, 2002.
+
+\bibitem{hoppensteadt2006predator}
+Frank Hoppensteadt.
+\newblock Predator-prey model.
+\newblock {\em Scholarpedia}, 1(10):1563, 2006.
+
+\bibitem{howard2012dynamic}
+Ronald~A Howard.
+\newblock {\em Dynamic probabilistic systems: Markov models}, volume~1.
+\newblock Courier Corporation, 2012.
+
+\bibitem{lattner2008llvm}
+Chris Lattner.
+\newblock Llvm and clang: Next generation compiler technology.
+\newblock In {\em The BSD conference}, volume~5, 2008.
+
+\bibitem{lattner2004llvm}
+Chris Lattner and Vikram Adve.
+\newblock Llvm: A compilation framework for lifelong program analysis \&
+  transformation.
+\newblock In {\em Proceedings of the international symposium on Code generation
+  and optimization: feedback-directed and runtime optimization}, page~75. IEEE
+  Computer Society, 2004.
+
+\bibitem{lattner2002llvm}
+Chris~Arthur Lattner.
+\newblock {\em LLVM: An infrastructure for multi-stage optimization}.
+\newblock PhD thesis, University of Illinois at Urbana-Champaign, 2002.
+
+\bibitem{morris1991factorial}
+Max~D Morris.
+\newblock Factorial sampling plans for preliminary computational experiments.
+\newblock {\em Technometrics}, 33(2):161--174, 1991.
+
+\bibitem{movaghar1985performability}
+Ali Movaghar.
+\newblock Performability modeling with stochastic activity networks.
+\newblock 1985.
+
+\bibitem{murphy2004quantification}
+James~M Murphy, David~MH Sexton, David~N Barnett, Gareth~S Jones, Mark~J Webb,
+  Matthew Collins, and David~A Stainforth.
+\newblock Quantification of modelling uncertainties in a large ensemble of
+  climate change simulations.
+\newblock {\em Nature}, 430(7001):768, 2004.
+
+\bibitem{sanders2000stochastic}
+William~H Sanders and John~F Meyer.
+\newblock Stochastic activity networks: Formal definitions and concepts.
+\newblock In {\em School organized by the European Educational Forum}, pages
+  315--343. Springer, 2000.
+
+\bibitem{srivastava2002stochastic}
+Ranjan Srivastava, L~You, J~Summers, and J~Yin.
+\newblock Stochastic vs. deterministic modeling of intracellular viral
+  kinetics.
+\newblock {\em Journal of theoretical biology}, 218(3):309--321, 2002.
+
+\bibitem{wright2018quine}
+Ryan Wright.
+\newblock Quine: A temporal graph system for provenance storage and analysis.
+\newblock In {\em International Provenance and Annotation Workshop}, pages
+  177--180. Springer, 2018.
+
+\end{thebibliography}

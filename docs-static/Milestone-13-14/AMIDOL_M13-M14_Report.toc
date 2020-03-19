@@ -1,0 +1,17 @@
+\contentsline {section}{\numberline {1}Introduction}{3}% 
+\contentsline {part}{I\hspace {1em}Milestone 13}{3}% 
+\contentsline {section}{\numberline {2}Recent Extensions to the AMIDOL Framework}{3}% 
+\contentsline {subsection}{\numberline {2.1}VDSOLs for Mathematical Languages}{4}% 
+\contentsline {subsection}{\numberline {2.2}Definition of Derived Measures}{4}% 
+\contentsline {section}{\numberline {3}AMIDOL Demo Instructions}{5}% 
+\contentsline {subsection}{\numberline {3.1}AMIDOL Comparison UI}{5}% 
+\contentsline {subsection}{\numberline {3.2}AMIDOL Differential Equation VDSOL}{8}% 
+\contentsline {section}{\numberline {4}AMIDOL Performance for Real-World Systems and Processes}{9}% 
+\contentsline {part}{II\hspace {1em}Milestone 14}{10}% 
+\contentsline {section}{\numberline {5}Final Prototype Development}{10}% 
+\contentsline {section}{\numberline {6}AMIDOL as a Service}{10}% 
+\contentsline {subsection}{\numberline {6.1}Read/Write Model}{11}% 
+\contentsline {subsection}{\numberline {6.2}Infer/Read VDSOL}{11}% 
+\contentsline {subsection}{\numberline {6.3}Read/Write Results}{11}% 
+\contentsline {subsection}{\numberline {6.4}Transform/Execute Model}{11}% 
+\contentsline {section}{\numberline {7}Model Algebras and Transformations}{11}% 
