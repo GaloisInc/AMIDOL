@@ -122,15 +122,15 @@ class rvIRateReward(AMIDOLRateReward):
 
 
     def getDelay(self, params):
-    	if (self.delays):
-	   return(self.delays.pop(0))
-	else:
-	   return(simpy.core.Infinity)
+        if (self.delays):
+            return(self.delays.pop(0))
+        else:
+            return(simpy.core.Infinity)
 
 rvICounter = Counter()
 maxRuns = 100
 
-for trace in tqdm(range(0, maxRuns)):
+for trace in range(0, maxRuns):
     params = AMIDOLParameters()
     cure = cureEvent()
     infect = infectEvent()
@@ -145,7 +145,12 @@ for trace in tqdm(range(0, maxRuns)):
     rvIProcess = env.process(rvI.simpyProcess(env, params))
 
     env.run(until=rvI.samplePoints[-1])
-    results = {k: v / maxRuns for k, v in rvI.rewards.iteritems()}
-    rvICounter = Counter(results) + rvICounter
+    if not(rvICounter):
+        for key in rvI.rewards:
+            rvICounter[key] = rvI.rewards[key] / float(maxRuns)
+    else:
+        for key in rvI.rewards:
+            rvICounter[key] += rvI.rewards[key] / float(maxRuns)
+
     
-print(rvICounter)
+print(sorted(rvICounter.items()))
