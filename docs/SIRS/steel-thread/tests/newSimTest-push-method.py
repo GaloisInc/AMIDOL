@@ -15,7 +15,7 @@ class AMIDOLRateReward():
     def __init__(self):
         self.rewards = dict()
 
-    def accumulateReward(self, params):
+    def accumulateReward(self, now, params):
         return(0.0)
 
     def getDelay(self, params):
@@ -41,7 +41,7 @@ class AMIDOLEvent():
     def isEnabled(self, params):
         return(True)
 
-    def fireEvent(self, params):
+    def fireEvent(self, now, params):
         return()
 
 def dummyFire(self, params):
@@ -63,46 +63,28 @@ class AMIDOLSim():
 
     def stepSim(self, params):
         self.processed += 1.0
-        nextEventTime = np.Infinity
-        nextEventFire = dummyFire
-        nextRewardTime = np.Infinity
-        nextRewardAccum = dummyFire
-        enabledEvents = []
-        eventRates = []
         totalRates = 0.0
+        nextEventList = []
+        
+        nextEventList = [(self.clock + random.expovariate(x.getRate(params)), x.fireEvent) for x in self.eventList if x.isEnabled(params)]
 
-        for event in self.eventList:
-            if (event.isEnabled(params)):
-                enabledEvents.append(event)
-                theRate = event.getRate(params)
-                eventRates.append(theRate)
-                totalRates += theRate
-
-        chooseEvent = random.random()
-        eventSum = 0.0
-        for idx in range(0, len(eventRates)):
-            eventSum += eventRates[idx]/totalRates
-            if (eventSum >= chooseEvent):
-                nextEventFire = enabledEvents[idx].fireEvent
-                nextEventTime = self.clock + random.expovariate(totalRates)
-                break
-
-        for reward in self.rateRewardList:
-            sample = reward.getSample(params)
-            if ((sample) < nextRewardTime):
-                nextRewardTime = sample
-                nextRewardAccum = reward.accumulateReward
-                break
-
-        if ((nextEventTime is np.Infinity) and (nextRewardTime is np.Infinity)):
+        nextEventList = nextEventList + [(x.getSample(params), x.accumulateReward) for x in self.rateRewardList]
+                        
+        if (nextEventList == []):
             self.clock = np.Infinity
+
+        nextEvent = nextEventList[0]
+        for event in nextEventList[1:]:
+            if (event[0] < nextEvent[0]):
+                nextEvent = event
+
+        self.clock = nextEvent[0]
+
+        if (self.clock is np.Infinity):
             return()
-        if (nextEventTime < nextRewardTime):
-            self.clock = nextEventTime
-            nextEventFire(params)
-        else:
-            self.clock = nextRewardTime
-            nextRewardAccum(self.clock, params)
+        
+        nextEvent[1](self.clock, params)
+        
 
     def runSim(self, params):
         self.clock = 0.0
@@ -127,7 +109,7 @@ class infectEvent(AMIDOLEvent):
     def isEnabled(self, v):
         return((v.beta*v.S_Pcinfect_S * v.ScinfectcI_Scinfect_IcI_Pccure_I) > 0.0)
 
-    def fireEvent(self, v):
+    def fireEvent(self, now, v):
         v.S_Pcinfect_S -= 1.0
         v.ScinfectcI_Scinfect_IcI_Pccure_I += 1.0
 
@@ -142,7 +124,7 @@ class cureEvent(AMIDOLEvent):
     def isEnabled(self, v):
         return(v.gamma*v.ScinfectcI_Scinfect_IcI_Pccure_I > 0.0)
 
-    def fireEvent(self, v):
+    def fireEvent(self, now, v):
         v.ScinfectcI_Scinfect_IcI_Pccure_I -= 1.0
         v.ScinfectcIccure_RcR_P += 1.0
 
