@@ -7,7 +7,7 @@
     <div id="swagger-ui"></div>
     <script>
     const ui = SwaggerUIBundle({
-      url: "http://localhost:8080/docs/documentation.json",
+      url: "http://" + window.location.host + "/docs/documentation.json",
       dom_id: '#swagger-ui',
       presets: [
         SwaggerUIBundle.presets.apis,
