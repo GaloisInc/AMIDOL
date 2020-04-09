@@ -34,7 +34,7 @@ package object math {
         case Literal(d)         => d.toString
         case Sin(x)             => wrap("sin(" + x.prettyPrint(0) + ")")
         case Max(l,r)           => wrap("max(" + l.prettyPrint(0) + "," + r.prettyPrint(0) + ")")
-        case DataSeries(n)      => wrap("dataSeries(" + n + ")")
+        case DataSeries(n)      => wrap("dataSeries('" + n + "', t_)")
       }
     }
 

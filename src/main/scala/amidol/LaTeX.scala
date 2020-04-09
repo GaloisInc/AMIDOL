@@ -28,6 +28,7 @@ object LaTeX extends AmidolParser {
     lazy val doubleAtom: PackratParser[Expr[Double]] =
       ( "-" ~> doubleAtom                ^^ { e => Negate(e) }
       | floatingPointNumber              ^^ { s => Literal(s.toDouble)  }
+      | "[" ~> raw"[^]]+".r <~ "]"       ^^ { n => DataSeries(n) }
       | variable
       | "{" ~> term <~ "}"
       | "(" ~> term <~ ")"
