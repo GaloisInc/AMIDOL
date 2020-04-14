@@ -22,6 +22,9 @@ object LaTeX extends AmidolParser {
         | "\\beta"
         | "\\gamma"
         | "\\epsilon"
+        | "\\mu"
+        | "\\rho"
+        | "\\sigma"
         )                                ^^ { v => Variable(Symbol(v))  }
       ).filter(_.s.name.last != '_')
 
