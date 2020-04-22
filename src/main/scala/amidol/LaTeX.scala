@@ -23,6 +23,7 @@ object LaTeX extends AmidolParser {
         | "\\gamma"
         | "\\epsilon"
         | "\\mu"
+        | "\\nu"
         | "\\rho"
         | "\\sigma"
         )                                ^^ { v => Variable(Symbol(v))  }
