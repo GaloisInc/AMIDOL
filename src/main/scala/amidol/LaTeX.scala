@@ -22,12 +22,17 @@ object LaTeX extends AmidolParser {
         | "\\beta"
         | "\\gamma"
         | "\\epsilon"
+        | "\\mu"
+        | "\\nu"
+        | "\\rho"
+        | "\\sigma"
         )                                ^^ { v => Variable(Symbol(v))  }
       ).filter(_.s.name.last != '_')
 
     lazy val doubleAtom: PackratParser[Expr[Double]] =
       ( "-" ~> doubleAtom                ^^ { e => Negate(e) }
       | floatingPointNumber              ^^ { s => Literal(s.toDouble)  }
+      | "[" ~> raw"[^]]+".r <~ "]"       ^^ { n => DataSeries(n) }
       | variable
       | "{" ~> term <~ "}"
       | "(" ~> term <~ ")"

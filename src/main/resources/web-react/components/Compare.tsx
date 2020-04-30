@@ -39,7 +39,10 @@ export class Compare extends React.Component<{}, CompareState> {
         data.append("limit", JSON.stringify(100));
         fetch("/appstate/data-traces/list", { method: 'POST', body: data })
           .then(resp => resp.json())
-          .then(resp => this.setState({ ...this.state, dataTraces: resp }));
+          .then(resp => {
+            resp.sort();
+            this.setState({ ...this.state, dataTraces: resp });
+          });
       },
       5000,
     );

@@ -78,7 +78,7 @@ export class DifferentialEquations extends React.Component<{}, DiffEqState> {
         return Object.keys(dataResult.variables).map(key => {
           return {
             name: key,
-            x: dataResult.time,
+            x: dataResult.times,
             y: dataResult.variables[key],
             type: 'scatter',
             mode: 'lines+points'

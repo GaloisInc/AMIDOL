@@ -56,7 +56,7 @@ object Main extends App with Directives {
         }
         .toMap
 
-    val dataTraces: concurrent.Map[String, math.Trace] = {
+    val dataTraces: concurrent.Map[String, math.SampledTrace] = {
       import scala.collection.JavaConverters._
       new ConcurrentHashMap().asScala
     }

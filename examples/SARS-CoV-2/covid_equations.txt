@@ -1,0 +1,29 @@
+\frac{d S₁S₂}{dt} = - \mu S₁S₂ + \mu N - [beta] \frac{S₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} + σ₂ S₁R₂ - [beta] \frac{S₁S₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} + σ₂ R₁S₂
+\frac{d S₁E₂}{dt} = - \mu S₁E₂ + [beta] \frac{S₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} - \nu S₁E₂ - (1 - X₂₁) [beta] \frac{S₁E₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} + σ₂ R₁E₂
+\frac{d S₁I₂}{dt} = - \mu S₁I₂ + \nu S₁E₂ - \gamma S₁I₂ - (1 - X₂₁) [beta] \frac{S₁I₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} + σ₂ R₁I₂
+\frac{d S₁R₂}{dt} = - \mu S₁R₂ + \gamma S₁I₂ - σ₂ S₁R₂ - (1 - X₂₁) [beta] \frac{S₁R₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} + σ₂ R₁R₂
+\frac{d E₁S₂}{dt} = - \mu E₁S₂ - (1 - X₁₂) [beta] \frac{E₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} + σ₂ E₁R₂ + [beta] \frac{S₁S₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} - \nu E₁S₂
+\frac{d E₁E₂}{dt} = - \mu E₁E₂ + (1 - X₁₂) [beta] \frac{E₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} - \nu E₁E₂ + (1 - X₂₁) [beta] \frac{S₁E₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} - \nu E₁E₂
+\frac{d E₁I₂}{dt} = - \mu E₁I₂ + \nu E₁E₂ - \gamma E₁I₂ + (1 - X₂₁) [beta] \frac{S₁I₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} - \nu E₁I₂
+\frac{d E₁R₂}{dt} = - \mu E₁R₂ + \gamma E₁I₂ - σ₂ E₁R₂ + (1 - X₂₁) [beta] \frac{S₁R₂ (I₁S₂ + I₁E₂ + I₁I₂ + I₁R₂)}{N} - \nu E₁R₂
+\frac{d I₁S₂}{dt} = - \mu I₁S₂ - (1 - X₁₂) [beta] \frac{I₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} + σ₂ I₁R₂ + \nu E₁S₂ - \gamma I₁S₂
+\frac{d I₁E₂}{dt} = - \mu I₁E₂ + (1 - X₁₂) [beta] \frac{I₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} - \nu I₁E₂ + \nu E₁E₂ - \gamma I₁E₂
+\frac{d I₁I₂}{dt} = - \mu I₁I₂ + \nu I₁E₂ - \gamma I₁I₂ + \nu E₁I₂ - \gamma I₁I₂
+\frac{d I₁R₂}{dt} = - \mu I₁R₂ + \gamma I₁I₂ - σ₂ I₁R₂ + \nu E₁R₂ - \gamma I₁R₂
+\frac{d R₁S₂}{dt} = - \mu R₁S₂ - (1 - X₁₂) [beta] \frac{R₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} + σ₂ R₁R₂ + \gamma I₁S₂ - σ₂ R₁S₂
+\frac{d R₁E₂}{dt} = - \mu R₁E₂ + (1 - X₁₂) [beta] \frac{R₁S₂ (S₁I₂ + E₁I₂ + I₁I₂ + R₁I₂)}{N} - \nu R₁E₂ + \gamma I₁E₂ - σ₂ R₁E₂
+\frac{d R₁I₂}{dt} = - \mu R₁I₂ + \nu R₁E₂ - \gamma R₁I₂ + \gamma I₁I₂ - σ₂ R₁I₂
+\frac{d R₁R₂}{dt} = - \mu R₁R₂ + \gamma R₁I₂ - σ₂ R₁R₂ + \gamma I₁R₂ - σ₂ R₁R₂
+
+X₁₂ = 0.74
+X₂₁ = 0.50
+σ₁ = 0.0035714285714285713
+σ₂ = 0.0037593984962406013
+\nu = 0.2
+\mu = 3.424657534246575e-05
+\gamma = 0.2040816326530612
+
+N = 100
+S₁S₂_0 = 98
+S₁I₂_0 = 1
+I₁S₂_0 = 1

@@ -39,6 +39,12 @@ object SciPyIntegrate extends ContinuousInitialValue {
     val renamer = Renamer.filterAscii()
     val model = modelUnrenamed.rename(renamer)
 
+    val seriesAcc = Set.newBuilder[math.DataSeries]
+    def pprint(expr: math.Expr[_]): String = {
+      seriesAcc ++= expr.dataSeries()
+      expr.prettyPrint()
+    }
+
     // Set up the system of differential equations
     val states: List[State] = model.states.values.toList
     val derivatives: Map[StateId, Python] = {
@@ -51,13 +57,13 @@ object SciPyIntegrate extends ContinuousInitialValue {
           builder(stateId) = builder.get(stateId) match {
             case None =>
               inputPredicate match {
-                case None => term.prettyPrint()
-                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0.0)"
+                case None => pprint(term)
+                case Some(i) => s"(${pprint(term)} if ${pprint(i.enabling_condition)} else 0.0)"
               }
             case Some(existing) =>
               inputPredicate match {
-                case None => s"${term.prettyPrint()} + $existing"
-                case Some(i) => s"(${term.prettyPrint()} if ${i.enabling_condition.prettyPrint()} else 0.0) + $existing"
+                case None => s"${pprint(term)} + $existing"
+                case Some(i) => s"(${pprint(term)} if ${pprint(i.enabling_condition)} else 0.0) + $existing"
               }
           }
         }
@@ -73,10 +79,10 @@ object SciPyIntegrate extends ContinuousInitialValue {
     }
 
     // Pretty printing
-    val stateVarsStr   = states.map(s => s.state_variable.prettyPrint())
-    val derivativesStr = derivatives.toList.map(ie => s"d${model.states(ie._1).state_variable.prettyPrint()}_ = ${ie._2}")
-    val initialCondStr = states.map(s => s.initial_value.prettyPrint())
-    val constantsStr   = model.constants.map(vd => s"${vd._1.prettyPrint()} = ${vd._2}")
+    val stateVarsStr   = states.map(s => pprint(s.state_variable))
+    val derivativesStr = derivatives.toList.map(ie => s"d${pprint(model.states(ie._1).state_variable)}_ = ${ie._2}")
+    val initialCondStr = states.map(s => pprint(s.initial_value))
+    val constantsStr   = model.constants.map(vd => s"${pprint(vd._1)} = ${vd._2}")
     val writeImageFile = inputs.savePlot
 
     // Python code
@@ -90,8 +96,19 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |
          |""".stripMargin
 
+    // Data traces
+    val series = seriesAcc.result()
+      .map { case math.DataSeries(datasetName) =>
+        val math.SampledTrace(domain, values) = appState.dataTraces(datasetName)
+        val domainStr = domain.mkString("[",",","]")
+        val valuesStr = values.mkString("[",",","]")
+        s"'$datasetName': interpolate.interp1d($domainStr, $valuesStr)"
+      }
+      .mkString("{\n", ",\n    ", "\n}")
+
     val pythonCode: Python = s"""
          |from scipy.integrate import odeint
+         |from scipy import interpolate
          |import json
          |import numpy as np
          |import matplotlib.pyplot as plt
@@ -103,6 +120,14 @@ object SciPyIntegrate extends ContinuousInitialValue {
          |        if isinstance(obj, np.ndarray):
          |            return obj.tolist()
          |        return json.JSONEncoder.default(self, obj)
+         |
+         |series = $series
+         |def dataSeries(name, t_):
+         |    try:
+         |        return float(series[name](t_))
+         |    except ValueError:
+         |        return 0.0
+         |
          |
          |# User defined constants
          |${constantsStr.mkString("\n")}
